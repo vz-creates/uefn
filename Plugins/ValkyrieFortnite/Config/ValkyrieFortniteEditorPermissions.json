@@ -254,6 +254,7 @@
 			"/Script/UMG.SizeBox",
 			"/Script/UMG.UniformGridPanel",
 			"/Script/UMG.WidgetSwitcher",
+			"/Script/UMG.WrapBox",
 			"/Game/Valkyrie/UMG/UEFN_Button_Loud.UEFN_Button_Loud",
 			"/Game/Valkyrie/UMG/UEFN_Button_Quiet.UEFN_Button_Quiet",
 			"/Game/Valkyrie/UMG/UEFN_Button_Regular.UEFN_Button_Regular",
@@ -561,6 +562,7 @@
 			"/CRD_ItemContainer/ItemContainer_PreviewComponent.ItemContainer_PreviewComponent_C":						{  },
 			"/CRD_Mannequin/Device_Character_Base_V2.Device_Character_Base_V2_C":										{  },
 			"/CRD_Mannequin/SetupAssets/Character_Mannequin.Character_Mannequin_C":										{  },
+			"/CRD_ModularGlobalMusicController/UI/WBP_Fabric_MusicManager_BasicScreen.WBP_Fabric_MusicManager_BasicScreen_C": {  },
 			"/CRD_ModularSequencer/UI/WBP_FabricSequencer_AdvancedScreen.WBP_FabricSequencer_AdvancedScreen_C":			{  },
 			"/CRD_ModularSequencer/UI/WBP_FabricSequencer_BasicScreen.WBP_FabricSequencer_BasicScreen_C":				{  },
 			"/CRD_Papaya_Dance_Mannequin/Assets/Papaya_Dance_Mannequin_MasterCreative.Papaya_Dance_Mannequin_MasterCreative_C":{  },
@@ -1943,6 +1945,8 @@
 			"/Script/UMG.WidgetSwitcherSlot":									{  },
 			"/Script/UMG.WidgetTransform":										{  },
 			"/Script/UMG.WidgetTree":											{  },
+			"/Script/UMG.WrapBox":												{ "Visible": true },
+			"/Script/UMG.WrapBoxSlot":											{  },
 			"/Script/UnrealEd.CubeBuilder":										{  },
 			"/Script/UnrealEd.CylinderBuilder":									{  },
 			"/Script/UnrealEd.EdGraphNode_Comment":								{ "Visible": true },
@@ -3012,6 +3016,10 @@
 				"AllowList": [ "ActiveWidgetIndex" ]
 			},
 			{
+				"Type": "/Script/UMG.WrapBox",
+				"AllowList": [ "InnerSlotPadding", "WrapSize", "bExplicitWrapSize", "HorizontalAlignment", "Orientation" ]
+			},
+			{
 				"Type": "/Script/AIModule.AISenseConfig_Sight",
 				"AllowList": [ "SightRadius", "LoseSightRadius", "PeripheralVisionAngleDegrees", "DetectionByAffiliation", "MaxAge" ]
 			},
@@ -3127,7 +3135,7 @@
 			},
 			{
 				"Type": "/Script/CRD_ModalDialogUI.CreativeModalDialogViewmodel",
-				"DenyList": [ "HoveredSound", "PressedSound" ]
+				"DenyList": [ "HoveredSound", "PressedSound" ]				
 			},
 			{
 				"Type": "/CreativeCoreDevices/Creative_Powerup_V2.Creative_Powerup_V2_C",
@@ -3668,7 +3676,7 @@
 			},
 			{
 				"Type": "/Script/DelMarTrackRuntime.DelMarTrack",
-				"AllowList": [ "TrackType", "ShowSplinePointNumbers", "bForceValidOOBTube", "bForceValidTrack" ]
+				"AllowList": [ "TrackType", "bIsIndependent", "ShowSplinePointNumbers", "bForceValidOOBTube", "bForceValidTrack" ]
 			},
 			{
 				"Type": "/Script/DelMarTrackRuntime.DelMarTrackBase",

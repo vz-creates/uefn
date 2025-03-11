@@ -1917,6 +1917,8 @@
 			"/Script/UMG.WidgetSwitcher",
 			"/Script/UMG.WidgetSwitcherSlot",
 			"/Script/UMG.WidgetTree",
+			"/Script/UMG.WrapBox",
+			"/Script/UMG.WrapBoxSlot",
 			"/Script/UMGEditor.WidgetBlueprint",
 			"/Script/UnrealEd.CubeBuilder",
 			"/Script/UnrealEd.CylinderBuilder",
@@ -2201,7 +2203,8 @@
 		"VKCreateUGCEarlyAccess": [],
 		"VKCreateUGCEpicDeveloper": [
 			"/Script/Engine.BlueprintGeneratedClass",
-			"/Script/Entity.EntityPrefab"
+			"/Script/Entity.EntityPrefab",
+			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh"
 		],
 		"VKCreateUGCPartner": []
 	},
@@ -13308,6 +13311,7 @@
 			"/CRD_ItemContainer/ItemContainer_PreviewComponent.ItemContainer_PreviewComponent_C",
 			"/CRD_Mannequin/Device_Character_Base_V2.Device_Character_Base_V2_C",
 			"/CRD_Mannequin/SetupAssets/Character_Mannequin.Character_Mannequin_C",
+			"/CRD_ModularGlobalMusicController/UI/WBP_Fabric_MusicManager_BasicScreen.WBP_Fabric_MusicManager_BasicScreen_C",
 			"/CRD_ModularSequencer/UI/WBP_FabricSequencer_AdvancedScreen.WBP_FabricSequencer_AdvancedScreen_C",
 			"/CRD_ModularSequencer/UI/WBP_FabricSequencer_BasicScreen.WBP_FabricSequencer_BasicScreen_C",
 			"/CRD_Papaya_Dance_Mannequin/Assets/Papaya_Dance_Mannequin_MasterCreative.Papaya_Dance_Mannequin_MasterCreative_C",

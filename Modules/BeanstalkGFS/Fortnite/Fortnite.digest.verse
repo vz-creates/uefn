@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.00-CL-40085084
+# Generated from build: ++Fortnite+Release-34.10-CL-40567068
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -488,9 +488,9 @@ Characters<public> := module {
 
 using { /Fortnite.com/AI }
 using { /Fortnite.com/Game }
-using { /UnrealEngine.com/Temporary/SceneGraph }
 using { /Verse.org/Assets }
 using { /Verse.org/Native }
+using { /Verse.org/SceneGraph }
 using { /Verse.org/Simulation }
 using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/Devices

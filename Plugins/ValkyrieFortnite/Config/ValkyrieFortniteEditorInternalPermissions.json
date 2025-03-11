@@ -807,7 +807,7 @@
 			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
 			"/Script/GameplayCameras.CameraRigAsset":			{ "Rules": ["View","Create"] },
 			"/Script/GameplayCameras.CameraVariableAsset":		{ "Rules": ["View","Create"], "Subclasses": "All"},
-			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh":	{ "Rules": [ "View", "Create" ] },
+			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh":	{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/VerseAssets.PropertyInterfaceGeneratedClass":			{ "Rules": ["View","Create"] },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":	{ "Rules": ["View","Create"] }
 		},

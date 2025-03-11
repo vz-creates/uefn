@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.00-CL-40085084
+# Generated from build: ++Fortnite+Release-34.10-CL-40567068
 #################################################
 
 AI<public> := module {
@@ -46,9 +46,9 @@ AI<public> := module {
 
   using { /Fortnite.com/AI/CompanionAI/PingCommand }
   using { /Fortnite.com/Characters }
-  using { /UnrealEngine.com/Temporary/SceneGraph }
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   # Module import path: /Fortnite.com/AI/CompanionAI
   CompanionAI<public> := module {
@@ -671,7 +671,7 @@ AI<public> := module {
     @experimental
     TargetTouchedEvent<override>: subscribable_event(fort_target_info) = external {}
 
-    var DetectedTargets<override>: []fort_target_info = external {}
+    var DetectedTargets<override><native>: []fort_target_info = external {}
   }
 
   @experimental
@@ -937,8 +937,8 @@ using { /Fortnite.com/Teams }
 using { /Fortnite.com/Vehicles }
 using { /UnrealEngine.com/Abilities }
 using { /UnrealEngine.com/Temporary/Diagnostics }
-using { /UnrealEngine.com/Temporary/SceneGraph/VerseCamera }
 using { /Verse.org/Assets }
+using { /Verse.org/SceneGraph/VerseCamera }
 using { /Verse.org/VerseEngine }
 # Module import path: /Fortnite.com/Animation
 Animation<public> := module {
@@ -1231,6 +1231,9 @@ Characters<public> := module {
     # Succeeds if this `fort_character` is inside water volume.
     IsInWater<public>()<transacts><decides>: void
 
+    # Succeeds if this `fort_character` is marked by the enemy team due to a recon grenade or other surveillance device.
+    IsMarked<epic_internal>()<transacts><decides>: void
+
     # Succeeds if this `fort_character` is standing on the ground.
     IsOnGround<public>()<transacts><decides>: void
 
@@ -1363,6 +1366,9 @@ Characters<public> := module {
 
     @experimental
     IsInWater<override>()<transacts><decides>: void = external {}
+
+    @experimental
+    IsMarked<override>()<transacts><decides>: void = external {}
 
     @experimental
     IsOnGround<override>()<transacts><decides>: void = external {}
@@ -2002,54 +2008,6 @@ Devices<public> := module {
 
     # Starts or resumes reverse playback of the animation.
     PlayReverse<public>(): void = external {}
-  }
-
-  # Used to dynamically assemble or disassemble one or more building actors. Only available in LEGO islands.
-  assembly_device<public> := class<concrete><final>(creative_device_base, enableable) {
-    # Initiates the assembly process.
-    Assemble<public>(): void = external {}
-
-    # Initiates the assembly process.
-    Assemble<public>(Agent: agent): void = external {}
-
-    # Signaled when the device finishes assembling, at the same time as other 'finished' effects are started.
-    AssemblyFinishedEvent<public>: listenable(?agent) = external {}
-
-    # Disable this object.
-    Disable<override>(): void = external {}
-
-    # Initiates the disassembly process.
-    Disassemble<public>(): void = external {}
-
-    # Initiates the disassembly process.
-    Disassemble<public>(Agent: agent): void = external {}
-
-    # Signaled when the device finishes disassembling.
-    DisassemblyFinishedEvent<public>: listenable(?agent) = external {}
-
-    # Enable this object.
-    Enable<override>(): void = external {}
-
-    # Succeeds if the object is enabled, fails if it’s disabled.
-    IsEnabled<override>()<transacts><decides>: void = external {}
-
-    # Succeeds if the device is paused, fails if it is not.
-    IsPaused<public>()<transacts><decides>: void = external {}
-
-    # Pause the assembly or disassembly process.
-    Pause<public>(): void = external {}
-
-    # Pause the assembly or disassembly process.
-    Pause<public>(Agent: agent): void = external {}
-
-    # Resets affected building actors to the state they were in at the start of the round.
-    Reset<public>(): void = external {}
-
-    # Resets affected building actors to the state they were in at the start of the round.
-    Reset<public>(Agent: agent): void = external {}
-
-    # The amount of progress the device has made towards fully assembling (1.0) or fully disassembling (0.0).
-    var<private> Progress<public>: float = external {}
   }
 
   # Evaluates attributes for `agent` when signaled from other devices. Acts as branching logic, checking whether the `agent` associated with the signal passes all of the tests setup in this device, then sends a signal on either `PassEvent` or `FailEvent`.
@@ -3374,18 +3332,6 @@ Devices<public> := module {
     Enable<public>(): void = external {}
   }
 
-  del_mar_checkpoint_device<epic_internal> := class<concrete><final>(creative_device_base) {}
-
-  # Used to created an EMP Hazard that slows vehicles.
-  del_mar_emp_hazard_device<epic_internal> := class<concrete><final>(creative_device_base) {
-    # Signaled when a vehicle triggers the EMP Hazard.Sends the `agent` that controls the vehicle.
-    EMPHazardTriggeredEvent<public>: listenable(agent) = external {}
-  }
-
-  del_mar_player_start_device<epic_internal> := class<concrete><final>(creative_device_base) {}
-
-  del_mar_speed_pad_device<epic_internal> := class<concrete><final>(creative_device_base) {}
-
   # Payload of `device_event_ai_interaction`.
   device_ai_interaction_result<native><public> := struct<epic_internal> {
     # Optional agent that triggered the interaction
@@ -4391,8 +4337,8 @@ Devices<public> := module {
     SpawnItem<public>(): void = external {}
   }
 
-  using { /UnrealEngine.com/Temporary/SceneGraph }
   using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
   @import_as("/Script/FortniteGame.ULevelSaveRecord")
   @experimental
   level_save_record<native><epic_internal> := class<epic_internal> {}
@@ -8006,6 +7952,8 @@ FeralCorgi<public> := module {
 
     IsPrivateMatch<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
 
+    IsQABackend<native><epic_internal>()<transacts><decides>: void
+
     IsRankedMatch<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
 
     IsUsingCustomMatchKeys<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
@@ -9370,7 +9318,7 @@ Vehicles<public> := module {
 }
 
 using { /Fortnite.com/Game }
-using { /UnrealEngine.com/Temporary/SceneGraph }
+using { /Verse.org/SceneGraph }
 # Module import path: /Fortnite.com/VerseFortniteTestSuite
 VerseFortniteTestSuite<public> := module {
   @hide_in_editor
@@ -9422,4 +9370,357 @@ VerseFortniteTestSuite<public> := module {
 
     var IsRegistered<native><public>: logic = external {}
   }
+}
+
+VerseInternalTesting<public> := module {
+  using { /Fortnite.com/Characters }
+  using { /Fortnite.com/Devices }
+  using { /Fortnite.com/Game }
+  using { /Fortnite.com/Vehicles }
+  using { /UnrealEngine.com/Temporary/Diagnostics }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /UnrealEngine.com/Temporary/Testing }
+  using { /Verse.org/Colors }
+  using { /Verse.org/Simulation }
+  # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
+  NexusFramework<public> := module {
+    example_nexus_device<epic_internal> := class(nexus_test_device) {
+      OnBegin<override>()<suspends>: void = external {}
+
+      OnEnd<override>(): void = external {}
+    }
+
+    nexus_test_device<epic_internal> := class(creative_device) {
+      AddCheck<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
+
+      AddFail<epic_internal>(TestName: string, ContextString: string): void = external {}
+
+      AddPass<epic_internal>(TestName: string, ContextString: string): void = external {}
+
+      AddResults<epic_internal>(TestName: string, Passed: logic, ContextString: string): void = external {}
+
+      AddSkip<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
+
+      OnBegin<override>()<suspends>: void = external {}
+
+      OnEnd<override>(): void = external {}
+
+      @editable
+      var TestRunner<public>: nexus_test_runner = external {}
+    }
+
+    nexus_test_runner<epic_internal> := class(creative_device) {
+      OnEnd<override>(): void = external {}
+    }
+  }
+
+  # Module import path: /Fortnite.com/VerseInternalTesting/VerseFramework
+  VerseFramework<public> := module {
+    device_event_agent_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(agent)): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+    }
+
+    device_event_agent_int_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(agent, int))): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+
+      var ArgInt<public>: int = external {}
+    }
+
+    device_event_ai_interaction_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(device_ai_interaction_result)): void = external {}
+
+      var ArgSource<public>: ?agent = external {}
+
+      var ArgTarget<public>: ?agent = external {}
+    }
+
+    device_event_damage_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(damage_result)): void = external {}
+
+      var ArgAmount<public>: float = external {}
+
+      var ArgInstigator<public>: ?game_action_instigator = external {}
+
+      var ArgSource<public>: ?game_action_causer = external {}
+    }
+
+    device_event_fort_vehicle_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(fort_vehicle)): void = external {}
+
+      var ArgVehicle<public>: ?fort_vehicle = external {}
+    }
+
+    device_event_healing_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(healing_result)): void = external {}
+
+      var ArgAmount<public>: float = external {}
+
+      var ArgInstigator<public>: ?game_action_instigator = external {}
+
+      var ArgSource<public>: ?game_action_causer = external {}
+    }
+
+    device_event_optional_agent_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(?agent)): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+    }
+
+    device_event_optional_agent_int_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(?agent, int))): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+
+      var ArgInt<public>: int = external {}
+    }
+
+    device_event_void_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple())): void = external {}
+    }
+
+    test_case<public> := struct {
+      Category<public>: []string
+
+      Func<public>: type { _()<suspends>: void }
+
+      Name<public>: string
+
+      TimeoutOverride<public>: ?float = external {}
+    }
+
+    test_device<epic_internal> := class(creative_device) {
+      AfterAll<public>()<suspends>: void = external {}
+
+      AfterEach<public>()<suspends>: void = external {}
+
+      BeforeAll<public>()<suspends>: void = external {}
+
+      BeforeEach<public>()<suspends>: void = external {}
+
+      OnBegin<override>(): void = external {}
+
+      RegisterTests<public>(): void = external {}
+
+      SuiteName<public>: string = external {}
+
+      TestCases<public>(): []test_case = external {}
+
+      var TestRunner<public>: test_runner = external {}
+    }
+
+    test_device_event_handler_mock<public> := class<concrete> {
+      Await<public>()<suspends>: void = external {}
+
+      Cancel<public>()<transacts>: void = external {}
+
+      GetCallCount<public>(): int = external {}
+
+      ResetCallCount<public>(): void = external {}
+    }
+
+    test_runner<epic_internal> := class {
+      AddExcludeFilter<public>(Filter: string)<transacts>: void = external {}
+
+      AddIncludeFilter<public>(Filter: string)<transacts>: void = external {}
+
+      CheckArrayContains<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
+
+      CheckArrayDoesNotContain<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
+
+      CheckEqual<public>(
+        Actual: creative_object,
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {},
+        ?Timeout: float = external {}
+      )<suspends>: void = external {}
+
+      CheckEqual<public>(
+        ActualFortCharacter: fort_character,
+        ExpectedTranslation: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Message: string,
+        ?Tolerance: float = external {},
+        ?Timeout: float = external {},
+        ?CompareX: logic = external {},
+        ?CompareY: logic = external {},
+        ?CompareZ: logic = external {}
+      )<suspends>: void = external {}
+
+      CheckEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(Expected: agent, Actual: agent, Message: string): void = external {}
+
+      CheckEqual<public>(Expected: color, Actual: color, Message: string, ?Tolerance: float = external {}): void = external {}
+
+      CheckEqual<public>(Expected: float, Actual: float, Message: string, ?Tolerance: float = external {}): void = external {}
+
+      CheckEqual<public>(Expected: int, Actual: int, Message: string): void = external {}
+
+      CheckEqual<public>(Expected: string, Actual: string, Message: string): void = external {}
+
+      CheckEqual<public>(
+        Expected: vector2,
+        Actual: vector2,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(Expected: vector2i, Actual: vector2i, Message: string): void = external {}
+
+      CheckEqualFloatArray<public>(Expected: []float, Actual: []float, Message: string): void = external {}
+
+      CheckEqualIntArray<public>(Expected: []int, Actual: []int, Message: string): void = external {}
+
+      CheckFailure<public>(TestFuncEval: ?any, FuncName: string)<decides>: void = external {}
+
+      CheckNotEqual<public>(
+        Actual: creative_object,
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {},
+        ?Timeout: float = external {}
+      )<suspends>: void = external {}
+
+      CheckNotEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckNotEqual<public>(Expected: agent, Actual: agent, Message: string): void = external {}
+
+      CheckNotEqual<public>(Expected: float, Actual: float, Message: string): void = external {}
+
+      CheckNotEqual<public>(Expected: int, Actual: int, Message: string): void = external {}
+
+      CheckNotEqual<public>(Expected: string, Actual: string, Message: string): void = external {}
+
+      CheckNotTrue<public>(Actual: logic, Message: string): void = external {}
+
+      CheckTrue<public>(Actual: logic, Message: string): void = external {}
+
+      ClearLastTestResult<public>(): void = external {}
+
+      ClearLogOutput<public>(): void = external {}
+
+      ClearTests<public>()<transacts>: void = external {}
+
+      DefaultSetupFunctionTimeoutInSeconds<public>: float = external {}
+
+      DefaultTestTimeoutInSeconds<public>: float = external {}
+
+      GetDisplayTime<public>(DurationInSec: float): string = external {}
+
+      IsTestCaseIncluded<public>(TestCase: test_case)<transacts><decides>: void = external {}
+
+      (/Fortnite.com/VerseInternalTesting/VerseFramework/test_runner:)Log<public>(Level: log_level, Message: string)<transacts>: void = external {}
+
+      PrintLogOutput<public>()<transacts>: void = external {}
+
+      RaiseFunctionFailure<public>(FuncName: string)<transacts>: void = external {}
+
+      RecordFlakinessTestResult<public>(TestName: string, Succeeded: logic)<transacts>: void = external {}
+
+      RegisterTests<public>(TestSuite: test_suite)<transacts>: void = external {}
+
+      Require<public>(OptionalAgent: ?agent, Message: string)<transacts><decides>: agent = external {}
+
+      ResetExcludeFilters<public>()<transacts>: void = external {}
+
+      ResetIncludeFilters<public>()<transacts>: void = external {}
+
+      Run<public>()<suspends>: void = external {}
+
+      RunTestSuites<public>()<suspends>: void = external {}
+
+      var CurrentTestSuite<public>: string = external {}
+
+      var EnableDebugOutput<public>: logic = external {}
+
+      var EnableFlakinessEvaluation<public>: logic = external {}
+
+      var EnableLogOutput<public>: logic = external {}
+
+      var EnableTimeTracking<public>: logic = external {}
+
+      var EnableVerboseOutput<public>: logic = external {}
+
+      var FlakinessRunCount<public>: int = external {}
+
+      var LastTestErrors<public>: []string = external {}
+
+      var LogOutput<public>: []string = external {}
+
+      var SetupFunctionTimeoutInSeconds<public>: float = external {}
+
+      var TargetTestSuite<public>: string = external {}
+
+      var TestReporter<public>: test_reporter = external {}
+
+      var TestTimeoutInSeconds<public>: float = external {}
+    }
+
+    test_runner_device<epic_internal> := class(creative_device) {
+      OnBegin<override>()<suspends>: void = external {}
+
+      @editable
+      TestReportName<public>: string = external {}
+
+      TestReportVerbosity<public>: log_level = external {}
+
+      TestRunner<public>: test_runner = external {}
+
+      var Status<public>: test_runner_status = external {}
+    }
+
+    test_runner_status<public> := enum {
+      Complete
+
+      Pending
+
+      Running
+
+      Setup
+    }
+
+    test_suite<public> := struct {
+      AfterAllFunc<public>: type { _()<suspends>: void }
+
+      AfterEachFunc<public>: type { _()<suspends>: void }
+
+      BeforeAllFunc<public>: type { _()<suspends>: void }
+
+      BeforeEachFunc<public>: type { _()<suspends>: void }
+
+      Cases<public>: []test_case
+
+      Name<public>: string
+    }
+  }
+
+  verse_internal_testing_dummy_vni_function<native><epic_internal>(): void
 }

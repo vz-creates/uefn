@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.00-CL-40085084
+# Generated from build: ++Fortnite+Release-34.10-CL-40567068
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -439,6 +439,1086 @@ Random<public> := module {
   Shuffle<public>(Input: []t where t: type)<transacts>: []t = external {}
 }
 
+SceneGraph<public> := module {
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Find all objects in the scene that currently overlap this entity.
+  (Entity: entity).FindOverlapHits<public>()<transacts>: generator(overlap_hit) = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Find all objects in the scene that would overlap this entity if it were placed at GlobalTransform.
+  (Entity: entity).FindOverlapHits<public>(GlobalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: generator(overlap_hit) = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Find all objects in the scene that would overlap Volume if they were placed at GlobalTransform. NOTE: This entity defines the context(scene) for the query but does not otherwise take part in the sweep.
+  (Entity: entity).FindOverlapHits<public>(
+    GlobalTransform: (/Verse.org/SpatialMath:)transform,
+    Volume: collision_volume
+  )<transacts>: generator(overlap_hit) = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Find all objects in the scene that would intersect this entity if it were swept from its location along the Displacement vector.
+  (Entity: entity).FindSweepHits<public>(Displacement: (/Verse.org/SpatialMath:)vector3)<transacts>: generator(sweep_hit) = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Find all objects in the scene that would intersect this entity if it were swept from GlobalTransform along the Displacement vector.
+  (Entity: entity).FindSweepHits<public>(
+    Displacement: (/Verse.org/SpatialMath:)vector3,
+    StartGlobalTransform: (/Verse.org/SpatialMath:)transform
+  )<transacts>: generator(sweep_hit) = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Find all objects in the scene that would intersect Volume if they were swept from GlobalTransform along the Displacement vector NOTE: This entity defines the context(scene) for the query but does not otherwise take part in the sweep.
+  (Entity: entity).FindSweepHits<public>(
+    Displacement: (/Verse.org/SpatialMath:)vector3,
+    StartGlobalTransform: (/Verse.org/SpatialMath:)transform,
+    Volume: collision_volume
+  )<transacts>: generator(sweep_hit) = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # Finds all components attached to ancestor entities to `InEntity` of type `component_type`.
+  # The order of the returned components is unspecified and subject to change.
+  (InEntity: entity).FindAncestorComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # Finds all ancestor entities to `InEntity` of type `entity_type`.
+  # The order of the returned entities is unspecified and subject to change.
+  (InEntity: entity).FindAncestorEntities<native><public>(entity_type: castable_subtype(entity))<transacts>: generator(entity_type)
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # Finds all ancestor entities to `InEntity` containing a component of type `component_type`.
+  # The order of the returned entities is unspecified and subject to change.
+  (InEntity: entity).FindAncestorEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Finds all ancestor entities to `InEntity` with `Tag` present in their `tag_component`.
+  # The order of the returned entities is unspecified and subject to change.
+  (InEntity: entity).FindAncestorEntitiesWithTag<native><public>(Tag: tag)<transacts>: generator(entity)
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # Finds all components attached to descendant entities to and including `InEntity` of type `component_type`.
+  # When querying from the simulation entity, the simulation entity itself is not included in the results.
+  # The order of the returned components is unspecified and subject to change.
+  (InEntity: entity).FindDescendantComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
+
+  using { /Verse.org/Native }
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # Finds all descendant entities including `InEntity` of type `entity_type`.
+  # When querying from the simulation entity, the simulation entity itself is not included in the results.
+  # The order of the returned entities is unspecified and subject to change.
+  (InEntity: entity).FindDescendantEntities<native><public>(entity_type: castable_subtype(entity))<transacts>: generator(entity_type)
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # Finds all descendant entities including `InEntity` containing a component of type `component_type`.
+  # When querying from the simulation entity, the simulation entity itself is not included in the results.
+  # The order of the returned entities is unspecified and subject to change.
+  (InEntity: entity).FindDescendantEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 2930 }
+  # Finds all descendant entities including `InEntity` with `Tag` present in their `tag_component`.
+  # When querying from the simulation entity, the simulation entity itself is not included in the results.
+  # The order of the returned entities is unspecified and subject to change.
+  (InEntity: entity).FindDescendantEntitiesWithTag<native><public>(Tag: tag)<transacts>: generator(entity)
+
+  @experimental
+  # Returns the global transform of this entity, in the case the entity does not have a transform_component it will return the transform of the first parent that has a transform
+  (InEntity: entity).GetGlobalTransform<native><public>()<transacts>: (/Verse.org/SpatialMath:)transform
+
+  @experimental
+  # Returns the local transform of this entity, in the case the entity does not have a transform_component it will return identity
+  (InEntity: entity).GetLocalTransform<native><public>()<transacts>: (/Verse.org/SpatialMath:)transform
+
+  @experimental
+  # Returns the origin of the entity in any, in the case the entity does not have a transform_component the method will fail
+  (InEntity: entity).GetOrigin<native><public>()<transacts><decides>: origin
+
+  @experimental
+  # Returns the simulation entity parent for this entity.
+  #   * The simulation entity is the rootmost entity in an experience.
+  #   * Fails if this entity is not currently in the scene.
+  (InEntity: entity).GetSimulationEntity<native><public>()<transacts><decides>: entity
+
+  @experimental
+  # Resets the origin of this entity, which will now default to its parent
+  (InEntity: entity).ResetOrigin<native><public>()<transacts>: void
+
+  @experimental
+  # Sets the global transform of this entity, in the case the entity does not have a transform_component it will create one and set its global transform
+  (InEntity: entity).SetGlobalTransform<native><public>(NewGlobalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: void
+
+  @experimental
+  # Sets the local transform of this entity, in the case the entity does not have a transform_component it will create one and set its local transform
+  (InEntity: entity).SetLocalTransform<native><public>(NewLocalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: void
+
+  @experimental
+  # Sets the origin of this entity, in the case the entity does not have a transform_component it will create one and set its origin. This method fails if it recognized dependency recursion.
+  (InEntity: entity).SetOrigin<native><public>(NewOrigin: origin)<transacts><decides>: void
+
+  # Module import path: /Verse.org/SceneGraph/KeyframedMovement
+  # Animate Scene Graph entities with keyframes.
+  KeyframedMovement<public> := module {
+    @experimental
+    # Cubic bezier easing function. See CubicBezierEasingFunctions for some basic easing values.
+    cubic_bezier_easing_function<native><public> := class<concrete><computes><epic_internal>(easing_function) {
+      Evaluate<native><override>(Input: float): float
+
+      X0<native><public>: float = external {}
+
+      X1<native><public>: float = external {}
+
+      Y0<native><public>: float = external {}
+
+      Y1<native><public>: float = external {}
+    }
+
+    @experimental
+    # `Ease` animations start slowly, speed up, then end slowly. The speed of the animation is slightly slower at the end than the start.
+    ease_cubic_bezier_easing_function<native><public> := class<final><concrete><computes>(cubic_bezier_easing_function) {
+      X0<override>: float = external {}
+
+      X1<override>: float = external {}
+
+      Y0<override>: float = external {}
+
+      Y1<override>: float = external {}
+    }
+
+    @experimental
+    # `EaseIn` animations start slow, then speed up towards the end.
+    ease_in_cubic_bezier_easing_function<native><public> := class<final><concrete><computes>(cubic_bezier_easing_function) {
+      X0<override>: float = external {}
+
+      X1<override>: float = external {}
+
+      Y0<override>: float = external {}
+
+      Y1<override>: float = external {}
+    }
+
+    @experimental
+    # `EaseInOut` animations are similar to `Ease` but the start and end animation speed is symmetric.
+    ease_in_out_cubic_bezier_easing_function<native><public> := class<final><concrete><computes>(cubic_bezier_easing_function) {
+      X0<override>: float = external {}
+
+      X1<override>: float = external {}
+
+      Y0<override>: float = external {}
+
+      Y1<override>: float = external {}
+    }
+
+    @experimental
+    # `EaseOut` animations start fast, then slow down towards the end.
+    ease_out_cubic_bezier_easing_function<native><public> := class<final><concrete><computes>(cubic_bezier_easing_function) {
+      X0<override>: float = external {}
+
+      X1<override>: float = external {}
+
+      Y0<override>: float = external {}
+
+      Y1<override>: float = external {}
+    }
+
+    @experimental
+    # Base class for an animation easing function.
+    easing_function<native><public> := class<abstract><computes><epic_internal> {
+      Evaluate<native><public>(Input: float): float
+    }
+
+    @experimental
+    # Provides teleportation and simple keyframe-based animation for an entity. Animations play back in the Pre-Physics tick phase. When animating an entity with a parent_constraint, animation will be relative to the parent entity.
+    keyframed_movement_component<native><public> := class<final><final_super>(component) {
+      @experimental
+      GetDuration<native><public>()<computes><decides><reads>: float
+
+      @experimental
+      # Get the event that fires when the animations ends, failing if the animation is of infinite duration
+      GetOnFinishedEvent<public>()<computes><decides><reads>: listenable(tuple()) = external {}
+
+      @experimental
+      # Get the event that fires when the animation is Paused.
+      GetOnPausedEvent<public>(): listenable(tuple()) = external {}
+
+      @experimental
+      # Get the event that fires when the animation begins or resumes Playing.
+      GetOnPlayedEvent<public>(): listenable(tuple()) = external {}
+
+      @experimental
+      # Get the event that fires when the animation is Stopped.
+      GetOnStoppedEvent<public>(): listenable(tuple()) = external {}
+
+      @experimental
+      # Is there a valid set of playable keyframes?
+      HasValidAnimation<native><public>()<computes><decides><reads>: void
+
+      @experimental
+      # Is the animation paused?
+      IsPaused<native><public>()<computes><decides><reads>: void
+
+      @experimental
+      # Is the animation currently playing?
+      IsPlaying<native><public>()<computes><decides><reads>: void
+
+      @experimental
+      # Signaled when any keyframe is reached. (Keyframe:int, IsReversed:logic).
+      KeyframeReachedEvent<native><public>: listenable(tuple(int, logic)) = external {}
+
+      @experimental
+      # Signaled when the entire animation is complete. This will only fire for `OneShot` animations.
+      MovementCompleteEvent<native><public>: listenable(tuple()) = external {}
+
+      @experimental
+      # Pause movement. Subsequently calling Play() will resume from the point in the animation when it was paused.
+      Pause<native><public>(): void
+
+      @experimental
+      # Begin or resume playback.
+      Play<native><public>(): void
+
+      @experimental
+      # Stop any ongoing animation, sets the animation path and rebases it relative to the actor's current transform. Does not start playing until you call Play().
+      SetKeyframes<native><public>(
+        RelativeKeyframes: []keyframed_movement_delta,
+        PlaybackMode: keyframed_movement_playback_mode
+      ): void
+
+      @experimental
+      # Stop and reset transform to the initial state. Subsequently calling Play() will begin the animation anew.
+      Stop<native><public>(?BlendOutTime: float = external {}): void
+    }
+
+    @experimental
+    # Represents a change in pose and scale over a duration.
+    keyframed_movement_delta<native><public> := class<final><concrete> {
+      @editable_number(float) { MinValue := option { 0.000000 } }
+      # Duration of this keyframe in seconds.
+      Duration<native><public>: float = external {}
+
+      @editable
+      # Easing function to use for playback.
+      Easing<native><public>: easing_function = external {}
+
+      @editable
+      # Represents a change in the transform relative to the previous keyframe or initial animation position.
+      Transform<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+    }
+
+    @experimental
+    # Controls how the animation plays back.
+    keyframed_movement_playback_mode<native><public> := class<abstract><computes><epic_internal> {}
+
+    @experimental
+    # `Linear` animations move at a constant speed.
+    linear_easing_function<native><public> := class<final><concrete><computes>(cubic_bezier_easing_function) {
+      X0<override>: float = external {}
+
+      X1<override>: float = external {}
+
+      Y0<override>: float = external {}
+
+      Y1<override>: float = external {}
+    }
+
+    @experimental
+    # Play once and repeat indefinitely.
+    loop_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
+
+    @experimental
+    # Play once and stop.
+    oneshot_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
+
+    @experimental
+    # Play continuously reversing direction at each end.
+    pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
+  }
+
+  @experimental
+  # Create a collision_profile. See the collision_profiles module.
+  MakeCollisionProfile<native><public>(
+    channel_type: subtype(collision_channel),
+    ChannelToInteraction: collision_channel_to_interaction
+  )<converges>: collision_profile
+
+  using { /Verse.org/Colors }
+  using { /Verse.org/Simulation/Tags }
+  using { /Verse.org/SpatialMath }
+  @experimental
+  # A `capsule_light_component` emits light in all directions into the scene from a capsule shaped source with a specified radius and length. A radius and length of 0 makes it a point light. You can use these
+  # to simulate any kind of light sources that emit in all directions and need an elongated source shape, such as a long light bulb.
+  capsule_light_component<native><public> := class<final>(light_component) {
+    # The bounds of the light's visible influence. This clamping of the light's influence is not physically correct but very important for performance,
+    # larger lights cost more. The light falloff is based on Inverse Square law. Towards the tail end of the AttenuationRadius,
+    # there is an additional smoothing factor to fade out the light contribution to 0 to avoid a hard cutoff.
+    var AttenuationRadius<public>: ?float = external {}
+
+    # Set the visible light intensity emitted in SI unit Candela./nSpecified before ColorFilter (which multiplies each color component after the intensity calculation and can change the effective intensity of the light).
+    var Intensity<public>: float = external {}
+
+    # Length of the source capsule shape in centimeters along the local Z axis. Note that light shapes which intersect shadow casting geometry can cause shadowing artifacts.
+    var SourceLength<public>: float = external {}
+
+    # Radius of the source capsule shape in centimeters around the local Z axis. Note that light shapes which intersect shadow casting geometry can cause shadowing artifacts.
+    var SourceRadius<public>: float = external {}
+  }
+
+  @experimental
+  # An axis-aligned collision box.
+  collision_box<native><public> := class(collision_element) {
+    var Extents<public>: (/Verse.org/SpatialMath:)vector3
+  }
+
+  @experimental
+  # A collision capsule aligned along the Z axis.
+  collision_capsule<native><public> := class(collision_element) {
+    # The length of the capsule's cylindrical section (distance between the two end cap centers)
+    var Length<public>: float = external {}
+
+    # The radius of the capsule
+    var Radius<public>: float = external {}
+  }
+
+  @experimental
+  # Every volume has a collision channel as part of its collision_profile. It is used to determine how two volumes interact. See collision_profile.
+  collision_channel<native><public> := class<concrete><epic_internal> {}
+
+  @experimental
+  # An alias for the function type used to map a collision_channel to a collision_interaction used by  collision_profile.
+  collision_channel_to_interaction<public> := type { _(: collision_channel)<computes>: collision_interaction }
+
+  # Module import path: /Verse.org/SceneGraph/collision_channels
+  # The set of built-in collision_channels. This is a closed set for now.
+  (/Verse.org/SceneGraph:)collision_channels<public> := module {
+    @experimental
+    avatar<native><public> := class(collision_channel) {}
+
+    @experimental
+    camera<native><public> := class(collision_channel) {}
+
+    @experimental
+    dynamic<native><public> := class(collision_channel) {}
+
+    @experimental
+    physics<native><public> := class(collision_channel) {}
+
+    @experimental
+    stationary<native><public> := class(collision_channel) {}
+
+    @experimental
+    visibility<native><public> := class(collision_channel) {}
+  }
+
+  @experimental
+  # Base class for collision_volumes that consist of a single volume with a single collision_profile and collision_material for the whole volume. This covers most volume types used in queries and physics, except compound types like a mesh. A query will always return an element rather than a general volume. For example when colliding with a mesh, the element will be a collision_triangle, which is a collision_element and has a single material, rather than a collision_triangle_mesh, which is not an element and has a material palette.
+  collision_element<native><public> := class<abstract>(collision_volume) {
+    @experimental
+    # The collision_profile for this volume.
+    var CollisionProfile<public>: collision_profile = external {}
+  }
+
+  @experimental
+  # Specifies how a collision volume pair should interact. See collision_profile.
+  collision_interaction<native><public> := enum {
+    # The pair will be detected by Overlap and Sweep queries. The pair will collide in the physics simulation.
+    Block
+
+    # The pair will not be detected by Overlap and Sweep queries. The pair will not collide in the physics simulation.
+    Ignore
+
+    # The pair will be detected by Overlap and Sweep queries. The pair will not collide in the physics simulation.
+    Overlap
+  }
+
+  @experimental
+  # A collision point.
+  collision_point<native><public> := class<concrete>(collision_element) {}
+
+  @experimental
+  # A collision profile determines how a volume interacts with other volumes for Overlap queries, Sweep queries, and physics simulation. When two volumes are being tested to see how they interact, the algorithm looks like this:
+  #    GetInteraction(A:collision_profile, B:collision_profile):collision_interaction =
+  #        InteractionA = B.GetChannelInteraction(A.Channel)
+  #        InteractionB = A.GetChannelInteraction(B.Channel)
+  #        return Min(InteractionA, InteractionB)
+  collision_profile<native><public> := class<concrete> {
+    # The collision channel for the owning object.
+    Channel<native><public>: collision_channel = external {}
+
+    # How the owning object should interact with other objects.GetChannelInteraction is a function which maps a collision_channel to a collision_interaction. It can be implemented as an simple sequence of if statements. For example, to block all channels except camera:
+    #     BlockAllIgnoreCamera(Channel:collision_channel)<computes>:collision_interaction =
+    #         if (collision_channels.camera[Channel]):
+    #             return collision_interaction.Ignore
+    #         return collision_interaction.Block
+    #     MyProfile<public>:collision_profile = MakeCollisionProfile(collision_channels.dynamic, BlockAllIgnoreCamera)
+    GetChannelInteraction<native><public>: collision_channel_to_interaction = external {}
+  }
+
+  # Module import path: /Verse.org/SceneGraph/collision_profiles
+  # A set of useful collision profiles. New profiles can be created in Verse code
+  (/Verse.org/SceneGraph:)collision_profiles<public> := module {
+    @experimental
+    # Dynamic collision channel, Block all channels
+    DynamicBlockAll<public>: collision_profile = external {}
+
+    @experimental
+    # Dynamic collision channel, Ignore all channels
+    DynamicIgnoreAll<public>: collision_profile = external {}
+
+    @experimental
+    # Dynamic collision channel, Overlap all channels
+    DynamicOverlapAll<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Block all channels
+    StationaryBlockAll<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Block all channels except visibility (used for e.g., invisible wall, glass)
+    StationaryBlockVisible<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Ignore all channels
+    StationaryIgnoreAll<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Overlap all channels
+    StationaryOverlapAll<public>: collision_profile = external {}
+
+    @experimental
+    # Visibility collision channel, Overlap all channel (used for e.g., visibility testing)
+    VisibilityOverlapAll<public>: collision_profile = external {}
+  }
+
+  @experimental
+  # A collision sphere.
+  collision_sphere<native><public> := class(collision_element) {
+    # The radius of the sphere
+    var Radius<public>: float = external {}
+  }
+
+  @experimental
+  # Collision Volumes represent the collision shapes of meshes. They can be detected by Overlap and Sweep queries and generate collisions in the physics simulation.
+  collision_volume<native><public> := class<abstract> {
+    # Get the transform of this volume in the space of its owner (usually a component on an entity)
+    GetLocalTransform<public>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
+
+    # Set the transform of this volume in the space of its owner (usually a component on an entity)
+    SetLocalTransform<public>(NewLocalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: void = external {}
+
+    @experimental
+    # Enable/disable collision on this volume.
+    var Collideable<public>: logic = external {}
+
+    @experimental
+    # Enable/disable spatial queries against this volume.
+    var Queryable<public>: logic = external {}
+  }
+
+  @experimental
+  # Base class for authoring logic and data in the SceneGraph. Using components you
+  # can author re-usable building blocks of logic and data which can then be added to
+  # entities in the scene.
+  #
+  # Components are a very low level building block which can be used in many ways.
+  # For example:
+  #   * Exposing engine level concepts like mesh or sound
+  #   * Adding gameplay capabilities like damage or interaction
+  #   * Storing an inventory for a character in the game
+  #
+  # As components are generic there is no specific way that they must be used.
+  # It is up to the needs of your experience if you use one big game component
+  # or if you break up logic into many small components.
+  #
+  # Classes deriving from component must also specify `<final_super>` to be added
+  # to entities. This ensures the class will always derive directly from `component`.
+  # Further subclassing of the initial derived component is allowed and does not require
+  # specifying `<final_super>` on the derived classes.
+  #
+  # Only one instance of a component from each subclass group can be added to an entity
+  # at a time. For example, given this group of components, only one light_component can
+  # exist on a single entity. To create multiple lights you should use multiple entities.
+  #
+  #   light_component             := class<final_super>(component){}
+  #   capsule_light_component     := class<final>(light_component){}
+  #   directional_light_component := class<final>(light_component){}
+  #   spot_light_component        := class<final>(light_component){}
+  #   sphere_light_component      := class<final>(light_component){}
+  #   rect_light_component        := class<final>(light_component){}
+  #
+  # ==============================================================================
+  # Component Lifetime
+  #
+  #   Components move through a series of lifetime functions as they are added
+  #   to entities, added to the scene, and begin running in the simulation. Components
+  #   should override these methods to perform setup and run their simulation.
+  #
+  #   As a component shuts down it will then move through shutdown version of these
+  #   functions, giving users the opportunity to clean up any retained state on the
+  #   component before it is disposed
+  # .
+  #   Lifetime Methods:
+  #      OnAddedToScene
+  #        OnBeginSimulation -> OnSimulate<suspends>
+  #        OnEndSimulation
+  #      OnRemovingFromScene
+  # ==============================================================================
+  component<native><public> := class<abstract><unique><castable><final_super_base> {
+    @experimental
+    # The parent entity of this component.
+    #   * Components must have a parent entity pointer provided when being constructed.
+    #   * Components cannot be moved between parents.
+    Entity<native><public>: entity
+
+    @experimental
+    # Succeeds if the component is currently in the scene.
+    #   * After `OnAddedToScene` is called this call succeeds.
+    #   * After `OnRemovingFromScene` is called this call fails.
+    IsInScene<native><final><public>()<transacts><decides>: void
+
+    @experimental
+    # Succeeds if the component is currently simulating.
+    #   * After `OnBeginSimulation` is called this call succeeds.
+    #   * After `OnEndSimulation` is called this call fails.
+    IsSimulating<native><final><public>()<transacts><decides>: void
+
+    @experimental
+    # Called when the component is added to the scene by parenting it under the simulation entity or another entity already in the scene.
+    #   * Querying for components in the scene is valid after this phase completes.
+    OnAddedToScene<native><native_callable><protected>(): void
+
+    @experimental
+    # Called when the component begins simulating within the scene.
+    #   * Use this to set up TickEvent callbacks or other setup that must be guaranteed to complete immediately.
+    #   * `OnAddedToScene` is guaranteed to run before `OnBeginSimulation`.
+    OnBeginSimulation<native><native_callable><protected>(): void
+
+    @experimental
+    # Called when the component ends simulation within the scene.
+    #   * Simulation ends on a component when the experience resets, the parent entity is removed from the scene.
+    #   * Cached TickEvents cancelables should be canceled in `OnEndSimulation`.
+    #   * `OnSimulate` task will be canceled before `OnEndSimulation` is called.
+    #   * `OnEndSimulation` is only called on components that have already had `OnBeginSimulation` called.
+    OnEndSimulation<native><native_callable><protected>(): void
+
+    @experimental
+    # Respond to an event being propagated through the scene graph. Returns if the event is consumed, in which case the event will not be passed to the next entity, depending on how the event is being sent through the hierarchy.
+    OnReceive<native><native_callable><public>(SceneEvent: scene_event): logic
+
+    @experimental
+    # Called when the component is about to be removed from the scene.
+    #   * Components are removed from a scene when the parent entity is removed from the scene.
+    #   * `OnRemovingFromScene` is only called on components that have already had `OnAddedToScene` called.
+    OnRemovingFromScene<native><native_callable><protected>(): void
+
+    @experimental
+    # Called when the component begins simulating within the scene.
+    #   * Use this to add asynchronous/suspends update logic for a component.
+    #   * `OnBeginSimulation` is guaranteed to run before `OnSimulate`.
+    #   * `OnSimulate` will be cancelled before `OnEndSimulation`
+    OnSimulate<native_callable><protected>()<suspends>: void = external {}
+
+    @experimental
+    # Removes the component from the entity.
+    #   * Removed components are removed from the scene and can only be added back to the same entity.
+    #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
+    RemoveFromEntity<native><final><public>(): void
+
+    @experimental
+    # Set callbacks to `TickEvents.PrePhysics` and `TickEvents.PostPhysics` to receive per-frame updates before and after physics is updated on your object.
+    var<private> TickEvents<protected>: tick_events = external {}
+  }
+
+  @experimental
+  # A `directional_light_component` simulates light that is being emitted from a source that is infinitely far away. This means that all shadows cast by this light will be parallel, making this the ideal choice for simulating sunlight.
+  directional_light_component<native><public> := class<final>(light_component) {
+    # Intensity of the light hitting the surface. In Lux (Lumen per square meter).
+    var Illuminance<public>: float = external {}
+
+    # Angle subtended by light source in degrees (also known as angular diameter). Defaults to 0.5357 which is the angle for our sun.
+    var SourceAngleDegrees<public>: float = external {}
+  }
+
+  @experimental
+  # Entities are the base object in the SceneGraph.
+  #   * Objects in experiences are constructed of one or more entities.
+  #   * Entities are hierarchical. You can query your parent using `GetParent` and add child entities using `AddEntities`.
+  #   * Behavior is added to entities through `component`s. You can add new components using `AddComponents`.
+  #   * The structure and content of entities is dynamic and be changed at any time through your experience
+  # .
+  # ==============================================================================
+  # Deriving from entity
+  #
+  #   In the SceneGraph system a class that derives from `entity` is also known as a prefab. Prefabs are useful when you
+  #   want to spawn/re-use a collection of entities and components many times within your game. Primarily prefabs are
+  #   authored through the editor, with their Verse classes generated as part of the build into the projects
+  #   Assets.digest.verse file.
+  #
+  #   While you can create base prefabs for common game object types like a vehicle or character, we highly recommended
+  #   that you do not add code directly to the entity class, and instead keep logic in components. Keeping logic and data in
+  #   components allows you to restructure your prefabs throughout production of your experience, without needing to massively
+  #   refactor your class structure.
+  entity<native><public> := class<concrete><unique><transacts><castable> {
+    @experimental
+    # Adds the provided components to the entity.
+    #   * If a component is not allowed to be added to this entity it is skipped.
+    #   Note: When called during the Initialize, AddedToScene or BeginSimulation phase, it will make sure the added component has achieved the corresponding phase.
+    #   * Components are added following these rules:
+    #       1. All components are added to the entity child list.
+    #       2. All components have `OnAddedToScene` called (if this entity is in the scene).
+    #       3. All components have `OnBeginSimulation` called (if this entity is simulating).
+    AddComponents<native><final><public>(Components: []component): void
+
+    @experimental
+    # Adds the provided entities as children of this entity.
+    #   * If child entity already has a parent, removes the entity from its current parent and adds it to the new one.
+    #   * Added child entities will move through their lifetime methods until they match the state of the new parent.
+    AddEntities<native><final><public>(NewChildEntities: []entity): void
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 3200 }
+    # Succeeds and returns the child component of type `component_type` if it exists and is accessible from the calling context.
+    #   Note: When called during the Initialize, AddedToScene or BeginSimulation phase, it will make sure the returned component has achieved the corresponding phase.
+    #   Fails if no component of `component_type` exists or can be accessed.
+    GetComponent<native><final><public>(component_type: castable_subtype(component))<transacts><decides>: component_type
+
+    @experimental
+    # Returns the child components belonging to this entity which are accessible from the calling context.
+    GetComponents<native><final><public>()<transacts>: []component
+
+    @experimental
+    # Returns the child entities belonging to this entity which are accessible from the calling context.
+    #   * This method only gets the direct entity children. To query multiple levels down the entity structure use
+    #     the Find* query methods instead.
+    GetEntities<native><final><public>()<transacts>: []entity
+
+    @experimental
+    # Returns the parent entity of this entity.
+    #   * The parent entity controls the lifetime of its child entities and components. When an entity
+    #     is removed from the scene, all its child entities and components will be removed as well.
+    #   * Method fails if there is currently no parent entity.
+    GetParent<native><final><public>()<transacts><decides>: entity
+
+    @experimental
+    # Removes this entity from its parent. This is used to remove entities from the scene.
+    #   * Components on this entity and its children will run through `OnEndSimulation` -> `OnRemovingFromScene`.
+    #   * Entity can be added back later by using `NewParent.AddEntities`.
+    RemoveFromParent<native><final><public>(): void
+
+    @experimental
+    # Send a scene event to only this entity. Returns true if the event was consumed.
+    SendDirect<final><native><public>(SceneEvent: scene_event): logic
+
+    @experimental
+    # Send a scene event to this entity and all of its descendants. OnReceive will be invoked for each entity. Consuming the event at any entity will halt propagation down that subtree. Entities are traversed in breadth-first order, i.e. each layer is evaluated before moving deeper. Returns true if the event was consumed.
+    SendDown<final><native><public>(SceneEvent: scene_event): logic
+
+    @experimental
+    # Send a scene event to this entity and its ancestors. Events do not propagate beyond the Simulation Entity. OnReceive will be invoked for each entity. Consuming the event will halt propagation to the next ancestor. Returns true if the event was consumed.
+    SendUp<final><native><public>(SceneEvent: scene_event): logic
+  }
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3200 }
+  # class to provide alternative origin to the 'transform_component' as an entity
+  entity_origin<native><public> := class<epic_internal>(origin) {
+    @editable
+    Entity<native><public>: entity
+
+    GetTransform<override>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
+  }
+
+  @experimental
+  # Reference type to editor defined prefab. Only generated digest code should reference this type.
+  entity_prefab<native><public> := class<computes><epic_internal> {}
+
+  @experimental
+  # Used to subscribe a callback or await an event based callback '
+  #
+  # IMPORTANT: You must keep a pointer on your component to the returned `cancelable`. Otherwise the GC will eventually clean up your subscription and your callback will stop being invoked.
+  execution_event<native><public> := class<epic_internal>(listenable(tuple())) {
+    # Suspends the current task until resumed by a matching call to `signalable.Signal`.
+    Await<native><override>()<suspends>: tuple()
+
+    @experimental
+    # Subscribe a callback function to this event.
+    Subscribe<native><override>(Callback: type { _(): void })<transacts>: cancelable
+  }
+
+  @experimental
+  # Users to subscribe to, or await on, a DeltaTime based callback from one of the phases in a component's `TickEvents` object.'
+  #
+  # IMPORTANT: You must keep a pointer on your component to the returned `cancelable`. Otherwise the GC will eventually clean up your subscription and your callback will stop being invoked.
+  execution_listenable<native><public> := class<epic_internal>(listenable(float)) {
+    # Suspends the current task until resumed by a matching call to `signalable.Signal`. Returns the event `payload`.
+    Await<native><override>()<suspends>: float
+
+    @experimental
+    # Subscribe a callback function to this TickEvent phase. The input parameter to your function (DeltaTime) is the time that has passed between the last update and the current update.
+    Subscribe<native><override>(Callback: type { _(: float): void })<transacts>: cancelable
+  }
+
+  @experimental
+  # A range with a minimum and maximum value. For a value to fall inside of this range, the min value must be less than or equal to the max value.
+  float_range<native><public> := struct<concrete> {
+    @editable
+    Maximum<native><public>: float = external {}
+
+    Minimum<native><public>: float = external {}
+  }
+
+  using { /Verse.org/Simulation }
+  @experimental
+  # Used to handle general interaction.
+  interactable_component<native><public> := class<final_super>(component, enableable) {
+    # Returns whether the specified agent can interact.
+    CanInteract<native><native_callable><public>(Agent: agent)<computes><decides><reads>: void
+
+    # Event fires when an interaction has ended before completing successfully. Sends the formerly interacting agent. interactable_component cannot be canceled, this event is provided for subclasses to fire where appropriate.
+    CanceledEvent<native><public>: listenable(agent) = external {}
+
+    # Disable interaction with the component. Disabled components do not provide interaction prompts.
+    Disable<native><override>(): void
+
+    # Enable interaction with the component.
+    Enable<native><override>(): void
+
+    InteractFinishedEvent<native><public>: listenable(agent) = external {}
+
+    # Returns an appropriate message to display to players to communicate the current state of the interactable.
+    InteractMessage<native><native_callable><public>(Agent: agent)<computes><decides><reads>: message
+
+    # Succeeds if the component is enabled, fails if it’s disabled.
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    # Attempt to start an interaction. Fails if the agent does not pass the CanInteract function.
+    Start<native><public>(Agent: agent)<transacts><decides>: void
+
+    # Event fires when an a successful interaction starts. Sends the interacting agent. InteractDuration at or below 0 makes this event identical to InteractSucceededEvent.
+    StartedEvent<native><public>: listenable(agent) = external {}
+
+    # Event fires when an interaction has completed successfully. Sends the formerly interacting agent. InteractDuration at or below 0 makes this event identical to InteractStartedEvent.
+    SucceededEvent<native><public>: listenable(agent) = external {}
+  }
+
+  @experimental
+  # Base class for light components in the SceneGraph.
+  #
+  # Dependencies:
+  #   * `transform_component` on the entity positions the light.
+  #
+  # Examples of components implementing `light_component`:
+  #   * `directional_light_component`
+  #   * `capsule_light_component`
+  #   * `sphere_light_component`
+  #   * `rect_light_component`
+  #   * `spot_light_component`
+  light_component<native><public> := class<abstract><final_super><epic_internal>(component, enableable) {
+    # Disables rendering of this light.
+    Disable<native><override>(): void
+
+    # Enables rendering of this light.
+    Enable<native><override>(): void
+
+    # Succeeds if the component is enabled, fails if it's disabled.
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    # Whether the light should cast any shadows.
+    var CastShadows<public>: logic = external {}
+
+    # Set the filter color of the light. This acts as a colored filter in front of the light source. Note that this can change the light's effective intensity. In normalized range 0-1.
+    var ColorFilter<public>: color = external {}
+
+    # Multiplier on diffuse lighting. Any value besides 1.0 is not physical. 0.0 means no diffuse contribution from this light.
+    var DiffuseScale<public>: float = external {}
+
+    # Multiplier on specular highlights. Can be used to artistically remove highlights mimicking polarizing filters or photo touch up. Any value besides 1.0 is not physical. 0.0 means no specular contribution from this light.
+    var SpecularScale<public>: float = external {}
+  }
+
+  @experimental
+  # Used to render a `mesh` at the location of this entity. A mesh is a set of polygons that can be used to represent shapes in the world such as:
+  #   * foliage and terrain decorations
+  #   * movers (for example, doors and lifts)
+  #   * procedurally created buildings
+  #
+  # Dependencies:
+  #   * `transform_component` on the entity positions the mesh.
+  mesh_component<native><public> := class<final_super><epic_internal>(component, enableable) {
+    @experimental
+    # Disables rendering of this mesh.
+    Disable<native><override>(): void
+
+    @experimental
+    # Enables rendering of this mesh.
+    Enable<native><override>(): void
+
+    @experimental
+    # Triggered at the beginning of each tick when another entity first overlaps this entity.
+    EntityEnteredEvent<native><public>: listenable(entity) = external {}
+
+    @experimental
+    # Triggered at the beginning of each tick when another entity is no longer overlapping this entity
+    EntityExitedEvent<native><public>: listenable(entity) = external {}
+
+    @experimental
+    # Succeeds if the component is enabled, fails if it's disabled.
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    @experimental
+    # Enable/disable collision on this mesh. If enabled, meshes may collide in the physics simulation.
+    var Collideable<public>: logic = external {}
+
+    @experimental
+    # Enable/disable spatial queries against this mesh. Disabling this field will also disable EntityEnteredEvent/EntityExitedEvent.
+    var Queryable<public>: logic = external {}
+
+    # Enable/disable visibility of this mesh.
+    var Visible<public>: logic = external {}
+  }
+
+  @experimental
+  # Interface to provide alternative origin to an entity which is defaulted to its parent. See `transform_component`
+  origin<native><public> := interface<epic_internal> {
+    GetTransform<native_callable><public>()<transacts>: (/Verse.org/SpatialMath:)transform
+  }
+
+  @experimental
+  # The results of an overlap query. See entity.FindOverlapHits(). We will get one overlap_hit for each intersection of any volume in SourceVolumes with any other volume.
+  overlap_hit<native><public> := struct {
+    # The source component and volume (query input). For compound inputs (like an entity hierarchy) this will be a component/volume in that hierarchy. The SourceTransform is the transform of SourceVolume used for the overlap test. For single volume inputs like a sphere, the Source volume and transform are just the inputs to the overlap test, and the component is false.
+    SourceComponent<native><public>: ?component
+
+    # The source volume transform
+    SourceGlobalTransform<native><public>: (/Verse.org/SpatialMath:)transform
+
+    # The source volume (query input)
+    SourceVolume<native><public>: collision_volume
+
+    # The component that was hit by SourceVolume
+    TargetComponent<native><public>: component
+
+    # The volume that was hit by SourceVolume
+    TargetVolume<native><public>: collision_element
+  }
+
+  @experimental
+  # Used to spawn a `particle_system` at the location of this entity. The `particle_system` will simulate while the `particle_system_component` is in the scene.
+  #
+  # Dependencies:
+  #   * `transform_component` on the entity positions the `particle_system`.
+  particle_system_component<native><public> := class<final_super><epic_internal>(component, enableable) {
+    # Disables the simulation and rendering of this `particle_system`.
+    Disable<override><native>(): void
+
+    # Enables the simulation and rendering of this `particle_system`.
+    Enable<override><native>(): void
+
+    # Succeeds if the component is enabled, fails if it’s disabled.
+    IsEnabled<override><native>()<transacts><decides>: void
+
+    Play<native><public>(): void
+
+    Stop<native><public>(): void
+
+    @editable
+    # Controls if the `particle_system_component` should play the simulation automatically when added to the scene, or when enabled from a disabled state.
+    var<private> AutoPlay<native><public>: logic = external {}
+
+    @editable
+    # Controls if the `particle_system_component` should start enabled.
+    var<private> Enabled<native><public>: logic = external {}
+  }
+
+  @experimental
+  # A `rect_light_component` emits light into the scene from a rectangular plane with a specified width and height. You can use these
+  # to simulate any kind of light sources that have rectangular areas, such as televisions or monitor screens, overhead lighting
+  # fixtures, or wall sconces.
+  rect_light_component<native><public> := class<final>(light_component) {
+    # The bounds of the light's visible influence, in centimeters. This clamping of the light's influence is not physically correct but very important for performance,
+    # larger lights cost more. The light falloff is based on Inverse Square law. Towards the tail end of the AttenuationRadius,
+    # there is an additional smoothing factor to fade out the light contribution to 0 to avoid a hard cutoff.
+    var AttenuationRadius<public>: ?float = external {}
+
+    # The angle of the barn door in degrees attached to the light source rect. Clamped between 0.0 and 90.0 degrees.
+    var BarnDoorAngleDegrees<public>: float = external {}
+
+    # The length of the barn door attached to the light source rect, in centimeters.
+    var BarnDoorLength<public>: float = external {}
+
+    # Set the visible light intensity emitted in SI unit Candela./nSpecified before ColorFilter (which multiplies each color component after the intensity calculation and can change the effective intensity of the light).
+    var Intensity<public>: float = external {}
+
+    # The height of the light source rect, in centimeters. Note that light source's shapes which intersect shadow casting geometry can cause shadowing artifacts.
+    var SourceHeight<public>: float = external {}
+
+    # The width of the light source rect, in centimeters. Note that light source shapes which intersect shadow casting geometry can cause shadowing artifacts.
+    var SourceWidth<public>: float = external {}
+  }
+
+  @experimental
+  # An event which can be sent through the scene graph.
+  scene_event<native><public> := interface {}
+
+  @experimental
+  sound_component<native><public> := class<abstract><final_super><epic_internal>(component, enableable) {
+    # Disable the sound component.
+    Disable<override><native>(): void
+
+    # Enable the sound component.
+    Enable<override><native>(): void
+
+    # Succeeds if the sound component is enabled, fails if it is disabled.
+    IsEnabled<override><native>()<transacts><decides>: void
+
+    # Play the sound asset
+    Play<native><public>(): void
+
+    # Stop the sound asset
+    Stop<native><public>(): void
+
+    @editable
+    var<private> AutoPlay<native><public>: logic = external {}
+
+    @editable
+    var<private> Enabled<native><public>: logic = external {}
+  }
+
+  @experimental
+  # A `sphere_light_component` emits light in all directions into the scene from a spherical source shape with a specified radius. A radius of 0 makes it a point light. You can use these
+  # to simulate any kind of light sources that emit in all directions, such as a light bulb.
+  sphere_light_component<native><public> := class<final>(light_component) {
+    # The bounds of the light's visible influence, in centimeters. This clamping of the light's influence is not physically correct but very important for performance,
+    # larger lights cost more. The light falloff is based on Inverse Square law. Towards the tail end of the AttenuationRadius,
+    # there is an additional smoothing factor to fade out the light contribution to 0 to avoid a hard cutoff.
+    var AttenuationRadius<public>: ?float = external {}
+
+    # Set the visible light intensity emitted in SI unit Candela./nSpecified before ColorFilter (which multiplies each color component after the intensity calculation and can change the effective intensity of the light).
+    var Intensity<public>: float = external {}
+
+    # Radius of the source shape, in centimeters. Note that light shapes which intersect shadow casting geometry can cause shadowing artifacts.
+    var SourceRadius<public>: float = external {}
+  }
+
+  @experimental
+  # A `spot_light_component` emits light from a single point in a cone shape. The shape of the light is defined by two cones: the `InnerConeAngleDegrees`
+  # and `OuterConeAngleDegrees`. Within the `InnerConeAngleDegrees` the light achieves full brightness. As you go from the extent of the inner radius to the
+  # extents of the `OuterConeAngleDegrees` a falloff takes place, creating a penumbra, or softening around the `spot_light_component`'s disc of
+  # illumination. The Radius of the light defines the length of the cones. More simply, this will work like a flash light or stage can light.
+  spot_light_component<native><public> := class<final>(light_component) {
+    # The bounds of the light's visible influence, in centimeters. This clamping of the light's influence is not physically correct but very important for performance,
+    # larger lights cost more. The light falloff is based on Inverse Square law. Towards the tail end of the AttenuationRadius,
+    # there is an additional smoothing factor to fade out the light contribution to 0 to avoid a hard cutoff.
+    var AttenuationRadius<public>: ?float = external {}
+
+    # The light's inner cone shaped angle in degrees. Clamped between 0.0 and 80.0.
+    var InnerConeAngleDegrees<public>: float = external {}
+
+    # Set the visible light intensity emitted in SI unit Candela./nSpecified before ColorFilter (which multiplies each color component after the intensity calculation and can change the effective intensity of the light).
+    var Intensity<public>: float = external {}
+
+    # The light's outer cone shaped angle in degrees. Clamped between 1.0 and 80.0.
+    var OuterConeAngleDegrees<public>: float = external {}
+
+    # Radius of the source shape, in centimeters. Note that light shapes which intersect shadow casting geometry can cause shadowing artifacts.
+    var SourceRadius<public>: float = external {}
+  }
+
+  @experimental
+  # The results of a sweep query. See entity.FindSweepHits(). We will get one sweep_hit for each intersection of any volume in SourceVolumes with any other volume.
+  sweep_hit<native><public> := struct {
+    # If TargetVolume is a polygonal object (mesh, convex hull, etc.) and the contact point is on an edge or vertex, this is the most-opposing face normal of the faces that share that edge or vertex. Otherwise it is the same as HitNormal.
+    ContactFaceNormal<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # The normal on TargetVolume at the HitPosition.
+    ContactNormal<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # The point of contact between SourceVolume and TargetVolume.
+    ContactPosition<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # The source component and volume (query input). For compound inputs (like an entity hierarchy) this will be a component/volume in that hierarchy. The SourceGlobalTransform is the transform of SourceVolume at the start of the sweep. For single volume inputs like a sphere, the volume and transform are just the inputs to the sweep, and the component is false.
+    SourceComponent<native><public>: ?component
+
+    # The Distance along the sweep at which SourceVolume touches TargetVolume.
+    SourceHitDistance<native><public>: float = external {}
+
+    # The world-space translation (relative to SourceStartGlobalTransform) of SourceVolume when it touches TargetVolume.
+    SourceHitTranslation<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # The source volume transform at the start of the sweep.
+    SourceStartGlobalTransform<native><public>: (/Verse.org/SpatialMath:)transform
+
+    # The source volume (query input).
+    SourceVolume<native><public>: collision_volume
+
+    # The component that was hit by SourceVolume.
+    TargetComponent<native><public>: component
+
+    # The volume that was hit by SourceVolume.
+    TargetVolume<native><public>: collision_element
+  }
+
+  @experimental
+  # Used to add tags to an entity. Tagged entities can then be queried using `entity.FindDescendantEntitiesWithTag` and `entity.FindAncestorEntitiesWithTag`.
+  #   * Finding entities from the simulation entity for tagged entities only considers any `tag_component` that has run `OnAddedToScene`.
+  tag_component<native><public> := class<final><final_super>(component, tag_view) {
+    # Adds a tag to this component. Returns `true` if the tag was not present before being added.
+    AddTag<native><public>(TagToAdd: tag)<transacts>: logic
+
+    # Determine if TagToCheck is present in this container, also checking against parent tags {"A.1"}.Has("A") will return True, {"A"}.Has("A.1") will return False If TagToCheck is not Valid it will always return False.
+    Has<native><override>(TagToCheck: tag)<computes><decides><reads>: void
+
+    # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
+    HasAll<native><override>(InTags: []tag)<computes><decides><reads>: void
+
+    # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
+    HasAny<native><override>(InTags: []tag)<computes><decides><reads>: void
+
+    # Removes a tag from this component. Returns `true` if the tag was present before being removed.
+    RemoveTag<native><public>(TagToRemove: tag)<transacts>: logic
+  }
+
+  @experimental
+  # Describes discrete phases of a frame update. Subscribe to members of the tick_events object to run code before or after the physics system has updated your object, allowing you to affect or react to these updates.
+  tick_events<native><public> := class<epic_internal> {
+    # Listen `PostPhysics` to run your code after the physics system has updated your object this frame.
+    PostPhysics<native><public>: execution_listenable = external {}
+
+    # Listen `PrePhysics` to run your code before the physics system has updated your object this frame.
+    PrePhysics<native><public>: execution_listenable = external {}
+  }
+
+  @experimental
+  # Stores the transforms for an entity, which are used to position the entity.
+  transform_component<native><public> := class<final><final_super>(component) {
+    # Returns the global transform of the entity.
+    GetGlobalTransform<native><public>()<transacts>: (/Verse.org/SpatialMath:)transform
+
+    # Sets the global transform of the entity.
+    SetGlobalTransform<native><public>(NewGlobalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: void
+
+    # Sets the local transform of the entity.
+    SetLocalTransform<native><public>(NewLocalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: void
+
+    @editable
+    # LocalTransform to its parent
+    var<private> LocalTransform<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+
+    # alternate origin than the default parent
+    var<private> Origin<native><public>: ?origin = external {}
+  }
+}
+
 Simulation<public> := module {
   # Returns the `session` corresponding to the current round.  The result can be used with `weak_map` to implement global variables.
   # Note: may be changed in a future release to return a single instance per game. Round-local behavior should not be relied upon.
@@ -707,12 +1787,12 @@ SpatialMath<public> := module {
   (Rotation: rotation).GetLocalUp<public>()<computes><reads>: vector3 = external {}
 
   @experimental
-  # Makes an `[]float` with three elements:
+  # Makes a `tuple(float, float, float)` with three elements:
   #  * *yaw* degrees of `rotation`
   #  * *pitch* degrees of `rotation`
   #  * *roll* degrees of `rotation`
   # using the conventions of `MakeRotationFromYawPitchRollDegrees`.
-  (Rotation: rotation).GetYawPitchRollDegrees<native><public>()<computes><reads>: []float
+  (Rotation: rotation).GetYawPitchRollDegrees<native><public>()<computes><reads>: tuple(float, float, float)
 
   @experimental
   # Makes a `rotation` by inverting `Rotation` such that `ApplyRotation(Rotation, Rotation.Invert())) = IdentityRotation`.

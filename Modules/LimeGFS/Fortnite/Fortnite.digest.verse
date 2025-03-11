@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.00-CL-40085084
+# Generated from build: ++Fortnite+Release-34.10-CL-40567068
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -488,9 +488,9 @@ Characters<public> := module {
 
 using { /Fortnite.com/AI }
 using { /Fortnite.com/Game }
-using { /UnrealEngine.com/Temporary/SceneGraph }
 using { /Verse.org/Assets }
 using { /Verse.org/Native }
+using { /Verse.org/SceneGraph }
 using { /Verse.org/Simulation }
 using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/Devices
@@ -906,6 +906,9 @@ Devices<public> := module {
     # Enable this object.
     Enable<override>(): void = external {}
 
+    # Hide the hologram used to preview the fully assembled device
+    HideHologram<public>(): void = external {}
+
     # Succeeds if the object is enabled, fails if it’s disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
 
@@ -923,6 +926,9 @@ Devices<public> := module {
 
     # Resets affected building actors to the state they were in at the start of the round.
     Reset<public>(Agent: agent): void = external {}
+
+    # Show the hologram used to preview the fully assembled device
+    ShowHologram<public>(): void = external {}
 
     # The amount of progress the device has made towards fully assembling (1.0) or fully disassembling (0.0).
     var<private> Progress<public>: float = external {}

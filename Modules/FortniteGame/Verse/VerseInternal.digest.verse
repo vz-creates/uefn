@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.10-CL-40567068
+# Generated from build: ++Fortnite+Release-34.20-CL-40965447
 #################################################
 
 using { /Verse.org/Native }
@@ -751,6 +751,64 @@ SceneGraph<public> := module {
   # Sets the origin of this entity, in the case the entity does not have a transform_component it will create one and set its origin. This method fails if it recognized dependency recursion.
   (InEntity: entity).SetOrigin<native><public>(NewOrigin: origin)<transacts><decides>: void
 
+  # Module import path: /Verse.org/SceneGraph/CollisionChannels
+  # The set of built-in collision_channels. This is a closed set for now.
+  CollisionChannels<public> := module {
+    @experimental
+    avatar<native><public> := class(collision_channel) {}
+
+    @experimental
+    camera<native><public> := class(collision_channel) {}
+
+    @experimental
+    dynamic<native><public> := class(collision_channel) {}
+
+    @experimental
+    physics<native><public> := class(collision_channel) {}
+
+    @experimental
+    stationary<native><public> := class(collision_channel) {}
+
+    @experimental
+    visibility<native><public> := class(collision_channel) {}
+  }
+
+  # Module import path: /Verse.org/SceneGraph/CollisionProfiles
+  # A set of useful collision profiles. New profiles can be created in Verse code
+  CollisionProfiles<public> := module {
+    @experimental
+    # Dynamic collision channel, Block all channels
+    DynamicBlockAll<public>: collision_profile = external {}
+
+    @experimental
+    # Dynamic collision channel, Ignore all channels
+    DynamicIgnoreAll<public>: collision_profile = external {}
+
+    @experimental
+    # Dynamic collision channel, Overlap all channels
+    DynamicOverlapAll<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Block all channels
+    StationaryBlockAll<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Block all channels except visibility (used for e.g., invisible wall, glass)
+    StationaryBlockVisible<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Ignore all channels
+    StationaryIgnoreAll<public>: collision_profile = external {}
+
+    @experimental
+    # Stationary collision channel, Overlap all channels
+    StationaryOverlapAll<public>: collision_profile = external {}
+
+    @experimental
+    # Visibility collision channel, Overlap all channel (used for e.g., visibility testing)
+    VisibilityOverlapAll<public>: collision_profile = external {}
+  }
+
   @experimental
   DefaultChannelToInteraction<epic_internal>(__dupe___unnamed_parameter_47: collision_channel)<computes>: collision_interaction = external {}
 
@@ -935,44 +993,20 @@ SceneGraph<public> := module {
     @experimental
     # Provides teleportation and simple keyframe-based animation for an entity. Animations play back in the Pre-Physics tick phase. When animating an entity with a parent_constraint, animation will be relative to the parent entity.
     keyframed_movement_component<native><public> := class<final><final_super>(component) {
-      @experimental
-      GetDuration<native><public>()<computes><decides><reads>: float
-
-      @experimental
       # Get the event that fires when the animations ends, failing if the animation is of infinite duration
-      GetOnFinishedEvent<public>()<computes><decides><reads>: listenable(tuple()) = external {}
+      FinishedEvent<native><public>: listenable(tuple()) = external {}
 
-      @experimental
-      # Get the event that fires when the animation is Paused.
-      GetOnPausedEvent<public>(): listenable(tuple()) = external {}
-
-      @experimental
-      # Get the event that fires when the animation begins or resumes Playing.
-      GetOnPlayedEvent<public>(): listenable(tuple()) = external {}
-
-      @experimental
-      # Get the event that fires when the animation is Stopped.
-      GetOnStoppedEvent<public>(): listenable(tuple()) = external {}
-
-      @experimental
       # Is there a valid set of playable keyframes?
       HasValidAnimation<native><public>()<computes><decides><reads>: void
 
-      @experimental
       # Is the animation paused?
       IsPaused<native><public>()<computes><decides><reads>: void
 
-      @experimental
       # Is the animation currently playing?
       IsPlaying<native><public>()<computes><decides><reads>: void
 
-      @experimental
       # Signaled when any keyframe is reached. (Keyframe:int, IsReversed:logic).
       KeyframeReachedEvent<native><public>: listenable(tuple(int, logic)) = external {}
-
-      @experimental
-      # Signaled when the entire animation is complete. This will only fire for `OneShot` animations.
-      MovementCompleteEvent<native><public>: listenable(tuple()) = external {}
 
       OnEndSimulationInternal<native><override>(): void
 
@@ -980,27 +1014,38 @@ SceneGraph<public> := module {
 
       OnRep__PendingCommand<native><epic_internal>(): void
 
-      @experimental
       # Pause movement. Subsequently calling Play() will resume from the point in the animation when it was paused.
       Pause<native><public>(): void
 
-      @experimental
+      # Get the event that fires when the animation is Paused.
+      PausedEvent<native><public>: listenable(tuple()) = external {}
+
       # Begin or resume playback.
       Play<native><public>(): void
 
-      @experimental
+      # Get the event that fires when the animation begins or resumes Playing.
+      PlayedEvent<native><public>: listenable(tuple()) = external {}
+
       # Stop any ongoing animation, sets the animation path and rebases it relative to the actor's current transform. Does not start playing until you call Play().
       SetKeyframes<native><public>(
         RelativeKeyframes: []keyframed_movement_delta,
         PlaybackMode: keyframed_movement_playback_mode
       ): void
 
-      @experimental
       # Stop and reset transform to the initial state. Subsequently calling Play() will begin the animation anew.
-      Stop<native><public>(?BlendOutTime: float = external {}): void
+      Stop<native><public>(BlendOutTime: float): void
+
+      # Stop and reset transform to the initial state. Subsequently calling Play() will begin the animation anew.
+      Stop<public>(): void = external {}
+
+      # Get the event that fires when the animation is Stopped.
+      StoppedEvent<native><public>: listenable(tuple()) = external {}
 
       @replicated("RepNotify")
       var _PendingCommand<native><epic_internal>: keyframed_movement_command_data = external {}
+
+      # Gets the duration in seconds this keyframed movement will take. Fails if a fixed duration is not known (ex: looping animations).
+      var<private> Duration<native><public>: ?float = external {}
     }
 
     @experimental
@@ -1074,13 +1119,6 @@ SceneGraph<public> := module {
     # Play continuously reversing direction at each end.
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
   }
-
-  @experimental
-  # Create a collision_profile. See the collision_profiles module.
-  MakeCollisionProfile<native><public>(
-    channel_type: subtype(collision_channel),
-    ChannelToInteraction: collision_channel_to_interaction
-  )<converges>: collision_profile
 
   using { /Verse.org/Native }
   using { /Verse.org/Simulation/Tags }
@@ -1361,28 +1399,6 @@ SceneGraph<public> := module {
   # An alias for the function type used to map a collision_channel to a collision_interaction used by  collision_profile.
   collision_channel_to_interaction<public> := type { _(: collision_channel)<computes>: collision_interaction }
 
-  # Module import path: /Verse.org/SceneGraph/collision_channels
-  # The set of built-in collision_channels. This is a closed set for now.
-  (/Verse.org/SceneGraph:)collision_channels<public> := module {
-    @experimental
-    avatar<native><public> := class(collision_channel) {}
-
-    @experimental
-    camera<native><public> := class(collision_channel) {}
-
-    @experimental
-    dynamic<native><public> := class(collision_channel) {}
-
-    @experimental
-    physics<native><public> := class(collision_channel) {}
-
-    @experimental
-    stationary<native><public> := class(collision_channel) {}
-
-    @experimental
-    visibility<native><public> := class(collision_channel) {}
-  }
-
   @experimental
   # Base class for collision_volumes that consist of a single volume with a single collision_profile and collision_material for the whole volume. This covers most volume types used in queries and physics, except compound types like a mesh. A query will always return an element rather than a general volume. For example when colliding with a mesh, the element will be a collision_triangle, which is a collision_element and has a single material, rather than a collision_triangle_mesh, which is not an element and has a material palette.
   collision_element<native><public> := class<abstract>(collision_volume) {
@@ -1420,47 +1436,11 @@ SceneGraph<public> := module {
 
     # How the owning object should interact with other objects.GetChannelInteraction is a function which maps a collision_channel to a collision_interaction. It can be implemented as an simple sequence of if statements. For example, to block all channels except camera:
     #     BlockAllIgnoreCamera(Channel:collision_channel)<computes>:collision_interaction =
-    #         if (collision_channels.camera[Channel]):
+    #         if (CollisionChannels.camera[Channel]):
     #             return collision_interaction.Ignore
     #         return collision_interaction.Block
-    #     MyProfile<public>:collision_profile = MakeCollisionProfile(collision_channels.dynamic, BlockAllIgnoreCamera)
+    #     MyProfile<public>:collision_profile = MakeCollisionProfile(CollisionChannels.dynamic, BlockAllIgnoreCamera)
     GetChannelInteraction<native><public>: collision_channel_to_interaction = external {}
-  }
-
-  # Module import path: /Verse.org/SceneGraph/collision_profiles
-  # A set of useful collision profiles. New profiles can be created in Verse code
-  (/Verse.org/SceneGraph:)collision_profiles<public> := module {
-    @experimental
-    # Dynamic collision channel, Block all channels
-    DynamicBlockAll<public>: collision_profile = external {}
-
-    @experimental
-    # Dynamic collision channel, Ignore all channels
-    DynamicIgnoreAll<public>: collision_profile = external {}
-
-    @experimental
-    # Dynamic collision channel, Overlap all channels
-    DynamicOverlapAll<public>: collision_profile = external {}
-
-    @experimental
-    # Stationary collision channel, Block all channels
-    StationaryBlockAll<public>: collision_profile = external {}
-
-    @experimental
-    # Stationary collision channel, Block all channels except visibility (used for e.g., invisible wall, glass)
-    StationaryBlockVisible<public>: collision_profile = external {}
-
-    @experimental
-    # Stationary collision channel, Ignore all channels
-    StationaryIgnoreAll<public>: collision_profile = external {}
-
-    @experimental
-    # Stationary collision channel, Overlap all channels
-    StationaryOverlapAll<public>: collision_profile = external {}
-
-    @experimental
-    # Visibility collision channel, Overlap all channel (used for e.g., visibility testing)
-    VisibilityOverlapAll<public>: collision_profile = external {}
   }
 
   @experimental
@@ -1949,12 +1929,12 @@ SceneGraph<public> := module {
 
     @experimental
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
-    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_73: accessor)<transacts>: float
+    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_71: accessor)<transacts>: float
 
     @experimental
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_72: accessor,
+      __dupe___unnamed_parameter_70: accessor,
       InRemainingDuration: float
     )<transacts>: void
 
@@ -1984,14 +1964,14 @@ SceneGraph<public> := module {
     @experimental
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
     GetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_75: accessor,
+      __dupe___unnamed_parameter_73: accessor,
       Agent: agent
     )<transacts>: float
 
     @experimental
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_74: accessor,
+      __dupe___unnamed_parameter_72: accessor,
       Agent: agent,
       InRemainingDuration: float
     )<transacts>: void
@@ -2017,7 +1997,7 @@ SceneGraph<public> := module {
   interactable_duration<native><epic_internal> := class<concrete> {
     @experimental
     # Interact duration getter.
-    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_77: accessor)<transacts>: float
+    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_75: accessor)<transacts>: float
 
     @experimental
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.Returns the same value when called multiple times within a transaction.
@@ -2026,7 +2006,7 @@ SceneGraph<public> := module {
     @experimental
     # Interact duration setter.
     SetInteractDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_76: accessor,
+      __dupe___unnamed_parameter_74: accessor,
       InRemainingDuration: float
     )<transacts>: void
 
@@ -2065,13 +2045,13 @@ SceneGraph<public> := module {
 
     @experimental
     # Get the maximum number of successful interactions possible.
-    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_79: accessor)<transacts>: ?int
+    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_77: accessor)<transacts>: ?int
 
     @experimental
     # Update the maximum number of successful interactions possible, a value of false is unlimited.
     # If the current number of tracked interactions is greater than the value specified here, all current interactions will be canceled.
     SetMaxSuccessfulInteractions<native><epic_internal>(
-      __dupe___unnamed_parameter_78: accessor,
+      __dupe___unnamed_parameter_76: accessor,
       InMaxSuccessfulInteractions: ?int
     )<transacts>: void
 
@@ -2370,7 +2350,7 @@ SceneGraph<public> := module {
 
   @experimental
   # The results of an overlap query. See entity.FindOverlapHits(). We will get one overlap_hit for each intersection of any volume in SourceVolumes with any other volume.
-  overlap_hit<native><public> := struct {
+  overlap_hit<native><public> := struct<epic_internal> {
     # The source component and volume (query input). For compound inputs (like an entity hierarchy) this will be a component/volume in that hierarchy. The SourceTransform is the transform of SourceVolume used for the overlap test. For single volume inputs like a sphere, the Source volume and transform are just the inputs to the overlap test, and the component is false.
     SourceComponent<native><public>: ?component
 
@@ -2533,6 +2513,10 @@ SceneGraph<public> := module {
     # Internal only flag to make this entity always relevant for replication to clients
     AlwaysRelevant<native><epic_internal>: logic = external {}
 
+    @editable
+    # Internal only flag to enable or disable replication
+    EnableReplication<native><epic_internal>: logic = external {}
+
     OnAddedToSceneInternal<native><override>(): void
 
     OnRemovingFromSceneInternal<native><override>(): void
@@ -2580,14 +2564,6 @@ SceneGraph<public> := module {
   @hide_in_editor
   @experimental
   simulation_entity<native><epic_internal> := class<concrete><unique><transacts>(entity) {}
-
-  simulation_entity_interop_handler<native><epic_internal> := interface<epic_internal> {
-    Initialize<native_callable><epic_internal>(IteropObject: simulation_interop_object): void
-  }
-
-  @hide_in_editor
-  @import_as("/Script/Entity.ASimulationEntity")
-  simulation_interop_object<native><epic_internal> := class {}
 
   @experimental
   slow_component_array_copy_query_iterator<native><epic_internal> := class<epic_internal>(component_query_iterator_interface) {
@@ -2721,7 +2697,7 @@ SceneGraph<public> := module {
 
   @experimental
   # The results of a sweep query. See entity.FindSweepHits(). We will get one sweep_hit for each intersection of any volume in SourceVolumes with any other volume.
-  sweep_hit<native><public> := struct {
+  sweep_hit<native><public> := struct<epic_internal> {
     # If TargetVolume is a polygonal object (mesh, convex hull, etc.) and the contact point is on an edge or vertex, this is the most-opposing face normal of the faces that share that edge or vertex. Otherwise it is the same as HitNormal.
     ContactFaceNormal<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
 
@@ -2864,6 +2840,7 @@ SceneGraph<public> := module {
     # LocalTransform to its parent
     var<private> LocalTransform<native><public>: (/Verse.org/SpatialMath:)transform = external {}
 
+    @editable
     @replicated("RepNotify")
     # alternate origin than the default parent
     var<private> Origin<native><public>: ?origin = external {}

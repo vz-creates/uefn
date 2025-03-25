@@ -6,11 +6,6 @@
 					"+": [ "OpenFabTab" ]
 				}
 			},
-			"LevelEditor.LevelEditorToolBar.AssetsToolBar": {
-				"AllowList": {
-					"+": [ "OpenFabWindow" ]
-				}
-			},
 			"ContentBrowser.AddNewContextMenu": {
 				"AllowList": {
 					"+": [ "OpenFabWindow" ]

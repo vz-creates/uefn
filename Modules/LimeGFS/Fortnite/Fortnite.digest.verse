@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.10-CL-40567068
+# Generated from build: ++Fortnite+Release-34.20-CL-40965447
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -491,7 +491,6 @@ using { /Fortnite.com/Game }
 using { /Verse.org/Assets }
 using { /Verse.org/Native }
 using { /Verse.org/SceneGraph }
-using { /Verse.org/Simulation }
 using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/Devices
 Devices<public> := module {
@@ -1924,6 +1923,9 @@ Devices<public> := module {
 
     # Shows the `creative_prop` in the world and enable collisions.
     Show<native><public>()<transacts>: void
+
+    # Enable/disable whether this prop can be damaged. If disabled, the creative prop will not take damage from attacks.
+    var CanBeDamaged<public>: logic = external {}
   }
 
   # Asset used to spawn `creative_prop` instances.
@@ -6049,19 +6051,23 @@ using { /Fortnite.com/Playspaces }
 using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /UnrealEngine.com/Temporary/UI }
 using { /Verse.org/Colors }
+using { /Verse.org/Simulation }
 # Module import path: /Fortnite.com/UI
 (/Fortnite.com:)UI<public> := module {
   # Get the `fort_hud_controller` for the current `fort_playspace`.
   ((local:)Playspace: fort_playspace).GetHUDController<native><public>(): fort_hud_controller
 
+  @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().HideElements()`.
   # Hides a set of HUD elements.
   (PlayerUI: player_ui).HideHUDElements<native><public>(HUDElements: []hud_element_identifier): void
 
+  @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ResetElementVisibility()`.
   # Resets the visibility for a set of HUD elements.
   (PlayerUI: player_ui).ResetHUDElementVisibility<native><public>(HUDElements: []hud_element_identifier): void
 
+  @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ShowElements()`.
   # Shows a set of HUD elements.
   (PlayerUI: player_ui).ShowHUDElements<native><public>(HUDElements: []hud_element_identifier): void
@@ -6129,14 +6135,23 @@ using { /Verse.org/Colors }
 
   # A HUD controller that allows for showing and hiding of HUD elements.
   fort_hud_controller<native><public> := interface<epic_internal> {
-    # Hides a set of HUD elements.
+    # Hides a set of HUD elements for every player. Note: This can be overridden by rules set by 'ForPlayer' functions since player specific rules are prioritized over general rules.
     HideElements<public>(HUDElements: []hud_element_identifier): void
 
-    # Resets the visibility for a set of HUD elements.
+    # Hides a set of HUD elements for a single player. Note: This overrides general rules set by non-player functions for the given elements. Call 'ResetElementsForPlayer' in order to return the player to general behavior
+    HideElementsForPlayer<public>(Player: player, HUDElements: []hud_element_identifier): void
+
+    # Resets the visibility for a set of HUD elements for every player. Note: This will not clear player specific rules set by the 'ForPlayer' functions which can only be reset by calling 'ResetElementsForPlayer'.
     ResetElementVisibility<public>(HUDElements: []hud_element_identifier): void
 
-    # Shows a set of HUD elements.
+    # Resets the player-specific visibility rules of a set of HUD elements for a single player. Note: This will not reset rules that have been set by means other than the 'PerPlayer' functions.
+    ResetElementsForPlayer<public>(Player: player, HUDElements: []hud_element_identifier): void
+
+    # Shows a set of HUD elements for every player. Note: This can be overridden by rules set by 'ForPlayer' functions since player specific rules are prioritized over general rules.
     ShowElements<public>(HUDElements: []hud_element_identifier): void
+
+    # Shows a set of HUD elements for a single player. Note: This overrides general rules set by non-player functions for the given elements. Call 'ResetElementsForPlayer' in order to return the player to general behavior
+    ShowElementsForPlayer<public>(Player: player, HUDElements: []hud_element_identifier): void
   }
 
   # Used to identify a HUD element.
@@ -6243,7 +6258,7 @@ using { /Verse.org/Colors }
   # Button with text message common base class. Displays a button with a custom message string.
   text_button_base<native><public> := class<abstract><epic_internal>(widget) {
     # The text to display to the user. Used only during initialization of the widget and not modified by SetText.
-    DefaultText<localizes><native><public>: message = external {}
+    (/Fortnite.com/UI/text_button_base:)DefaultText<localizes><native><public>: message = external {}
 
     # Gets the text currently in the widget.
     GetText<native><public>(): string

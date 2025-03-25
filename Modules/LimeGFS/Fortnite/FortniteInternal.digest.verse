@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.10-CL-40567068
+# Generated from build: ++Fortnite+Release-34.20-CL-40965447
 #################################################
 
 AI<public> := module {
@@ -1243,6 +1243,12 @@ Characters<public> := module {
     # Signaled when this `fort_character` jumps. Returns a listenable with a payload of this `fort_character`.
     JumpedEvent<public>(): listenable(fort_character)
 
+    # Signaled when this `fort_character` is marked by a reconnassaince device
+    # Sends `tuple` payload:
+    #  - 0: the `fort_character` that was marked.
+    #  - 1: `true` if the character being marked. `false` if the character is being unmarked.
+    MarkedEvent<epic_internal>(): listenable(tuple(fort_character, ?fort_character, logic))
+
     # Epic internal - Signaled when this `fort_character` possesses a pawn.
     PossessedEvent<epic_internal>(): listenable(fort_character)
 
@@ -1377,6 +1383,8 @@ Characters<public> := module {
     IsVulnerable<override>()<transacts><decides>: void = external {}
 
     JumpedEvent<override>(): listenable(fort_character) = external {}
+
+    MarkedEvent<override>(): listenable(tuple(fort_character, logic)) = external {}
 
     PossessedEvent<override>(): listenable(fort_character) = external {}
 
@@ -3175,6 +3183,9 @@ Devices<public> := module {
 
     # Shows the `creative_prop` in the world and enable collisions.
     Show<native><public>()<transacts>: void
+
+    # Enable/disable whether this prop can be damaged. If disabled, the creative prop will not take damage from attacks.
+    var CanBeDamaged<public>: logic = external {}
   }
 
   # Asset used to spawn `creative_prop` instances.
@@ -7926,6 +7937,7 @@ using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /UnrealEngine.com/Temporary/UI }
 using { /Verse.org/Colors }
 using { /Verse.org/Native }
+using { /Verse.org/Simulation }
 FeralCorgi<public> := module {
   # Module import path: /Fortnite.com/FeralCorgi/AnalyticsBridge
   AnalyticsBridge<epic_internal> := module {
@@ -8384,23 +8396,6 @@ Game<public> := module {
     Cancel<native><override>()<transacts>: void
   }
 
-  @experimental
-  fort_simulation_entity_controller_component<native><epic_internal> := class<final_super>(
-    component,
-    simulation_entity_interop_handler
-  ) {
-    Initialize<override><native_callable>(InteropObject: simulation_interop_object): void = external {}
-
-    OnAddedToScene<override><native><native_callable>(): void
-
-    OnRemovingFromScene<override><native><native_callable>(): void
-
-    OnUninitializing<override><native><native_callable>(): void
-
-    # Whether the entities associated with this simulation_entity should wait to start simulating on round start.
-    var StartEntitySimulationOnRoundStart<native><epic_internal>: logic = external {}
-  }
-
   # Implemented by Fortnite objects that can be passed through game action events, such as damage and heal.
   # For example: player, vehicle, or weapon.
   #
@@ -8588,7 +8583,6 @@ Playspaces<public> := module {
   }
 }
 
-using { /Verse.org/Simulation }
 using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/QuestUtilities
 QuestUtilities<public> := module {
@@ -8748,14 +8742,17 @@ UI<public> := module {
   # Get the `fort_hud_controller` for the current `fort_playspace`.
   ((local:)Playspace: fort_playspace).GetHUDController<native><public>(): fort_hud_controller
 
+  @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().HideElements()`.
   # Hides a set of HUD elements.
   (PlayerUI: player_ui).HideHUDElements<native><public>(HUDElements: []hud_element_identifier): void
 
+  @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ResetElementVisibility()`.
   # Resets the visibility for a set of HUD elements.
   (PlayerUI: player_ui).ResetHUDElementVisibility<native><public>(HUDElements: []hud_element_identifier): void
 
+  @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ShowElements()`.
   # Shows a set of HUD elements.
   (PlayerUI: player_ui).ShowHUDElements<native><public>(HUDElements: []hud_element_identifier): void
@@ -9041,14 +9038,23 @@ UI<public> := module {
 
   # A HUD controller that allows for showing and hiding of HUD elements.
   fort_hud_controller<native><public> := interface<epic_internal> {
-    # Hides a set of HUD elements.
+    # Hides a set of HUD elements for every player. Note: This can be overridden by rules set by 'ForPlayer' functions since player specific rules are prioritized over general rules.
     HideElements<public>(HUDElements: []hud_element_identifier): void
 
-    # Resets the visibility for a set of HUD elements.
+    # Hides a set of HUD elements for a single player. Note: This overrides general rules set by non-player functions for the given elements. Call 'ResetElementsForPlayer' in order to return the player to general behavior
+    HideElementsForPlayer<public>(Player: player, HUDElements: []hud_element_identifier): void
+
+    # Resets the visibility for a set of HUD elements for every player. Note: This will not clear player specific rules set by the 'ForPlayer' functions which can only be reset by calling 'ResetElementsForPlayer'.
     ResetElementVisibility<public>(HUDElements: []hud_element_identifier): void
 
-    # Shows a set of HUD elements.
+    # Resets the player-specific visibility rules of a set of HUD elements for a single player. Note: This will not reset rules that have been set by means other than the 'PerPlayer' functions.
+    ResetElementsForPlayer<public>(Player: player, HUDElements: []hud_element_identifier): void
+
+    # Shows a set of HUD elements for every player. Note: This can be overridden by rules set by 'ForPlayer' functions since player specific rules are prioritized over general rules.
     ShowElements<public>(HUDElements: []hud_element_identifier): void
+
+    # Shows a set of HUD elements for a single player. Note: This overrides general rules set by non-player functions for the given elements. Call 'ResetElementsForPlayer' in order to return the player to general behavior
+    ShowElementsForPlayer<public>(Player: player, HUDElements: []hud_element_identifier): void
   }
 
   @import_as("/Script/VerseFortniteUI.UVerseFortniteWidgetViewmodel")
@@ -9262,7 +9268,7 @@ UI<public> := module {
   # Button with text message common base class. Displays a button with a custom message string.
   text_button_base<native><public> := class<abstract><epic_internal>(widget) {
     # The text to display to the user. Used only during initialization of the widget and not modified by SetText.
-    DefaultText<localizes><native><public>: message = external {}
+    (/Fortnite.com/UI/text_button_base:)DefaultText<localizes><native><public>: message = external {}
 
     # Gets the text currently in the widget.
     GetText<native><public>(): string
@@ -9414,8 +9420,6 @@ VerseFortniteTestSuite<public> := module {
 
     OnRemovingFromScene<override>(): void = external {}
 
-    SetRoundManager<native_callable><protected>(MockRM: fort_round_manager): void = external {}
-
     UnbindEvents<native_callable><protected>(): void = external {}
 
     var IsInRound<native><public>: logic = external {}
@@ -9424,357 +9428,4 @@ VerseFortniteTestSuite<public> := module {
 
     var IsRegistered<native><public>: logic = external {}
   }
-}
-
-VerseInternalTesting<public> := module {
-  using { /Fortnite.com/Characters }
-  using { /Fortnite.com/Devices }
-  using { /Fortnite.com/Game }
-  using { /Fortnite.com/Vehicles }
-  using { /UnrealEngine.com/Temporary/Diagnostics }
-  using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /UnrealEngine.com/Temporary/Testing }
-  using { /Verse.org/Colors }
-  using { /Verse.org/Simulation }
-  # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
-  NexusFramework<public> := module {
-    example_nexus_device<epic_internal> := class(nexus_test_device) {
-      OnBegin<override>()<suspends>: void = external {}
-
-      OnEnd<override>(): void = external {}
-    }
-
-    nexus_test_device<epic_internal> := class(creative_device) {
-      AddCheck<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
-
-      AddFail<epic_internal>(TestName: string, ContextString: string): void = external {}
-
-      AddPass<epic_internal>(TestName: string, ContextString: string): void = external {}
-
-      AddResults<epic_internal>(TestName: string, Passed: logic, ContextString: string): void = external {}
-
-      AddSkip<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
-
-      OnBegin<override>()<suspends>: void = external {}
-
-      OnEnd<override>(): void = external {}
-
-      @editable
-      var TestRunner<public>: nexus_test_runner = external {}
-    }
-
-    nexus_test_runner<epic_internal> := class(creative_device) {
-      OnEnd<override>(): void = external {}
-    }
-  }
-
-  # Module import path: /Fortnite.com/VerseInternalTesting/VerseFramework
-  VerseFramework<public> := module {
-    device_event_agent_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(agent)): void = external {}
-
-      var ArgAgent<public>: ?agent = external {}
-    }
-
-    device_event_agent_int_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(tuple(agent, int))): void = external {}
-
-      var ArgAgent<public>: ?agent = external {}
-
-      var ArgInt<public>: int = external {}
-    }
-
-    device_event_ai_interaction_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(device_ai_interaction_result)): void = external {}
-
-      var ArgSource<public>: ?agent = external {}
-
-      var ArgTarget<public>: ?agent = external {}
-    }
-
-    device_event_damage_result_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(damage_result)): void = external {}
-
-      var ArgAmount<public>: float = external {}
-
-      var ArgInstigator<public>: ?game_action_instigator = external {}
-
-      var ArgSource<public>: ?game_action_causer = external {}
-    }
-
-    device_event_fort_vehicle_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(fort_vehicle)): void = external {}
-
-      var ArgVehicle<public>: ?fort_vehicle = external {}
-    }
-
-    device_event_healing_result_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(healing_result)): void = external {}
-
-      var ArgAmount<public>: float = external {}
-
-      var ArgInstigator<public>: ?game_action_instigator = external {}
-
-      var ArgSource<public>: ?game_action_causer = external {}
-    }
-
-    device_event_optional_agent_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(?agent)): void = external {}
-
-      var ArgAgent<public>: ?agent = external {}
-    }
-
-    device_event_optional_agent_int_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(tuple(?agent, int))): void = external {}
-
-      var ArgAgent<public>: ?agent = external {}
-
-      var ArgInt<public>: int = external {}
-    }
-
-    device_event_void_handler_mock<public> := class(test_device_event_handler_mock) {
-      Subscribe<public>(Event: listenable(tuple())): void = external {}
-    }
-
-    test_case<public> := struct {
-      Category<public>: []string
-
-      Func<public>: type { _()<suspends>: void }
-
-      Name<public>: string
-
-      TimeoutOverride<public>: ?float = external {}
-    }
-
-    test_device<epic_internal> := class(creative_device) {
-      AfterAll<public>()<suspends>: void = external {}
-
-      AfterEach<public>()<suspends>: void = external {}
-
-      BeforeAll<public>()<suspends>: void = external {}
-
-      BeforeEach<public>()<suspends>: void = external {}
-
-      OnBegin<override>(): void = external {}
-
-      RegisterTests<public>(): void = external {}
-
-      SuiteName<public>: string = external {}
-
-      TestCases<public>(): []test_case = external {}
-
-      var TestRunner<public>: test_runner = external {}
-    }
-
-    test_device_event_handler_mock<public> := class<concrete> {
-      Await<public>()<suspends>: void = external {}
-
-      Cancel<public>()<transacts>: void = external {}
-
-      GetCallCount<public>(): int = external {}
-
-      ResetCallCount<public>(): void = external {}
-    }
-
-    test_runner<epic_internal> := class {
-      AddExcludeFilter<public>(Filter: string)<transacts>: void = external {}
-
-      AddIncludeFilter<public>(Filter: string)<transacts>: void = external {}
-
-      CheckArrayContains<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
-
-      CheckArrayDoesNotContain<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
-
-      CheckEqual<public>(
-        Actual: creative_object,
-        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
-        Message: string,
-        ?Tolerance: float = external {},
-        ?Timeout: float = external {}
-      )<suspends>: void = external {}
-
-      CheckEqual<public>(
-        ActualFortCharacter: fort_character,
-        ExpectedTranslation: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-        Message: string,
-        ?Tolerance: float = external {},
-        ?Timeout: float = external {},
-        ?CompareX: logic = external {},
-        ?CompareY: logic = external {},
-        ?CompareZ: logic = external {}
-      )<suspends>: void = external {}
-
-      CheckEqual<public>(
-        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
-        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
-        Message: string,
-        ?Tolerance: float = external {}
-      ): void = external {}
-
-      CheckEqual<public>(
-        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
-        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
-        Message: string,
-        ?Tolerance: float = external {}
-      ): void = external {}
-
-      CheckEqual<public>(
-        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-        Message: string,
-        ?Tolerance: float = external {}
-      ): void = external {}
-
-      CheckEqual<public>(Expected: agent, Actual: agent, Message: string): void = external {}
-
-      CheckEqual<public>(Expected: color, Actual: color, Message: string, ?Tolerance: float = external {}): void = external {}
-
-      CheckEqual<public>(Expected: float, Actual: float, Message: string, ?Tolerance: float = external {}): void = external {}
-
-      CheckEqual<public>(Expected: int, Actual: int, Message: string): void = external {}
-
-      CheckEqual<public>(Expected: string, Actual: string, Message: string): void = external {}
-
-      CheckEqual<public>(
-        Expected: vector2,
-        Actual: vector2,
-        Message: string,
-        ?Tolerance: float = external {}
-      ): void = external {}
-
-      CheckEqual<public>(Expected: vector2i, Actual: vector2i, Message: string): void = external {}
-
-      CheckEqualFloatArray<public>(Expected: []float, Actual: []float, Message: string): void = external {}
-
-      CheckEqualIntArray<public>(Expected: []int, Actual: []int, Message: string): void = external {}
-
-      CheckFailure<public>(TestFuncEval: ?any, FuncName: string)<decides>: void = external {}
-
-      CheckNotEqual<public>(
-        Actual: creative_object,
-        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
-        Message: string,
-        ?Tolerance: float = external {},
-        ?Timeout: float = external {}
-      )<suspends>: void = external {}
-
-      CheckNotEqual<public>(
-        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
-        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
-        Message: string,
-        ?Tolerance: float = external {}
-      ): void = external {}
-
-      CheckNotEqual<public>(Expected: agent, Actual: agent, Message: string): void = external {}
-
-      CheckNotEqual<public>(Expected: float, Actual: float, Message: string): void = external {}
-
-      CheckNotEqual<public>(Expected: int, Actual: int, Message: string): void = external {}
-
-      CheckNotEqual<public>(Expected: string, Actual: string, Message: string): void = external {}
-
-      CheckNotTrue<public>(Actual: logic, Message: string): void = external {}
-
-      CheckTrue<public>(Actual: logic, Message: string): void = external {}
-
-      ClearLastTestResult<public>(): void = external {}
-
-      ClearLogOutput<public>(): void = external {}
-
-      ClearTests<public>()<transacts>: void = external {}
-
-      DefaultSetupFunctionTimeoutInSeconds<public>: float = external {}
-
-      DefaultTestTimeoutInSeconds<public>: float = external {}
-
-      GetDisplayTime<public>(DurationInSec: float): string = external {}
-
-      IsTestCaseIncluded<public>(TestCase: test_case)<transacts><decides>: void = external {}
-
-      (/Fortnite.com/VerseInternalTesting/VerseFramework/test_runner:)Log<public>(Level: log_level, Message: string)<transacts>: void = external {}
-
-      PrintLogOutput<public>()<transacts>: void = external {}
-
-      RaiseFunctionFailure<public>(FuncName: string)<transacts>: void = external {}
-
-      RecordFlakinessTestResult<public>(TestName: string, Succeeded: logic)<transacts>: void = external {}
-
-      RegisterTests<public>(TestSuite: test_suite)<transacts>: void = external {}
-
-      Require<public>(OptionalAgent: ?agent, Message: string)<transacts><decides>: agent = external {}
-
-      ResetExcludeFilters<public>()<transacts>: void = external {}
-
-      ResetIncludeFilters<public>()<transacts>: void = external {}
-
-      Run<public>()<suspends>: void = external {}
-
-      RunTestSuites<public>()<suspends>: void = external {}
-
-      var CurrentTestSuite<public>: string = external {}
-
-      var EnableDebugOutput<public>: logic = external {}
-
-      var EnableFlakinessEvaluation<public>: logic = external {}
-
-      var EnableLogOutput<public>: logic = external {}
-
-      var EnableTimeTracking<public>: logic = external {}
-
-      var EnableVerboseOutput<public>: logic = external {}
-
-      var FlakinessRunCount<public>: int = external {}
-
-      var LastTestErrors<public>: []string = external {}
-
-      var LogOutput<public>: []string = external {}
-
-      var SetupFunctionTimeoutInSeconds<public>: float = external {}
-
-      var TargetTestSuite<public>: string = external {}
-
-      var TestReporter<public>: test_reporter = external {}
-
-      var TestTimeoutInSeconds<public>: float = external {}
-    }
-
-    test_runner_device<epic_internal> := class(creative_device) {
-      OnBegin<override>()<suspends>: void = external {}
-
-      @editable
-      TestReportName<public>: string = external {}
-
-      TestReportVerbosity<public>: log_level = external {}
-
-      TestRunner<public>: test_runner = external {}
-
-      var Status<public>: test_runner_status = external {}
-    }
-
-    test_runner_status<public> := enum {
-      Complete
-
-      Pending
-
-      Running
-
-      Setup
-    }
-
-    test_suite<public> := struct {
-      AfterAllFunc<public>: type { _()<suspends>: void }
-
-      AfterEachFunc<public>: type { _()<suspends>: void }
-
-      BeforeAllFunc<public>: type { _()<suspends>: void }
-
-      BeforeEachFunc<public>: type { _()<suspends>: void }
-
-      Cases<public>: []test_case
-
-      Name<public>: string
-    }
-  }
-
-  verse_internal_testing_dummy_vni_function<native><epic_internal>(): void
 }

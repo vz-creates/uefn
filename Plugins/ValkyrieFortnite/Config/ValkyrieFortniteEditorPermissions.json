@@ -501,10 +501,6 @@
 			"/Script/HarmonixDsp.FusionPatch":					{ "Rules": [ "View", "Create" ] },
 			"/Script/HarmonixMidi.MidiFile":					{ "Rules": ["View","Import"] },
 			"/Script/ImgMedia.ImgMediaSource":					{ "Rules": ["View","Create"] },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":		{ "Rules": ["View","Create"] },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":		{ "Rules": ["View","Create"] },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":{ "Rules": ["View","Create"] },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":	{ "Rules": [ "View" ] },
 			"/Script/Landscape.LandscapeLayerInfoObject":		{ "Rules": ["View","Create"] },
 			"/Script/Landscape.LandscapeGrassType":				{ "Rules": ["View","Create"] },
 			"/Script/LevelSequence.LevelSequence":				{ "Rules": ["View","Create","Import","Export"], "Subclasses": "NativeOnly" },
@@ -665,6 +661,7 @@
 			"/Game/Creative/PostProcess/PP_Halftone.PP_Halftone_C":														{ "Visible": true },
 			"/Game/Creative/PostProcess/PP_HappyPlace.PP_HappyPlace_C":													{ "Visible": true },
 			"/Game/Creative/PostProcess/PP_Heatwave.PP_Heatwave_C":														{ "Visible": true },
+			"/Game/Creative/PostProcess/PP_HeavyLinework.PP_HeavyLinework_C":											{ "Visible": true },
 			"/Game/Creative/PostProcess/PP_HorrorMovie.PP_HorrorMovie_C":												{ "Visible": true },
 			"/Game/Creative/PostProcess/PP_LowExposure.PP_LowExposure_C":												{ "Visible": true },
 			"/Game/Creative/PostProcess/PP_NeoComic.PP_NeoComic_C":														{ "Visible": true },
@@ -1575,10 +1572,6 @@
 			"/Script/InterchangePipelines.InterchangeGenericMaterialPipeline":	{  },
 			"/Script/InterchangePipelines.InterchangeGenericMeshPipeline":		{  },
 			"/Script/InterchangePipelines.InterchangeGenericTexturePipeline":	{  },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{ "Visible": true },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{ "Visible": true },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{ "Visible": true },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":		{ "Visible": true },
 			"/Script/Landscape.ControlPointMeshActor":							{  },
 			"/Script/Landscape.ControlPointMeshComponent":						{  },
 			"/Script/Landscape.Landscape":										{  },
@@ -2690,6 +2683,7 @@
 		"DefaultLogCategories": [
 			"LogValkyrie",
 			"LogValkyrieOnline",
+			"LogValkyrieProjectDescriptor",
 			"LogValkyrieValidation",
 			"LogReferencedContentLoader",
 			"LogVerse",
@@ -2733,7 +2727,10 @@
 			"VKT_Verse_Standup",
 			"VKT_Village",
 			"VerseDeviceStarterGames",
-			"VKT_Cane"
+			"VKT_Cane",
+			"DarkVortex_Starter_Island",
+			"DarkVortex_Gameplay_Template",
+			"Lucky_AssemblyDevice"
 		]
 	},
 	"PropertyEditorClassPermissionList": {
@@ -3135,7 +3132,7 @@
 			},
 			{
 				"Type": "/Script/CRD_ModalDialogUI.CreativeModalDialogViewmodel",
-				"DenyList": [ "HoveredSound", "PressedSound" ]				
+				"DenyList": [ "HoveredSound", "PressedSound", "Art01_Material", "Art02_Material", "Progress" ]				
 			},
 			{
 				"Type": "/CreativeCoreDevices/Creative_Powerup_V2.Creative_Powerup_V2_C",
@@ -3752,7 +3749,7 @@
 			},
 			{
 				"Type": "/CRD_BankVault/Device_BankVault.Device_BankVault_C",
-				"DenyList": [ "VaultLocationTag", "RootMesh", "WeakPointHitNS", "WeakPointDeathCue", "WeakPointConfigs", "WeakPointMaxHealth", "WeakPointFuzzyDamageRange", "DoorBoneName", "DoorShapeName", "DamageStatHandle", "bAddOwnerVelocity", "bShowInteractKeybind", "ThermiteSound" ]
+				"DenyList": [ "VaultLocationTag", "RootMesh", "WeakPointHitNS", "WeakPointDeathCue", "WeakPointConfigs", "WeakPointMaxHealth", "WeakPointFuzzyDamageRange", "DoorBoneName", "DoorShapeName", "DamageStatHandle", "bAddOwnerVelocity", "bShowInteractKeybind", "ThermiteSound", "PreconfiguredVaultVolume", "bUsePreconfiguredVaultVolume" ]
 			}
 		]
 	},

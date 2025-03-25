@@ -329,7 +329,7 @@
 		"860A4F4F4E87FB68CE1397B7BAA859A7":
 		{
 			"FriendlyName": "AtomFramework",
-			"Version": 16
+			"Version": 17
 		},
 		"8652A554966A466C9FD71C6DD61B1ADB":
 		{
@@ -681,6 +681,7 @@
 			"/Game/Creative/PostProcess/PP_Halftone.PP_Halftone_C",
 			"/Game/Creative/PostProcess/PP_HappyPlace.PP_HappyPlace_C",
 			"/Game/Creative/PostProcess/PP_Heatwave.PP_Heatwave_C",
+			"/Game/Creative/PostProcess/PP_HeavyLinework.PP_HeavyLinework_C",
 			"/Game/Creative/PostProcess/PP_HorrorMovie.PP_HorrorMovie_C",
 			"/Game/Creative/PostProcess/PP_LowExposure.PP_LowExposure_C",
 			"/Game/Creative/PostProcess/PP_NeoComic.PP_NeoComic_C",
@@ -2329,10 +2330,6 @@
 			"/Script/FortniteGame.FortItemComponentData_LevelLimits",
 			"/Script/FortniteGame.UserOptionDefinitionContainer",
 			"/Script/GameplayTags.GameplayTag",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits",
 			"/Script/LocalizableMessage.LocalizableMessage",
 			"/Script/LocalizableMessage.LocalizableMessageParameterEntry",
 			"/Script/MetaHumanSDKRuntime.MetaHumanCustomizableBodyPart",
@@ -2394,7 +2391,11 @@
 			"/Script/Engine.AnimSubsystemInstance",
 			"/Script/Engine.ComponentSpacePoseLink",
 			"/Script/Engine.InputScaleBiasClampConstants",
-			"/Script/Engine.PoseLink"
+			"/Script/Engine.PoseLink",
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon",
+			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
+			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize",
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits"
 		],
 		"VKCreateUGCPartner": []
 	},
@@ -13850,6 +13851,7 @@
 			"/Niagara/Enums/Transforms/ENiagara_ScaleMode.ENiagara_ScaleMode",
 			"/Niagara/Enums/Transforms/ENiagara_TransformOrder.ENiagara_TransformOrder",
 			"/Niagara/Enums/Transforms/ENiagara_TransformType.ENiagara_TransformType",
+			"/Niagara/Enums/Utility/ENiagara_DynamicMaterialParametersInputMode.ENiagara_DynamicMaterialParametersInputMode",
 			"/Niagara/Enums/Utility/ENiagara_ImportanceColorMode.ENiagara_ImportanceColorMode",
 			"/Niagara/Enums/Utility/ENiagara_ImportanceRejectionMode.ENiagara_ImportanceRejectionMode",
 			"/Niagara/Enums/Utility/ENiagara_IntegerConversion.ENiagara_IntegerConversion",
@@ -24081,6 +24083,7 @@
 			"/Game/Creative/PostProcess/PP_Halftone.PP_Halftone_C",
 			"/Game/Creative/PostProcess/PP_HappyPlace.PP_HappyPlace_C",
 			"/Game/Creative/PostProcess/PP_Heatwave.PP_Heatwave_C",
+			"/Game/Creative/PostProcess/PP_HeavyLinework.PP_HeavyLinework_C",
 			"/Game/Creative/PostProcess/PP_HorrorMovie.PP_HorrorMovie_C",
 			"/Game/Creative/PostProcess/PP_LowExposure.PP_LowExposure_C",
 			"/Game/Creative/PostProcess/PP_NeoComic.PP_NeoComic_C",
@@ -26269,11 +26272,11 @@
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairBalcony_A.Asteria_Quarry_ScaffoldingStairBalcony_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairF_A.Asteria_Quarry_ScaffoldingStairF_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingWall_B.Asteria_Quarry_ScaffoldingWall_B_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_A.Asteria_SlurpRoom_StringLights_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_B.Asteria_SlurpRoom_StringLights_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Wall_A.Asteria_SlurpRoom_Wall_A_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_B.Asteria_SlurpRoom_Window_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_StringLights_02.Asteria_StringLights_02_C",
 			"/Game/Environments/Asteria/Sets/TattooShop/BluePrints/Asteria_TattooShop_Wall_A.Asteria_TattooShop_Wall_A_C",

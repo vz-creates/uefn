@@ -16,6 +16,20 @@ A basic repository to track multiple UEFN related diffs.
 - [`v25.30`](https://github.com/kbfngg/uefn/commit/40789fbc5e3f91690fa6e545ebd7e25c26a13731) | [`v25.20`](https://github.com/kbfngg/uefn/commit/d953db87d5ace273fdd109ebff379adb9262b9f9) | [`v25.11`](https://github.com/kbfngg/uefn/commit/d024ca433a72c6aa3397437c5860321c6eabf98a) | [`v25.10`](https://github.com/kbfngg/uefn/commit/9ec61ceaeb45dd0eba19bd209fa03fa6195443f4) | [`v25.00`](https://github.com/kbfngg/uefn/commit/787122d5e98cbae764f20d49f8694e7712d5442d)
 - [`v24.40`](https://github.com/kbfngg/uefn/commit/93f32e925001d3b28212debb09c1428195538565) | [`v24.30`](https://github.com/kbfngg/uefn/commit/c9edf5610255562e1d402681e2c011143e206aa7) | [`v24.20`](https://github.com/kbfngg/uefn/commit/82dc13e39ecb11893e7495d26e29d430dcb26f0f) | [`v24.10`](https://github.com/kbfngg/uefn/commit/183f4fe6ac0500d31a55edcd8d47b5186a40e12c) | [`v24.01`](https://github.com/kbfngg/uefn/commit/2f9ddccf926b1580d87828b10ada87019ebfc07d)
 
+## Shortcuts
+
+| | Verse | Unreal Engine | Fortnite |
+| :---: | :---: | :---: | :---: |
+| FortniteGame | [`public`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Verse/Verse.digest.verse) \| [`internal`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Verse/VerseInternal.digest.verse) | [`public`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/UnrealEngine/UnrealEngine.digest.verse) \| [`internal`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/UnrealEngine/UnrealEngineInternal.digest.verse) | [`public`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Fortnite/Fortnite.digest.verse) \| [`internal`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Fortnite/FortniteInternal.digest.verse) |
+
 ## Miscs
 
 - [Verse Language Quick Reference by Epic Games](https://dev.epicgames.com/documentation/en-us/uefn/verse-language-quick-reference)
+
+***
+
+> [!IMPORTANT]  
+> DISCLAIMER:
+> The maintainer of this repository is not affiliated with Epic Games, the content on this repository is not official or endorsed by Epic Games in any way.
+> All files on this repository are observed for diffing and study purposes only.
+> All trademarks and IP are property of their respective owners.

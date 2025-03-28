@@ -18,11 +18,9 @@ A basic repository to track multiple UEFN related diffs.
 
 ## Shortcuts
 
-| | Verse | Unreal Engine | Fortnite |
+| |  |   |  |
 | :---: | :---: | :---: | :---: |
-| FortniteGame | [`public`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Verse/Verse.digest.verse) \| [`internal`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Verse/VerseInternal.digest.verse) | [`public`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/UnrealEngine/UnrealEngine.digest.verse) \| [`internal`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/UnrealEngine/UnrealEngineInternal.digest.verse) | [`public`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Fortnite/Fortnite.digest.verse) \| [`internal`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Fortnite/FortniteInternal.digest.verse) |
-
-## Miscs
+| FortniteGame | [`/Verse`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Verse/) | [`/UnrealEngine`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/UnrealEngine/) | [`/Fortnite`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Fortnite/) |
 
 - [Verse Language Quick Reference by Epic Games](https://dev.epicgames.com/documentation/en-us/uefn/verse-language-quick-reference)
 

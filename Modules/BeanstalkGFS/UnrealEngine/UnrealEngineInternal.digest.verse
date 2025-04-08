@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.21-CL-41092960
+# Generated from build: ++Fortnite+Release-34.30-CL-41387772
 #################################################
 
 AINavigation<public> := module {
@@ -325,18 +325,6 @@ EntityTestSuite<public> := module {
   test_replication_object<native><epic_internal> := class {}
 }
 
-# Module import path: /UnrealEngine.com/EpicGamesRestricted
-EpicGamesRestricted<public> := module {
-  # Module import path: /UnrealEngine.com/EpicGamesRestricted/Network
-  Network<public> := module {
-    replicated<constructor><epic_internal>(ReplicationArgs: string)<computes>: replicated_attribute = external {}
-
-    @attribscope_data
-    @customattribhandler
-    replicated_attribute<epic_internal> := class<computes><internal>(attribute) {}
-  }
-}
-
 Itemization<public> := module {
   @experimental
   (InAgent: agent).GetInventory<native><epic_internal>()<transacts><decides>: inventory_component
@@ -406,13 +394,13 @@ Itemization<public> := module {
   }
 
   using { /UnrealEngine.com/Abilities }
-  using { /UnrealEngine.com/EpicGamesRestricted/Network }
   using { /Verse.org/Assets }
   using { /Verse.org/Colors }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   using { /Verse.org/Simulation/Tags }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   @experimental
   add_inventory_result<native><epic_internal> := struct<epic_internal> {
     Inventory<native><public>: inventory_component
@@ -2050,6 +2038,9 @@ Temporary<public> := module {
 
       # Removes `Widget` from this `player_ui`.
       RemoveWidget<native><public>(Widget: widget): void
+
+      # Sets the user's focus on this widget. The target widget must be focusable, otherwise this has no effect.
+      SetFocus<native><epic_internal>(Widget: widget): void
     }
 
     # `widget` creation configuration options.

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.21-CL-41092960
+# Generated from build: ++Fortnite+Release-34.30-CL-41387772
 #################################################
 
 using { /Verse.org/Native }
@@ -493,12 +493,12 @@ Concurrency<public> := module {
   }
 }
 
-using { /UnrealEngine.com/Temporary/SpatialMath }
-using { /Verse.org/Assets }
 using { /Verse.org/Simulation }
 # Module import path: /Verse.org/ControlInput
 ControlInput<public> := module {
   GetPlayerInput<native><epic_internal>(Player: player)<transacts><decides>: player_input
+
+  GetPlayerInputDeprecated<epic_internal>(Player: player)<transacts><decides>: player_input = external {}
 
   MakeInputAsset<native><epic_internal>(
     InputAction: input_action(t),
@@ -1311,7 +1311,7 @@ SceneGraph<public> := module {
     OnUninitializingInternal<native><override>(): void
   }
 
-  using { /UnrealEngine.com/EpicGamesRestricted/Network }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   @experimental
   # An interactable component with a composable feature set.
   basic_interactable_component<native><epic_internal> := class(interactable_component) {
@@ -2851,6 +2851,8 @@ SceneGraph<public> := module {
   typed_element_component<native><epic_internal> := class<final_super>(component) {}
 }
 
+using { /UnrealEngine.com/Temporary/SpatialMath }
+using { /Verse.org/Assets }
 Simulation<public> := module {
   # Returns the `session` corresponding to the current round.  The result can be used with `weak_map` to implement global variables.
   # Note: may be changed in a future release to return a single instance per game. Round-local behavior should not be relied upon.
@@ -3574,6 +3576,20 @@ SpatialMath<public> := module {
     @editable
     # The Up (was Z) component of this vector.
     Up<native><public>: float = external {}
+  }
+}
+
+Temporary<public> := module {
+  # Module import path: /Verse.org/Temporary/EpicGamesRestricted
+  EpicGamesRestricted<public> := module {
+    # Module import path: /Verse.org/Temporary/EpicGamesRestricted/Network
+    Network<public> := module {
+      replicated<constructor><epic_internal>(ReplicationArgs: string)<computes>: replicated_attribute = external {}
+
+      @attribscope_data
+      @customattribhandler
+      replicated_attribute<epic_internal> := class<computes><internal>(attribute) {}
+    }
   }
 }
 

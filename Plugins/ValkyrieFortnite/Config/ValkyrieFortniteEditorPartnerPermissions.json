@@ -48,6 +48,10 @@
 			{
 				"Type": "/Game/Creative/Devices/Lighting/BP_DaySequenceModifier_Device.BP_DaySequenceModifier_Device_C",
 				"AllowList": [ "UserDaySequence" ]
+			},
+			{
+				"Type": "/Script/Engine.CameraComponent",
+				"AllowList": [ "FieldOfView", "ProjectionMode", "AspectRatio" ]
 			}
 		],
 		"-": [

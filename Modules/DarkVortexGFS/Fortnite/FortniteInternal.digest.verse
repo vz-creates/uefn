@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.21-CL-41092960
+# Generated from build: ++Fortnite+Release-34.30-CL-41387772
 #################################################
 
 AI<public> := module {
@@ -844,9 +844,9 @@ AI<public> := module {
   injected_condition_native_base<native><epic_internal> := class<abstract> {}
 
   movement_style<native><epic_internal> := enum {
-    Running
+    (/Fortnite.com/AI/movement_style:)Running
 
-    Walking
+    (/Fortnite.com/AI/movement_style:)Walking
   }
 
   movement_type<native><public> := class<concrete><final><computes><epic_internal> {
@@ -5504,8 +5504,20 @@ Devices<public> := module {
     # Enables the device, allowing the Rift Point to be planted.
     Enable<override>(): void = external {}
 
+    # Returns an array of agents that are currently occupying the volume.
+    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Is true when `Agent` is in the volume.
+    IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    # Sends an event when an `agent` enters the volume.
+    OnAgentEntered<public>: listenable(agent) = external {}
+
+    # Sends an event when an `agent` exits the volume.
+    OnAgentExited<public>: listenable(agent) = external {}
 
     # Sends an event when planting the Rift Point is canceled, passing in the planting `agent`.
     PlantCancelEvent<public>: listenable(agent) = external {}
@@ -7909,6 +7921,8 @@ FeralCorgi<public> := module {
 
     GetVersePlayerId<native><epic_internal>(Player: player)<transacts>: int
 
+    IsCVarEnabled<native><epic_internal>(CVarName: string)<transacts><decides>: void
+
     SendTestEvent<native><epic_internal>(
       EventName: string,
       TargetAgents: []agent,
@@ -7981,7 +7995,7 @@ FeralCorgi<public> := module {
   using { /Verse.org/Simulation }
   # Base class for creating analytic events from Verse. This would be the only public api, feral_analytics* would not be made public.
   analytics_event_base<native><epic_internal> := class<persistent> {
-    GetEventName<native><epic_internal>(): string
+    GetEventName<native_callable><epic_internal>(): string = external {}
 
     Send<native><epic_internal>(): void
 

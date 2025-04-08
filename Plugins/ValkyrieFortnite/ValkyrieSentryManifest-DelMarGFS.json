@@ -514,7 +514,7 @@
 		"CDB409211590F339ECA16F61923EC589":
 		{
 			"FriendlyName": "FortQuestItemDefinitionVersion",
-			"Version": 1
+			"Version": 2
 		},
 		"CFFC743F43B04480939114DF171D2073":
 		{
@@ -7134,6 +7134,7 @@
 			"/Game/Effects/Fort_Effects/Materials/_Functions/Near_Camera_Fade.Near_Camera_Fade",
 			"/Game/Effects/Fort_Effects/Materials/_Functions/Scalar_Time_of_Day.Scalar_Time_of_Day",
 			"/Game/Effects/Fort_Effects/Materials/Fire/M_CozyCampfire_Embers.M_CozyCampfire_Embers",
+			"/Game/Effects/Fort_Effects/Materials/Foliage/M_Foliage_Leaf_Mesh_01_Inst.M_Foliage_Leaf_Mesh_01_Inst",
 			"/Game/Effects/Fort_Effects/Materials/Water/M_Geyser_SteamCone.M_Geyser_SteamCone",
 			"/Game/Effects/Fort_Effects/Materials/Water/MI_Geyser_SteamCone_Inverted.MI_Geyser_SteamCone_Inverted",
 			"/Game/Effects/Fort_Effects/Textures/Mask/T_HalfSphere_D.T_HalfSphere_D",
@@ -13242,6 +13243,7 @@
 			"/Water/Materials/Functions/ComputeWavesAttenuationFactor.ComputeWavesAttenuationFactor",
 			"/Water/Materials/Functions/GetWaterTime.GetWaterTime",
 			"/Water/Materials/Functions/HighQualityTextureFiltering.HighQualityTextureFiltering",
+			"/Water/Materials/Functions/SampleBakedFluidSimulation.SampleBakedFluidSimulation",
 			"/Water/Materials/Functions/WaterBodyData.WaterBodyData",
 			"/Water/Materials/Functions/WaterHeightMappingVS.WaterHeightMappingVS",
 			"/Water/Materials/Functions/WaterOpacityMaskFromDepth.WaterOpacityMaskFromDepth",
@@ -13253,6 +13255,7 @@
 			"/Water/Meshes/S_WaterPlane_256.S_WaterPlane_256",
 			"/Water/Meshes/S_WaterPlane_FarPlane.S_WaterPlane_FarPlane",
 			"/Water/Textures/Black.Black",
+			"/Water/Textures/BlackTexture2DArray.BlackTexture2DArray",
 			"/Water/Textures/Flowmaps/RiverFlowmap_Diffuse.RiverFlowmap_Diffuse",
 			"/Water/Textures/Flowmaps/RiverFlowmap_Normal.RiverFlowmap_Normal"
 		],

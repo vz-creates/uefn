@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.20-CL-40965447
+# Generated from build: ++Fortnite+Release-34.21-CL-41092960
 #################################################
 
 AI<public> := module {

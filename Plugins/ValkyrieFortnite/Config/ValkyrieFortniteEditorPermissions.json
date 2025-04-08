@@ -3132,7 +3132,7 @@
 			},
 			{
 				"Type": "/Script/CRD_ModalDialogUI.CreativeModalDialogViewmodel",
-				"DenyList": [ "HoveredSound", "PressedSound", "Art01_Material", "Art02_Material", "Progress" ]				
+				"DenyList": [ "HoveredSound", "PressedSound", "Art01_Material", "Art02_Material", "Progress"]				
 			},
 			{
 				"Type": "/CreativeCoreDevices/Creative_Powerup_V2.Creative_Powerup_V2_C",

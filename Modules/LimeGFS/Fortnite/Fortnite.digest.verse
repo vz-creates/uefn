@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.21-CL-41092960
+# Generated from build: ++Fortnite+Release-34.30-CL-41387772
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -3836,8 +3836,20 @@ Devices<public> := module {
     # Enables the device, allowing the Rift Point to be planted.
     Enable<override>(): void = external {}
 
+    # Returns an array of agents that are currently occupying the volume.
+    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Is true when `Agent` is in the volume.
+    IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    # Sends an event when an `agent` enters the volume.
+    OnAgentEntered<public>: listenable(agent) = external {}
+
+    # Sends an event when an `agent` exits the volume.
+    OnAgentExited<public>: listenable(agent) = external {}
 
     # Sends an event when planting the Rift Point is canceled, passing in the planting `agent`.
     PlantCancelEvent<public>: listenable(agent) = external {}

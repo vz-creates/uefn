@@ -3,6 +3,7 @@
 	"bEnableAccessToUnreleasedContent": true,
 
 	"ValkyrieProjectSettings": {
+		"bCollectionsEnabled": true,
 		"bMultiProjectAllowed": true,
 		"bModuleIdNamedPlugins": true,
 		"bShowingContentVersePath": true,
@@ -1059,6 +1060,13 @@
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C": { "Visible": true },
 			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C": { }
 		},
+		"AllowedEditorPreferencesSections": {
+			"General": {
+				"Names": {
+					"+": [ "CollectionSettings" ]
+				}
+			}
+		},
 		"AllowedMenus": {
 			"AssetEditor.PropertyInterfaceEditor.MainMenu": {
 				"AllowList": [ "File", "Edit", "Asset", "Window", "Help" ]
@@ -1148,6 +1156,7 @@
 			"+": [
 			]
 		},
+		"bShowGameProjectCollections": true,
 		"VerseScopesToShowAssetsFor": { "+": ["InternalAPI"] }
 	},
 	"PropertyEditorClassPermissionList": {

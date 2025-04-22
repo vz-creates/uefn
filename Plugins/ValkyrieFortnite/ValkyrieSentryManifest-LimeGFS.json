@@ -461,6 +461,11 @@
 			"FriendlyName": "Dev-Mobile",
 			"Version": 3
 		},
+		"B08D322263AD45D99EA752DB132E468A":
+		{
+			"FriendlyName": "SproutActivityStateEntryVersion",
+			"Version": 1
+		},
 		"B0D832E41F894F0DACCF7EB736FD4AA2":
 		{
 			"FriendlyName": "Dev-Blueprints",
@@ -584,7 +589,7 @@
 		"E70863686B234C5884391B7016265E91":
 		{
 			"FriendlyName": "FortniteRelease",
-			"Version": 15
+			"Version": 16
 		},
 		"EF0A537D90DA4CD2BCA16D6AE21E3589":
 		{

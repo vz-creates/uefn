@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.30-CL-41387772
+# Generated from build: ++Fortnite+Release-34.40-CL-41753727
 #################################################
 
 AI<public> := module {
@@ -937,7 +937,6 @@ using { /Fortnite.com/Teams }
 using { /Fortnite.com/Vehicles }
 using { /UnrealEngine.com/Abilities }
 using { /UnrealEngine.com/Temporary/Diagnostics }
-using { /Verse.org/Assets }
 using { /Verse.org/SceneGraph/VerseCamera }
 using { /Verse.org/VerseEngine }
 # Module import path: /Fortnite.com/Animation
@@ -7215,6 +7214,9 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows an armored battle bus to be configured and spawned.
   vehicle_spawner_armored_battle_bus_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Specialized `vehicle_spawner_device` that allows an armored transport to be configured and spawned.
+  vehicle_spawner_armored_transport_device<public> := class<concrete><final>(vehicle_spawner_device) {}
+
   # Specialized `vehicle_spawner_device` that allows an ATK (all terrain kart) to be configured and spawned.
   vehicle_spawner_atk_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -7767,6 +7769,7 @@ Devices<public> := module {
   }
 }
 
+using { /Verse.org/Assets }
 # Module import path: /Fortnite.com/FN1Native
 FN1Native<public> := module {
   # Module import path: /Fortnite.com/FN1Native/FortBus
@@ -7941,6 +7944,22 @@ FN1Native<public> := module {
       TimeUntilTeamLivesRechargeChangedEvent<native><public>: listenable(tuple(agent, team, float, float)) = external {}
     }
   }
+
+  player_ui_display_info<native><epic_internal> := struct {
+    CurrentXP<native>: int
+
+    Image<native>: texture
+
+    LargeImage<native>: texture
+
+    SmallImage<native>: texture
+
+    SquadColor<native>: color
+  }
+
+  player_ui_display_info_manager<native><epic_internal> := class {
+    GetDisplayInfo<native><epic_internal>(InPlayer: player)<computes><reads>: player_ui_display_info
+  }
 }
 
 using { /Fortnite.com/Devices }
@@ -7986,59 +8005,56 @@ FeralCorgi<public> := module {
 
   # Module import path: /Fortnite.com/FeralCorgi/PlayerLoadingStatusBridge
   PlayerLoadingStatusBridge<epic_internal> := module {
-    AwaitPlayersLoading<native><epic_internal>((local:)Playspace: fort_playspace)<suspends>: void
+    AwaitPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<suspends>: void
 
-    GetNumPlayersLoading<native><epic_internal>((local:)Playspace: fort_playspace)<computes><reads>: int
+    GetNumPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<computes><reads>: int
 
-    GetPlayersLoading<native><epic_internal>((local:)Playspace: fort_playspace)<computes><reads>: []player
+    GetPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<computes><reads>: []player
 
-    IsPlayerLoading<native><epic_internal>((local:)Playspace: fort_playspace, Player: player)<transacts><decides>: void
+    IsPlayerLoading<native><epic_internal>(Playspace: fort_playspace, Player: player)<transacts><decides>: void
   }
 
   # Module import path: /Fortnite.com/FeralCorgi/ReservationHoldingBridge
   ReservationHoldingBridge<epic_internal> := module {
-    EnableLeavingPlayerReservationHolding<native><epic_internal>(
-      (local:)Playspace: fort_playspace,
-      HoldingTime: float
-    ): void
+    EnableLeavingPlayerReservationHolding<native><epic_internal>(Playspace: fort_playspace, HoldingTime: float): void
 
-    FreeHeldReservation<native><epic_internal>((local:)Playspace: fort_playspace, Player: player): logic
+    FreeHeldReservation<native><epic_internal>(Playspace: fort_playspace, Player: player): logic
 
-    RestoreSessionReservationHoldingSettings<native><epic_internal>((local:)Playspace: fort_playspace): void
+    RestoreSessionReservationHoldingSettings<native><epic_internal>(Playspace: fort_playspace): void
   }
 
   # Module import path: /Fortnite.com/FeralCorgi/SessionAttributesBridge
   SessionAttributesBridge<epic_internal> := module {
     ApplyMatchEarlyLeaveBanhammerToPlayer<native><epic_internal>(Player: player, Details: string): logic
 
-    EndMatch<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    EndMatch<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    GetMinigameRound<native><epic_internal>((local:)Playspace: fort_playspace)<transacts>: int
+    GetMinigameRound<native><epic_internal>(Playspace: fort_playspace)<transacts>: int
 
-    GetTotalMinigameRounds<native><epic_internal>((local:)Playspace: fort_playspace)<transacts>: int
+    GetTotalMinigameRounds<native><epic_internal>(Playspace: fort_playspace)<transacts>: int
 
     GetUpdatedRankForPlayers<native><epic_internal>(
-      (local:)Playspace: fort_playspace,
+      Playspace: fort_playspace,
       Players: []player
     )<suspends>: []ranked_track_progress
 
-    IsInEditMode<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsInEditMode<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    IsInPlayMode<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsInPlayMode<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    IsMinigameInProgress<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsMinigameInProgress<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    IsPlaytest<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsPlaytest<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    IsPrivateMatch<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsPrivateMatch<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
     IsQABackend<native><epic_internal>()<transacts><decides>: void
 
-    IsRankedMatch<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsRankedMatch<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    IsUsingCustomMatchKeys<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsUsingCustomMatchKeys<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
-    IsVKEdit<native><epic_internal>((local:)Playspace: fort_playspace)<transacts><decides>: void
+    IsVKEdit<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
   }
 
   using { /Fortnite.com/Playspaces }
@@ -8753,9 +8769,6 @@ Teams<public> := module {
 }
 
 UI<public> := module {
-  # Get the `fort_hud_controller` for the current `fort_playspace`.
-  ((local:)Playspace: fort_playspace).GetHUDController<native><public>(): fort_hud_controller
-
   @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().HideElements()`.
   # Hides a set of HUD elements.
@@ -8770,6 +8783,9 @@ UI<public> := module {
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ShowElements()`.
   # Shows a set of HUD elements.
   (PlayerUI: player_ui).ShowHUDElements<native><public>(HUDElements: []hud_element_identifier): void
+
+  # Get the `fort_hud_controller` for the current `fort_playspace`.
+  (Playspace: fort_playspace).GetHUDController<native><public>(): fort_hud_controller
 
   # Returns the `fn_ui_extensions_component` associated with `Player`.
   GetUIExtensionsComponent<native><epic_internal>(Player: player)<transacts><decides>: fn_ui_extensions_component

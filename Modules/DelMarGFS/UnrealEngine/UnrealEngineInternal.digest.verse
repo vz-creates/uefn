@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.30-CL-41387772
+# Generated from build: ++Fortnite+Release-34.40-CL-41753727
 #################################################
 
 AINavigation<public> := module {
@@ -1061,8 +1061,8 @@ JSON<public> := module {
   }
 }
 
-# Module import path: /UnrealEngine.com/Playspace
-Playspace<public> := module {
+# Module import path: /UnrealEngine.com/PlayspaceInternal
+PlayspaceInternal<public> := module {
   @hide_in_editor
   @experimental
   playspace_association_component<native><epic_internal> := class<final_super><epic_internal>(component) {}

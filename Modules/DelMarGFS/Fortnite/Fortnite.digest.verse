@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.30-CL-41387772
+# Generated from build: ++Fortnite+Release-34.40-CL-41753727
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -5243,6 +5243,9 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows an armored battle bus to be configured and spawned.
   vehicle_spawner_armored_battle_bus_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Specialized `vehicle_spawner_device` that allows an armored transport to be configured and spawned.
+  vehicle_spawner_armored_transport_device<public> := class<concrete><final>(vehicle_spawner_device) {}
+
   # Specialized `vehicle_spawner_device` that allows an ATK (all terrain kart) to be configured and spawned.
   vehicle_spawner_atk_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -6012,9 +6015,6 @@ using { /Verse.org/Colors }
 using { /Verse.org/Simulation }
 # Module import path: /Fortnite.com/UI
 (/Fortnite.com:)UI<public> := module {
-  # Get the `fort_hud_controller` for the current `fort_playspace`.
-  ((local:)Playspace: fort_playspace).GetHUDController<native><public>(): fort_hud_controller
-
   @deprecated
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().HideElements()`.
   # Hides a set of HUD elements.
@@ -6029,6 +6029,9 @@ using { /Verse.org/Simulation }
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ShowElements()`.
   # Shows a set of HUD elements.
   (PlayerUI: player_ui).ShowHUDElements<native><public>(HUDElements: []hud_element_identifier): void
+
+  # Get the `fort_hud_controller` for the current `fort_playspace`.
+  (Playspace: fort_playspace).GetHUDController<native><public>(): fort_hud_controller
 
   # Text button with big and loud styling applied.
   button_loud<native><public> := class<final>(text_button_base) {}

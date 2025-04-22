@@ -39,7 +39,7 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingActor",
-				"AllowList": [ "bPreventScaling", "bPlacementRequiresNoOverlaps", "bHasGeometryCollectionComponent", "SnapGridSize", "VertSnapGridSize", "SnapOffset", "CentroidOffset", "BaseLocToPivotOffset" ]
+				"AllowList": [ "bPreventScaling", "bPlacementRequiresNoOverlaps", "bHasGeometryCollectionComponent", "SnapGridSize", "VertSnapGridSize", "SnapOffset", "CentroidOffset", "BaseLocToPivotOffset", "bEditorOnlyRenderCustomDepth" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingSMActor",
@@ -50,8 +50,8 @@
 				"AllowList": [ "UserDaySequence" ]
 			},
 			{
-				"Type": "/Script/Engine.CameraComponent",
-				"AllowList": [ "FieldOfView", "ProjectionMode", "AspectRatio" ]
+				"Type": "/Game/ArtTools/PlaysetIconSceneCamera.PlaysetIconSceneCamera_C",
+				"AllowList": [ "CameraPreset", "FieldOfView", "ProjectionMode", "bConstrainAspectRatio", "AspectRatio" ]
 			}
 		],
 		"-": [

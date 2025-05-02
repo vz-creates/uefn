@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.40-CL-41753727
+# Generated from build: ++Fortnite+Release-35.00-CL-41994699
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -39,7 +39,7 @@ AI<public> := module {
 
   @experimental
   # Returns the `entity` for `InNPCBehavior`.
-  (InNPCBehavior: npc_behavior).GetEntity<native><public>()<computes><decides><reads>: entity
+  (InNPCBehavior: npc_behavior).GetEntity<native><public>()<reads><decides>: entity
 
   @experimental
   # Generate a navigation_target from an entity
@@ -81,7 +81,7 @@ AI<public> := module {
 
   @experimental
   # Fortnite Guards AI actions management
-  fort_guard_actions<native><public> := interface<epic_internal>(fort_npc_actions) {
+  fort_guard_actions<native><public> := interface<epic_internal>(fort_npc_actions, fort_leashable) {
     # Attack the target
     Attack<public>(Target: fort_target_info)<suspends>: ai_action_result
 
@@ -127,15 +127,15 @@ AI<public> := module {
 
     @experimental
     # Get the current alert level of the guard.
-    GetAlertLevel<public>()<computes><reads>: fort_guard_alert_level
+    GetAlertLevel<public>()<reads>: fort_guard_alert_level
 
     @experimental
     # Get the current alert level of a target for the guard.
-    GetAlertLevel<public>(Target: entity)<computes><decides><reads>: fort_guard_alert_level
+    GetAlertLevel<public>(Target: entity)<reads><decides>: fort_guard_alert_level
 
     @experimental
     # Get information about the current target.
-    GetCurrentTargetInfo<public>()<computes><decides><reads>: fort_target_info
+    GetCurrentTargetInfo<public>()<reads><decides>: fort_target_info
   }
 
   fort_leashable<native><public> := interface<epic_internal> {
@@ -166,7 +166,7 @@ AI<public> := module {
   fort_npc_perception<native><public> := interface<epic_internal> {
     @experimental
     # Get the last known position of a target.
-    GetLastKnownPosition<public>(Target: entity)<computes><decides><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    GetLastKnownPosition<public>(Target: entity)<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     @experimental
     # Event when a target is added.
@@ -510,7 +510,7 @@ Devices<public> := module {
   (CreativeObject: creative_object_interface).GetPlayspace<native><public>()<transacts>: fort_playspace
 
   # Returns a queryable `tag_view` which can be used to query the tags on `CreativeObject`.
-  (CreativeObject: creative_object_interface).GetTags<native><public>(): tag_view
+  (CreativeObject: creative_object_interface).GetTags<native><public>()<transacts>: tag_view
 
   @available { MinUploadedAtFNVersion := 2930 }
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on a default constructed object.
@@ -1315,13 +1315,13 @@ Devices<public> := module {
     FirstAgentEntersEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the Capture Area.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Returns the *Capture Height* (in meters) of the capture area.
-    GetHeight<public>()<computes><reads>: float = external {}
+    GetHeight<public>()<reads>: float = external {}
 
     # Returns the *Capture Radius* (in meters) of the capture area.
-    GetRadius<public>()<computes><reads>: float = external {}
+    GetRadius<public>()<reads>: float = external {}
 
     # Gives control of this device to the capturing `agent`'s team.
     GiveControl<public>(Agent: agent): void = external {}
@@ -1559,7 +1559,7 @@ Devices<public> := module {
   # Used together with `class_selector_device` to create class based gameplay. Defines custom class attributes and inventory loadouts.
   class_designer_device<public> := class<concrete><final>(creative_device_base) {
     # Returns an array of agents that are currently of *Class* defined by this device.
-    GetClassMembers<public>()<computes><reads>: []agent = external {}
+    GetClassMembers<public>()<reads>: []agent = external {}
 
     # Is true if `Agent` is on *Class* defined by this device.
     IsOfClass<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -1994,7 +1994,7 @@ Devices<public> := module {
     AgentExitsEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Returns the damage to be applied each tick within the volume.
     GetDamage<public>()<transacts>: int = external {}
@@ -2821,7 +2821,7 @@ Devices<public> := module {
     AgentExitsEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Is true when `Agent` is in the zone.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -3017,10 +3017,10 @@ Devices<public> := module {
     DeviceSeesAgentEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently of the class defined by this device.
-    GetLookingAtDeviceAgents<public>()<computes><reads>: []agent = external {}
+    GetLookingAtDeviceAgents<public>()<reads>: []agent = external {}
 
     # Returns an array of agents that are currently of the class defined by this device.
-    GetPerceivedAgents<public>()<computes><reads>: []agent = external {}
+    GetPerceivedAgents<public>()<reads>: []agent = external {}
 
     # Succeeds when `Agent` is registered to this checkpoint.
     IsLookingAtDevice<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -3129,7 +3129,7 @@ Devices<public> := module {
     FirstActivationPerAgentEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently registered to this checkpoint.
-    GetRegisteredAgents<public>()<computes><reads>: []agent = external {}
+    GetRegisteredAgents<public>()<reads>: []agent = external {}
 
     # Succeeds when `Agent` is registered to this checkpoint.
     IsRegistered<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -3166,7 +3166,7 @@ Devices<public> := module {
     GetCount<public>()<transacts>: int = external {}
 
     # Returns an array of agents that are currently counted by the device.
-    GetCountedAgents<public>()<computes><reads>: []agent = external {}
+    GetCountedAgents<public>()<reads>: []agent = external {}
 
     # Returns the number of players required for this counter to succeed.
     GetTargetCount<public>()<transacts>: int = external {}
@@ -3783,7 +3783,7 @@ Devices<public> := module {
     Enable<override>(): void = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
@@ -4255,7 +4255,7 @@ Devices<public> := module {
     EnableVolumeLocking<public>(): void = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Is true when `Agent` is in the volume.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -4269,6 +4269,7 @@ Devices<public> := module {
     ZoneOccupiedEvent<public>: listenable(agent) = external {}
   }
 
+  @deprecated
   # Controls how the sky looks, as well as giving you options for changing the sun, clouds, stars or other objects in the sky above your island. You can control the sun and moon, and add other atmospheric elements like stars, fog and clouds. You can change the color of your light source, and blend different colors for your island's sky to create the perfect atmosphere for your game.
   skydome_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -4602,7 +4603,7 @@ Devices<public> := module {
     EnemyEliminatedEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently of the team defined by this device.
-    GetTeamMembers<public>()<computes><reads>: []agent = external {}
+    GetTeamMembers<public>()<reads>: []agent = external {}
 
     # Is true if `Agent` is on *Team*.
     IsOnTeam<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -4864,7 +4865,7 @@ Devices<public> := module {
     Decrement<public>(Agent: agent): void = external {}
 
     # Returns an array of agents that currently have this tracker active.
-    GetActiveAgents<public>()<computes><reads>: []agent = external {}
+    GetActiveAgents<public>()<reads>: []agent = external {}
 
     # Returns the target value that must be achieved in order for `CompleteEvent` to trigger.
     # Clamped to `0 <= GetTarget <= 10000`.
@@ -5551,10 +5552,18 @@ Devices<public> := module {
     AgentExitsEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Succeeds when `Agent` is in the volume.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    @experimental
+    # Signaled when an `creative_prop` entered the device volume.
+    PropEnterEvent<public>: listenable(creative_prop) = external {}
+
+    @experimental
+    # Signaled when an `creative_prop` exited the device volume.
+    PropExitEvent<public>: listenable(creative_prop) = external {}
   }
 
   # Used to create and manipulate volumes of water where players can swim, fish, or drive boats.
@@ -5735,6 +5744,9 @@ Devices<public> := module {
 
 # Module import path: /Fortnite.com/FortPlayerUtilities
 FortPlayerUtilities<public> := module {
+  # Returns the agent a spectator is currently spectating, fails if the spectator isn't spectating or isn't spectating an agent.
+  (InAgent: agent).GetSpectatedAgent<native><public>()<reads><decides>: agent
+
   # Returns an `[]agent`s currently spectating `InAgent`.
   (InAgent: agent).GetSpectators<native><public>()<transacts>: []agent
 
@@ -6257,5 +6269,11 @@ Vehicles<public> := module {
 
     # Succeeds if this `fort_vehicle` is standing on ground.
     IsOnGround<public>()<transacts><decides>: void
+
+    # Teleports the `fort_vehicle` to the specified `Position` and `Rotation`.
+    TeleportTo<public>(
+      Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<transacts><decides>: void
   }
 }

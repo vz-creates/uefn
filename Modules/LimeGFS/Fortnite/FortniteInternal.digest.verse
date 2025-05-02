@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.40-CL-41753727
+# Generated from build: ++Fortnite+Release-35.00-CL-41994699
 #################################################
 
 AI<public> := module {
@@ -42,16 +42,16 @@ AI<public> := module {
 
   @experimental
   # Returns the `entity` for `InNPCBehavior`.
-  (InNPCBehavior: npc_behavior).GetEntity<native><public>()<computes><decides><reads>: entity
+  (InNPCBehavior: npc_behavior).GetEntity<native><public>()<reads><decides>: entity
 
-  using { /Fortnite.com/AI/CompanionAI/PingCommand }
+  using { /Fortnite.com/AI/HiredGuardCommands/PingCommand }
   using { /Fortnite.com/Characters }
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  # Module import path: /Fortnite.com/AI/CompanionAI
-  CompanionAI<public> := module {
+  # Module import path: /Fortnite.com/AI/HiredGuardCommands
+  HiredGuardCommands<public> := module {
     @experimental
     (Agent: agent).GetTeamMembers<native><epic_internal>()<transacts>: []agent
 
@@ -64,7 +64,7 @@ AI<public> := module {
     @experimental
     (InEntity: entity).GetAgent<native><epic_internal>()<transacts>: ?agent
 
-    # Module import path: /Fortnite.com/AI/CompanionAI/PingCommand
+    # Module import path: /Fortnite.com/AI/HiredGuardCommands/PingCommand
     PingCommand<epic_internal> := module {
       @experimental
       command_type<native><epic_internal> := enum {
@@ -100,17 +100,10 @@ AI<public> := module {
     }
 
     @experimental
-    (/Fortnite.com/AI/CompanionAI:)ToString<epic_internal>(Type: command_type)<transacts>: string = external {}
+    (/Fortnite.com/AI/HiredGuardCommands:)ToString<epic_internal>(Type: command_type)<transacts>: string = external {}
 
     @experimental
-    (/Fortnite.com/AI/CompanionAI:)ToString<epic_internal>(Type: entity_type)<transacts>: string = external {}
-
-    @hide_in_editor
-    @experimental
-    @available { MinUploadedAtFNVersion := 3200 }
-    companion_ai<epic_internal> := class<concrete>(npc_behavior) {
-      OnBegin<override>()<suspends>: void = external {}
-    }
+    (/Fortnite.com/AI/HiredGuardCommands:)ToString<epic_internal>(Type: entity_type)<transacts>: string = external {}
 
     @hide_in_editor
     @experimental
@@ -127,8 +120,14 @@ AI<public> := module {
       RunDefaultBehavior<native><epic_internal>()<suspends>: ai_action_result
     }
 
-    @experimental
     @hide_in_editor
+    @experimental
+    @available { MinUploadedAtFNVersion := 3200 }
+    hired_guard_commands<epic_internal> := class<concrete>(npc_behavior) {
+      OnBegin<override>()<suspends>: void = external {}
+    }
+
+    @experimental
     ping_component<native><epic_internal> := class<final_super><epic_internal>(component) {
       @experimental
       AreNPCCommandsEnabled<native><epic_internal>()<transacts>: logic
@@ -235,6 +234,29 @@ AI<public> := module {
     Condition<native><epic_internal>: injected_condition
   }
 
+  @experimental
+  decision_system<native><epic_internal> := interface<epic_internal> {
+    # Start the decision system if not started already.
+    Start<native_callable><public>(Entity: entity)<suspends>: void
+
+    # Stop the decision system if started already.
+    Stop<native_callable><public>(): void
+  }
+
+  @experimental
+  # Component that points to a decision system is responsible to Start, Stop, Pause or Resume it.
+  decision_system_component<native><final><epic_internal> := class<final_super><epic_internal>(component) {
+    SetDecisionSystem<native><public>(InDecisionSystem: decision_system)<transacts>: void
+
+    @editable
+    # Whether the decision system will be started when the component is added to the simulation.
+    StartOnSimulate<native><public>: logic = external {}
+
+    @editable
+    # The decision system that this component will run.
+    var<private> DecisionSystem<native><public>: decision_system
+  }
+
   focus_interface<native><public> := interface<epic_internal> {
     # Look At specified Agent. Will never complete unless interrupted.
     MaintainFocus<public>(Agent: agent)<suspends>: void
@@ -244,17 +266,8 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
   # Fortnite Bots AI actions management
-  fort_bot_actions_component<native><epic_internal> := class<epic_internal>(fort_npc_actions_component) {
-    @experimental
-    # Play an emote
-    PlayEmote<native><epic_internal>(Emote: emote)<suspends>: ai_action_result
-
-    @experimental
-    # Play a random emote from the character emotes bank
-    PlayRandomEmote<native><public>()<suspends>: ai_action_result
-  }
+  fort_bot_actions_component<native><epic_internal> := class<epic_internal>(fort_guard_actions_component) {}
 
   @experimental
   # Perception settings for damage.
@@ -272,7 +285,7 @@ AI<public> := module {
 
   @experimental
   # Fortnite Guards AI actions management
-  fort_guard_actions<native><public> := interface<epic_internal>(fort_npc_actions) {
+  fort_guard_actions<native><public> := interface<epic_internal>(fort_npc_actions, fort_leashable) {
     # Attack the navigation obstacle
     Attack<epic_internal>(Target: fort_obstacle_info)<suspends>: ai_action_result
 
@@ -305,51 +318,57 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
   # Fortnite Guards AI actions management
   fort_guard_actions_component<native><epic_internal> := class<epic_internal>(
     fort_npc_actions_component,
     fort_guard_actions
   ) {
-    @experimental
     # Attack the navigation obstacle
     Attack<native><override>(Target: fort_obstacle_info)<suspends>: ai_action_result
 
-    @experimental
     # Attack the target
     Attack<native><override>(Target: fort_target_info)<suspends>: ai_action_result
 
-    @experimental
+    # Removes the current leash.
+    ClearLeash<native><override>(): void
+
     # Change stance to crouch
     Crouch<native><override>()<suspends>: ai_action_result
 
-    @experimental
     # Move in range to attack the current target
     MoveInRangeToAttack<native><override>()<suspends>: ai_action_result
 
     OnInitialized<native><override>(): void
 
-    @experimental
     # Play an emote
     PlayEmote<native><override>(Emote: emote)<suspends>: ai_action_result
 
-    @experimental
     # Play a random emote from the character emotes bank
     PlayRandomEmote<native><override>()<suspends>: ai_action_result
 
-    @experimental
     # Revive the specified target
     Revive<native><override>(Target: agent)<suspends>: ai_action_result
 
-    @experimental
     # Roam around the current position. Use the fort_leashable_component to specify the radius, else will roam anywhere.
     RoamAround<native><override>(?MovementType: movement_type = external {})<suspends>: navigation_result
 
-    @experimental
+    # Set the agent to be the new center of the leash.
+    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
+    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
+    SetLeashAgent<native><override>(Agent: agent, InnerRadius: float, OuterRadius: float): void
+
+    # Set custom leash position.
+    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
+    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
+    SetLeashPosition<native><override>(
+      Location: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      InnerRadius: float,
+      OuterRadius: float
+    ): void
+
     # Go back to standing
     StandUp<native><override>(): ai_action_result
 
-    @experimental
     # Change movement speed to sprint and switch to tactical sprint when energy is full.
     TacticalSprint<native><override>()<suspends>: ai_action_result
   }
@@ -383,19 +402,19 @@ AI<public> := module {
 
     @experimental
     # Get the current alert level of the guard.
-    GetAlertLevel<public>()<computes><reads>: fort_guard_alert_level
+    GetAlertLevel<public>()<reads>: fort_guard_alert_level
 
     @experimental
     # Get the current alert level of a target for the guard.
-    GetAlertLevel<public>(Target: entity)<computes><decides><reads>: fort_guard_alert_level
+    GetAlertLevel<public>(Target: entity)<reads><decides>: fort_guard_alert_level
 
     @experimental
     # Get information about the current target.
-    GetCurrentTargetInfo<public>()<computes><decides><reads>: fort_target_info
+    GetCurrentTargetInfo<public>()<reads><decides>: fort_target_info
 
     @experimental
     # Get information about the potential current obstacle
-    GetObstacleInfo<epic_internal>()<computes><decides><reads>: fort_obstacle_info
+    GetObstacleInfo<epic_internal>()<reads><decides>: fort_obstacle_info
 
     @experimental
     # Event when a new best obstacle is detected
@@ -403,36 +422,28 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
   # Fortnite guard perception management
   fort_guard_perception_component<native><epic_internal> := class<epic_internal>(
     fort_npc_perception_component,
     fort_guard_perception
   ) {
-    @experimental
-    AlertLevelChangedEvent<override>: subscribable_event(fort_guard_alert_level) = external {}
+    AlertLevelChangedEvent<override><native>: subscribable_event_intrnl(fort_guard_alert_level) = external {}
 
-    @experimental
-    CurrentTargetChangedEvent<override>: subscribable_event(fort_target_info) = external {}
+    CurrentTargetChangedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
 
-    @experimental
     # Get the current alert level of the guard.
-    GetAlertLevel<native><override>()<computes><reads>: fort_guard_alert_level
+    GetAlertLevel<native><override>()<reads>: fort_guard_alert_level
 
-    @experimental
     # Get the current alert level of a target for the guard.
-    GetAlertLevel<native><override>(Target: entity)<computes><decides><reads>: fort_guard_alert_level
+    GetAlertLevel<native><override>(Target: entity)<reads><decides>: fort_guard_alert_level
 
-    @experimental
     # Get information about the current target.
-    GetCurrentTargetInfo<native><override>()<computes><decides><reads>: fort_target_info
+    GetCurrentTargetInfo<native><override>()<reads><decides>: fort_target_info
 
-    @experimental
     # Get information about the potential current obstacle
-    GetObstacleInfo<native><override>()<computes><decides><reads>: fort_obstacle_info
+    GetObstacleInfo<native><override>()<reads><decides>: fort_obstacle_info
 
-    @experimental
-    ObstacleChangedEvent<override>: subscribable_event(fort_obstacle_info) = external {}
+    ObstacleChangedEvent<override><native>: subscribable_event_intrnl(fort_obstacle_info) = external {}
 
     OnInitialized<native><override>(): void
 
@@ -493,35 +504,6 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
-  # Fortnite NPC leash management
-  fort_leashable_component<native><epic_internal> := class<final_super><epic_internal>(component, fort_leashable) {
-    @experimental
-    # Removes the current leash.
-    ClearLeash<native><override>(): void
-
-    OnInitialized<native><override>(): void
-
-    OnUninitializing<native><override>(): void
-
-    @experimental
-    # Set the agent to be the new center of the leash.
-    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
-    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
-    SetLeashAgent<native><override>(Agent: agent, InnerRadius: float, OuterRadius: float): void
-
-    @experimental
-    # Set custom leash position.
-    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
-    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
-    SetLeashPosition<native><override>(
-      Location: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-      InnerRadius: float,
-      OuterRadius: float
-    ): void
-  }
-
-  @experimental
   # Fortnite NPC AI actions management
   fort_npc_actions<native><public> := interface<epic_internal>(navigatable, focus_interface) {
     @experimental
@@ -538,30 +520,23 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
   # Fortnite NPC AI actions management
   fort_npc_actions_component<native><epic_internal> := class<final_super><epic_internal>(component, fort_npc_actions) {
-    @experimental
     # Fires the currently equipped weapon.
     FireCurrentWeapon<native><override>()<suspends>: void
 
-    @experimental
     # Return the current destination of the character
     GetCurrentDestination<native><override>()<transacts><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
-    @experimental
     # Add spare ammo for the currently equipped weapon.
     GiveAmmoForCurrentWeapon<native><override>(AmmoQuantity: int)<suspends>: void
 
-    @experimental
     # Look At specified Agent. Will never complete unless interrupted.
     MaintainFocus<native><override>(Agent: agent)<suspends>: void
 
-    @experimental
     # Look At specified location. Will never complete unless interrupted.
     MaintainFocus<native><override>(Location: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<suspends>: void
 
-    @experimental
     # Navigate toward the specified target
     NavigateTo<native><override>(
       Target: navigation_target,
@@ -574,19 +549,15 @@ AI<public> := module {
 
     OnUninitializing<native><override>(): void
 
-    @experimental
     # Try to reload the currently equipped weapon.
     ReloadCurrentWeapon<native><override>()<suspends>: logic
 
-    @experimental
     # Apply a multiplier on the movement speed (Multiplier is clamped between 0.5 and 2)
     SetMovementSpeedMultiplier<native><override>(Multiplier: float): void
 
-    @experimental
     # Stop navigation
     StopNavigation<native><override>(): void
 
-    @experimental
     # Wait for a specific duration
     Wait<native><override>(?Duration: float = external {})<suspends>: void
   }
@@ -594,20 +565,23 @@ AI<public> := module {
   @experimental
   # NPC Component
   fort_npc_component<native><epic_internal> := class<final_super>(component) {
-    @editable
-    NPCCharacterDefinition<native><epic_internal>: npc_character_definition
-
     OnBeginSimulation<override>(): void = external {}
 
     OnEndSimulation<override><final>(): void = external {}
+
+    @editable
+    Settings<native><epic_internal>: fort_npc_component_settings = external {}
   }
+
+  @import_as("/Script/VerseFortniteAI.UNPCComponentSettings")
+  fort_npc_component_settings<native><epic_internal> := class {}
 
   @experimental
   # Fortnite NPC perception management
   fort_npc_perception<native><public> := interface<epic_internal> {
     @experimental
     # Get the last known position of a target.
-    GetLastKnownPosition<public>(Target: entity)<computes><decides><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    GetLastKnownPosition<public>(Target: entity)<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     @experimental
     # Event when a target is added.
@@ -639,37 +613,29 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
   # Fortnite NPC perception management
   fort_npc_perception_component<native><epic_internal> := class<final_super><epic_internal>(
     component,
     fort_npc_perception
   ) {
-    @experimental
     # Get the last known position of a target.
-    GetLastKnownPosition<native><override>(Target: entity)<computes><decides><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    GetLastKnownPosition<native><override>(Target: entity)<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     OnInitialized<native><override>(): void
 
     OnUninitializing<native><override>(): void
 
-    @experimental
-    TargetAddedEvent<override>: subscribable_event(fort_target_info) = external {}
+    TargetAddedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
 
-    @experimental
-    TargetHeardEvent<override>: subscribable_event(fort_target_info) = external {}
+    TargetHeardEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
 
-    @experimental
-    TargetInfoUpdatedEvent<override>: subscribable_event(fort_target_info) = external {}
+    TargetInfoUpdatedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
 
-    @experimental
-    TargetRemovedEvent<override>: subscribable_event(entity) = external {}
+    TargetRemovedEvent<override><native>: subscribable_event_intrnl(entity) = external {}
 
-    @experimental
-    TargetSeenEvent<override>: subscribable_event(fort_target_info) = external {}
+    TargetSeenEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
 
-    @experimental
-    TargetTouchedEvent<override>: subscribable_event(fort_target_info) = external {}
+    TargetTouchedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
 
     var DetectedTargets<override><native>: []fort_target_info = external {}
   }
@@ -789,7 +755,6 @@ AI<public> := module {
   }
 
   @experimental
-  @hide_in_editor
   # Fortnite Wildlife AI actions management
   fort_wildlife_actions_component<native><epic_internal> := class<epic_internal>(fort_npc_actions_component) {
     OnInitialized<native><override>(): void
@@ -807,7 +772,7 @@ AI<public> := module {
     OnEnd<native_callable><epic_internal>(ActionResult: ai_action_result): void = external {}
   }
 
-  @import_as("/Script/VerseFortnite.UInjectedActionScript")
+  @import_as("/Script/VerseFortniteAI.UInjectedActionScript")
   injected_action_native_base<native><epic_internal> := class<abstract> {}
 
   @experimental
@@ -828,10 +793,10 @@ AI<public> := module {
     GetAgent<native><epic_internal>()<transacts><decides>: agent
 
     # Return if the associated action is currently allowed.
-    IsActionAllowed<native><epic_internal>()<computes><decides><reads>: void
+    IsActionAllowed<native><epic_internal>()<reads><decides>: void
 
     # Return if the associated action is currently in progress.
-    IsActionInProgress<native><epic_internal>()<computes><decides><reads>: void
+    IsActionInProgress<native><epic_internal>()<reads><decides>: void
 
     # Called when the behavior is relevant. The coroutine should loop and call Allow/DenyAction to set if the  action can be executed. Action like moving or shooting shouldn't be done in this function. Condition start denied and are considered denied once execution finished.
     OnBegin<native_callable><epic_internal>()<suspends>: void
@@ -840,7 +805,7 @@ AI<public> := module {
     OnEnd<native_callable><epic_internal>(): void = external {}
   }
 
-  @import_as("/Script/VerseFortnite.UInjectedConditionScript")
+  @import_as("/Script/VerseFortniteAI.UInjectedConditionScript")
   injected_condition_native_base<native><epic_internal> := class<abstract> {}
 
   movement_style<native><epic_internal> := enum {
@@ -935,10 +900,8 @@ using { /Fortnite.com/Assets }
 using { /Fortnite.com/Characters }
 using { /Fortnite.com/Teams }
 using { /Fortnite.com/Vehicles }
-using { /UnrealEngine.com/Abilities }
 using { /UnrealEngine.com/Temporary/Diagnostics }
-using { /Verse.org/SceneGraph/VerseCamera }
-using { /Verse.org/VerseEngine }
+using { /Verse.org/Assets }
 # Module import path: /Fortnite.com/Animation
 Animation<public> := module {
   # Module import path: /Fortnite.com/Animation/PlayAnimation
@@ -947,7 +910,6 @@ Animation<public> := module {
     (InCharacter: fort_character).GetPlayAnimationController<native><public>()<transacts><decides>: play_animation_controller
 
     @experimental
-    @hide_in_editor
     fort_npc_play_animation_component<native><epic_internal> := class<final_super><epic_internal>(
       component,
       play_animation_controller
@@ -973,7 +935,13 @@ Animation<public> := module {
         ?BlendInTime: float = external {},
         ?BlendOutTime: float = external {}
       )<suspends>: play_animation_result = external {}
+
+      @editable
+      PlayAnimationSettings<native><epic_internal>: fort_npc_play_animation_settings = external {}
     }
+
+    @import_as("/Script/VerseFortniteAI.UAIAnimationComponentData")
+    fort_npc_play_animation_settings<native><epic_internal> := class {}
 
     # An interface for playing an animation on an object.
     play_animation_controller<native><public> := interface<epic_internal> {
@@ -1065,6 +1033,15 @@ Animation<public> := module {
 
 # Module import path: /Fortnite.com/Assets
 (/Fortnite.com:)Assets<public> := module {
+  (InPlayspace: fort_playspace).DespawnCharacter<native><epic_internal>(Agent: agent): void
+
+  (InPlayspace: fort_playspace).SpawnCharacter<native><epic_internal>(
+    CharacterDefinition: npc_character_definition,
+    Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform
+  )<suspends>: ?agent
+
+  character_cosmetic_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
+
   emote<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   npc_character_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
@@ -1136,6 +1113,8 @@ Blastberry<public> := module {
   }
 }
 
+using { /UnrealEngine.com/Abilities }
+using { /Verse.org/SceneGraph/VerseCamera }
 # Module import path: /Fortnite.com/Building
 Building<public> := module {
   @experimental
@@ -1281,10 +1260,8 @@ Characters<public> := module {
   fort_character_component<native><epic_internal> := class<final><final_super>(component, fort_character) {
     CrouchedEvent<override>(): listenable(tuple(fort_character, logic)) = external {}
 
-    @experimental
     Damage<override>(Amount: float): void = external {}
 
-    @experimental
     Damage<override>(Args: damage_args): void = external {}
 
     DamagedEvent<override>(): listenable(damage_result) = external {}
@@ -1300,43 +1277,30 @@ Characters<public> := module {
     @experimental
     FortCharacter<native><public>: fort_character
 
-    @experimental
     GetAgent<override>()<transacts><decides>: agent = external {}
 
-    @experimental
     GetEntity<override>()<transacts><decides>: entity = external {}
 
-    @experimental
     GetHealth<override>()<transacts>: float = external {}
 
-    @experimental
     GetMaxHealth<override>()<transacts>: float = external {}
 
-    @experimental
     GetMaxOvershield<override>()<transacts>: float = external {}
 
-    @experimental
     GetMaxShield<override>()<transacts>: float = external {}
 
-    @experimental
     GetOvershield<override>()<transacts>: float = external {}
 
-    @experimental
     GetShield<override>()<transacts>: float = external {}
 
-    @experimental
     GetTransform<override>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
 
-    @experimental
     GetViewLocation<override>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
-    @experimental
     GetViewRotation<override>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
-    @experimental
     Heal<override>(Amount: float): void = external {}
 
-    @experimental
     Heal<override>(Args: healing_args): void = external {}
 
     HealedEvent<override>(): listenable(healing_result) = external {}
@@ -1345,40 +1309,28 @@ Characters<public> := module {
 
     HealedShieldEvent<override>(): listenable(healing_result) = external {}
 
-    @experimental
     Hide<override>(): void = external {}
 
-    @experimental
     IsActive<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsCrouching<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsDownButNotOut<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsFalling<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsFlying<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsGliding<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsInAir<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsInWater<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsMarked<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsOnGround<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsVulnerable<override>()<transacts><decides>: void = external {}
 
     JumpedEvent<override>(): listenable(fort_character) = external {}
@@ -1387,47 +1339,32 @@ Characters<public> := module {
 
     PossessedEvent<override>(): listenable(fort_character) = external {}
 
-    @experimental
     PutInStasis<override>(Args: stasis_args)<transacts>: void = external {}
 
-    @experimental
     ReleaseFromStasis<override>()<transacts>: void = external {}
 
-    @experimental
     SetHealth<override>(Health: float)<transacts>: void = external {}
 
-    @experimental
     SetMaxHealth<override>(MaxHealth: float)<transacts>: void = external {}
 
-    @experimental
     SetMaxOvershield<override>(MaxOvershield: float)<transacts>: void = external {}
 
-    @experimental
     SetMaxShield<override>(MaxShield: float)<transacts>: void = external {}
 
-    @experimental
     SetOvershield<override>(Overshield: float)<transacts>: void = external {}
 
-    @experimental
     SetShield<override>(Shield: float)<transacts>: void = external {}
 
-    @experimental
     SetVulnerability<override>(Vulnerable: logic)<transacts>: void = external {}
 
-    @experimental
     Show<override>(): void = external {}
 
     SprintedEvent<override>(): listenable(tuple(fort_character, logic)) = external {}
 
-    @experimental
     TeleportTo<override>(
       Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<transacts><decides>: void = external {}
-  }
-
-  npc_character_modifier<native><epic_internal> := class<abstract> {
-    ModifyCharacter<native_callable><public>(Character: fort_character): void
   }
 
   # Parameters for `fort_character.PutInStasis` function.
@@ -1464,7 +1401,7 @@ Devices<public> := module {
   (CreativeObject: creative_object_interface).GetPlayspace<native><public>()<transacts>: fort_playspace
 
   # Returns a queryable `tag_view` which can be used to query the tags on `CreativeObject`.
-  (CreativeObject: creative_object_interface).GetTags<native><public>(): tag_view
+  (CreativeObject: creative_object_interface).GetTags<native><public>()<transacts>: tag_view
 
   @available { MinUploadedAtFNVersion := 2930 }
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on a default constructed object.
@@ -1587,7 +1524,8 @@ Devices<public> := module {
       # Native implementation of `SetAnimation`.
       SetAnimationInternal<native><epic_internal>(
         Keyframes: []keyframe_delta,
-        ?AnimationMode: animation_mode = external {}
+        ?AnimationMode: animation_mode = external {},
+        ?DeltaScaleMode: keyframe_delta_scale_mode = external {}
       ): set_animation_result
 
       # Signaled when the state has changed. Use `GetState` to get the new state.
@@ -1695,6 +1633,15 @@ Devices<public> := module {
       Time<native><public>: float
     }
 
+    # Animation keyframe delta scale modes.
+    keyframe_delta_scale_mode<native><epic_internal> := enum {
+      # Scale is applied additively to the previous scale.
+      Additive
+
+      # Scale is applied as a multiple of the previous scale.
+      Multiplicative
+    }
+
     # Results for `animation_controller`s play, pause, and stop functions.
     playstoppause_result<native><epic_internal> := enum {
       # No animation has been successfully set via SetAnimation, or that animation has been cleared by a failed call to SetAnimation.
@@ -1782,16 +1729,40 @@ Devices<public> := module {
     }
 
     # Apply a distortion effect to Patchwork audio inputs.
-    distortion_effect_device<public> := class<concrete><final>(patchwork_device) {}
+    distortion_effect_device<public> := class<concrete><final>(patchwork_device) {
+      var Drive<epic_internal>: float = external {}
+
+      var Mix<epic_internal>: float = external {}
+
+      var Shatter<epic_internal>: float = external {}
+
+      var Style<epic_internal>: int = external {}
+
+      var Tame<epic_internal>: float = external {}
+    }
 
     # Turn Patchwork note inputs into audio using drum samples.
     drum_player_device<public> := class<concrete><final>(patchwork_device) {}
 
     # Create drum note patterns for Patchwork devices.
-    drum_sequencer_device<public> := class<concrete><final>(patchwork_device) {}
+    drum_sequencer_device<public> := class<concrete><final>(patchwork_device) {
+      var IsTriplet<epic_internal>: logic = external {}
+
+      var Page<epic_internal>: int = external {}
+    }
 
     # Apply an echo effect to Patchwork audio inputs.
-    echo_effect_device<public> := class<concrete><final>(patchwork_device) {}
+    echo_effect_device<public> := class<concrete><final>(patchwork_device) {
+      var BeatDelay<epic_internal>: float = external {}
+
+      var Feedback<epic_internal>: float = external {}
+
+      var Filter<epic_internal>: float = external {}
+
+      var Mix<epic_internal>: float = external {}
+
+      var TimingStyle<epic_internal>: int = external {}
+    }
 
     # Apply a filter effect to Patchwork audio inputs.
     filter_effect_device<epic_internal> := class<concrete><final>(patchwork_device) {
@@ -1804,19 +1775,57 @@ Devices<public> := module {
       var Resonance<public>: float = external {}
     }
 
+    # Adjust Gain of a Patchwork audio signal.
+    gain_device<epic_internal> := class<concrete><final>(patchwork_device) {
+      var Gain<epic_internal>: float = external {}
+    }
+
     # Turn Patchwork note inputs into audio using instrument samples.
-    instrument_player_device<public> := class<concrete><final>(patchwork_device) {}
+    instrument_player_device<public> := class<concrete><final>(patchwork_device) {
+      var Detune<epic_internal>: float = external {}
+
+      var Instrument<epic_internal>: int = external {}
+
+      var VibratoAmount<epic_internal>: float = external {}
+
+      var VibratoRate<epic_internal>: float = external {}
+
+      var Volume<epic_internal>: float = external {}
+    }
 
     # Modify a setting on another Patchwork device in a regularly repeating pattern.
-    lfo_modulator_device<public> := class<concrete><final>(patchwork_device) {}
+    lfo_modulator_device<public> := class<concrete><final>(patchwork_device) {
+      var FreeSpeedHz<epic_internal>: float = external {}
+
+      var Maximum<epic_internal>: float = external {}
+
+      var Minimum<epic_internal>: float = external {}
+
+      var Offset<epic_internal>: float = external {}
+
+      var Rate<epic_internal>: float = external {}
+
+      var Shape<epic_internal>: float = external {}
+
+      var TimingStyle<epic_internal>: int = external {}
+
+      var Waveform<epic_internal>: int = external {}
+    }
 
     # Provides a shared tempo, key, and timeline for Patchwork devices to follow.
     music_manager_device<public> := class<concrete><final>(patchwork_device) {
       # Returns the number of elapsed beats since the Patchwork timeline has started, for tracking current musical time.
-      GetElapsedBeats<epic_internal>()<computes><reads>: float = external {}
+      GetElapsedBeats<epic_internal>()<reads>: float = external {}
 
-      # Returns the tempo of the music manager, in beats per minute.
-      GetTempoBPM<epic_internal>()<computes><reads>: float = external {}
+      var Key<epic_internal>: int = external {}
+
+      var Mode<epic_internal>: int = external {}
+
+      var TempoBPM<epic_internal>: float = external {}
+
+      var TimeSignatureBottom<epic_internal>: int = external {}
+
+      var TimeSignatureTop<epic_internal>: int = external {}
     }
 
     note_off_message<epic_internal> := class {
@@ -1833,7 +1842,23 @@ Devices<public> := module {
     note_progressor_device<public> := class<concrete><final>(patchwork_device) {}
 
     # Create melodic note patterns for Patchwork devices.
-    note_sequencer_device<public> := class<concrete><final>(patchwork_device) {}
+    note_sequencer_device<public> := class<concrete><final>(patchwork_device) {
+      var GridHeight<epic_internal>: int = external {}
+
+      var IsChromatic<epic_internal>: logic = external {}
+
+      var IsMonophonic<epic_internal>: logic = external {}
+
+      var Length<epic_internal>: int = external {}
+
+      var Octave<epic_internal>: int = external {}
+
+      var Page<epic_internal>: int = external {}
+
+      var StepRate<epic_internal>: float = external {}
+
+      var TimingStyle<epic_internal>: int = external {}
+    }
 
     # Send events to devices based on Patchwork note inputs.
     note_trigger_device<public> := class<concrete><final>(patchwork_device) {
@@ -1853,7 +1878,21 @@ Devices<public> := module {
     }
 
     # Turn Patchwork note inputs into audio using customizable sound synthesis.
-    omega_synthesizer_device<public> := class<concrete><final>(patchwork_device) {}
+    omega_synthesizer_device<public> := class<concrete><final>(patchwork_device) {
+      var Bite<epic_internal>: float = external {}
+
+      var Glide<epic_internal>: float = external {}
+
+      var Overdrive<epic_internal>: float = external {}
+
+      var Resonance<epic_internal>: float = external {}
+
+      var Sync<epic_internal>: float = external {}
+
+      var Tone<epic_internal>: float = external {}
+
+      var Volume<epic_internal>: float = external {}
+    }
 
     # Base class for all Patchwork devices.
     patchwork_device<public> := class<concrete>(creative_device_base) {
@@ -2066,6 +2105,9 @@ Devices<public> := module {
 
     # Show the hologram used to preview the fully assembled device
     ShowHologram<public>(): void = external {}
+
+    # Scans for newly created objects and adds them to the assembly where possible
+    UpdateAssembly<public>(): void = external {}
 
     # The amount of progress the device has made towards fully assembling (1.0) or fully disassembling (0.0).
     var<private> Progress<public>: float = external {}
@@ -2559,13 +2601,13 @@ Devices<public> := module {
     FirstAgentEntersEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the Capture Area.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Returns the *Capture Height* (in meters) of the capture area.
-    GetHeight<public>()<computes><reads>: float = external {}
+    GetHeight<public>()<reads>: float = external {}
 
     # Returns the *Capture Radius* (in meters) of the capture area.
-    GetRadius<public>()<computes><reads>: float = external {}
+    GetRadius<public>()<reads>: float = external {}
 
     # Gives control of this device to the capturing `agent`'s team.
     GiveControl<public>(Agent: agent): void = external {}
@@ -2843,7 +2885,7 @@ Devices<public> := module {
   # Used together with `class_selector_device` to create class based gameplay. Defines custom class attributes and inventory loadouts.
   class_designer_device<public> := class<concrete><final>(creative_device_base) {
     # Returns an array of agents that are currently of *Class* defined by this device.
-    GetClassMembers<public>()<computes><reads>: []agent = external {}
+    GetClassMembers<public>()<reads>: []agent = external {}
 
     # Is true if `Agent` is on *Class* defined by this device.
     IsOfClass<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -3335,7 +3377,7 @@ Devices<public> := module {
     AgentExitsEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Returns the damage to be applied each tick within the volume.
     GetDamage<public>()<transacts>: int = external {}
@@ -3405,113 +3447,55 @@ Devices<public> := module {
     Target<native><public>: ?agent
   }
 
-  # Partial implementation of `device_event(:type)` with no return payload.
-  device_event<epic_internal>() := device_event(tuple())
-
   # Base implementation for events on `creative_device`s.
   device_event<native><epic_internal>(t: type) := class<abstract>(listenable(t)) {
+    Await<native><override>()<suspends>: t
+
     EventName<native><public>: string
+
+    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
+    Subscribe<native><override>(Callback: type { _(: t): void })<transacts>: cancelable
   }
 
   # Implementation of `device_event(:type)` with required `agent` payload.
-  device_event_agent<native><epic_internal> := class(device_event(agent)) {
-    Await<native><override>()<suspends>: agent
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: agent): void })<transacts>: cancelable
-  }
+  device_event_agent<native><epic_internal> := class(device_event(agent)) {}
 
   # Implementation of `device_event(:type)` with a `tuple(agent, float)` payload.
-  device_event_agent_float<native><epic_internal> := class(device_event(tuple(agent, float))) {
-    Await<native><override>()<suspends>: tuple(agent, float)
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: agent, : float): void })<transacts>: cancelable
-  }
+  device_event_agent_float<native><epic_internal> := class(device_event(tuple(agent, float))) {}
 
   # Implementation of `device_event(:type)` with a `tuple(agent, int)` payload.
-  device_event_agent_int<native><epic_internal> := class(device_event(tuple(agent, int))) {
-    Await<native><override>()<suspends>: tuple(agent, int)
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: agent, : int): void })<transacts>: cancelable
-  }
+  device_event_agent_int<native><epic_internal> := class(device_event(tuple(agent, int))) {}
 
   # Implementation of `device_event(:type)` with `device_ai_interaction_result` payload.
   device_event_ai_interaction<native><epic_internal> := class(device_event(device_ai_interaction_result)) {
-    Await<native><override>()<suspends>: device_ai_interaction_result
-
     SourceName<native><public>: string
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: device_ai_interaction_result): void })<transacts>: cancelable
 
     TargetName<native><public>: string
   }
 
   # Implementation of `device_event(:type)` with required `int` payload.
-  device_event_int<native><epic_internal> := class(device_event(int)) {
-    Await<native><override>()<suspends>: int
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: int): void })<transacts>: cancelable
-  }
+  device_event_int<native><epic_internal> := class(device_event(int)) {}
 
   # Implementation of `device_event(:type)` with a `tuple(int, float)` payload.
-  device_event_int_float<native><epic_internal> := class(device_event(tuple(int, float))) {
-    Await<native><override>()<suspends>: tuple(int, float)
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: int, : float): void })<transacts>: cancelable
-  }
+  device_event_int_float<native><epic_internal> := class(device_event(tuple(int, float))) {}
 
   # Implementation of `device_event(:type)` with optional `agent` payload.
-  device_event_optional_agent<native><epic_internal> := class(device_event(?agent)) {
-    Await<native><override>()<suspends>: ?agent
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: ?agent): void })<transacts>: cancelable
-  }
+  device_event_optional_agent<native><epic_internal> := class(device_event(?agent)) {}
 
   # Implementation of `device_event(:type)` with a `tuple(?agent, int)` payload.
-  device_event_optional_agent_int<native><epic_internal> := class(device_event(tuple(?agent, int))) {
-    Await<native><override>()<suspends>: tuple(?agent, int)
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: ?agent, : int): void })<transacts>: cancelable
-  }
+  device_event_optional_agent_int<native><epic_internal> := class(device_event(tuple(?agent, int))) {}
 
   # Implementation of `device_event(:type)` with a `tuple(?agent, fort_vehicle, int)` payload.
-  device_event_optional_agent_vehicle_int<native><epic_internal> := class(device_event(tuple(?agent, fort_vehicle, int))) {
-    Await<native><override>()<suspends>: tuple(?agent, fort_vehicle, int)
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: ?agent, : fort_vehicle, : int): void })<transacts>: cancelable
-  }
+  device_event_optional_agent_vehicle_int<native><epic_internal> := class(device_event(tuple(?agent, fort_vehicle, int))) {}
 
   # Implementation of `device_event(:type)` with required `creative_prop` payload.
-  device_event_prop<native><epic_internal> := class(device_event(creative_prop)) {
-    Await<native><override>()<suspends>: creative_prop
-
-    # Subscribes `Callback` to this event. That same `Callback` will only be triggered once per event even if it is called with `Subscribe` more than once.
-    Subscribe<native><override>(Callback: type { _(: creative_prop): void })<transacts>: cancelable
-  }
+  device_event_prop<native><epic_internal> := class(device_event(creative_prop)) {}
 
   # Implementation of `device_event(:type)` with required `fort_vehicle` payload.
-  device_event_vehicle<native><epic_internal> := class(device_event(fort_vehicle)) {
-    Await<native><override>()<suspends>: fort_vehicle
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(: fort_vehicle): void })<transacts>: cancelable
-  }
+  device_event_vehicle<native><epic_internal> := class(device_event(fort_vehicle)) {}
 
   # Implementation of `device_event(:type)` with no payload.
-  device_event_void<native><epic_internal> := class(device_event(tuple())) {
-    Await<native><override>()<suspends>: tuple()
-
-    # Subscribes Callback to this event. That same Callback will only be triggered once per event even if it is called with Subscribe more than once.
-    Subscribe<native><override>(Callback: type { _(): void })<transacts>: cancelable
-  }
+  device_event_void<native><epic_internal> := class(device_event(tuple())) {}
 
   device_function<native><epic_internal> := class {
     FunctionName<native><epic_internal>: string
@@ -3522,11 +3506,11 @@ Devices<public> := module {
   }
 
   device_function_get_agent<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: ?agent
+    Invoke<native><epic_internal>()<reads>: ?agent
   }
 
   device_function_get_agent_array<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: []agent
+    Invoke<native><epic_internal>()<reads>: []agent
   }
 
   device_function_get_base<native><epic_internal> := class<abstract> {
@@ -3534,27 +3518,27 @@ Devices<public> := module {
   }
 
   device_function_get_color<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: color
+    Invoke<native><epic_internal>()<reads>: color
   }
 
   device_function_get_float<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: float
+    Invoke<native><epic_internal>()<reads>: float
   }
 
   device_function_get_int<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: int
+    Invoke<native><epic_internal>()<reads>: int
   }
 
   device_function_get_logic<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: logic
+    Invoke<native><epic_internal>()<reads>: logic
   }
 
   device_function_get_string<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: string
+    Invoke<native><epic_internal>()<reads>: string
   }
 
   device_function_get_vector3<native><epic_internal> := class(device_function_get_base) {
-    Invoke<native><epic_internal>()<computes><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    Invoke<native><epic_internal>()<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
   }
 
   device_function_set_agent<native><epic_internal> := class(device_function_set_base) {
@@ -3600,7 +3584,7 @@ Devices<public> := module {
   }
 
   device_function_set_params_by_name_const<native><epic_internal> := class(device_function_set_params_by_name) {
-    InvokeConst<native><epic_internal>(NamedParameters: [string]function_parameter_base)<computes><reads>: ?function_parameter_base
+    InvokeConst<native><epic_internal>(NamedParameters: [string]function_parameter_base)<reads>: ?function_parameter_base
   }
 
   device_function_set_params_by_type<native><epic_internal> := class(device_function_set_multi_parameter_base) {
@@ -3610,7 +3594,7 @@ Devices<public> := module {
   }
 
   device_function_set_params_by_type_const<native><epic_internal> := class(device_function_set_params_by_type) {
-    InvokeConst<native><epic_internal>(TypeExclusiveParameters: []function_parameter_base)<computes><reads>: ?function_parameter_base
+    InvokeConst<native><epic_internal>(TypeExclusiveParameters: []function_parameter_base)<reads>: ?function_parameter_base
   }
 
   device_function_set_string<native><epic_internal> := class(device_function_set_base) {
@@ -4567,7 +4551,7 @@ Devices<public> := module {
     AgentExitsEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Is true when `Agent` is in the zone.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -4763,10 +4747,10 @@ Devices<public> := module {
     DeviceSeesAgentEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently of the class defined by this device.
-    GetLookingAtDeviceAgents<public>()<computes><reads>: []agent = external {}
+    GetLookingAtDeviceAgents<public>()<reads>: []agent = external {}
 
     # Returns an array of agents that are currently of the class defined by this device.
-    GetPerceivedAgents<public>()<computes><reads>: []agent = external {}
+    GetPerceivedAgents<public>()<reads>: []agent = external {}
 
     # Succeeds when `Agent` is registered to this checkpoint.
     IsLookingAtDevice<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -4875,7 +4859,7 @@ Devices<public> := module {
     FirstActivationPerAgentEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently registered to this checkpoint.
-    GetRegisteredAgents<public>()<computes><reads>: []agent = external {}
+    GetRegisteredAgents<public>()<reads>: []agent = external {}
 
     # Succeeds when `Agent` is registered to this checkpoint.
     IsRegistered<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -4912,7 +4896,7 @@ Devices<public> := module {
     GetCount<public>()<transacts>: int = external {}
 
     # Returns an array of agents that are currently counted by the device.
-    GetCountedAgents<public>()<computes><reads>: []agent = external {}
+    GetCountedAgents<public>()<reads>: []agent = external {}
 
     # Returns the number of players required for this counter to succeed.
     GetTargetCount<public>()<transacts>: int = external {}
@@ -5558,7 +5542,7 @@ Devices<public> := module {
     Enable<override>(): void = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
@@ -6113,7 +6097,7 @@ Devices<public> := module {
     EnableVolumeLocking<public>(): void = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Is true when `Agent` is in the volume.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -6127,6 +6111,7 @@ Devices<public> := module {
     ZoneOccupiedEvent<public>: listenable(agent) = external {}
   }
 
+  @deprecated
   # Controls how the sky looks, as well as giving you options for changing the sun, clouds, stars or other objects in the sky above your island. You can control the sun and moon, and add other atmospheric elements like stars, fog and clouds. You can change the color of your light source, and blend different colors for your island's sky to create the perfect atmosphere for your game.
   skydome_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -6478,7 +6463,7 @@ Devices<public> := module {
     EnemyEliminatedEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently of the team defined by this device.
-    GetTeamMembers<public>()<computes><reads>: []agent = external {}
+    GetTeamMembers<public>()<reads>: []agent = external {}
 
     # Is true if `Agent` is on *Team*.
     IsOnTeam<public>(Agent: agent)<transacts><decides>: void = external {}
@@ -6765,7 +6750,7 @@ Devices<public> := module {
     Decrement<public>(Agent: agent): void = external {}
 
     # Returns an array of agents that currently have this tracker active.
-    GetActiveAgents<public>()<computes><reads>: []agent = external {}
+    GetActiveAgents<public>()<reads>: []agent = external {}
 
     # Returns the description for the `tracker_device`, which is displayed if *Show on HUD* is enabled.
     # `GetDescriptionText` has a 64 character limit.
@@ -7570,10 +7555,18 @@ Devices<public> := module {
     AgentExitsEvent<public>: listenable(agent) = external {}
 
     # Returns an array of agents that are currently occupying the volume.
-    GetAgentsInVolume<public>()<computes><reads>: []agent = external {}
+    GetAgentsInVolume<public>()<reads>: []agent = external {}
 
     # Succeeds when `Agent` is in the volume.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    @experimental
+    # Signaled when an `creative_prop` entered the device volume.
+    PropEnterEvent<public>: listenable(creative_prop) = external {}
+
+    @experimental
+    # Signaled when an `creative_prop` exited the device volume.
+    PropExitEvent<public>: listenable(creative_prop) = external {}
   }
 
   # Used to create and manipulate volumes of water where players can swim, fish, or drive boats.
@@ -7769,199 +7762,6 @@ Devices<public> := module {
   }
 }
 
-using { /Verse.org/Assets }
-# Module import path: /Fortnite.com/FN1Native
-FN1Native<public> := module {
-  # Module import path: /Fortnite.com/FN1Native/FortBus
-  FortBus<public> := module {
-    fort_battlebus<native><epic_internal> := class<epic_internal>(fort_battlebus_base) {
-      DesiredDoorOpenTime<native><public>: float = external {}
-
-      DeviationAngle<native><public>: float = external {}
-
-      DropZone<native><public>: fort_battlebus_zone = external {}
-
-      EjectAllPassengers<native><public>()<transacts>: void
-
-      FlightHeight<native><public>: float = external {}
-
-      FlightSpeed<native><public>: float = external {}
-
-      Initialize<native><public>()<transacts>: void
-
-      OnAllPassengersExited<native><public>: listenable(tuple()) = external {}
-
-      OnDropZoneEntered<native><public>: listenable(tuple()) = external {}
-
-      OnDropZoneExited<native><public>: listenable(tuple()) = external {}
-
-      OnFlightEnded<native><public>: listenable(tuple()) = external {}
-
-      OnFlightStarted<native><public>: listenable(tuple()) = external {}
-
-      OnPassengerExited<native><public>: listenable(agent) = external {}
-
-      SpawnZone<native><public>: fort_battlebus_zone = external {}
-
-      StartFlightPath<native><public>()<transacts>: void
-
-      StartsEnabled<native><public>: logic = external {}
-
-      VolumeSource<native><public>: creative_device
-    }
-
-    @import_as("/Script/FN1NativeRuntime.UVerseFortniteBattlebus")
-    fort_battlebus_base<native><epic_internal> := class<abstract> {}
-
-    fort_battlebus_zone<native><epic_internal> := struct<concrete> {
-      @editable
-      ZoneMax<native><public>: vector2 = external {}
-
-      @editable
-      ZoneMin<native><public>: vector2 = external {}
-    }
-  }
-
-  # Module import path: /Fortnite.com/FN1Native/FortStorm
-  FortStorm<public> := module {
-    fort_storm<native><epic_internal> := class<epic_internal>(fort_storm_base) {
-      GetPhaseIndex<native><epic_internal>()<transacts><decides>: int
-
-      InitialRadius<native><public>: float
-
-      Initialize<native><epic_internal>()<transacts>: void
-
-      PauseStorm<native><epic_internal>()<transacts>: void
-
-      Phases<native><public>: []fort_storm_phase
-
-      ResumeStorm<native><epic_internal>()<transacts>: void
-
-      SetCurrentPhase<native><epic_internal>(InCurrentPhase: int)<transacts>: void
-
-      StormVolumes<native><public>: []fort_storm_volume
-
-      VolumeSource<native><public>: creative_device
-    }
-
-    @import_as("/Script/FN1NativeRuntime.UVerseFortniteStorm")
-    fort_storm_base<native><epic_internal> := class<abstract> {}
-
-    fort_storm_phase<native><public> := struct<concrete><epic_internal> {
-      @editable
-      Damage<native><public>: float = external {}
-
-      @editable
-      EndLocationDistanceMax<native><public>: float = external {}
-
-      @editable
-      EndLocationDistanceMin<native><public>: float = external {}
-
-      @editable
-      EndRadius<native><public>: float = external {}
-
-      @editable
-      OverrideEndLocation<native><public>: ?(/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
-
-      @editable
-      ShrinkTime<native><public>: float = external {}
-
-      @editable
-      WaitTime<native><public>: float = external {}
-    }
-
-    fort_storm_volume<native><public> := struct<concrete><epic_internal> {
-      @editable
-      RejectionChance<native><public>: float = external {}
-
-      @editable
-      VolumeActor<native><public>: ?creative_prop = external {}
-    }
-  }
-
-  # Module import path: /Fortnite.com/FN1Native/GameMode
-  GameMode<public> := module {
-    fort_br_gamemode<native><epic_internal> := class<epic_internal>(fort_gamemode_base) {
-      AircraftFinishedEvent<native><public>: listenable(tuple()) = external {}
-
-      Initialize<native><public>(): logic
-
-      PlayerPawnEliminatedEvent<native><public>: listenable(agent) = external {}
-
-      PlayerPawnRespawnedEvent<native><public>: listenable(agent) = external {}
-
-      StartAircraftPhase<native><public>(): logic
-
-      StartMatch<native><public>(): logic
-
-      StartSafeZonesPhase<native><public>(): logic
-
-      StartWarmupPhase<native><public>(): logic
-
-      TeamWonEvent<native><public>: listenable(team) = external {}
-
-      WaitingForPlayersCountdownStartedEvent<native><public>: listenable(float) = external {}
-
-      WaitingForPlayersFinishedEvent<native><public>: listenable(tuple()) = external {}
-
-      WarmupFinishedEvent<native><public>: listenable(tuple()) = external {}
-    }
-
-    @import_as("/Script/FN1NativeRuntime.UVerseFortGameMode")
-    fort_gamemode_base<native><epic_internal> := class<abstract> {}
-
-    fort_reload_gamemode<native><epic_internal> := class<epic_internal>(fort_br_gamemode) {
-      AllowRespawns<native><public>(bInAllowRespawns: logic): void
-
-      AreRespawnsActive<native><public>()<transacts>: logic
-
-      ConsumedRemainingTeamLivesEvent<native><public>: listenable(tuple(agent, int)) = external {}
-
-      GetGameModeTeamSize<native><public>()<transacts><decides>: int
-
-      GetRespawnDelay<native><public>(InAgent: agent)<transacts><decides>: float
-
-      GetTeamLivesRemaining<native><public>(InTeam: team)<transacts><decides>: int
-
-      GetTimeUntilRespawnDisabled<native><public>()<transacts>: float
-
-      GetTimeUntilTeamLivesRecharge<native><public>(InTeam: team)<transacts><decides>: float
-
-      IsWaveRespawnEnabled<native><public>()<transacts>: logic
-
-      RespawnsDisabledCoundownStartedEvent<native><public>: listenable(float) = external {}
-
-      RespawnsDisabledEvent<native><public>: listenable(tuple()) = external {}
-
-      RespawnsEnabledEvent<native><public>: listenable(tuple()) = external {}
-
-      SetAllowRespawnsOutsideStormPhase<native><public>(bInAllowRespawnsOutsideStormPhase: logic): void
-
-      SpawnTestPlayers<native><public>(InSquadCount: int, InPlayersPerSquad: int): logic
-
-      TeamLivesChangedEvent<native><public>: listenable(tuple(agent, team, int, int)) = external {}
-
-      TimeUntilTeamLivesRechargeChangedEvent<native><public>: listenable(tuple(agent, team, float, float)) = external {}
-    }
-  }
-
-  player_ui_display_info<native><epic_internal> := struct {
-    CurrentXP<native>: int
-
-    Image<native>: texture
-
-    LargeImage<native>: texture
-
-    SmallImage<native>: texture
-
-    SquadColor<native>: color
-  }
-
-  player_ui_display_info_manager<native><epic_internal> := class {
-    GetDisplayInfo<native><epic_internal>(InPlayer: player)<computes><reads>: player_ui_display_info
-  }
-}
-
 using { /Fortnite.com/Devices }
 using { /Fortnite.com/Playspaces }
 using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -8007,9 +7807,9 @@ FeralCorgi<public> := module {
   PlayerLoadingStatusBridge<epic_internal> := module {
     AwaitPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<suspends>: void
 
-    GetNumPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<computes><reads>: int
+    GetNumPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<reads>: int
 
-    GetPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<computes><reads>: []player
+    GetPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<reads>: []player
 
     IsPlayerLoading<native><epic_internal>(Playspace: fort_playspace, Player: player)<transacts><decides>: void
   }
@@ -8149,7 +7949,7 @@ FeralCorgi<public> := module {
   }
 
   player_display_info_manager<native><epic_internal> := class {
-    GetDisplayInfo<native><epic_internal>(InPlayer: player)<computes><reads>: player_display_info
+    GetDisplayInfo<native><epic_internal>(InPlayer: player)<reads>: player_display_info
   }
 
   ranked_track_progress<native><epic_internal> := struct<concrete> {
@@ -8181,6 +7981,9 @@ FeralCorgi<public> := module {
 
 # Module import path: /Fortnite.com/FortPlayerUtilities
 FortPlayerUtilities<public> := module {
+  # Returns the agent a spectator is currently spectating, fails if the spectator isn't spectating or isn't spectating an agent.
+  (InAgent: agent).GetSpectatedAgent<native><public>()<reads><decides>: agent
+
   # Returns an `[]agent`s currently spectating `InAgent`.
   (InAgent: agent).GetSpectators<native><public>()<transacts>: []agent
 
@@ -8574,6 +8377,36 @@ Game<public> := module {
 
     # An unknown error occurred. If this happens frequently, contact Epic support.
     UnknownError
+  }
+}
+
+InputDoNotUseYet<public> := module {
+  using { /Verse.org/Assets }
+  # Module import path: /Fortnite.com/InputDoNotUseYet/Character
+  Character<epic_internal> := module {
+    @experimental
+    Crouch<public>: input_action(logic) = external {}
+
+    @experimental
+    Jump<public>: input_action(logic) = external {}
+
+    @experimental
+    RangedWeaponMapping<public>: input_mapping = external {}
+
+    @experimental
+    Reload<public>: input_action(logic) = external {}
+
+    @experimental
+    Sprint<public>: input_action(logic) = external {}
+
+    @experimental
+    TraversalMapping<public>: input_mapping = external {}
+
+    @experimental
+    WeaponPrimary<public>: input_action(logic) = external {}
+
+    @experimental
+    WeaponSecondary<public>: input_action(logic) = external {}
   }
 }
 
@@ -9350,60 +9183,57 @@ Vehicles<public> := module {
 
     # Succeeds if this `fort_vehicle` is standing on ground.
     IsOnGround<public>()<transacts><decides>: void
+
+    # Teleports the `fort_vehicle` to the specified `Position` and `Rotation`.
+    TeleportTo<public>(
+      Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<transacts><decides>: void
   }
 
   @hide_in_editor
   @experimental
   fort_vehicle_component<native><epic_internal> := class<final_super>(component, fort_vehicle) {
-    @experimental
     Damage<override>(Amount: float): void = external {}
 
-    @experimental
     Damage<override>(Args: damage_args): void = external {}
 
-    @experimental
     DamagedEvent<override>(): listenable(damage_result) = external {}
 
     @experimental
     FortVehicle<native><public>: fort_vehicle
 
-    @experimental
     GetEntity<override>()<transacts><decides>: entity = external {}
 
-    @experimental
     # Returns the maximum fuel capacity of the vehicle. If the vehicle uses fuel, this value will be between 1.0 and Inf. Otherwise, this value will be -1.0.
     GetFuelCapacity<override>()<transacts>: float = external {}
 
-    @experimental
     # Returns the fuel state of the vehicle. If the vehicle uses fuel, this value will be between 0.0 and `GetFuelCapacity`. Otherwise, this value will be -1.0.
     GetFuelRemaining<override>()<transacts>: float = external {}
 
-    @experimental
     GetHealth<override>()<transacts>: float = external {}
 
-    @experimental
     GetMaxHealth<override>()<transacts>: float = external {}
 
-    @experimental
     GetPassengers<override>()<transacts>: []fort_character = external {}
 
-    @experimental
     GetTransform<override>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
 
-    @experimental
     IsInAir<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsInWater<override>()<transacts><decides>: void = external {}
 
-    @experimental
     IsOnGround<override>()<transacts><decides>: void = external {}
 
-    @experimental
     SetHealth<override>(Health: float)<transacts>: void = external {}
 
-    @experimental
     SetMaxHealth<override>(MaxHealth: float)<transacts>: void = external {}
+
+    # Teleports the vehicle to the specified `Position` and `Rotation`.
+    TeleportTo<override>(
+      Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<transacts><decides>: void = external {}
   }
 }
 
@@ -9457,5 +9287,365 @@ VerseFortniteTestSuite<public> := module {
     var IsInSimulation<native><public>: logic = external {}
 
     var IsRegistered<native><public>: logic = external {}
+  }
+}
+
+VerseInternalTesting<public> := module {
+  using { /Fortnite.com/Characters }
+  using { /Fortnite.com/Devices }
+  using { /Fortnite.com/Game }
+  using { /Fortnite.com/Vehicles }
+  using { /UnrealEngine.com/Temporary/Diagnostics }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /UnrealEngine.com/Temporary/Testing }
+  using { /Verse.org/Colors }
+  using { /Verse.org/Simulation }
+  # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
+  NexusFramework<public> := module {
+    example_nexus_device<epic_internal> := class(nexus_test_device) {
+      OnBegin<override>()<suspends>: void = external {}
+
+      OnEnd<override>(): void = external {}
+    }
+
+    nexus_test_device<epic_internal> := class(creative_device) {
+      AddCheck<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
+
+      AddFail<epic_internal>(TestName: string, ContextString: string): void = external {}
+
+      AddPass<epic_internal>(TestName: string, ContextString: string): void = external {}
+
+      AddResults<epic_internal>(TestName: string, Passed: logic, ContextString: string): void = external {}
+
+      AddSkip<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
+
+      OnBegin<override>()<suspends>: void = external {}
+
+      OnEnd<override>(): void = external {}
+
+      @editable
+      var TestRunner<public>: nexus_test_runner = external {}
+    }
+
+    nexus_test_reporter<epic_internal> := class {
+      AddResult<epic_internal>(
+        TestName: string,
+        TestResult: test_result,
+        ContextString: string,
+        TestSuiteName: string
+      ): void = external {}
+    }
+
+    nexus_test_runner<epic_internal> := class(creative_device) {
+      OnEnd<override>(): void = external {}
+    }
+  }
+
+  # Module import path: /Fortnite.com/VerseInternalTesting/VerseFramework
+  VerseFramework<public> := module {
+    device_event_agent_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(agent)): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+    }
+
+    device_event_agent_int_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(agent, int))): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+
+      var ArgInt<public>: int = external {}
+    }
+
+    device_event_ai_interaction_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(device_ai_interaction_result)): void = external {}
+
+      var ArgSource<public>: ?agent = external {}
+
+      var ArgTarget<public>: ?agent = external {}
+    }
+
+    device_event_damage_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(damage_result)): void = external {}
+
+      var ArgAmount<public>: float = external {}
+
+      var ArgInstigator<public>: ?game_action_instigator = external {}
+
+      var ArgSource<public>: ?game_action_causer = external {}
+    }
+
+    device_event_fort_vehicle_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(fort_vehicle)): void = external {}
+
+      var ArgVehicle<public>: ?fort_vehicle = external {}
+    }
+
+    device_event_healing_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(healing_result)): void = external {}
+
+      var ArgAmount<public>: float = external {}
+
+      var ArgInstigator<public>: ?game_action_instigator = external {}
+
+      var ArgSource<public>: ?game_action_causer = external {}
+    }
+
+    device_event_optional_agent_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(?agent)): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+    }
+
+    device_event_optional_agent_int_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(?agent, int))): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+
+      var ArgInt<public>: int = external {}
+    }
+
+    device_event_void_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple())): void = external {}
+    }
+
+    test_case<public> := struct {
+      Category<public>: []string
+
+      Func<public>: type { _()<suspends>: void }
+
+      Name<public>: string
+
+      TimeoutOverride<public>: ?float = external {}
+    }
+
+    test_device<epic_internal> := class(creative_device) {
+      AfterAll<public>()<suspends>: void = external {}
+
+      AfterEach<public>()<suspends>: void = external {}
+
+      BeforeAll<public>()<suspends>: void = external {}
+
+      BeforeEach<public>()<suspends>: void = external {}
+
+      OnBegin<override>(): void = external {}
+
+      RegisterTests<public>(): void = external {}
+
+      SuiteName<public>: string = external {}
+
+      TestCases<public>(): []test_case = external {}
+
+      var TestRunner<public>: test_runner = external {}
+    }
+
+    test_device_event_handler_mock<public> := class<concrete> {
+      Await<public>()<suspends>: void = external {}
+
+      Cancel<public>()<transacts>: void = external {}
+
+      GetCallCount<public>(): int = external {}
+
+      ResetCallCount<public>(): void = external {}
+    }
+
+    test_runner<epic_internal> := class {
+      AddExcludeFilter<public>(Filter: string)<transacts>: void = external {}
+
+      AddIncludeFilter<public>(Filter: string)<transacts>: void = external {}
+
+      CheckArrayContains<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
+
+      CheckArrayDoesNotContain<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
+
+      CheckEqual<public>(
+        Actual: creative_object,
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {},
+        ?Timeout: float = external {}
+      )<suspends>: void = external {}
+
+      CheckEqual<public>(
+        ActualFortCharacter: fort_character,
+        ExpectedTranslation: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Message: string,
+        ?Tolerance: float = external {},
+        ?Timeout: float = external {},
+        ?CompareX: logic = external {},
+        ?CompareY: logic = external {},
+        ?CompareZ: logic = external {}
+      )<suspends>: void = external {}
+
+      CheckEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(Expected: agent, Actual: agent, Message: string): void = external {}
+
+      CheckEqual<public>(Expected: color, Actual: color, Message: string, ?Tolerance: float = external {}): void = external {}
+
+      CheckEqual<public>(Expected: float, Actual: float, Message: string, ?Tolerance: float = external {}): void = external {}
+
+      CheckEqual<public>(Expected: int, Actual: int, Message: string): void = external {}
+
+      CheckEqual<public>(Expected: string, Actual: string, Message: string): void = external {}
+
+      CheckEqual<public>(
+        Expected: vector2,
+        Actual: vector2,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckEqual<public>(Expected: vector2i, Actual: vector2i, Message: string): void = external {}
+
+      CheckEqualFloatArray<public>(Expected: []float, Actual: []float, Message: string): void = external {}
+
+      CheckEqualIntArray<public>(Expected: []int, Actual: []int, Message: string): void = external {}
+
+      CheckFailure<public>(TestFuncEval: ?any, FuncName: string)<decides>: void = external {}
+
+      CheckNotEqual<public>(
+        Actual: creative_object,
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {},
+        ?Timeout: float = external {}
+      )<suspends>: void = external {}
+
+      CheckNotEqual<public>(
+        Expected: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Actual: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
+        Message: string,
+        ?Tolerance: float = external {}
+      ): void = external {}
+
+      CheckNotEqual<public>(Expected: agent, Actual: agent, Message: string): void = external {}
+
+      CheckNotEqual<public>(Expected: float, Actual: float, Message: string): void = external {}
+
+      CheckNotEqual<public>(Expected: int, Actual: int, Message: string): void = external {}
+
+      CheckNotEqual<public>(Expected: string, Actual: string, Message: string): void = external {}
+
+      CheckNotTrue<public>(Actual: logic, Message: string): void = external {}
+
+      CheckTrue<public>(Actual: logic, Message: string): void = external {}
+
+      ClearLastTestResult<public>(): void = external {}
+
+      ClearLogOutput<public>(): void = external {}
+
+      ClearTests<public>()<transacts>: void = external {}
+
+      DefaultSetupFunctionTimeoutInSeconds<public>: float = external {}
+
+      DefaultTestTimeoutInSeconds<public>: float = external {}
+
+      GetDisplayTime<public>(DurationInSec: float): string = external {}
+
+      IsTestCaseIncluded<public>(TestCase: test_case)<transacts><decides>: void = external {}
+
+      (/Fortnite.com/VerseInternalTesting/VerseFramework/test_runner:)Log<public>(Level: log_level, Message: string)<transacts>: void = external {}
+
+      PrintLogOutput<public>()<transacts>: void = external {}
+
+      RaiseFunctionFailure<public>(FuncName: string)<transacts>: void = external {}
+
+      RecordFlakinessTestResult<public>(TestName: string, Succeeded: logic)<transacts>: void = external {}
+
+      RegisterTests<public>(TestSuite: test_suite)<transacts>: void = external {}
+
+      Require<public>(OptionalAgent: ?agent, Message: string)<transacts><decides>: agent = external {}
+
+      ResetExcludeFilters<public>()<transacts>: void = external {}
+
+      ResetIncludeFilters<public>()<transacts>: void = external {}
+
+      Run<public>()<suspends>: void = external {}
+
+      RunTestSuites<public>()<suspends>: void = external {}
+
+      var CurrentTestSuite<public>: string = external {}
+
+      var EnableDebugOutput<public>: logic = external {}
+
+      var EnableFlakinessEvaluation<public>: logic = external {}
+
+      var EnableLogOutput<public>: logic = external {}
+
+      var EnableTimeTracking<public>: logic = external {}
+
+      var EnableVerboseOutput<public>: logic = external {}
+
+      var FlakinessRunCount<public>: int = external {}
+
+      var LastTestErrors<public>: []string = external {}
+
+      var LogOutput<public>: []string = external {}
+
+      var SetupFunctionTimeoutInSeconds<public>: float = external {}
+
+      var TargetTestSuite<public>: string = external {}
+
+      var TestReporter<public>: test_reporter = external {}
+
+      var TestTimeoutInSeconds<public>: float = external {}
+    }
+
+    test_runner_device<epic_internal> := class(creative_device) {
+      OnBegin<override>()<suspends>: void = external {}
+
+      @editable
+      TestReportName<public>: string = external {}
+
+      TestReportVerbosity<public>: log_level = external {}
+
+      TestRunner<public>: test_runner = external {}
+
+      var Status<public>: test_runner_status = external {}
+    }
+
+    test_runner_status<public> := enum {
+      Complete
+
+      Pending
+
+      (/Fortnite.com/VerseInternalTesting/VerseFramework/test_runner_status:)Running
+
+      Setup
+    }
+
+    test_suite<public> := struct {
+      AfterAllFunc<public>: type { _()<suspends>: void }
+
+      AfterEachFunc<public>: type { _()<suspends>: void }
+
+      BeforeAllFunc<public>: type { _()<suspends>: void }
+
+      BeforeEachFunc<public>: type { _()<suspends>: void }
+
+      Cases<public>: []test_case
+
+      Name<public>: string
+    }
   }
 }

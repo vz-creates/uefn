@@ -3,6 +3,7 @@
 		"bShowConsole": true,
 		"bShowValidateProjectMenuEntry": true,
 		"AllowedClasses": {
+			"/Script/Engine.CameraComponent": {},
 			"/Script/FortniteGame.BuildingActor": { "Visible": true },
 			"/Script/FortniteGame.BuildingActorClassData": {},
 			"/Script/FortniteGame.BuildingEditModeMetadata": { "Visible": true },
@@ -34,8 +35,12 @@
 	"PropertyEditorClassPermissionList": {
 		"+": [
 			{
+				"Type": "/Script/Engine.CameraComponent",
+				"AllowList": [ "ProjectionMode", "FieldOfView", "AspectRatio" ]
+			},
+			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",
-				"AllowList": [ "Kind" ]
+				"AllowList": [ "ApiAccess" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingActor",
@@ -48,10 +53,6 @@
 			{
 				"Type": "/Game/Creative/Devices/Lighting/BP_DaySequenceModifier_Device.BP_DaySequenceModifier_Device_C",
 				"AllowList": [ "UserDaySequence" ]
-			},
-			{
-				"Type": "/Game/ArtTools/PlaysetIconSceneCamera.PlaysetIconSceneCamera_C",
-				"AllowList": [ "CameraPreset", "FieldOfView", "ProjectionMode", "bConstrainAspectRatio", "AspectRatio" ]
 			}
 		],
 		"-": [

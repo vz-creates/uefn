@@ -6,12 +6,10 @@
 		"bCollectionsEnabled": true,
 		"bMultiProjectAllowed": true,
 		"bModuleIdNamedPlugins": true,
+		"bModuleWithPluginFriendlyNameAllowed": true,
 		"bShowingContentVersePath": true,
 		"bWorkspaceAllowed": true,
-		"bProjectRenameAllowed": true,
-		"AllowedVerseScopes": {
-			"+": ["InternalAPI"]
-		} 
+		"bProjectRenameAllowed": true
 	},
 	"ValkyrieBlueprintsSettings": {
 		"bEnableBlueprintGraph": true,
@@ -756,7 +754,11 @@
 				"/Script/Engine.KismetMathLibrary:Xor_IntInt",
 				"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros:IsValid"
 			]
-		}
+		},
+		"UnrestrictedBlueprintTypes": [
+			"/Script/Blutility.EditorUtilityBlueprint",
+			"/Script/Blutility.EditorUtilityWidgetBlueprint"
+		]
 	},
 	"ValkyrieAnimationSettings": {
 		"bEnableAnimationBlueprints": true,
@@ -780,6 +782,7 @@
 		},
 		"AllowedMVVMConversionClass": {
 			"+": [
+				"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftInputAction"
 			]
 		}
 	},
@@ -810,7 +813,11 @@
 			"/Script/Engine.UserDefinedStruct":					{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/EnhancedInput.InputAction":                { "Rules": ["View","Create"] },
             "/Script/EnhancedInput.InputMappingContext":        { "Rules": ["View","Create"] },
+			"/Script/EnhancedInput.InputTrigger": 				{ "Rules": ["View", "Create"], "Subclasses" : "All" },
+			"/Script/EnhancedInput.InputTriggerPressed":        { "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
+			"/Script/FortniteGame.FortInputMappingContext":     { "Rules": ["View","Create"] },
+			"/Script/FortniteGame.FortPlayerMappableKeySettings":{ "Rules": ["View","Create"]},
 			"/Script/GameplayCameras.CameraRigAsset":			{ "Rules": ["View","Create"] },
 			"/Script/GameplayCameras.CameraVariableAsset":		{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":		{ "Rules": ["View","Create"] },
@@ -1031,7 +1038,12 @@
 			"/Script/Engine.PoseLink": {},
 			"/Script/EnhancedInput.InputAction":						{  },
 			"/Script/EnhancedInput.InputMappingContext":				{  },
+			"/Script/EnhancedInput.InputTrigger":						{ "Visible": true },
+			"/Script/EnhancedInput.InputTriggerPressed": 				{ "Visible": true },
+			"/Script/FortniteGame.FortInputMappingContext": 			{ "Visible": true },
+			"/Script/FortniteGame.FortPlayerMappableKeySettings":		{ "Visible": true },
 			"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros_C":{ "Visible": true },
+			"/Script/FortCreativeStreamingComponent.FortCreativeStreamingMusicalReactivityComponent":	{ "Visible": true },
 			"/Script/FortniteGame.BaseUEFNAnimInstance":				{ "Visible": true },
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance":			{ "Visible": true },
 			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
@@ -1057,6 +1069,9 @@
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":		{ "Visible": true },
 			"/Script/Engine.InheritableComponentHandler":				{  },
 			"/Script/MovieScene.MovieSceneBindingOverrides":			{  },
+			"/Script/MusicEnvironment.FrameBasedMusicMap":              {  },
+			"/Script/MusicalMode.MovieSceneMusicalClock":               {  },
+			"/Script/HarmonixMetasound.MusicClockComponent":            {  },
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C": { "Visible": true },
 			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C": { }
 		},
@@ -1073,6 +1088,11 @@
 			},
 			"AssetEditor.PropertyInterfaceEditor.MainMenu.File": {
 				"AllowList": [ "SaveAsset" ]
+			},
+			"Sequencer.MainToolBar": {
+				"AllowList": {
+					"+": [ "MusicMode", "MusicModeSyncConfig"]
+				}
 			},
 			"SkeletonTree.BlendProfilesMenu": {
 				"AllowList": [ "CreateTimeBlendProfile", "CreateWeightBlendProfile", "CreateBlendMask" ]
@@ -1124,8 +1144,11 @@
 				},
 				"DenyList" : {
 					"=": []
-					}
 				}
+			},
+			"DaySequence.ViewportToolbar": {
+				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence", "SelectDaySequenceActor", "RefreshDaySequenceActor", "OpenDaySequenceActor", "RespawnDaySequenceActor" ]
+			}
 		},
 		"AllowedTabs": {
 			"PropertyInterfaceEditor": {
@@ -1370,6 +1393,12 @@
 			{
 				"Type": "/Script/Engine.BodyInstance",
 				"AllowList": [ "WalkableSlopeOverride", "bOverrideWalkableSlopeOnInstance" ]
+			}
+		],
+		"-": [
+			{
+				"Type": "/Script/FabricLevelSequencer.MidiSource",
+				"DenyList": [ "MidiSourceType" ]
 			}
 		]
 	}

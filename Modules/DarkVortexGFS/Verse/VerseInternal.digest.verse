@@ -2,12 +2,11 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-34.40-CL-41753727
+# Generated from build: ++Fortnite+Release-35.00-CL-41994699
 #################################################
 
 using { /Verse.org/Native }
 using { /Verse.org/Restricted }
-using { /Verse.org/VerseEngine }
 # Module import path: /Verse.org/Assets
 Assets<public> := module {
   # Create an asset reference to the given internal asset path
@@ -38,7 +37,7 @@ Assets<public> := module {
   font<native><epic_internal> := class<computes><final><epic_internal>(client_asset) {}
 
   input_action<native><epic_internal>(t: type) := class<computes><epic_internal>(asset) {
-    Path<native><public>: string = external {}
+    Path<native><epic_internal>: string = external {}
 
     RequiredByCompiler<epic_internal>: ?t = external {}
   }
@@ -51,6 +50,16 @@ Assets<public> := module {
     MaterialPath<native><epic_internal>: string = external {}
 
     OnPropertyChangedFromVerse<native><override>(PropertyName: string)<transacts>: void
+  }
+
+  material_parameter_collection<native><epic_internal> := class<epic_internal>(asset, property_changed_interface) {
+    MPCPath<native><epic_internal>: string = external {}
+
+    OnPropertyChangedFromVerse<native><override>(PropertyName: string)<transacts>: void
+
+    ___PropertyInterface_On_Enabled_Changed<epic_internal>(): void = external {}
+
+    var Enabled<public>: logic = external {}
   }
 
   mesh<native><public> := class<computes><epic_internal>(asset) {}
@@ -454,10 +463,10 @@ Colors<public> := module {
   (/Verse.org/Colors:)operator'-'<native><public>(c0: color, c1: color)<converges>: color
 
   # Makes an ACES 2065-1 `color` from each component of `c` divided by `factor`.
-  (/Verse.org/Colors:)operator'/'<native><public>(c: color, factor: float)<converges><decides>: color
+  (/Verse.org/Colors:)operator'/'<native><public>(c: color, factor: float)<decides><converges>: color
 
   # Makes an ACES 2065-1 `color` from each component of `c` divided by `factor`.
-  (/Verse.org/Colors:)operator'/'<native><public>(c: color, factor: int)<converges><decides>: color
+  (/Verse.org/Colors:)operator'/'<native><public>(c: color, factor: int)<decides><converges>: color
 }
 
 # Module import path: /Verse.org/Concurrency
@@ -505,7 +514,7 @@ ControlInput<public> := module {
     Path: string where t: type
   )<converges>: input_action(t)
 
-  input_events<native><public>(t: type) := class {
+  input_events<native><public>(t: type) := class<epic_internal> {
     ActivationCanceledEvent<native><public>: listenable(tuple(player, t, float)) = external {}
 
     ActivationTriggeredEvent<native><public>: listenable(tuple(player, t)) = external {}
@@ -569,17 +578,19 @@ Native<public> := module {
 
 # Module import path: /Verse.org/Predicts
 Predicts<public> := module {
-  Dictate<native><epic_internal>()<predicts><suspends>: void
+  Dictate<native><epic_internal>()<suspends><predicts>: void
 
   PredictsDebugCallFunc<native><epic_internal>(__dupe___unnamed_parameter_8: string)<transacts>: void
 
   PredictsDebugClientMode<native><epic_internal>()<transacts>: void
 
+  PredictsDebugFindObject<native><epic_internal>(ObjectID: int)<decides>: any
+
   PredictsDebugFindObjectID<native><epic_internal>(Obj: any)<decides>: int
 
   PredictsDebugObjectFieldEquals<native><epic_internal>(ObjectID: int, FieldName: string, Value: any)<decides>: void
 
-  PredictsDebugRegisterFunc<native><epic_internal>(__dupe___unnamed_parameter_6: string, __dupe___unnamed_parameter_7: type { _()<predicts><suspends>: void })<transacts>: void
+  PredictsDebugRegisterFunc<native><epic_internal>(__dupe___unnamed_parameter_6: string, __dupe___unnamed_parameter_7: type { _()<suspends><predicts>: void })<transacts>: void
 
   PredictsDebugReplicateToClient<native><epic_internal>()<transacts>: void
 
@@ -594,6 +605,7 @@ Predicts<public> := module {
   PredictsServerRegisterObject<native><epic_internal>(__dupe___unnamed_parameter_4: any)<transacts>: any
 }
 
+using { /Verse.org/Concurrency }
 # Module import path: /Verse.org/Random
 Random<public> := module {
   # Returns a random `float` between `Low` and `High`, inclusive.
@@ -606,19 +618,16 @@ Random<public> := module {
   Shuffle<public>(Input: []t where t: type)<transacts>: []t = external {}
 }
 
-using { /Verse.org/Concurrency }
 # Module import path: /Verse.org/Restricted
 Restricted<public> := module {
-  sticky_event<native><public>(t: type) := class(signalable(t), awaitable(t)) {
+  sticky_event<native><public>(t: type) := class(event(t)) {
     Await<native><override>()<suspends>: t
 
     ClearSignal<native><public>(): void
 
-    GetAwaitCount<native><epic_internal>(): int
-
     IsSignaled<native><public>()<decides>: void
 
-    Signal<native><override>(__dupe___unnamed_parameter_21: t): void
+    Signal<native><override>(__dupe___unnamed_parameter_24: t): void
   }
 
   sticky_event<public>() := sticky_event(void)
@@ -692,21 +701,18 @@ SceneGraph<public> := module {
   @experimental
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all components attached to descendant entities to and including `InEntity` of type `component_type`.
-  # When querying from the simulation entity, the simulation entity itself is not included in the results.
   # The order of the returned components is unspecified and subject to change.
   (InEntity: entity).FindDescendantComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
 
   @experimental
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` of type `entity_type`.
-  # When querying from the simulation entity, the simulation entity itself is not included in the results.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindDescendantEntities<native><public>(entity_type: castable_subtype(entity))<transacts>: generator(entity_type)
 
   @experimental
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` containing a component of type `component_type`.
-  # When querying from the simulation entity, the simulation entity itself is not included in the results.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindDescendantEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
 
@@ -718,8 +724,16 @@ SceneGraph<public> := module {
   (InEntity: entity).FindDescendantEntitiesWithTag<native><public>(Tag: tag)<transacts>: generator(entity)
 
   @experimental
+  # Returns the bounds of this entity by accumulating bounded components, including owned entities, in world space.
+  (InEntity: entity).GetGlobalBounds<native><epic_internal>()<transacts>: bounded_box
+
+  @experimental
   # Returns the global transform of this entity, in the case the entity does not have a transform_component it will return the transform of the first parent that has a transform
   (InEntity: entity).GetGlobalTransform<native><public>()<transacts>: (/Verse.org/SpatialMath:)transform
+
+  @experimental
+  # Returns the bounds of this entity by accumulating bounded components, including owned entities, in local space.
+  (InEntity: entity).GetLocalBounds<native><epic_internal>()<transacts>: bounded_box
 
   @experimental
   # Returns the local transform of this entity, in the case the entity does not have a transform_component it will return identity
@@ -728,6 +742,14 @@ SceneGraph<public> := module {
   @experimental
   # Returns the origin of the entity in any, in the case the entity does not have a transform_component the method will fail
   (InEntity: entity).GetOrigin<native><public>()<transacts><decides>: origin
+
+  @experimental
+  # Returns the bounds of this entity by accumulating bounded components, not including owned entities, in world space.
+  (InEntity: entity).GetSelfGlobalBounds<native><epic_internal>()<transacts>: bounded_box
+
+  @experimental
+  # Returns the bounds of this entity by accumulating bounded components, not including owned entities, in local space.
+  (InEntity: entity).GetSelfLocalBounds<native><epic_internal>()<transacts>: bounded_box
 
   @experimental
   # Returns the simulation entity parent for this entity.
@@ -810,7 +832,7 @@ SceneGraph<public> := module {
   }
 
   @experimental
-  DefaultChannelToInteraction<epic_internal>(__dupe___unnamed_parameter_47: collision_channel)<computes>: collision_interaction = external {}
+  DefaultChannelToInteraction<epic_internal>(__dupe___unnamed_parameter_42: collision_channel)<computes>: collision_interaction = external {}
 
   @experimental
   @available { MinUploadedAtFNVersion := 2930 }
@@ -997,13 +1019,13 @@ SceneGraph<public> := module {
       FinishedEvent<native><public>: listenable(tuple()) = external {}
 
       # Is there a valid set of playable keyframes?
-      HasValidAnimation<native><public>()<computes><decides><reads>: void
+      HasValidAnimation<native><public>()<reads><decides>: void
 
       # Is the animation paused?
-      IsPaused<native><public>()<computes><decides><reads>: void
+      IsPaused<native><public>()<reads><decides>: void
 
       # Is the animation currently playing?
-      IsPlaying<native><public>()<computes><decides><reads>: void
+      IsPlaying<native><public>()<reads><decides>: void
 
       # Signaled when any keyframe is reached. (Keyframe:int, IsReversed:logic).
       KeyframeReachedEvent<native><public>: listenable(tuple(int, logic)) = external {}
@@ -1126,14 +1148,84 @@ SceneGraph<public> := module {
   # Module import path: /Verse.org/SceneGraph/VerseCamera
   VerseCamera<public> := module {
     @experimental
+    # Get the player's control rotation
     (CameraMode: camera_mode).GetControlRotation<native><epic_internal>(UpdateParameters: camera_update_parameters)<transacts><decides>: (/Verse.org/SpatialMath:)rotation
 
     @experimental
+    # Get the transform of the player's camera bone for first person
+    (CameraMode: camera_mode).GetFirstPersonCameraBoneTransform<native><epic_internal>(UpdateParameters: camera_update_parameters)<transacts><decides>: (/Verse.org/SpatialMath:)transform
+
+    @experimental
+    # Get the transform of the player pawn
     (CameraMode: camera_mode).GetViewTargetTransform<native><epic_internal>(UpdateParameters: camera_update_parameters)<transacts><decides>: (/Verse.org/SpatialMath:)transform
 
     @experimental
+    # Get the camera component currently active on the player (activated via camera_component.ActivateForPlayer)
+    (Player: player).GetActiveCameraComponent<native><epic_internal>()<transacts><decides>: camera_component
+
+    @experimental
+    # Get field of view
+    (Result: camera_mode_result).GetFieldOfView<native><epic_internal>(): float
+
+    @experimental
+    # Set field of view
+    (Result: camera_mode_result).SetFieldOfView<native><epic_internal>(FieldOfView: float): void
+
+    @experimental
+    # Camera body settings, e.g. sensor/film settings, shutter speed, etc
+    camera_body<native><epic_internal> := class {
+      @editable
+      @replicated("")
+      @experimental
+      # The camera sensor sensitivity to light.
+      var ISO<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Height of camera sensor in millimeters.
+      var SensorHeightMillimeters<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Horizontal offset of camera sensor.
+      var SensorHorizontalOffsetMillimeters<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Vertical offset of camera sensor.
+      var SensorVerticalOffsetMillimeters<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Width of camera sensor in millimeters.
+      var SensorWidthMillimeters<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Camera shutter speed.
+      var ShutterSpeed<native><public>: float = external {}
+    }
+
+    @experimental
     # Represents the physical body, lens of the camera and other cinematographic qualities, such as sensor size, aspect ratio lock/constraint, focal length, focus distance, post-process settings, etc.
-    camera_component<native><epic_internal> := class(basic_camera_component) {}
+    camera_component<native><epic_internal> := class(basic_camera_component) {
+      @editable
+      @replicated("")
+      @experimental
+      # Optionally override the far clipping plane distance. If value is Inf then use the default settings
+      var FarClippingPlaneDistance<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Optionally override the near clipping plane distance. If value is <= 0.0 then use the default settings
+      var NearClippingPlaneDistance<native><public>: float = external {}
+    }
 
     @experimental
     # Component that owns higher level camera behavior.
@@ -1144,16 +1236,24 @@ SceneGraph<public> := module {
       # Add a camera component to the list for consideration
       AddCameraMode<native><public>(CameraMode: camera_mode): void
 
-      @experimental
-      # Determine which camera mode should be active
-      DetermineActiveCameraMode<native_callable><public>()<transacts><decides>: camera_mode = external {}
-
       # Get camera parameters for a specific player
       GetCameraParametersForPlayer<native><epic_internal>(Player: player)<transacts><decides>: []parameterized_property_interface
 
       @experimental
       # Remove a camera component from the list for consideration
       RemoveCameraMode<native><public>(CameraMode: camera_mode): void
+
+      @experimental
+      # Determine which camera mode should be active
+      SelectActiveCameraMode<native_callable><public>()<transacts><decides>: camera_mode = external {}
+
+      @experimental
+      # Select a camera transition. Override this function to define camera transition behavior globally for the entire camera director.
+      # The default behavior is to call SourceCameraMode.GetExitTransition[DestinationCameraMode], if this function fails, then we call DestinationCameraMode.GetEnterTransition[SourceCameraMode]. If both failed then we default to an instant pop transition
+      SelectCameraTransition<native_callable><public>(
+        SourceCameraMode: camera_mode,
+        DestinationCameraMode: camera_mode
+      )<transacts><decides>: camera_transition = external {}
 
       @replicated("")
       @experimental
@@ -1166,25 +1266,55 @@ SceneGraph<public> := module {
     }
 
     @experimental
+    # Camera lens settings
+    camera_lens<native><epic_internal> := class {
+      @editable
+      @replicated("")
+      @experimental
+      # Number of blades of diaphragm.
+      var BladeCount<native><public>: int = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Aperture of the lens in FStop.
+      var FStop<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Focal length of the lens in millimeters.
+      var FocalLengthMillimeters<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @experimental
+      # Squeeze factor for anamorphic lenses.
+      var SqueezeFactor<native><public>: float = external {}
+    }
+
+    @experimental
     # A camera mode builds up a camera transform piece by piece by executing a camera rig asset
     camera_mode<native><epic_internal> := class<concrete> {
+      @editable
       @experimental
-      GetCameraModeTag<native><public>()<transacts><decides>: verse_camera_mode_tag
+      @replicated("")
+      CameraModeTag<native><public>: tag_selector = external {}
 
       @experimental
-      # Get blend to use when entering this camera mode to transition to the specified camera mode
-      GetEnterBlend<native_callable><public>(SourceCameraMode: camera_mode)<transacts><decides>: camera_mode_blend = external {}
+      # Get transition to use when entering this camera mode to transition to the specified camera mode
+      GetEnterTransition<native_callable><public>(SourceCameraMode: camera_mode)<transacts><decides>: camera_transition = external {}
 
       @experimental
-      GetEnterBlend_Internal<native_callable><epic_internal>(SourceCameraMode: camera_mode)<transacts><decides>: camera_mode_blend = external {}
+      GetEnterTransition_Internal<native_callable><epic_internal>(SourceCameraMode: camera_mode)<transacts><decides>: camera_transition = external {}
 
       @experimental
-      # Get blend to use when exiting this camera mode to transition to the destination camera mode
-      GetExitBlend<native_callable><public>(DestinationCameraMode: camera_mode)<transacts><decides>: camera_mode_blend = external {}
+      # Get transition to use when exiting this camera mode to transition to the destination camera mode
+      GetExitTransition<native_callable><public>(DestinationCameraMode: camera_mode)<transacts><decides>: camera_transition = external {}
 
       @experimental
       # Update camera mode
-      Update<native_callable><public>(UpdateParameters: camera_update_parameters): void = external {}
+      Update<native_callable><public>(UpdateParameters: camera_update_parameters): camera_mode_result = external {}
     }
 
     @import_as("/Script/VerseCamera.UVerseCameraMode")
@@ -1198,7 +1328,13 @@ SceneGraph<public> := module {
 
     @experimental
     # Linear blend between camera modes
-    camera_mode_blend_linear<native><epic_internal> := class<concrete>(camera_mode_blend_with_duration) {}
+    camera_mode_blend_linear<native><epic_internal> := class<concrete>(camera_mode_blend) {}
+
+    @experimental
+    # Configurable blend between two camera modes
+    camera_mode_blend_orbit<native><epic_internal> := class<concrete>(camera_mode_blend) {
+      DrivingBlend<native><public>: camera_mode_blend = external {}
+    }
 
     @experimental
     # Instantly snap to target mode
@@ -1206,19 +1342,38 @@ SceneGraph<public> := module {
 
     @experimental
     # Camera mode blend that uses the smootherstep function to blend between the two camera modes
-    camera_mode_blend_smootherstep<native><epic_internal> := class<concrete>(camera_mode_blend_with_duration) {}
+    camera_mode_blend_smootherstep<native><epic_internal> := class<concrete>(camera_mode_blend) {}
 
     @experimental
     # Camera mode blend that uses the smoothstep function to blend between the two camera modes
-    camera_mode_blend_smoothstep<native><epic_internal> := class<concrete>(camera_mode_blend_with_duration) {}
+    camera_mode_blend_smoothstep<native><epic_internal> := class<concrete>(camera_mode_blend) {}
 
     @experimental
-    @hide_in_editor
-    # Base class for camera mode blends that have a duration
-    camera_mode_blend_with_duration<native><epic_internal> := class<concrete>(camera_mode_blend) {
-      @editable
-      # Sets the duration of the camera blend
-      Duration<native><public>: float = external {}
+    # Result of executing a camera mode
+    camera_mode_result<native><epic_internal> := class<final> {
+      @experimental
+      # Width of orthographic projection - Only used if CameraProjectionType is Orthographic
+      OrthographicProjectionWidthCentimeters<native><public>: float = external {}
+
+      @experimental
+      # Lens settings
+      var CameraBody<native><public>: camera_body = external {}
+
+      @experimental
+      # Lens settings
+      var CameraLens<native><public>: camera_lens = external {}
+
+      @experimental
+      # Camera projection mode
+      var CameraProjectionMode<native><public>: camera_projection_mode = external {}
+
+      @experimental
+      # Output camera render location
+      var CameraRenderLocation<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      @experimental
+      # Output camera render rotation
+      var CameraRenderRotation<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
     }
 
     @experimental
@@ -1226,28 +1381,46 @@ SceneGraph<public> := module {
     camera_operation<native><epic_internal> := class<concrete><unique>(camera_operation_base) {
       @experimental
       # Called by the camera mode to build up the camera settings
-      Update<native_callable><public>(UpdateParams: camera_update_parameters): void = external {}
+      Update<native_callable><public>(UpdateParameters: camera_update_parameters): camera_mode_result = external {}
     }
 
     @import_as("/Script/VerseCamera.UVerseCameraNode")
     @experimental
     camera_operation_base<native><epic_internal> := class<abstract> {}
 
+    camera_projection_mode<native><epic_internal> := enum {
+      Orthographic
+
+      Perspective
+    }
+
     @experimental
-    # Update params to a camera operation
+    # Controls how a camera mode transitions to another
+    camera_transition<native><epic_internal> := class<concrete> {
+      @editable
+      Blend<native><public>: camera_mode_blend = external {}
+
+      @editable
+      # Sets the duration of the camera transition
+      Duration<native><public>: float = external {}
+
+      @editable
+      InitialTargetOrientation<native><epic_internal>: ?camera_transition_initial_orientation = external {}
+    }
+
+    @experimental
+    # Controls how a camera mode transitions to another
+    camera_transition_initial_orientation<native><epic_internal> := enum {
+      PreviousAbsoluteTarget
+
+      PreviousRelativeTarget
+
+      PreviousYawPitch
+    }
+
+    @experimental
+    # Input parameters to a camera mode update
     camera_update_parameters<native><epic_internal> := class<final> {
-      @experimental
-      # Field of view
-      var CameraFieldOfViewDegrees<native><public>: ?float = external {}
-
-      @experimental
-      # Camera location from the initial evaluator execution, or previous operation if an operation modified it before this one
-      var CameraLocation<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-      @experimental
-      # Camera rotation from the initial evaluator execution,  or previous operation if an operation modified it before this one
-      var CameraRotation<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
-
       @experimental
       # Camera director component that this camera_mode is running in
       var<private> CameraDirectorComponent<native><public>: camera_director_component
@@ -1256,6 +1429,15 @@ SceneGraph<public> := module {
       # Delta time since last update
       var<private> DeltaTime<native><public>: float = external {}
 
+      @experimental
+      # Initial camera location. By default this is the location of the entity with the active camera_director_component
+      var<private> InitialCameraLocation<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      @experimental
+      # Initial camera rotation. By default this is the rotation of the entity with the active camera_director_component
+      var<private> InitialCameraRotation<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+      @experimental
       # Player that the camera director is active for (if any)
       var<private> Player<native><public>: ?player = external {}
     }
@@ -1267,6 +1449,39 @@ SceneGraph<public> := module {
       @display_name("CameraRig")
       @experimental
       CameraRig<native><epic_internal>: camera_rig_asset = external {}
+    }
+
+    @experimental
+    # Simple orthographic camera.
+    orthographic_camera_component<native><epic_internal> := class<final_super>(camera_component) {
+      @editable
+      @replicated("")
+      @experimental
+      # Determines how wide the camera projects in orthographic mode, in centimeters
+      var OrthographicProjectionWidth<native><public>: float = external {}
+    }
+
+    @experimental
+    # Simple perspective camera.
+    perspective_camera_component<native><epic_internal> := class<final_super>(camera_component) {
+      @editable
+      @replicated("")
+      @experimental
+      # Horizontal field of view in degrees, specified for an aspect ratio of 16:9 /nThis is then to calculate an effective horizontal field of view for the display’s real aspect ratio /nIf for example the screen is an ultrawide (21:9, or 32:9 being common ultrawide aspect ratios) then in practice the actual field of view will be wider. This is known as the Hor+ view scaling method and is generally accepted to be the best solution for ultrawide displays.
+      var FieldOfViewDegrees<native><public>: float = external {}
+    }
+
+    @experimental
+    # Camera that is physically based, determining its view properties in a manner more consistent with a physical camera
+    physical_camera_component<native><epic_internal> := class<final_super>(camera_component) {
+      @experimental
+      # Camera’s body settings.
+      #  This contains sensor settings, e.g. film or digital camera sensor, shutter speed, etc
+      var Body<epic_internal>: camera_body = external {}
+
+      @experimental
+      # Lens of the camera
+      var Lens<epic_internal>: camera_lens = external {}
     }
 
     @experimental
@@ -1355,6 +1570,27 @@ SceneGraph<public> := module {
   }
 
   @experimental
+  # Implemented by classes whose instances can provide a bounds.
+  bounded<native><epic_internal> := interface {
+    # Returns the associated bounded box for this object, in world space.
+    GetBoundedGlobalBox<native_callable><epic_internal>()<transacts>: bounded_box
+
+    # Returns the associated bounded box for this object, in local space.
+    GetBoundedLocalBox<native_callable><epic_internal>()<transacts>: bounded_box
+  }
+
+  @experimental
+  @import_as("/*.FBoundedBox")
+  # 3-dimensional box.
+  bounded_box<native><epic_internal> := struct<concrete> {
+    BoxMax: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    BoxMin: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    Valid: logic = external {}
+  }
+
+  @experimental
   # A `capsule_light_component` emits light in all directions into the scene from a capsule shaped source with a specified radius and length. A radius and length of 0 makes it a point light. You can use these
   # to simulate any kind of light sources that emit in all directions and need an elongated source shape, such as a long light bulb.
   capsule_light_component<native><public> := class<final>(light_component) {
@@ -1405,6 +1641,13 @@ SceneGraph<public> := module {
     @experimental
     # The collision_profile for this volume.
     var CollisionProfile<public>: collision_profile = external {}
+  }
+
+  @experimental
+  collision_hit<native><epic_internal> := struct<epic_internal> {
+    CollisionVolumes<native><public>: collision_volume_pair
+
+    ContactPoints<native><public>: []contact_point
   }
 
   @experimental
@@ -1472,6 +1715,17 @@ SceneGraph<public> := module {
   collision_volume_internal<native><epic_internal> := class<concrete><epic_internal>(collision_element) {}
 
   @experimental
+  collision_volume_pair<native><epic_internal> := struct<epic_internal> {
+    SourceComponent<native><public>: component
+
+    SourceVolume<native><public>: collision_element
+
+    TargetComponent<native><public>: component
+
+    TargetVolume<native><public>: collision_element
+  }
+
+  @experimental
   # Base class for authoring logic and data in the SceneGraph. Using components you
   # can author re-usable building blocks of logic and data which can then be added to
   # entities in the scene.
@@ -1528,7 +1782,7 @@ SceneGraph<public> := module {
     #   * Components cannot be moved between parents.
     Entity<native><public>: entity
 
-    GetDiagnostic<override><native>()<computes><reads>: diagnostic
+    GetDiagnostic<override><native>()<reads>: diagnostic
 
     @experimental
     # Succeeds if the component is currently in the scene.
@@ -1621,6 +1875,17 @@ SceneGraph<public> := module {
   @experimental
   component_query_iterator_interface<native><epic_internal> := interface<epic_internal> {
     NextValue<native_callable><public>()<transacts><decides>: component
+  }
+
+  @experimental
+  contact_point<native><epic_internal> := struct<epic_internal> {
+    ContactDepth<native><public>: float = external {}
+
+    ContactImpulse<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    ContactNormal<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    ContactPosition<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
   }
 
   @experimental
@@ -1751,7 +2016,7 @@ SceneGraph<public> := module {
     # Returns the child components belonging to this entity which are accessible from the calling context.
     GetComponents<native><final><public>()<transacts>: []component
 
-    GetDiagnostic<override><native>()<computes><reads>: diagnostic
+    GetDiagnostic<override><native>()<reads>: diagnostic
 
     @experimental
     # Returns the child entities belonging to this entity which are accessible from the calling context.
@@ -1822,7 +2087,6 @@ SceneGraph<public> := module {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`.
     Await<native><override>()<suspends>: tuple()
 
-    @experimental
     # Subscribe a callback function to this event.
     Subscribe<native><override>(Callback: type { _(): void })<transacts>: cancelable
   }
@@ -1835,7 +2099,6 @@ SceneGraph<public> := module {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`. Returns the event `payload`.
     Await<native><override>()<suspends>: float
 
-    @experimental
     # Subscribe a callback function to this TickEvent phase. The input parameter to your function (DeltaTime) is the time that has passed between the last update and the current update.
     Subscribe<native><override>(Callback: type { _(: float): void })<transacts>: cancelable
   }
@@ -1844,9 +2107,9 @@ SceneGraph<public> := module {
   execution_subscription<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
 
-    RunAfter<native><epic_internal>(__dupe___unnamed_parameter_28: execution_subscription): void
+    RunAfter<native><epic_internal>(__dupe___unnamed_parameter_24: execution_subscription): void
 
-    RunBefore<native><epic_internal>(__dupe___unnamed_parameter_29: execution_subscription): void
+    RunBefore<native><epic_internal>(__dupe___unnamed_parameter_25: execution_subscription): void
   }
 
   @experimental
@@ -1883,7 +2146,7 @@ SceneGraph<public> := module {
   # Used to handle general interaction.
   interactable_component<native><public> := class<final_super>(component, enableable) {
     # Returns whether the specified agent can interact.
-    CanInteract<native><native_callable><public>(Agent: agent)<computes><decides><reads>: void
+    CanInteract<native><native_callable><public>(Agent: agent)<reads><decides>: void
 
     # Event fires when an interaction has ended before completing successfully. Sends the formerly interacting agent. interactable_component cannot be canceled, this event is provided for subclasses to fire where appropriate.
     CanceledEvent<native><public>: listenable(agent) = external {}
@@ -1897,7 +2160,7 @@ SceneGraph<public> := module {
     InteractFinishedEvent<native><public>: listenable(agent) = external {}
 
     # Returns an appropriate message to display to players to communicate the current state of the interactable.
-    InteractMessage<native><native_callable><public>(Agent: agent)<computes><decides><reads>: message
+    InteractMessage<native><native_callable><public>(Agent: agent)<reads><decides>: message
 
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<native><override>()<transacts><decides>: void
@@ -1929,18 +2192,14 @@ SceneGraph<public> := module {
 
     @experimental
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
-    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_71: accessor)<transacts>: float
+    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_70: accessor)<transacts>: float
 
     @experimental
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_70: accessor,
+      __dupe___unnamed_parameter_69: accessor,
       InRemainingDuration: float
     )<transacts>: void
-
-    @experimental
-    # Event which fires when the shared cooldown triggers.
-    TriggeredEvent<native><public>: listenable(float) = external {}
 
     @editable
     @experimental
@@ -1959,26 +2218,22 @@ SceneGraph<public> := module {
   interactable_cooldown_per_agent<native><epic_internal> := class<concrete> {
     @experimental
     # Event which fires when the per agent cooldown expires. Sends the agent which was previously affected by the cooldown.
-    ExpiredEvent<native><public>: listenable(tuple()) = external {}
+    ExpiredEvent<native><public>: listenable(agent) = external {}
 
     @experimental
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
     GetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_73: accessor,
+      __dupe___unnamed_parameter_72: accessor,
       Agent: agent
     )<transacts>: float
 
     @experimental
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_72: accessor,
+      __dupe___unnamed_parameter_71: accessor,
       Agent: agent,
       InRemainingDuration: float
     )<transacts>: void
-
-    @experimental
-    # Event which fires when the per agent cooldown triggers. Sends the agent which was previously affected by the cooldown.
-    TriggeredEvent<native><public>: listenable(float) = external {}
 
     @editable
     @experimental
@@ -1997,16 +2252,16 @@ SceneGraph<public> := module {
   interactable_duration<native><epic_internal> := class<concrete> {
     @experimental
     # Interact duration getter.
-    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_75: accessor)<transacts>: float
+    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_74: accessor)<transacts>: float
 
     @experimental
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.Returns the same value when called multiple times within a transaction.
-    GetRemainingInteractDurationForAgent<final><native><public>(Agent: agent)<computes><decides><reads>: float
+    GetRemainingInteractDurationForAgent<final><native><public>(Agent: agent)<reads><decides>: float
 
     @experimental
     # Interact duration setter.
     SetInteractDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_74: accessor,
+      __dupe___unnamed_parameter_73: accessor,
       InRemainingDuration: float
     )<transacts>: void
 
@@ -2045,13 +2300,13 @@ SceneGraph<public> := module {
 
     @experimental
     # Get the maximum number of successful interactions possible.
-    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_77: accessor)<transacts>: ?int
+    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_76: accessor)<transacts>: ?int
 
     @experimental
     # Update the maximum number of successful interactions possible, a value of false is unlimited.
     # If the current number of tracked interactions is greater than the value specified here, all current interactions will be canceled.
     SetMaxSuccessfulInteractions<native><epic_internal>(
-      __dupe___unnamed_parameter_76: accessor,
+      __dupe___unnamed_parameter_75: accessor,
       InMaxSuccessfulInteractions: ?int
     )<transacts>: void
 
@@ -2183,7 +2438,7 @@ SceneGraph<public> := module {
 
     OnUninitializingInternal<native><override>(): void
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.250000 }, MaxValue := option { 4.000000 } }
+    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 4.000000 } }
     @category("light_component|Epic Internal")
     @experimental
     # Intensity of the volumetric scattering from this light
@@ -2220,42 +2475,32 @@ SceneGraph<public> := module {
   #
   # Dependencies:
   #   * `transform_component` on the entity positions the mesh.
-  mesh_component<native><public> := class<final_super><epic_internal>(component, enableable, property_changed_interface) {
-    @editable { EpicOnly := true }
-    @category("mesh_component|Epic Internal")
+  mesh_component<native><public> := class<final_super><epic_internal>(
+    component,
+    enableable,
+    bounded,
+    property_changed_interface
+  ) {
     @experimental
-    # Controls whether the mesh should influence indirect lighting
-    AffectDynamicIndirectLighting<native><epic_internal>: logic = external {}
-
-    @editable { EpicOnly := true }
-    @category("mesh_component|Epic Internal")
-    @experimental
-    # Controls whether the mesh should affect indirect lighting when hidden
-    AffectIndirectLightingWhileHidden<native><epic_internal>: logic = external {}
-
-    @editable { EpicOnly := true }
-    @category("mesh_component|Epic Internal")
-    @experimental
-    # If true, the mesh will cast shadows even if HiddenInGame is true
-    CastHiddenShadow<native><epic_internal>: logic = external {}
-
-    @editable { EpicOnly := true }
-    @category("mesh_component|Epic Internal")
-    @experimental
-    # Controls whether this mesh should cast a shadow or not
-    CastShadow<native><epic_internal>: logic = external {}
-
-    @editable { EpicOnly := true }
-    @category("mesh_component|Epic Internal")
-    @experimental
-    # Whether this mesh should cast dynamic shadows as if it were a two sided material
-    CastShadowAsTwoSided<native><epic_internal>: logic = external {}
+    @experimental_always_overridden
+    # Cached bounds used when the owning entity is not initialized.
+    CachedLocalBounds<native><epic_internal>: bounded_box
 
     @experimental
+    @available { MinUploadedAtFNVersion := 2930 }
+    CollisionEnteredEvent<native><epic_internal>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 2930 }
+    CollisionEvent<native><epic_internal>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 2930 }
+    CollisionExitedEvent<native><epic_internal>: listenable(generator(collision_volume_pair)) = external {}
+
     # Disables rendering of this mesh.
     Disable<native><override>(): void
 
-    @experimental
     # Enables rendering of this mesh.
     Enable<native><override>(): void
 
@@ -2267,7 +2512,12 @@ SceneGraph<public> := module {
     # Triggered at the beginning of each tick when another entity is no longer overlapping this entity
     EntityExitedEvent<native><public>: listenable(entity) = external {}
 
-    @experimental
+    # Returns the bounded box of this components, in world space.
+    GetBoundedGlobalBox<override><native>()<reads>: bounded_box
+
+    # Returns the bounded box of this components, in local space.
+    GetBoundedLocalBox<override><native>()<reads>: bounded_box
+
     # Succeeds if the component is enabled, fails if it's disabled.
     IsEnabled<native><override>()<transacts><decides>: void
 
@@ -2299,17 +2549,41 @@ SceneGraph<public> := module {
     # Sets the `mesh` to be rendered.
     SetMesh<native><epic_internal>(InMesh: mesh): void
 
-    @editable { EpicOnly := true }
-    @category("mesh_component|Epic Internal")
-    @experimental
-    # Controls the sort priority of this object if it is translucent
-    TranslucencySortPriority<native><epic_internal>: int = external {}
-
     ___PropertyInterface_On_Collideable_Changed<epic_internal>(): void = external {}
 
     ___PropertyInterface_On_Queryable_Changed<epic_internal>(): void = external {}
 
     ___PropertyInterface_On_Visible_Changed<epic_internal>(): void = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # Controls whether the mesh should influence indirect lighting
+    var AffectDynamicIndirectLighting<native><epic_internal>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # Controls whether the mesh should affect indirect lighting when hidden
+    var AffectIndirectLightingWhileHidden<native><epic_internal>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # If true, the mesh will cast shadows even if HiddenInGame is true
+    var CastHiddenShadow<native><epic_internal>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # Controls whether this mesh should cast a shadow or not
+    var CastShadow<native><epic_internal>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # Whether this mesh should cast dynamic shadows as if it were a two sided material
+    var CastShadowAsTwoSided<native><epic_internal>: logic = external {}
 
     @experimental
     # Enable/disable collision on this mesh. If enabled, meshes may collide in the physics simulation.
@@ -2318,6 +2592,18 @@ SceneGraph<public> := module {
     @experimental
     # Enable/disable spatial queries against this mesh. Disabling this field will also disable EntityEnteredEvent/EntityExitedEvent.
     var Queryable<public>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # Whether this mesh should allow decals.
+    var ReceivesDecals<native><epic_internal>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("mesh_component|Epic Internal")
+    @experimental
+    # Controls the sort priority of this object if it is translucent
+    var TranslucencySortPriority<native><epic_internal>: int = external {}
 
     # Enable/disable visibility of this mesh.
     var Visible<public>: logic = external {}
@@ -2417,11 +2703,9 @@ SceneGraph<public> := module {
 
   @experimental
   physics_component<native><epic_internal> := class<final><final_super>(component, enableable) {
-    @experimental
     # Disable this object.
     Disable<native><override>(): void
 
-    @experimental
     # Enable this object.
     Enable<native><override>(): void
 
@@ -2429,7 +2713,6 @@ SceneGraph<public> := module {
     # Event signaled when the component experiences a blocking hit
     HitEvent<native><public>: listenable(hit_result) = external {}
 
-    @experimental
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<native><override>()<transacts><decides>: void
 
@@ -2524,14 +2807,6 @@ SceneGraph<public> := module {
 
   @experimental
   rigid_body_component<native><epic_internal> := class<final><final_super><epic_internal>(component) {
-    BeginOverlapEvent<native><public>: listenable(overlap_hit) = external {}
-
-    EndOverlapEvent<native><public>: listenable(overlap_hit) = external {}
-
-    EntityEnteredEvent<native><public>: listenable(entity) = external {}
-
-    EntityExitedEvent<native><public>: listenable(entity) = external {}
-
     OnAddedToSceneInternal<native><override>(): void
 
     OnBeginSimulationInternal<native><override>(): void
@@ -2545,16 +2820,23 @@ SceneGraph<public> := module {
     OnUninitializingInternal<native><override>(): void
 
     @experimental
-    # Enable/disable collision on this mesh. If enabled, meshes may collide in the physics simulation.
-    var Collideable<public>: logic = external {}
-
-    @experimental
     # Enable/Disable simulation of this body.
-    var Dynmamic<public>: logic = external {}
+    var Dynamic<public>: logic = external {}
 
     @experimental
-    # Enable/disable spatial queries against this mesh. Disabling this field will also disable EntityEnteredEvent/EntityExitedEvent.
-    var Queryable<public>: logic = external {}
+    @editable
+    # The gravity group index to use for component.
+    var GravityGroupIndex<public>: int = external {}
+
+    @experimental
+    @editable
+    # The mass to use for component.
+    var MassInKg<public>: float = external {}
+
+    @experimental
+    @editable
+    # The max angular velocity to use for component.
+    var MaxAngularVelocityInRadians<public>: float = external {}
   }
 
   @experimental
@@ -2737,13 +3019,13 @@ SceneGraph<public> := module {
     AddTag<native><public>(TagToAdd: tag)<transacts>: logic
 
     # Determine if TagToCheck is present in this container, also checking against parent tags {"A.1"}.Has("A") will return True, {"A"}.Has("A.1") will return False If TagToCheck is not Valid it will always return False.
-    Has<native><override>(TagToCheck: tag)<computes><decides><reads>: void
+    Has<native><override>(TagToCheck: tag)<reads><decides>: void
 
     # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-    HasAll<native><override>(InTags: []tag)<computes><decides><reads>: void
+    HasAll<native><override>(InTags: []tag)<reads><decides>: void
 
     # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-    HasAny<native><override>(InTags: []tag)<computes><decides><reads>: void
+    HasAny<native><override>(InTags: []tag)<reads><decides>: void
 
     OnAddedToSceneInternal<native><override>(): void
 
@@ -2856,7 +3138,7 @@ using { /Verse.org/Assets }
 Simulation<public> := module {
   # Returns the `session` corresponding to the current round.  The result can be used with `weak_map` to implement global variables.
   # Note: may be changed in a future release to return a single instance per game. Round-local behavior should not be relied upon.
-  GetSession<native><public>()<computes><reads>: session
+  GetSession<native><public>()<reads>: session
 
   # Get the seconds that have elapsed since the world began simulating
   GetSimulationElapsedTime<native><public>()<transacts>: float
@@ -2891,10 +3173,10 @@ Simulation<public> := module {
     MakeTagFromSubClass<native><epic_internal>(tag_type: subtype(tag))<transacts><decides>: tag
 
     # Get a string representation of the gameplay tag. Useful for debugging.
-    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_28: tag)<computes>: string
+    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_24: tag)<computes>: string
 
     # Returns abbreviated human readable Tag list. Useful for debugging.
-    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_31: tag_container)<computes>: string
+    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_27: tag_container)<computes>: string
 
     # A single gameplay tag, which represents a hierarchical name of the form x.y that is registered in the GameplayTagsManager You can filter the gameplay tags displayed in the editor.
     tag<native><public> := class<abstract> {}
@@ -2915,22 +3197,22 @@ Simulation<public> := module {
       GetTags<native><epic_internal>()<transacts>: generator(tag)
 
       # Determine if TagToCheck is present in this container, also checking against parent tags {"A.1"}.Has("A") will return True, {"A"}.Has("A.1") will return False If TagToCheck is not Valid it will always return False.
-      Has<native><override>(TagToCheck: tag)<computes><decides><reads>: void
+      Has<native><override>(TagToCheck: tag)<reads><decides>: void
 
       # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-      (/Verse.org/Simulation/Tags/tag_container:)HasAll<native><epic_internal>(InTags: tag_container)<computes><decides><reads>: void
+      (/Verse.org/Simulation/Tags/tag_container:)HasAll<native><epic_internal>(InTags: tag_container)<reads><decides>: void
 
       # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-      (/Verse.org/Simulation/Tags/tag_view:)HasAll<native><override>(InTags: []tag)<computes><decides><reads>: void
+      (/Verse.org/Simulation/Tags/tag_view:)HasAll<native><override>(InTags: []tag)<reads><decides>: void
 
       # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-      (/Verse.org/Simulation/Tags/tag_container:)HasAny<native><epic_internal>(InTags: tag_container)<computes><decides><reads>: void
+      (/Verse.org/Simulation/Tags/tag_container:)HasAny<native><epic_internal>(InTags: tag_container)<reads><decides>: void
 
       # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-      (/Verse.org/Simulation/Tags/tag_view:)HasAny<native><override>(InTags: []tag)<computes><decides><reads>: void
+      (/Verse.org/Simulation/Tags/tag_view:)HasAny<native><override>(InTags: []tag)<reads><decides>: void
 
       # Returns the number of explicitly added tags.
-      Num<native><epic_internal>()<computes><reads>: int
+      Num<native><epic_internal>()<reads>: int
 
       # Remove the specified tag from the container.
       Remove<native><epic_internal>(Tag: tag)<decides>: void
@@ -2980,13 +3262,13 @@ Simulation<public> := module {
     # A queryable collection of gameplay tags.
     tag_view<native><public> := interface<epic_internal> {
       # Determine if TagToCheck is present in this container, also checking against parent tags {"A.1"}.Has("A") will return True, {"A"}.Has("A.1") will return False If TagToCheck is not Valid it will always return False.
-      Has<public>(TagToCheck: tag)<computes><decides><reads>: void
+      Has<public>(TagToCheck: tag)<reads><decides>: void
 
       # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-      HasAll<public>(InTags: []tag)<computes><decides><reads>: void
+      HasAll<public>(InTags: []tag)<reads><decides>: void
 
       # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-      HasAny<public>(InTags: []tag)<computes><decides><reads>: void
+      HasAny<public>(InTags: []tag)<reads><decides>: void
     }
   }
 
@@ -3194,15 +3476,8 @@ Simulation<public> := module {
 
   player<native><public> := class<unique><persistent><module_scoped_var_weak_map_key><epic_internal>(agent) {
     # Succeeds when this `player` may be used as a module-scoped `var` `weak_map` key. This coincides with the corresponding player having joined the game and not yet left. Using a `player` as a module-scope `var` `weak_map` key when this method fails results in a runtime error.
-    IsActive<native><public>()<computes><decides><reads>: void
+    IsActive<native><public>()<reads><decides>: void
   }
-
-  # Module import path: /Verse.org/Simulation/player_array_helper
-  player_array_helper<epic_internal> := module {
-    TestFunc<native><epic_internal>(new_value: int): int
-  }
-
-  player_multicast_delegate<native><epic_internal> := class<final>(multicast_delegate(player)) {}
 
   # Type for which there is a single instance per round.  Use `GetSession` to get the current round's `session` instance. May be used with `weak_map` to implement global variables.
   # Note: may be changed in a future release to a single instance per game. Round-local behavior should not be relied upon.
@@ -3243,75 +3518,75 @@ Simulation<public> := module {
 SpatialMath<public> := module {
   @experimental
   # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Forward axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyLocalRotationForward<public>(AngleRadians: float)<computes><reads>: rotation = external {}
+  (InitialRotation: rotation).ApplyLocalRotationForward<public>(AngleRadians: float)<reads>: rotation = external {}
 
   @experimental
   # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Right axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyLocalRotationRight<public>(AngleRadians: float)<computes><reads>: rotation = external {}
+  (InitialRotation: rotation).ApplyLocalRotationRight<public>(AngleRadians: float)<reads>: rotation = external {}
 
   @experimental
   # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Up axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyLocalRotationUp<public>(AngleRadians: float)<computes><reads>: rotation = external {}
+  (InitialRotation: rotation).ApplyLocalRotationUp<public>(AngleRadians: float)<reads>: rotation = external {}
 
   @experimental
   # Makes a `rotation` by applying `PitchUpRadians` of right-handed rotation around the local +Right axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyPitch<native><public>(PitchUpRadians: float)<computes><reads>: rotation
+  (InitialRotation: rotation).ApplyPitch<native><public>(PitchUpRadians: float)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by applying `RollClockwiseRadians` of right-handed rotation around the local +Forward axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyRoll<native><public>(RollClockwiseRadians: float)<computes><reads>: rotation
+  (InitialRotation: rotation).ApplyRoll<native><public>(RollClockwiseRadians: float)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +Forward axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyWorldRotationForward<native><public>(AngleRadians: float)<computes><reads>: rotation
+  (InitialRotation: rotation).ApplyWorldRotationForward<native><public>(AngleRadians: float)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +Right axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyWorldRotationRight<native><public>(AngleRadians: float)<computes><reads>: rotation
+  (InitialRotation: rotation).ApplyWorldRotationRight<native><public>(AngleRadians: float)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +Up axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyWorldRotationUp<native><public>(AngleRadians: float)<computes><reads>: rotation
+  (InitialRotation: rotation).ApplyWorldRotationUp<native><public>(AngleRadians: float)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by applying `YawRightRadians` of left-handed rotation around the local +Up axis to `InitialRotation`.
-  (InitialRotation: rotation).ApplyYaw<native><public>(YawRightRadians: float)<computes><reads>: rotation
+  (InitialRotation: rotation).ApplyYaw<native><public>(YawRightRadians: float)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by composing `AdditionalRotation` to `InitialRotation`.
-  (InitialRotation: rotation).RotateBy<native><public>(AdditionalRotation: rotation)<computes><reads>: rotation
+  (InitialRotation: rotation).RotateBy<native><public>(AdditionalRotation: rotation)<reads>: rotation
 
   @experimental
   # Makes a `rotation` by composing the inverse of `RotationToRemove` from `InitialRotation`. such that InitialRotation = RotateBy(UnrotateBy(InitialRotation, RotationToRemove), RotationToRemove). This is equivalent to RotateBy(InitialRotation, InvertRotation(RotationToRemove))
-  (InitialRotation: rotation).UnrotateBy<native><public>(RotationToRemove: rotation)<computes><reads>: rotation
+  (InitialRotation: rotation).UnrotateBy<native><public>(RotationToRemove: rotation)<reads>: rotation
 
   @experimental
   # Returns `Rotation` if it does not contain `NaN`, `Inf` or `-Inf`.
-  (Rotation: rotation).(/Verse.org/SpatialMath:)IsFinite<native><public>()<converges><decides>: rotation
+  (Rotation: rotation).(/Verse.org/SpatialMath:)IsFinite<native><public>()<decides><converges>: rotation
 
   @experimental
   # Returns the radians of left-handed `rotation` around the axis of `rotation`. See also `GetAxis`.
-  (Rotation: rotation).GetAngle<native><public>()<computes><reads>: float
+  (Rotation: rotation).GetAngle<native><public>()<reads>: float
 
   @experimental
   # Makes a `vector3` from the axis of `rotation`.
   # If `rotation` is nearly identity, this will return the +Forward axis. See also `GetAngle`.
-  (Rotation: rotation).GetAxis<native><public>()<computes><reads>: vector3
+  (Rotation: rotation).GetAxis<native><public>()<reads>: vector3
 
   @experimental
   # Makes a unit `vector3` pointing in the local space *forward* direction in world space coordinates.
   # This is equivalent to: `RotateVector(Rotation, vector3{Forward:=1.0, Right:=0.0, Up:=0.0})`.
-  (Rotation: rotation).GetLocalForward<public>()<computes><reads>: vector3 = external {}
+  (Rotation: rotation).GetLocalForward<public>()<reads>: vector3 = external {}
 
   @experimental
   # Makes a unit `vector3` pointing in the the local space *right* direction in world space coordinates.
   # This is equivalent to: `RotateVector(Rotation, vector3{Forward:=0.0, Right:=1.0, Up:=0.0})`.
-  (Rotation: rotation).GetLocalRight<public>()<computes><reads>: vector3 = external {}
+  (Rotation: rotation).GetLocalRight<public>()<reads>: vector3 = external {}
 
   @experimental
   # Makes a unit `vector3` pointing in the local space *up* direction in world space coordinates.
   # This is equivalent to: `RotateVector(Rotation, vector3{Forward:=0.0, Right:=0.0, Up:=1.0})`.
-  (Rotation: rotation).GetLocalUp<public>()<computes><reads>: vector3 = external {}
+  (Rotation: rotation).GetLocalUp<public>()<reads>: vector3 = external {}
 
   @experimental
   # Makes a `tuple(float, float, float)` with three elements:
@@ -3319,19 +3594,19 @@ SpatialMath<public> := module {
   #  * *pitch* degrees of `rotation`
   #  * *roll* degrees of `rotation`
   # using the conventions of `MakeRotationFromYawPitchRollDegrees`.
-  (Rotation: rotation).GetYawPitchRollDegrees<native><public>()<computes><reads>: tuple(float, float, float)
+  (Rotation: rotation).GetYawPitchRollDegrees<native><public>()<reads>: tuple(float, float, float)
 
   @experimental
   # Makes a `rotation` by inverting `Rotation` such that `ApplyRotation(Rotation, Rotation.Invert())) = IdentityRotation`.
-  (Rotation: rotation).Invert<native><public>()<computes><reads>: rotation
+  (Rotation: rotation).Invert<native><public>()<reads>: rotation
 
   @experimental
   # Makes a `vector3` by applying `Rotation` to `Vector`.
-  (Rotation: rotation).RotateVector<native><public>(Vector: vector3)<computes><reads>: vector3
+  (Rotation: rotation).RotateVector<native><public>(Vector: vector3)<reads>: vector3
 
   @experimental
   # Makes a `vector3` by applying the inverse of `Rotation` to `Vector`.
-  (Rotation: rotation).UnrotateVector<native><public>(Vector: vector3)<computes><reads>: vector3
+  (Rotation: rotation).UnrotateVector<native><public>(Vector: vector3)<reads>: vector3
 
   @experimental
   # Succeeds when each component of `V` is within `AbsoluteTolerance` of `0.0`.
@@ -3344,11 +3619,11 @@ SpatialMath<public> := module {
 
   @experimental
   # Returns the length of `V`.
-  (V: vector3).Length<public>()<computes><reads>: float = external {}
+  (V: vector3).Length<public>()<reads>: float = external {}
 
   @experimental
   # Returns the length of `V` as if `V.Up = 0.0`.
-  (V: vector3).LengthForwardRight<public>()<computes><reads>: float = external {}
+  (V: vector3).LengthForwardRight<public>()<reads>: float = external {}
 
   @experimental
   # Returns the squared length of `V`.
@@ -3356,50 +3631,50 @@ SpatialMath<public> := module {
 
   @experimental
   # Returns the squared length of `V` as if `V.Up = 0.0`.
-  (V: vector3).LengthSquaredForwardRight<public>()<computes><reads>: float = external {}
+  (V: vector3).LengthSquaredForwardRight<public>()<reads>: float = external {}
 
   @experimental
   # Makes a unit length `vector3` pointing in the same direction of `V`.
   # Fails if `V.IsAlmostZero[] or not V.IsFinite[]`.
-  (V: vector3).MakeUnitVector<native><public>()<computes><decides><reads>: vector3
+  (V: vector3).MakeUnitVector<public>()<reads><decides>: vector3 = external {}
 
   @experimental
   # Returns the 'smallest angular distance' between `Rotation1` and `Rotation2` in radians.
-  AngularDistance<native><public>(Rotation1: rotation, Rotation2: rotation)<computes><reads>: float
+  AngularDistance<native><public>(Rotation1: rotation, Rotation2: rotation)<reads>: float
 
   @experimental
   # Returns the left-handed cross product of `V1` and `V2`.
-  CrossProductLeftHanded<native><public>(V1: vector3, V2: vector3)<computes><reads>: vector3
+  CrossProductLeftHanded<public>(V1: vector3, V2: vector3)<reads>: vector3 = external {}
 
   @experimental
   # Returns radians from `Degrees`.
-  DegreesToRadians<public>(Degrees: float)<computes><reads>: float = external {}
+  DegreesToRadians<public>(Degrees: float)<reads>: float = external {}
 
   @experimental
   # Returns the 'distance' between `Rotation1` and `Rotation2`. The result will be between:
   #  * `0.0`, representing equivalent rotations and
   #  * `1.0` representing rotations which are 180 degrees apart (i.e., the shortest rotation between them is 180 degrees around some axis).
-  Distance<native><public>(Rotation1: rotation, Rotation2: rotation)<computes><reads>: float
+  Distance<native><public>(Rotation1: rotation, Rotation2: rotation)<reads>: float
 
   @experimental
   # Returns the Euclidean distance between `V1` and `V2`.
-  Distance<native><public>(V1: vector3, V2: vector3)<computes><reads>: float
+  Distance<public>(V1: vector3, V2: vector3)<reads>: float = external {}
 
   @experimental
   # Returns the 2-D Euclidean distance between `V1` and `V2` by ignoring the difference in `Up`.
-  DistanceForwardRight<native><public>(V1: vector3, V2: vector3)<computes><reads>: float
+  DistanceForwardRight<public>(V1: vector3, V2: vector3)<reads>: float = external {}
 
   @experimental
   # Returns the squared Euclidean distance between `V1` and `V2`.
-  DistanceSquared<native><public>(V1: vector3, V2: vector3)<computes><reads>: float
+  DistanceSquared<public>(V1: vector3, V2: vector3)<reads>: float = external {}
 
   @experimental
   # Returns the squared 2-D Euclidean distance between `V1` and `V2` by ignoring their difference in `Up`.
-  DistanceSquaredForwardRight<native><public>(V1: vector3, V2: vector3)<computes><reads>: float
+  DistanceSquaredForwardRight<public>(V1: vector3, V2: vector3)<reads>: float = external {}
 
   @experimental
   # Returns the dot product of `V1` and `V2`.
-  DotProduct<native><public>(V1: vector3, V2: vector3)<computes><reads>: float
+  DotProduct<public>(V1: vector3, V2: vector3)<reads>: float = external {}
 
   @experimental
   # Makes a unit `vector3` pointing in the positive Forward axis
@@ -3416,16 +3691,16 @@ SpatialMath<public> := module {
   @experimental
   # Used to linearly interpolate/extrapolate between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all arguments are finite.
   # Returns `From*(1 - Parameter) + To*Parameter`.
-  (/Verse.org/SpatialMath:)Lerp<public>(From: vector3, To: vector3, Parameter: float)<computes><reads>: vector3 = external {}
+  (/Verse.org/SpatialMath:)Lerp<public>(From: vector3, To: vector3, Parameter: float)<reads>: vector3 = external {}
 
   @experimental
   # Makes a new `rotation` from the component wise subtraction of the Euler angle components in `RotationA` by
   # the Euler angle components in `RotationB` and ensures the returned value is normalized.
-  MakeComponentWiseDeltaRotation<native><public>(RotationA: rotation, RotationB: rotation)<computes><reads>: rotation
+  MakeComponentWiseDeltaRotation<native><public>(RotationA: rotation, RotationB: rotation)<reads>: rotation
 
   @experimental
   # Makes a `rotation` from `Axis` and `AngleRadians` using a left-handed sign convention (e.g. a positive rotation around +Z takes +X to +Y). If `Axis.IsAlmostZero[]`, make the identity rotation.
-  MakeRotation<native><public>(Axis: vector3, AngleRadians: float)<converges><reads>: rotation
+  MakeRotation<native><public>(Axis: vector3, AngleRadians: float)<reads><converges>: rotation
 
   @experimental
   # Makes a `rotation` by applying `YawRightDegrees`, `PitchUpDegrees`, and `RollClockwiseDegrees`, in that order:
@@ -3437,22 +3712,19 @@ SpatialMath<public> := module {
     YawRightDegrees: float,
     PitchUpDegrees: float,
     RollClockwiseDegrees: float
-  )<converges><reads>: rotation
+  )<reads><converges>: rotation
 
   @experimental
   # Makes the smallest angular `rotation` from `InitialRotation` to `FinalRotation` such that:
   # `InitialRotation.RotateBy(MakeShortestRotationBetween(InitialRotation, FinalRotation)) = FinalRotation` and
   # `MakeShortestRotationBetween(InitialRotation, FinalRotation)?.GetAngle()` is as small as possible.
-  MakeShortestRotationBetween<native><public>(
-    InitialRotation: rotation,
-    FinalRotation: rotation
-  )<computes><reads>: rotation
+  MakeShortestRotationBetween<native><public>(InitialRotation: rotation, FinalRotation: rotation)<reads>: rotation
 
   @experimental
   # Makes the smallest angular `rotation` from `InitialVector` to `FinalVector` such that:
   # `InitialVector.RotateBy(MakeShortestRotationBetween(InitialVector, Vector)) = FinalVector` and
   # `MakeShortestRotationBetween(InitialVector, FinalVector)?.GetAngle()` is as small as possible.
-  MakeShortestRotationBetween<native><public>(InitialVector: vector3, FinalVector: vector3)<computes><reads>: rotation
+  MakeShortestRotationBetween<native><public>(InitialVector: vector3, FinalVector: vector3)<reads>: rotation
 
   @experimental
   # Makes a `vector3` with all components `1.0`.
@@ -3460,12 +3732,12 @@ SpatialMath<public> := module {
 
   @experimental
   # Returns degrees from `Radians`.
-  RadiansToDegrees<public>(Radians: float)<computes><reads>: float = external {}
+  RadiansToDegrees<public>(Radians: float)<reads>: float = external {}
 
   @experimental
   # Makes a `vector3` by inverting the `SurfaceNormal` component of `Direction`.
   # Fails if `not SurfaceNormal.MakeUnitVector[]`.
-  ReflectVector<native><public>(Direction: vector3, SurfaceNormal: vector3)<computes><decides><reads>: vector3
+  ReflectVector<public>(Direction: vector3, SurfaceNormal: vector3)<reads><decides>: vector3 = external {}
 
   @experimental
   # Makes a unit `vector3` pointing in the positive Right axis
@@ -3473,33 +3745,29 @@ SpatialMath<public> := module {
 
   @experimental
   # Used to perform spherical linear interpolation between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that `0.0 <= Parameter <= 1.0`.
-  Slerp<native><public>(
-    InitialRotation: rotation,
-    FinalRotation: rotation,
-    Parameter: float
-  )<computes><decides><reads>: rotation
+  Slerp<native><public>(InitialRotation: rotation, FinalRotation: rotation, Parameter: float)<reads><decides>: rotation
 
   @experimental
   # Makes a `string` representation of `InTransform` where the result is on the form.
   # `"{Translation = {ToString(`InTransform.Translation`)}, Rotation = {ToString(`InTransform.Rotation`)}, Scale = {ToString(`InTransform.Scale`)}}".
-  (/Verse.org/SpatialMath:)ToString<native><public>(InTransform: transform)<computes><reads>: string
+  (/Verse.org/SpatialMath:)ToString<public>(InTransform: transform)<reads>: string = external {}
 
   @experimental
   # Makes a `string` representation of `rotation` in axis/degrees format with a left-handed sign convention.
-  # `ToString(MakeRotation(vector3{Forward:=1.0, Right:=0.0, Up:=0.0}, PiFloat/2.0))` produces the string: `"{Axis = {x=1.000000,y=0.000000,z=0.000000}, Angle = 90.000000}"`.
-  (/Verse.org/SpatialMath:)ToString<native><public>(Rotation: rotation)<computes><reads>: string
+  # `ToString(MakeRotation(vector3{Forward:=1.0, Right:=0.0, Up:=0.0}, PiFloat/2.0))` produces the string: `"{Axis = {Forward = 1.000000, Right = 0.000000, Up = 0.000000}, Angle = 90.000000}"`.
+  (/Verse.org/SpatialMath:)ToString<public>(Rotation: rotation)<reads>: string = external {}
 
   @experimental
   # Makes a `string` representation of `V`.
-  (/Verse.org/SpatialMath:)ToString<native><public>(V: vector3)<computes><reads>: string
+  (/Verse.org/SpatialMath:)ToString<public>(V: vector3)<reads>: string = external {}
 
   @experimental
   # Makes a `vector3` by applying `InTransform` to `InVector`.
-  TransformVector<native><public>(InTransform: transform, InVector: vector3)<computes><reads>: vector3
+  TransformVector<public>(InTransform: transform, InVector: vector3)<reads>: vector3 = external {}
 
   @experimental
   # Makes a `vector3` by applying `InTransform` to `InVector` without applying `InTransform.Scale`.
-  TransformVectorNoScale<native><public>(InTransform: transform, InVector: vector3)<computes><reads>: vector3
+  TransformVectorNoScale<public>(InTransform: transform, InVector: vector3)<reads>: vector3 = external {}
 
   @experimental
   # Makes a unit `vector3` pointing in the positive Up axis
@@ -3510,32 +3778,32 @@ SpatialMath<public> := module {
   Zero<epic_internal>()<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by multiplying the components of `Right` by `Left`.
-  (/Verse.org/SpatialMath:)operator'*'<public>(Left: float, Right: vector3)<computes>: vector3 = external {}
+  # Makes a `vector3` by component-wise multiplication of `L` and `R`.
+  (/Verse.org/SpatialMath:)operator'*'<public>(L: vector3, R: vector3)<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by multiplying the components of `Left` by `Right`.
-  (/Verse.org/SpatialMath:)operator'*'<public>(Left: vector3, Right: float)<computes>: vector3 = external {}
+  # Makes a `vector3` by multiplying the components of `L` by `R`.
+  (/Verse.org/SpatialMath:)operator'*'<public>(L: vector3, Right: float)<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by component-wise multiplication of `Left` and `Right`.
-  (/Verse.org/SpatialMath:)operator'*'<public>(Left: vector3, Right: vector3)<computes>: vector3 = external {}
+  # Makes a `vector3` by multiplying the components of `R` by `L`.
+  (/Verse.org/SpatialMath:)operator'*'<public>(Left: float, R: vector3)<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by component-wise addition of `Left` and `Right`.
-  (/Verse.org/SpatialMath:)operator'+'<public>(Left: vector3, Right: vector3)<computes>: vector3 = external {}
+  # Makes a `vector3` by component-wise addition of `L` and `R`.
+  (/Verse.org/SpatialMath:)operator'+'<public>(L: vector3, R: vector3)<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by component-wise subtraction of `Right` from `Left`.
-  (/Verse.org/SpatialMath:)operator'-'<public>(Left: vector3, Right: vector3)<computes>: vector3 = external {}
+  # Makes a `vector3` by component-wise subtraction of `R` from `L`.
+  (/Verse.org/SpatialMath:)operator'-'<public>(L: vector3, R: vector3)<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by dividing the components of `Left` by `Right`.
-  (/Verse.org/SpatialMath:)operator'/'<public>(Left: vector3, Right: float)<computes>: vector3 = external {}
+  # Makes a `vector3` by component-wise division of `L` by `R`.
+  (/Verse.org/SpatialMath:)operator'/'<public>(L: vector3, R: vector3)<computes>: vector3 = external {}
 
   @experimental
-  # Makes a `vector3` by component-wise division of `Left` by `Right`.
-  (/Verse.org/SpatialMath:)operator'/'<public>(Left: vector3, Right: vector3)<computes>: vector3 = external {}
+  # Makes a `vector3` by dividing the components of `L` by `R`.
+  (/Verse.org/SpatialMath:)operator'/'<public>(L: vector3, Right: float)<computes>: vector3 = external {}
 
   @experimental
   # Makes a `vector3` by inverting the signs of `Operand`.
@@ -3550,15 +3818,15 @@ SpatialMath<public> := module {
   transform<native><public> := struct<concrete><computes> {
     @editable
     # The rotation of this `transform`.
-    Rotation<native><public>: rotation = external {}
+    Rotation<public>: rotation = external {}
 
     @editable
     # The scale of this `transform`.
-    Scale<native><public>: vector3 = external {}
+    Scale<public>: vector3 = external {}
 
     @editable
     # The location of this `transform`.
-    Translation<native><public>: vector3 = external {}
+    Translation<public>: vector3 = external {}
   }
 
   @experimental
@@ -3567,15 +3835,15 @@ SpatialMath<public> := module {
   vector3<native><public> := struct<concrete><computes><persistable> {
     @editable
     # The Forward (was X) component of this vector.
-    Forward<native><public>: float = external {}
+    Forward<public>: float = external {}
 
     @editable
     # The Right (was Y) component of this vector.
-    Right<native><public>: float = external {}
+    Right<public>: float = external {}
 
     @editable
     # The Up (was Z) component of this vector.
-    Up<native><public>: float = external {}
+    Up<public>: float = external {}
   }
 }
 
@@ -3666,36 +3934,36 @@ Verse<public> := module {
 
   @rtfm_always_open
   # Returns the inverse hyperbolic cosine of `X` if `1.0 <= X`.
-  ArCosh<native><public>(X: float)<computes><reads>: float
+  ArCosh<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the inverse hyperbolic sine of `X` if `IsFinite(X)`.
-  ArSinh<native><public>(X: float)<computes><reads>: float
+  ArSinh<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the inverse hyperbolic tangent of `X` if `IsFinite(X)`.
-  ArTanh<native><public>(X: float)<computes><reads>: float
+  ArTanh<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the inverse cosine (arccosine) of `X` if `-1.0 <= X <= 1.0`.
-  ArcCos<native><public>(X: float)<computes><reads>: float
+  ArcCos<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the inverse sine (arcsine) of `X` if `-1.0 <= X <= 1.0`.
-  ArcSin<native><public>(X: float)<computes><reads>: float
+  ArcSin<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the inverse tangent (arctangent) of `X` such that:`-PiFloat/2.0 <= ArcTan(x) <= PiFloat/2.0`.
-  ArcTan<native><public>(X: float)<computes><reads>: float
+  ArcTan<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the angle in radians at the origin between a ray pointing to `(X, Y)` and the positive `X` axis such that `-PiFloat < ArcTan(Y, X) <= PiFloat`.
   # Returns 0.0 if `X=0.0 and Y=0.0`.
-  ArcTan<native><public>(Y: float, X: float)<computes><reads>: float
+  ArcTan<native><public>(Y: float, X: float)<reads>: float
 
   # Returns the smallest `int` that is greater than or equal to `Val`.
   # Fails if `not IsFinite(Val)`.
-  Ceil<native><public>(Val: float)<computes><decides><reads>: int
+  Ceil<native><public>(Val: float)<reads><decides>: int
 
   @rtfm_always_open
   # Constrains the value of `Val` between `A` and `B`. Robustly handles different argument orderings.
@@ -3712,43 +3980,43 @@ Verse<public> := module {
   @rtfm_always_open
   # Returns the cosine of `X` if `IsFinite(X)`.
   # Returns `NaN` if `not IsFinite(X)
-  Cos<native><public>(X: float)<computes><reads>: float
+  Cos<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the hyperbolic cosine of `X`.
-  Cosh<native><public>(X: float)<computes><reads>: float
+  Cosh<native><public>(X: float)<reads>: float
 
   # Halts the Verse runtime with error `Message`.
   Err<native><public>(Message: string)<computes>: false
 
   @rtfm_always_open
   # Returns the natural exponent of `X`.
-  Exp<native><public>(X: float)<computes><reads>: float
+  Exp<native><public>(X: float)<reads>: float
 
   # Returns the largest `int` that is less than or equal to `Val`.
   # Fails if `not IsFinite(Val)`.
-  Floor<native><public>(Val: float)<computes><decides><reads>: int
+  Floor<native><public>(Val: float)<reads><decides>: int
 
   @available { MinUploadedAtFNVersion := 3300 }
   # Return an immediate subclass of base_type that is <castable> and <final_super> and is also shared with Instance. Otherwise failure.
   GetCastableFinalSuperClass<native><epic_internal>(
     base_type: type,
     Instance: base_type
-  )<computes><decides><reads>: castable_subtype(base_type)
+  )<reads><decides>: castable_subtype(base_type)
 
   @available { MinUploadedAtFNVersion := 3300 }
   # Return an immediate subclass of base_type that is <castable> and <final_super> and is also shared with sub_type. Otherwise failure.
   GetCastableFinalSuperClassFromType<native><epic_internal>(
     base_type: type,
     sub_type: subtype(base_type)
-  )<computes><decides><reads>: castable_subtype(base_type)
+  )<reads><decides>: castable_subtype(base_type)
 
   # Returns the number of seconds since January 1, 1970 UTC, ignoring leap seconds. I.e, this function implements Unix time. This function always returns the same value within the same transaction.
-  GetSecondsSinceEpoch<native><public>()<computes><reads>: float
+  GetSecondsSinceEpoch<native><public>()<reads>: float
 
   # Returns the `int` that equals `Val` without the fractional part.
   # Fails if `not IsFinite(val)`.
-  Int<native><public>(Val: float)<computes><decides><reads>: int
+  Int<native><public>(Val: float)<reads><decides>: int
 
   # Succeeds if `Val1` and `Val2` are within `AbsoluteTolerance` of each other.
   IsAlmostEqual<public>(Val1: float, Val2: float, AbsoluteTolerance: float)<computes><decides>: void = external {}
@@ -3759,17 +4027,17 @@ Verse<public> := module {
   @rtfm_always_open
   # Used to linearly interpolate/extrapolate between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all arguments are finite.
   # Returns `From*(1 - Parameter) + To*Parameter`.
-  Lerp<native><public>(From: float, To: float, Parameter: float)<computes><reads>: float
+  Lerp<native><public>(From: float, To: float, Parameter: float)<reads>: float
 
   @rtfm_always_open
   # Returns the natural logarithm of `X`.
-  Ln<native><public>(X: float)<computes><reads>: float
+  Ln<native><public>(X: float)<reads>: float
 
   # Makes a `string` by localizing `Message` based on the current `locale`.
-  Localize<native><public>(Message: message)<computes><reads>: string
+  Localize<native><public>(Message: message)<reads>: string
 
   # Returns the base `B` logarithm of `X`.
-  Log<public>(B: float, X: float)<computes><reads>: float = external {}
+  Log<public>(B: float, X: float)<reads>: float = external {}
 
   MakeLocalizableValue<epic_internal>(V: float): localizable_float = external {}
 
@@ -3807,7 +4075,7 @@ Verse<public> := module {
 
   @rtfm_always_open
   # Returns `A` to the power of `B`.
-  Pow<native><public>(A: float, B: float)<computes><reads>: float
+  Pow<native><public>(A: float, B: float)<reads>: float
 
   # Writes `Message` to a dedicated `Print` log while displaying it in `Color` on the client screen for `Duration` seconds. By default, `Color` is `NamedColors.White` and `Duration` is `2.0` seconds.
   Print<native><public>(Message: message, ?Duration: float = external {}, ?Color: color = external {})<transacts>: void
@@ -3833,7 +4101,7 @@ Verse<public> := module {
 
   # Returns `Val` rounded to the nearest `int`. When the fractional part of `Val` is `0.5`, rounds to the nearest *even* `int` (per the IEEE-754 default rounding mode).
   # Fails if `not IsFinite(Val)`.
-  Round<native><public>(Val: float)<computes><decides><reads>: int
+  Round<native><public>(Val: float)<reads><decides>: int
 
   # Returns the sign of `Val`:
   #  * `1.0` if `Val > 0.0`
@@ -3851,28 +4119,28 @@ Verse<public> := module {
   @rtfm_always_open
   # Returns the sine of `X` if `IsFinite(X)`.
   # Returns `NaN` if `not IsFinite(X)
-  Sin<native><public>(X: float)<computes><reads>: float
+  Sin<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the hyperbolic sine of `X`.
-  Sinh<native><public>(X: float)<computes><reads>: float
+  Sinh<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the square root of `X` if `X >= 0.0`.
   # Returns `NaN` if `X < 0.0`.
-  Sqrt<native><public>(X: float)<computes><reads>: float
+  Sqrt<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the tangent of `X` if `IsFinite(X)`.
   # Returns `NaN` if `not IsFinite(X).
-  Tan<native><public>(X: float)<computes><reads>: float
+  Tan<native><public>(X: float)<reads>: float
 
   @rtfm_always_open
   # Returns the hyperbolic tangent of `X`.
-  Tanh<native><public>(X: float)<computes><reads>: float
+  Tanh<native><public>(X: float)<reads>: float
 
   # Converts any Verse value into an opaque diagnostic message.
-  ToDiagnostic<native><public>(Value: any)<computes><reads>: diagnostic
+  ToDiagnostic<native><public>(Value: any)<reads>: diagnostic
 
   # Makes a `string` by converting `Character` to UTF-8 from UTF-32.
   ToString<native><epic_internal>(Character: char32)<computes>: string
@@ -3881,7 +4149,7 @@ Verse<public> := module {
   ToString<native><public>(Character: char)<computes>: string
 
   # Makes a `string` representation of `Val`.
-  ToString<native><public>(Val: float)<computes><reads>: string
+  ToString<native><public>(Val: float)<reads>: string
 
   # Makes a printable `string` representation of `Val`.
   ToString<native><public>(Val: int)<computes>: string
@@ -3901,12 +4169,12 @@ Verse<public> := module {
 
   # Provides a hook for class-specific ToDiagnostic behavior; ToDiagnostic will call this interface when provided a class that implements it.
   diagnosable<native><epic_internal> := interface {
-    GetDiagnostic<native_callable><epic_internal>()<computes><reads>: diagnostic
+    GetDiagnostic<native_callable><epic_internal>()<reads>: diagnostic
   }
 
   # An opaque diagnostic message that only shows up in diagnostic logs. The format of the diagnostic may change at any time without warning and may not be inspected by Verse code.
   diagnostic<native><public> := class<computes><epic_internal>(diagnosable) {
-    GetDiagnostic<override>()<computes><reads>: diagnostic = external {}
+    GetDiagnostic<override>()<reads>: diagnostic = external {}
 
     String<native><epic_internal>: string
   }
@@ -3929,16 +4197,11 @@ Verse<public> := module {
     IsEnabled<public>()<transacts><decides>: void
   }
 
-  # A *recurring*, successively signaled parametric `event` with a `payload` allowing a simple mechanism to coordinate between concurrent tasks:
-  #  * `Await` suspends tasks to wait on this `event`,
-  #  * another task `Signal`s this `event` and resumes the suspended tasks in FIFO order.
-  event<native><public>(t: type) := class(signalable(t), awaitable(t)) {
+  # A *recurring*, successively signaled parametric `event` with a `payload` allowing a simple mechanism to coordinate between concurrent tasks.
+  event<native><public>(t: type) := class(event_base_intrnl, signalable(t), awaitable(t)) {
     # Suspends the current task until another task calls `Signal`.
     # If called during another invocation of `Signal`, the the task will still suspend and resume during the next call to `Signal`.
     Await<native><override>()<suspends>: t
-
-    # Returns the number of suspended tasks added by calls to `Await` that have not been resumed by a call to `Signal`.
-    GetAwaitCount<native><epic_internal>(): int
 
     # Concurrently resumes the tasks that were suspended by `Await` calls before this call to `Signal`.
     #
@@ -3948,6 +4211,8 @@ Verse<public> := module {
 
   # A *recurring*, successively signaled event allowing a simple mechanism to coordinate between concurrent tasks.
   event<public>() := event(tuple())
+
+  event_base_intrnl<native><epic_internal> := class {}
 
   # Implemented by classes whose instances can become invalid at runtime.
   invalidatable<native><public> := interface(disposable) {
@@ -4009,37 +4274,19 @@ Verse<public> := module {
     # Returns an unsubscriber object. Call `cancelable.Cancel` on the unsubscriber to unregister `Callback`.
     Subscribe<public>(Callback: type { _(: t): void })<transacts>: cancelable
   }
+
+  subscribable_event_intrnl<epic_internal>() := subscribable_event_intrnl(tuple())
+
+  subscribable_event_intrnl<native><epic_internal>(t: type) := class(event(t), listenable(t)) {
+    # Registers `Callback` to be invoked each time `Signal` is called.
+    # Call `Cancel` on the returned `cancelable` to unregister `Callback`.
+    Subscribe<native><override>(Callback: type { _(: t): void })<transacts>: cancelable
+  }
 }
 
 # Module import path: /Verse.org/VerseEngine
 VerseEngine<public> := module {
-  float_param_delegate_signature<public> := type { _(: float): void }
-
-  int_param_delegate_signature<public> := type { _(: int): void }
-
-  logic_param_delegate_signature<public> := type { _(: logic): void }
-
-  multicast_delegate<native><public>(t: type) := class(multicast_delegate_base, subscribable(t)) {
-    Broadcast<native><public>(__dupe___unnamed_parameter_25: t): void
-
-    Empty<native><public>(): void
-
-    Subscribe<native><override>(Callback: type { _(: t): void })<transacts>: cancelable
-  }
-
-  multicast_delegate<public>() := multicast_delegate(tuple())
-
-  multicast_delegate_base<native><public> := class {}
-
-  no_param_delegate_signature<public> := type { _(): void }
-
-  string_param_delegate_signature<public> := type { _(: string): void }
-
-  subscribable_event<epic_internal>() := subscribable_event(tuple())
-
-  subscribable_event<native><epic_internal>(t: type) := class(multicast_delegate(t), listenable(t)) {
-    Await<native><override>()<suspends>: t
-
-    Broadcast<native><override>(__dupe___unnamed_parameter_26: t): void
+  subscribable_event<epic_internal>(t: type) := class(subscribable_event_intrnl(t)) {
+    Broadcast<epic_internal>(Val: t): void = external {}
   }
 }

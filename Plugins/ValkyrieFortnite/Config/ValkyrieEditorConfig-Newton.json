@@ -2,8 +2,9 @@
 	"PropertyEditorClassPermissionList": {
 		"+": [
 			{
-				"Type": "/Script/FortniteGame.FortPhysicsSettingsComp",
-				"AllowList": [ "bOverridePhysicsParameters", "bCustomSimulatePhysics", "bCustomMassOverride", "CustomMass", "bCustomEnabledGravity", "bCustomStartAwake", "CustomLinearDamping", "CustomAngularDamping" ]
+				"Type": "/Script/FortniteGame.FortPhysicsComponent",
+				"AllowList": [ "bCustomSimulatePhysics", "bCustomMassOverride", "CustomMass", "bCustomEnabledGravity", "bCustomStartAwake", "CustomLinearDamping", "CustomAngularDamping","ImpulseOnHitMultiplier",
+				                "bLockRotation", "bLockXRotation", "bLockYRotation", "bLockZRotation", "bLockTranslation", "bLockXTranslation", "bLockYTranslation", "bLockZTranslation" ]
 			},
 			{
 				"Type": "/CreativeCoreDevices/Device_ExperienceSettings_V2.Device_ExperienceSettings_V2_C",

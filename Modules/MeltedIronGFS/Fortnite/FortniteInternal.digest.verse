@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-35.00-CL-41994699
+# Generated from build: ++Fortnite+Release-35.10-CL-42476511
 #################################################
 
 AI<public> := module {
@@ -3164,6 +3164,9 @@ Devices<public> := module {
 
     # Changes the Mesh used by this instance.
     SetMesh<native><public>(Mesh: mesh)<transacts>: void
+
+    # Changes the Skeletal Mesh used by this instance.
+    SetSkeletalMesh<native><epic_internal>(SkeletalMesh: skeletal_mesh)<transacts>: void
 
     # Shows the `creative_prop` in the world and enable collisions.
     Show<native><public>()<transacts>: void
@@ -7744,6 +7747,15 @@ FeralCorgi<public> := module {
       TargetAgents: []agent,
       Params: [string]float
     )<transacts><decides>: void
+  }
+
+  # Module import path: /Fortnite.com/FeralCorgi/FeralLoggingBridge
+  FeralLoggingBridge<epic_internal> := module {
+    LogError<native><epic_internal>(Format: string, ?Args: []string = external {})<transacts>: void
+
+    LogMessage<native><epic_internal>(Format: string, ?Args: []string = external {})<transacts>: void
+
+    LogWarning<native><epic_internal>(Format: string, ?Args: []string = external {})<transacts>: void
   }
 
   # Module import path: /Fortnite.com/FeralCorgi/PlayerLoadingStatusBridge

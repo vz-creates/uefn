@@ -14,6 +14,7 @@
 		"/AtomFramework/Materials/Game_Qual/Dither/MI_Prim_Trans.MI_Prim_Trans": "/AtomFramework/Materials/Game_Qual/MI_Primitive_Trans_Dither.MI_Primitive_Trans_Dither",
 		"/BikeKid/Items/WID_BikeKid.WID_BikeKid": "/BikeKid/Items/WID_BikeKid_SR.WID_BikeKid_SR",
 		"/BikeKid/Items/WID_BikeKidController.WID_BikeKidController": "/BikeKid/Items/WID_BikeKid_SR.WID_BikeKid_SR",
+		"/CrustyChain/Gameplay/CrustyChain/WID_Pistol_Feral_CrustyChain.WID_Pistol_Feral_CrustyChain": "/FeralCorgiGameplay/Gameplay/Weapons/FeralCorgi_Pistol_CrustyChain/WID_Pistol_Feral_CrustyChain.WID_Pistol_Feral_CrustyChain",
 		"/DarkVortexMeadowDrosera/Assets/Meshes/Parts_Female/Upper/NewFolder1/FemaleMeadowDrosera_UpperD.FemaleMeadowDrosera_UpperD": "/DarkVortexMeadowDrosera/Assets/Meshes/Parts_Female/Upper/FemaleMeadowDrosera_UpperD.FemaleMeadowDrosera_UpperD",
 		"/DelMarGame/Audio/Ambience/Desert/DelMar_AmbientBank_Desert.DelMar_AmbientBank_Desert": "/DelMarGame/Audio/Ambience/Desert_Copy/DelMar_AmbientBank_Desert.DelMar_AmbientBank_Desert",
 		"/DelMarGame/Environments/Desert/Meshes/Props/Crowd/BuildingActors/BP_Stands_Box_06.BP_Stands_Box_06": "/DelMarGame/Environments/Desert/Meshes/Props/Crowd/BP_Delmar_DSRT_Stands_Box_06.BP_Delmar_DSRT_Stands_Box_06",
@@ -50,6 +51,7 @@
 		"/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/Textures/64x64/T_UI_IconLibrary_sniperrifle_64.T_UI_IconLibrary_sniperrifle_64": "/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/MilitaryTextures/T_64x64/T_UI_IconLibrary_sniperrifle_64.T_UI_IconLibrary_sniperrifle_64",
 		"/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/Textures_V2/128x128/T_UI_IconLibrary_JetFighter_128.T_UI_IconLibrary_JetFighter_128": "/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/MilitaryTextures/T_128x128/T_UI_IconLibrary_JetFighter_128.T_UI_IconLibrary_JetFighter_128",
 		"/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/Textures_V2/64x64/T_UI_IconLibrary_JetFighter_64.T_UI_IconLibrary_JetFighter_64": "/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/MilitaryTextures/T_64x64/T_UI_IconLibrary_JetFighter_64.T_UI_IconLibrary_JetFighter_64",
+		"/Game/Effects/Fort_Effects/BluGlow/Violentium/T_SwirlNoise_N_height.T_SwirlNoise_N_height": "/Game/Global/Textures/Default/Noise/T_SwirlNoise_N_height.T_SwirlNoise_N_height",
 		"/Game/Environments/Asteria/Foliage/Grass/GrassAnimTest/NewTextureRenderTarget2D_Tex.NewTextureRenderTarget2D_Tex": "/Game/Environments/Asteria/Foliage/Grass/MasterMaterial/GenericShared_Grass_Foliage_Anim.GenericShared_Grass_Foliage_Anim",
 		"/Game/Environments/Asteria/Sets/EclipseResort/Blueprints/Railing/Asteria_EclipseResort_Railing_Angled_B_A.Asteria_EclipseResort_Railing_Angled_B_A": "/Game/Environments/Asteria/Sets/EclipseResort/Blueprints/Railing/BP_EclipseResort_Railing_Angled_B_A.BP_EclipseResort_Railing_Angled_B_A",
 		"/Game/Environments/Asteria/Sets/EclipseResort/Blueprints/Railing/Asteria_EclipseResort_Railing_Angled_B_A.Asteria_EclipseResort_Railing_Angled_B_A_C": "/Game/Environments/Asteria/Sets/EclipseResort/Blueprints/Railing/BP_EclipseResort_Railing_Angled_B_A.BP_EclipseResort_Railing_Angled_B_A_C",
@@ -74,10 +76,12 @@
 		"/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C.BP_Outdoor_HangingPlanter_C": "/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C_B.BP_Outdoor_HangingPlanter_C_B",
 		"/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C.BP_Outdoor_HangingPlanter_C_C": "/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C_B.BP_Outdoor_HangingPlanter_C_B_C",
 		"/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C.Default__BP_Outdoor_HangingPlanter_C_C": "/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C_B.Default__BP_Outdoor_HangingPlanter_C_B_C",
+		"/Game/Environments/Helios/Sets/GlacierHotel/TextureData/TD_Lair_Stairs_A_A.TD_Lair_Stairs_A_A": "/Game/Environments/Helios/Sets/GlacierHotel/TextureData/TD_GlacierHotel_Lair_Stairs_A_A.TD_GlacierHotel_Lair_Stairs_A_A",
 		"/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_MarinaBay_Plaster_E_C.TD_MarinaBay_Plaster_E_C": "/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_MarinaBay_Plaster_E_D.TD_MarinaBay_Plaster_E_D",
 		"/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_MarinaBay_PlasterTrim_G_B.TD_MarinaBay_PlasterTrim_G_B": "/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_MarinaBay_Plaster_G_G.TD_MarinaBay_Plaster_G_G",
 		"/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_SteppedTown_Plaster_N_A.TD_SteppedTown_Plaster_N_A": "/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_MarinaBay_Plaster_N_A.TD_MarinaBay_Plaster_N_A",
 		"/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_SteppedTown_Plaster_N_B.TD_SteppedTown_Plaster_N_B": "/Game/Environments/Helios/Sets/MarinaBay/TextureData/TD_MarinaBay_Plaster_N_B.TD_MarinaBay_Plaster_N_B",
+		"/Game/Environments/Helios/Sets/Merc/TextureData/TD_Merc_Wall_A_A.TD_Merc_Wall_A_A": "/Game/Environments/Helios/Sets/Merc/TextureData/TD_Merc_Wall_A_A_3Layer.TD_Merc_Wall_A_A_3Layer",
 		"/Game/Environments/Props/Winter/Textures/T_XMas_LightGradient.T_XMas_LightGradient": "/Game/Global/Textures/Default/Masks_and_Gradients/T_XMas_LightGradient.T_XMas_LightGradient",
 		"/Game/Sounds/Asteria/POI/IndustrialTown/Spots/Spot_Manhole_Steam.Spot_Manhole_Steam": "/Game/Sounds/Asteria/POI/IndustrialTown/Spots/SC_Spot_Manhole_Steam_Loop.SC_Spot_Manhole_Steam_Loop",
 		"/Game/Sounds/Helios/Environment_Actors/Console_RadioCommunication/Spot_Console_RadioCommunication_Loop_Cue.Spot_Console_RadioCommunication_Loop_Cue": "/Game/Sounds/Helios/Environment_Actors/Console_RadioCommunication/Spot_Console_RadioCommunication_Loop_01_Cue.Spot_Console_RadioCommunication_Loop_01_Cue",
@@ -260,7 +264,9 @@
 		"/VividRazorWeaponGameplay/Gameplay/SMGShotgun/Exotic/WID_SMGShotgun_PrimaryShotgun_X.WID_SMGShotgun_PrimaryShotgun_X": "/VividRazorWeaponGameplay/Gameplay/SMGShotgun/Exotic/WID_SMGShotgun_PrimaryShotgun_Athena_X.WID_SMGShotgun_PrimaryShotgun_Athena_X",
 		"/VividRazorWeaponGameplay/Gameplay/SMGShotgun/WID_SMGShotgun_PrimaryShotgun.WID_SMGShotgun_PrimaryShotgun": "/VividRazorWeaponGameplay/Gameplay/SMGShotgun/WID_SMGShotgun_PrimaryShotgun_Athena_C.WID_SMGShotgun_PrimaryShotgun_Athena_C"
 	},
-	"optionalImpliedPluginsList": [],
+	"optionalImpliedPluginsList": [
+		"FeralCorgiGameplay"
+	],
 	"optionalGFSList": [
 		"base",
 		"LimeGFS",
@@ -269,7 +275,6 @@
 		"BeanstalkGFS",
 		"MeltedIronGFS",
 		"FN1GFS",
-		"DarkVortexGFS",
-		"AkitaGFS"
+		"DarkVortexGFS"
 	]
 }

@@ -25,7 +25,7 @@
 		"bShowingContentVersePath": false,
 		"bWorkspaceAllowed": false,
 		"bProjectRenameAllowed": false,
-		"bProjectKindExposed": false,
+		"bModuleApiAllowed": false,
 		"DefaultProjectReferencedContent": []
 	},
 	"_comment_ValkyrieBlueprintGraph": "Properties related to BP graphs, which may include data for Anim Graphs, Control Rig, etc.",
@@ -2809,7 +2809,8 @@
 			"DarkVortex_Starter_Island",
 			"DarkVortex_Gameplay_Template",
 			"Lucky_AssemblyDevice",
-			"Technodrome_Starter_Island"
+			"Technodrome_Starter_Island",
+			"Gunfight"
 		]
 	},
 	"PropertyEditorClassPermissionList": {

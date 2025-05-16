@@ -7,6 +7,8 @@
 		"bMultiProjectAllowed": true,
 		"bModuleIdNamedPlugins": true,
 		"bModuleWithPluginFriendlyNameAllowed": true,
+		"bSelectProjectByIdAllowed": true,
+		"bShowingExtendedProjectDetails": true,
 		"bShowingContentVersePath": true,
 		"bWorkspaceAllowed": true,
 		"bProjectRenameAllowed": true

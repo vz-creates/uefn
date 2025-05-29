@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-35.10-CL-42476511
+# Generated from build: ++Fortnite+Release-35.20-CL-42911808
 #################################################
 
 AI<public> := module {
@@ -9310,6 +9310,14 @@ VerseInternalTesting<public> := module {
 
   # Module import path: /Fortnite.com/VerseInternalTesting/VerseFramework
   VerseFramework<public> := module {
+    device_event_agent_float_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(agent, float))): void = external {}
+
+      var ArgAgent<public>: ?agent = external {}
+
+      var ArgFloat<public>: float = external {}
+    }
+
     device_event_agent_handler_mock<public> := class(test_device_event_handler_mock) {
       Subscribe<public>(Event: listenable(agent)): void = external {}
 

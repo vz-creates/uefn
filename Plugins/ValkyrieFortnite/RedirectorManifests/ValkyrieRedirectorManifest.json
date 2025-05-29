@@ -72,7 +72,9 @@
 		"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Wall_A.BP_Blockout_Prop_Wall_A_C": "/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Wall_Deco_A.BP_Blockout_Prop_Wall_Deco_A_C",
 		"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Wall_A.Default__BP_Blockout_Prop_Wall_A_C": "/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Wall_Deco_A.Default__BP_Blockout_Prop_Wall_Deco_A_C",
 		"/Game/Environments/Blockout/Materials/MI_Blockout_Master_1layer.MI_Blockout_Master_1layer": "/Game/Environments/Helios/Materials/MI_GenericSet_Master_1layer.MI_GenericSet_Master_1layer",
+		"/Game/Environments/Blockout/Materials/MI_Blockout_Master_2Layer.MI_Blockout_Master_2Layer": "/Game/Environments/Helios/Materials/MI_GenericSet_Master_2Layer.MI_GenericSet_Master_2Layer",
 		"/Game/Environments/Blockout/Materials/MI_GenericSet_Master_1layer.MI_GenericSet_Master_1layer": "/Game/Environments/Helios/Materials/MI_GenericSet_Master_1layer.MI_GenericSet_Master_1layer",
+		"/Game/Environments/Blockout/Materials/MI_GenericSet_Master_2Layer.MI_GenericSet_Master_2Layer": "/Game/Environments/Helios/Materials/MI_GenericSet_Master_2Layer.MI_GenericSet_Master_2Layer",
 		"/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C.BP_Outdoor_HangingPlanter_C": "/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C_B.BP_Outdoor_HangingPlanter_C_B",
 		"/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C.BP_Outdoor_HangingPlanter_C_C": "/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C_B.BP_Outdoor_HangingPlanter_C_B_C",
 		"/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C.Default__BP_Outdoor_HangingPlanter_C_C": "/Game/Environments/Helios/Props/Outdoor/Outdoor_HangingPlanters_A/Blueprints/BP_Outdoor_HangingPlanter_C_B.Default__BP_Outdoor_HangingPlanter_C_B_C",
@@ -184,9 +186,6 @@
 		"/Hermes/Props/Container/Container_RoadCase_A/BP_Container_RoadCaseMedium_A.BP_Container_RoadCaseMedium_A_C": "/Hermes/Props/Container/Container_RoadCase_A/Blueprints/BP_Container_RoadCaseMedium_A.BP_Container_RoadCaseMedium_A_C",
 		"/Hermes/Props/Container/Container_RoadCase_A/BP_Container_RoadCaseMedium_A.Default__BP_Container_RoadCaseMedium_A_C": "/Hermes/Props/Container/Container_RoadCase_A/Blueprints/BP_Container_RoadCaseMedium_A.Default__BP_Container_RoadCaseMedium_A_C",
 		"/Hermes/Props/DustMite/DustMite_SemiTruck_Container_A/TextureData/TD_T_DustMite_SemiTruck_Container_A.TD_T_DustMite_SemiTruck_Container_A": "/Hermes/Props/DustMite/DustMite_SemiTruck_Container_A/TextureData/TD_DustMite_SemiTruck_Container_A.TD_DustMite_SemiTruck_Container_A",
-		"/Hermes/Props/SprocketPoppy/Blueprints/BP_SprocketPoppy_Tree_B_A.BP_SprocketPoppy_Tree_B_A": "/Hermes/Props/SprocketPoppy/Blueprints/BP_Tree_Asteria_Parent_SprocketPoppy_B_A_Fix.BP_Tree_Asteria_Parent_SprocketPoppy_B_A_Fix",
-		"/Hermes/Props/SprocketPoppy/Blueprints/BP_SprocketPoppy_Tree_B_A.BP_SprocketPoppy_Tree_B_A_C": "/Hermes/Props/SprocketPoppy/Blueprints/BP_Tree_Asteria_Parent_SprocketPoppy_B_A_Fix.BP_Tree_Asteria_Parent_SprocketPoppy_B_A_Fix_C",
-		"/Hermes/Props/SprocketPoppy/Blueprints/BP_SprocketPoppy_Tree_B_A.Default__BP_SprocketPoppy_Tree_B_A_C": "/Hermes/Props/SprocketPoppy/Blueprints/BP_Tree_Asteria_Parent_SprocketPoppy_B_A_Fix.Default__BP_Tree_Asteria_Parent_SprocketPoppy_B_A_Fix_C",
 		"/Hermes/Props/Treasury/Treasury_BullionDisplays_A/Blueprints/BP_Treasury_BullionDisplays_A_A.BP_Treasury_BullionDisplays_A_A": "/Hermes/Props/Treasury/Treasury_BullionDisplays_A/Blueprints/BP_Treasury_BullionDisplay_A.BP_Treasury_BullionDisplay_A",
 		"/Hermes/Props/Treasury/Treasury_BullionDisplays_A/Blueprints/BP_Treasury_BullionDisplays_A_A.BP_Treasury_BullionDisplays_A_A_C": "/Hermes/Props/Treasury/Treasury_BullionDisplays_A/Blueprints/BP_Treasury_BullionDisplay_A.BP_Treasury_BullionDisplay_A_C",
 		"/Hermes/Props/Treasury/Treasury_BullionDisplays_A/Blueprints/BP_Treasury_BullionDisplays_A_A.Default__BP_Treasury_BullionDisplays_A_A_C": "/Hermes/Props/Treasury/Treasury_BullionDisplays_A/Blueprints/BP_Treasury_BullionDisplay_A.Default__BP_Treasury_BullionDisplay_A_C",
@@ -261,6 +260,9 @@
 		"/Hermes/Sets/Treasury/Blueprints/Walls/SM_Treasury_Exterior_Front_Window_B.Default__SM_Treasury_Exterior_Front_Window_B_C": "/Hermes/Sets/Treasury/Blueprints/Walls/BP_Treasury_Exterior_Front_Window_B.Default__BP_Treasury_Exterior_Front_Window_B_C",
 		"/Hermes/Sets/Treasury/Blueprints/Walls/SM_Treasury_Exterior_Front_Window_B.SM_Treasury_Exterior_Front_Window_B": "/Hermes/Sets/Treasury/Blueprints/Walls/BP_Treasury_Exterior_Front_Window_B.BP_Treasury_Exterior_Front_Window_B",
 		"/Hermes/Sets/Treasury/Blueprints/Walls/SM_Treasury_Exterior_Front_Window_B.SM_Treasury_Exterior_Front_Window_B_C": "/Hermes/Sets/Treasury/Blueprints/Walls/BP_Treasury_Exterior_Front_Window_B.BP_Treasury_Exterior_Front_Window_B_C",
+		"/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling1.Default__FNEC_BP_NeonSign_SteamedMeatDumpling1_C": "/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling.Default__FNEC_BP_NeonSign_SteamedMeatDumpling_C",
+		"/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling1.FNEC_BP_NeonSign_SteamedMeatDumpling1": "/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling.FNEC_BP_NeonSign_SteamedMeatDumpling",
+		"/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling1.FNEC_BP_NeonSign_SteamedMeatDumpling1_C": "/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling.FNEC_BP_NeonSign_SteamedMeatDumpling_C",
 		"/VividRazorWeaponGameplay/Gameplay/SMGShotgun/Exotic/WID_SMGShotgun_PrimaryShotgun_X.WID_SMGShotgun_PrimaryShotgun_X": "/VividRazorWeaponGameplay/Gameplay/SMGShotgun/Exotic/WID_SMGShotgun_PrimaryShotgun_Athena_X.WID_SMGShotgun_PrimaryShotgun_Athena_X",
 		"/VividRazorWeaponGameplay/Gameplay/SMGShotgun/WID_SMGShotgun_PrimaryShotgun.WID_SMGShotgun_PrimaryShotgun": "/VividRazorWeaponGameplay/Gameplay/SMGShotgun/WID_SMGShotgun_PrimaryShotgun_Athena_C.WID_SMGShotgun_PrimaryShotgun_Athena_C"
 	},
@@ -275,6 +277,7 @@
 		"BeanstalkGFS",
 		"MeltedIronGFS",
 		"FN1GFS",
-		"DarkVortexGFS"
+		"DarkVortexGFS",
+		"FriedRiceGFS"
 	]
 }

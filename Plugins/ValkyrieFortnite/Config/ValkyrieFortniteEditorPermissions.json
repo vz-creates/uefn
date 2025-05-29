@@ -3409,7 +3409,7 @@
 			},
 			{
 				"Type": "/Script/UnrealEd.EditorStyleSettings",
-				"AllowList": [ "SelectionColor", "bEnableHighDPIAwareness", "bUseSmallToolBarIcons", "AssetEditorOpenLocation", "ColorVisionDeficiencyPreviewType", "ColorVisionDeficiencySeverity", "bColorVisionDeficiencyCorrection", "bColorVisionDeficiencyCorrectionPreviewWithDeficiency" ]
+				"AllowList": [ "ApplicationScale", "SelectionColor", "bEnableHighDPIAwareness", "bUseSmallToolBarIcons", "AssetEditorOpenLocation", "ColorVisionDeficiencyPreviewType", "ColorVisionDeficiencySeverity", "bColorVisionDeficiencyCorrection", "bColorVisionDeficiencyCorrectionPreviewWithDeficiency" ]
 			},
 			{
 				"Type": "/Script/OutputLog.OutputLogSettings",
@@ -3441,7 +3441,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "EnabledPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "EnabledPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride" ]
 			},
 			{
 				"Type": "/Script/CinematicCamera.CineCameraActor",
@@ -3840,6 +3840,10 @@
 				"Type": "/Script/FortniteGame.UEFNTextBlockBase",
 				"AllowList": [ "bScrollEnabled" ],
 				"DenyList": []
+			},
+			{
+				"Type": "/Game/Valkyrie/UMG/UEFN_Slider.UEFN_Slider_C",
+				"AllowList": [ "Value" ]
 			}
 		]
 	},
@@ -3982,7 +3986,7 @@
 			},
 			{
 				"Type": "/Script/Engine.HierarchicalInstancedStaticMeshComponent",
-				"AllowList": ["CacheMeshExtendedBounds", "TranslatedInstanceSpaceOrigin", "SortedInstances", "NumBuiltInstances", "BuiltInstanceBounds", "bEnableDensityScaling", "InstanceCountToRender", "OcclusionLayerNumNodes"],
+				"AllowList": ["CacheMeshExtendedBounds", "TranslatedInstanceSpaceOrigin", "SortedInstances", "NumBuiltInstances", "BuiltInstanceBounds", "bEnableDensityScaling", "InstanceCountToRender", "OcclusionLayerNumNodes", "UnbuiltInstanceBounds"],
 				"bAllowListAllSubclassProperties": true
 			},
 			{
@@ -4168,7 +4172,7 @@
 					"ComponentTypesWhitelistedForReplication","OverridePrimitivesToExcludeFoliage","HotSpotConfig","OnBuildingHealthChanged",
 					"OnActorHealthChanged","SavedActorGuid","BaselineScale","OnTeamIndexChangedDelegate","PhysicsObjectPresetTag",
 					"PhysicsObjectPhysicalDataTag","PhysicsObjectBuoyancyDataTag","PhysicsObjectImpactDamageDataTag","ActorTemplateID",
-					"PlaysetPackagePathName","LabelOverride","CachedMaxHealthFallback"],
+					"PlaysetPackagePathName","LabelOverride","bContainsMaxHealthOverrideComponent"],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
 			},

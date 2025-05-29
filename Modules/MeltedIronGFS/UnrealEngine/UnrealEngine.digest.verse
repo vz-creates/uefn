@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-35.10-CL-42476511
+# Generated from build: ++Fortnite+Release-35.20-CL-42911808
 #################################################
 
 using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -848,6 +848,36 @@ Temporary<public> := module {
 
       # The top edge spacing.
       Top<native><public>: float = external {}
+    }
+
+    # A widget to display a material.
+    material_block<native><public> := class(widget) {
+      # The size this widget desired to be displayed in. Used only during initialization of the widget and not modified by SetDesiredSize.
+      DefaultDesiredSize<native><public>: vector2 = external {}
+
+      # The image to render. Used only during initialization of the widget and not modified by SetImage.
+      DefaultImage<native><public>: material
+
+      # Tinting applied to the image. Used only during initialization of the widget and not modified by SetTint.
+      DefaultTint<native><public>: color = external {}
+
+      # Gets the size this widget desired to be displayed in.
+      GetDesiredSize<native><public>(): vector2
+
+      # Gets the image to render.
+      GetImage<native><public>(): material
+
+      # Gets the tint applied to the image.
+      GetTint<native><public>(): color
+
+      # Sets the size this widget desired to be displayed in.
+      SetDesiredSize<native><public>(InDesiredSize: vector2): void
+
+      # Sets the image to render.
+      SetImage<native><public>(InImage: material): void
+
+      # Sets the tint applied to the image.
+      SetTint<native><public>(InColor: color): void
     }
 
     # Used by`widget` orientation modes.

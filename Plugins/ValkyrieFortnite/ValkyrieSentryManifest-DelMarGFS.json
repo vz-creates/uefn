@@ -74,7 +74,7 @@
 		"22CB7C5DC22C4082997B9DB9C82131FA":
 		{
 			"FriendlyName": "FortItemEntryVersion",
-			"Version": 1
+			"Version": 2
 		},
 		"23AFE18E4CE14E588D61C252B953BEB7":
 		{
@@ -2180,6 +2180,7 @@
 			"/Script/Engine.KismetMathLibrary",
 			"/Script/Engine.KismetSystemLibrary",
 			"/Script/Engine.PoseAsset",
+			"/Script/Engine.SoundBase",
 			"/Script/Engine.SoundConcurrency",
 			"/Script/Engine.UserDefinedEnum",
 			"/Script/EnhancedInput.InputAction",
@@ -2192,6 +2193,8 @@
 			"/Script/FortniteGame.FortInputMappingContext",
 			"/Script/FortniteGame.FortPlayerMappableKeySettings",
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance",
+			"/Script/FortniteUI.FortItemDurabilityVM",
+			"/Script/FortniteUI.HUDItemEntryViewModel",
 			"/Script/GameplayCameras.ArrayCameraNode",
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode",
 			"/Script/GameplayCameras.BaseFramingCameraNode",
@@ -24840,11 +24843,11 @@
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairBalcony_A.Asteria_Quarry_ScaffoldingStairBalcony_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairF_A.Asteria_Quarry_ScaffoldingStairF_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingWall_B.Asteria_Quarry_ScaffoldingWall_B_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_A.Asteria_SlurpRoom_StringLights_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_B.Asteria_SlurpRoom_StringLights_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Wall_A.Asteria_SlurpRoom_Wall_A_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_B.Asteria_SlurpRoom_Window_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_StringLights_02.Asteria_StringLights_02_C",
 			"/Game/Environments/Asteria/Sets/TattooShop/BluePrints/Asteria_TattooShop_Wall_A.Asteria_TattooShop_Wall_A_C",
@@ -24923,6 +24926,7 @@
 			"/Game/Environments/Blockout/Blueprints/Walls/Window/Window_A/BP_Blockout_Window_A_A_B.BP_Blockout_Window_A_A_B_C",
 			"/Game/Environments/Blueprints/CustomHeightCeilingProp/ENV_CustomHeightCeilingProp.ENV_CustomHeightCeilingProp_C",
 			"/Game/Environments/Blueprints/CustomHeightCeilingProp/ENV_CustomHeightCeilingProp_Pointlight.ENV_CustomHeightCeilingProp_Pointlight_C",
+			"/Game/Environments/Blueprints/SocketInstancerComponent/ISM_SocketFiller.ISM_SocketFiller_C",
 			"/Game/Environments/Helios/Props/Appliance/Appliance_GearRacks_A/Blueprints/BP_Appliance_GearRack_A_A.BP_Appliance_GearRack_A_A_C",
 			"/Game/Environments/Helios/Props/Appliance/Appliance_GearRacks_A/Blueprints/BP_Appliance_GearRack_A_B.BP_Appliance_GearRack_A_B_C",
 			"/Game/Environments/Helios/Props/Appliance/Appliance_GearRacks_B/Blueprints/BP_Appliance_GearRack_B_A.BP_Appliance_GearRack_B_A_C",

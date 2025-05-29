@@ -754,7 +754,19 @@
 				"/Script/Engine.KismetMathLibrary:Wrap",
 				"/Script/Engine.KismetMathLibrary:Xor_Int64Int64",
 				"/Script/Engine.KismetMathLibrary:Xor_IntInt",
-				"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros:IsValid"
+				"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros:IsValid",
+				"/Script/FortniteUI.FortItemDurabilityVM:ShouldShowDurability",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetItemName",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetPreviewImage",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetNumInStack",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetRemainingAmmo",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetLoadedAmmo",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetTotalAmmo",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetRarityColor",
+				"/Script/FortniteUI.HUDItemEntryViewModel:GetRaritySecondaryColor",
+				"/Script/FortniteUI.HUDItemEntryViewModel:IsFocused",
+				"/Script/FortniteUI.HUDItemEntryViewModel:HasItem",
+				"/Script/FortniteUI.HUDItemEntryViewModel:ShouldShowRemainingAmmo"
 			]
 		},
 		"UnrestrictedBlueprintTypes": [
@@ -811,6 +823,8 @@
 			"/Script/Engine.LinearAnalysisProperties":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.PoseAsset":							{ "Rules": ["View","Create"] },
 			"/Script/Engine.SoundConcurrency":					{ "Rules": ["View","Create"] },
+			"/Script/Engine.SoundSubmix":						{ "Rules": ["View"] },
+			"/Script/Engine.SoundBase":							{ "Rules": ["View","Create","Import"] },
 			"/Script/Engine.UserDefinedEnum":					{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/Engine.UserDefinedStruct":					{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/EnhancedInput.InputAction":                { "Rules": ["View","Create"] },
@@ -1050,6 +1064,8 @@
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance":			{ "Visible": true },
 			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
 			"/Script/FortniteGame.FortGameUserSettings":				{ "Visible": true },
+			"/Script/FortniteUI.FortItemDurabilityVM":					{ "Visible": true },
+			"/Script/FortniteUI.HUDItemEntryViewModel":					{ "Visible": true },
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode":		{  },
 			"/Script/GameplayCameras.OcclusionMaterialCameraNode":		{  },
 			"/Script/GameplayCameras.ArrayCameraNode":					{  },
@@ -1093,7 +1109,7 @@
 			},
 			"Sequencer.MainToolBar": {
 				"AllowList": {
-					"+": [ "MusicMode", "MusicModeSyncConfig"]
+					"+": [ "MusicMode", "MusicModeSyncConfig", "MusicModeMetronomeToggle"]
 				}
 			},
 			"SkeletonTree.BlendProfilesMenu": {
@@ -1204,6 +1220,26 @@
 					"PatchSettings",
 					"bBypass"
 				]
+			},
+			{
+				"Type": "/Script/Engine.SoundBase",
+				"AllowList": [ 
+					"bEnableSubmixSends",
+					"SoundSubmixSends"
+					]
+			},
+			{
+				"Type": "/Script/Engine.SoundAttenuationSettings",
+				"AllowList": [ 
+					"bEnableListenerFocus",
+					"FocusAzimuth",
+					"NonFocusAzimuth",
+					"FocusVolumeAttenuation",
+					"NonFocusVolumeAttenuation",
+					"bEnableFocusInterpolation",
+					"FocusAttackInterpSpeed",
+					"FocusReleaseInterpSpeed"
+					]
 			},
 			{
 				"Type": "/Script/AmbientAudio.AmbientAudioComponent",

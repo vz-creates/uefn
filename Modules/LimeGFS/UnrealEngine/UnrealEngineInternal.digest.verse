@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-35.10-CL-42476511
+# Generated from build: ++Fortnite+Release-35.20-CL-42911808
 #################################################
 
 AINavigation<public> := module {
@@ -1892,7 +1892,7 @@ Temporary<public> := module {
     }
 
     # A widget to display a material.
-    material_block<native><epic_internal> := class(widget) {
+    material_block<native><public> := class(widget) {
       # The size this widget desired to be displayed in. Used only during initialization of the widget and not modified by SetDesiredSize.
       DefaultDesiredSize<native><public>: vector2 = external {}
 

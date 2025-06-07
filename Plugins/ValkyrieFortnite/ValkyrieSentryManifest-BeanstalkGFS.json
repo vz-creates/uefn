@@ -6,6 +6,11 @@
 			"FriendlyName": "FortCreativeObject",
 			"Version": 2
 		},
+		"04E744884BAC8717BBB1869439F8F3CE":
+		{
+			"FriendlyName": "PCGExportSelectedAttributes",
+			"Version": 0
+		},
 		"0925477B763D40019D91D6730B75B411":
 		{
 			"FriendlyName": "CommonUIVer",
@@ -84,7 +89,7 @@
 		"23D9FD274F6A0FDFEA0554807D4B3AB0":
 		{
 			"FriendlyName": "Dev-MLDeformer",
-			"Version": 2
+			"Version": 3
 		},
 		"24BB7AF356464F831F2F2DC249AD96FF":
 		{
@@ -214,7 +219,7 @@
 		"601D1886AC644F84AA16D3DE0DEAC7D6":
 		{
 			"FriendlyName": "FortniteMain",
-			"Version": 198
+			"Version": 207
 		},
 		"60C4F0DE8B264C34AA9372015DFF09CC":
 		{
@@ -229,7 +234,7 @@
 		"62915CA31C8E4BF7A30E12C7C8219DF7":
 		{
 			"FriendlyName": "EngineNetworkVersion",
-			"Version": 41
+			"Version": 42
 		},
 		"6304A3E700594F598CFC21BD7721FD4E":
 		{
@@ -279,7 +284,7 @@
 		"717F9EE7E9B0493A88B391321B388107":
 		{
 			"FriendlyName": "AssetRegistry",
-			"Version": 20
+			"Version": 21
 		},
 		"76A52329092345B598AED841CF2F6AD8":
 		{
@@ -354,7 +359,7 @@
 		"93EDE1AA10CA73754DF98A2849B157A0":
 		{
 			"FriendlyName": "Dev-Optimus",
-			"Version": 13
+			"Version": 14
 		},
 		"9513202EEBA1B279F17FE5BAAB90C3F2":
 		{
@@ -509,7 +514,7 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 84
+			"Version": 89
 		},
 		"C2A15278BFE74AFE6C1790FF531DF755":
 		{
@@ -549,7 +554,7 @@
 		"D89B5E4224BD4D468412ACA8DF641779":
 		{
 			"FriendlyName": "UE5-Release",
-			"Version": 51
+			"Version": 56
 		},
 		"DB16D0C2F1F244C5A2B52DEB3E9B9C9A":
 		{
@@ -559,7 +564,7 @@
 		"DC49959B53C04DE79156EA885E7C5D39":
 		{
 			"FriendlyName": "Dev-RigVM",
-			"Version": 16
+			"Version": 18
 		},
 		"DD09A19C88FE4EC2F7D9F60BC547C8BF":
 		{
@@ -599,7 +604,7 @@
 		"E68A5C1A42C3CA0DB01441B228C1F2DD":
 		{
 			"FriendlyName": "Dev-PhysicsControl",
-			"Version": 13
+			"Version": 20
 		},
 		"E70863686B234C5884391B7016265E91":
 		{
@@ -624,7 +629,7 @@
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
 			"FriendlyName": "Dev-IKRig",
-			"Version": 5
+			"Version": 6
 		},
 		"F94941FB19B64F5C851315EF0BF61F81":
 		{
@@ -639,7 +644,7 @@
 		"FCF57AFA50764283B9A9E658FFA02D32":
 		{
 			"FriendlyName": "NiagaraVer",
-			"Version": 91
+			"Version": 92
 		}
 	},
 	"ExtensionAllowList": [
@@ -925,6 +930,7 @@
 			"/Script/Engine.HLODBuilderSettings",
 			"/Script/Engine.HLODInstancedStaticMeshComponent",
 			"/Script/Engine.HLODLayer",
+			"/Script/Engine.InheritableComponentHandler",
 			"/Script/Engine.InstancedStaticMeshComponent",
 			"/Script/Engine.InterpToMovementComponent",
 			"/Script/Engine.Level",
@@ -1318,6 +1324,7 @@
 			"/Script/FortniteGame.BuildingActor",
 			"/Script/FortniteGame.BuildingAutoNav",
 			"/Script/FortniteGame.BuildingContainer",
+			"/Script/FortniteGame.BuildingContainerEditorComponent",
 			"/Script/FortniteGame.BuildingCorner",
 			"/Script/FortniteGame.BuildingDeco",
 			"/Script/FortniteGame.BuildingFloor",
@@ -1449,18 +1456,26 @@
 			"/Script/FortniteGame.LevelSaveRecordCollection",
 			"/Script/FortniteGame.MinimapHiddenComponent",
 			"/Script/FortniteGame.PlayStopPauseInterface",
+			"/Script/FortniteGame.VkConversationNode_Anim",
 			"/Script/FortniteGame.VkConversationNode_Choice",
+			"/Script/FortniteGame.VkConversationNode_Color",
 			"/Script/FortniteGame.VkConversationNode_DefaultEntryPoint",
 			"/Script/FortniteGame.VkConversationNode_Event",
+			"/Script/FortniteGame.VkConversationNode_Hide",
+			"/Script/FortniteGame.VkConversationNode_Material",
 			"/Script/FortniteGame.VkConversationNode_Random",
 			"/Script/FortniteGame.VkConversationNode_Repeat",
 			"/Script/FortniteGame.VkConversationNode_Restart",
 			"/Script/FortniteGame.VkConversationNode_Speech",
+			"/Script/FortniteGame.VkConversationNode_TextCrawl",
+			"/Script/FortniteGame.VkConversationNode_Title",
 			"/Script/FortniteGame.WaterVolume_Athena",
 			"/Script/FortniteUI.FortCTAButton",
+			"/Script/FortniteUI.FortItemDurabilityVM",
 			"/Script/FortniteUI.HUDEquippedItemViewModel",
 			"/Script/FortniteUI.HUDPlayerInfoListViewmodel",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel",
+			"/Script/FortniteUI.HUDQuickbarSlotViewModel",
 			"/Script/FortNPCCharacterMovieSceneBindings.FortNPCCharacterMovieSceneReplaceableBinding",
 			"/Script/FortNPCCharacterMovieSceneBindings.FortNPCCharacterMovieSceneSpawnableBinding",
 			"/Script/GameplayAbilities.AbilitySystemComponent",
@@ -2186,7 +2201,6 @@
 			"/Script/Engine.AnimSequenceBase",
 			"/Script/Engine.BlendSpace",
 			"/Script/Engine.EdGraphNode",
-			"/Script/Engine.InheritableComponentHandler",
 			"/Script/Engine.KismetArrayLibrary",
 			"/Script/Engine.KismetMathLibrary",
 			"/Script/Engine.KismetSystemLibrary",
@@ -2204,8 +2218,6 @@
 			"/Script/FortniteGame.FortInputMappingContext",
 			"/Script/FortniteGame.FortPlayerMappableKeySettings",
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance",
-			"/Script/FortniteUI.FortItemDurabilityVM",
-			"/Script/FortniteUI.HUDItemEntryViewModel",
 			"/Script/GameplayCameras.ArrayCameraNode",
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode",
 			"/Script/GameplayCameras.BaseFramingCameraNode",
@@ -2264,6 +2276,7 @@
 			"/Script/AnimationCore.EulerTransform",
 			"/Script/AnimationCore.FilterOptionPerAxis",
 			"/Script/AnimationCore.TransformFilter",
+			"/Script/ChaosNiagara.ChaosDestructionEvent",
 			"/Script/ControlRig.CachedRigElement",
 			"/Script/ControlRig.ConstraintParent",
 			"/Script/ControlRig.ControlRigComponentMappedElement",
@@ -2390,6 +2403,7 @@
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEvent",
 			"/Script/Niagara.MeshTriCoordinate",
 			"/Script/Niagara.NiagaraBool",
+			"/Script/Niagara.NiagaraCollisionEventPayload",
 			"/Script/Niagara.NiagaraFloat",
 			"/Script/Niagara.NiagaraHalf",
 			"/Script/Niagara.NiagaraHalfVector2",
@@ -2569,12 +2583,15 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Alien_Robot.Character_Alien_Robot",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_AllKnowing.Character_AllKnowing",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Amour.Character_Amour",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Apprentice.Character_Apprentice",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_AutumnDelivery.Character_AutumnDelivery",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BadBear.Character_BadBear",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Ballerina.Character_Ballerina",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Ballerina_Honey.Character_Ballerina_Honey",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BananaPhilosopher.Character_BananaPhilosopher",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BariumDemon.Character_BariumDemon",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BiruFang.Character_BiruFang",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Bites.Character_Bites",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BlueGlaze.Character_BlueGlaze",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BoneMarrow.Character_BoneMarrow",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Boredom.Character_Boredom",
@@ -2583,8 +2600,12 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_BunnyBR.Character_BunnyBR",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Calavera.Character_Calavera",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CameraShake.Character_CameraShake",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Candor.Character_Candor",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Chainmail.Character_Chainmail",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_ChaosLightning.Character_ChaosLightning",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_ChicleVeil.Character_ChicleVeil",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_ChillCat.Character_ChillCat",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Citadel.Character_Citadel",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Conscience.Character_Conscience",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Contaminate.Character_Contaminate",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CopperToll.Character_CopperToll",
@@ -2657,6 +2678,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PennantSeasShade_D.Character_PennantSeasShade_D",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PennantSeasShade_E.Character_PennantSeasShade_E",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Photographer_Holiday.Character_Photographer_Holiday",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PinkSpike.Character_PinkSpike",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PirouetteWeld.Character_PirouetteWeld",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PiteousKicks.Character_PiteousKicks",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Possession.Character_Possession",
@@ -2672,6 +2694,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_RogueNinja.Character_RogueNinja",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Ruins.Character_Ruins",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_ScareyBeary.Character_ScareyBeary",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SharpFang.Character_SharpFang",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SirWolf.Character_SirWolf",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SparkArcher.Character_SparkArcher",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Sparrow.Character_Sparrow",
@@ -2681,6 +2704,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_StreetGothSummer.Character_StreetGothSummer",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_StrontiumSpark.Character_StrontiumSpark",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SunbeamQuest.Character_SunbeamQuest",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Sunlit.Character_Sunlit",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SunShine.Character_SunShine",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SwampFish.Character_SwampFish",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_SwampKnight.Character_SwampKnight",
@@ -2697,8 +2721,10 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_TacticMushroom_E.Character_TacticMushroom_E",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_TalonHime.Character_TalonHime",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_TechnoAwaken.Character_TechnoAwaken",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_TheHerald.Character_TheHerald",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Veiled.Character_Veiled",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_VelociTeeth.Character_VelociTeeth",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Venice.Character_Venice",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Virtuous.Character_Virtuous",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_WaterMolecules.Character_WaterMolecules",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_WaywardRebel.Character_WaywardRebel",
@@ -2722,10 +2748,12 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_027_Athena_Commando_F.CID_027_Athena_Commando_F",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_029_Athena_Commando_F_Halloween.CID_029_Athena_Commando_F_Halloween",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_031_Athena_Commando_M_Retro.CID_031_Athena_Commando_M_Retro",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_032_Athena_Commando_M_Medieval.CID_032_Athena_Commando_M_Medieval",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_034_Athena_Commando_F_Medieval.CID_034_Athena_Commando_F_Medieval",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_036_Athena_Commando_M_WinterCamo.CID_036_Athena_Commando_M_WinterCamo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_037_Athena_Commando_F_WinterCamo.CID_037_Athena_Commando_F_WinterCamo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_038_Athena_Commando_M_Disco.CID_038_Athena_Commando_M_Disco",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_039_Athena_Commando_F_Disco.CID_039_Athena_Commando_F_Disco",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_040_Athena_Commando_M_District.CID_040_Athena_Commando_M_District",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_041_Athena_Commando_F_District.CID_041_Athena_Commando_F_District",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_042_Athena_Commando_M_Cyberpunk.CID_042_Athena_Commando_M_Cyberpunk",
@@ -2755,6 +2783,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_077_Athena_Commando_M_Sup.CID_077_Athena_Commando_M_Sup",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_078_Athena_Commando_M_Camo.CID_078_Athena_Commando_M_Camo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_079_Athena_Commando_F_Camo.CID_079_Athena_Commando_F_Camo",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_082_Athena_Commando_M_Scavenger.CID_082_Athena_Commando_M_Scavenger",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_086_Athena_Commando_M_RedSilk.CID_086_Athena_Commando_M_RedSilk",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_087_Athena_Commando_F_RedSilk.CID_087_Athena_Commando_F_RedSilk",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_088_Athena_Commando_M_SpaceBlack.CID_088_Athena_Commando_M_SpaceBlack",
@@ -2778,10 +2807,13 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_110_Athena_Commando_F_CircuitBreaker.CID_110_Athena_Commando_F_CircuitBreaker",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_111_Athena_Commando_F_Robo.CID_111_Athena_Commando_F_Robo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_112_Athena_Commando_M_Brite.CID_112_Athena_Commando_M_Brite",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_115_Athena_Commando_M_CarbideBlue.CID_115_Athena_Commando_M_CarbideBlue",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_120_Athena_Commando_F_Graffiti.CID_120_Athena_Commando_F_Graffiti",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_121_Athena_Commando_M_Graffiti.CID_121_Athena_Commando_M_Graffiti",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_122_Athena_Commando_M_Metal.CID_122_Athena_Commando_M_Metal",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_123_Athena_Commando_F_Metal.CID_123_Athena_Commando_F_Metal",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_124_Athena_Commando_F_AuroraGlow.CID_124_Athena_Commando_F_AuroraGlow",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_125_Athena_Commando_M_TacticalWoodland.CID_125_Athena_Commando_M_TacticalWoodland",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_126_Athena_Commando_M_AuroraGlow.CID_126_Athena_Commando_M_AuroraGlow",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_127_Athena_Commando_M_Hazmat.CID_127_Athena_Commando_M_Hazmat",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_128_Athena_Commando_F_Hazmat.CID_128_Athena_Commando_F_Hazmat",
@@ -2813,7 +2845,12 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_158_Athena_Commando_F_StarsAndStripes.CID_158_Athena_Commando_F_StarsAndStripes",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_159_Athena_Commando_M_GumshoeDark.CID_159_Athena_Commando_M_GumshoeDark",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_160_Athena_Commando_M_SpeedyRed.CID_160_Athena_Commando_M_SpeedyRed",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_161_Athena_Commando_M_Drift.CID_161_Athena_Commando_M_Drift",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_162_Athena_Commando_F_StreetRacer.CID_162_Athena_Commando_F_StreetRacer",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_163_Athena_Commando_F_Viking.CID_163_Athena_Commando_F_Viking",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_164_Athena_Commando_M_Viking.CID_164_Athena_Commando_M_Viking",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_166_Athena_Commando_F_Lifeguard.CID_166_Athena_Commando_F_Lifeguard",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_167_Athena_Commando_M_TacticalBadass.CID_167_Athena_Commando_M_TacticalBadass",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_168_Athena_Commando_M_Shark.CID_168_Athena_Commando_M_Shark",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_169_Athena_Commando_M_Luchador.CID_169_Athena_Commando_M_Luchador",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_170_Athena_Commando_F_Luchador.CID_170_Athena_Commando_F_Luchador",
@@ -2856,8 +2893,11 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_224_Athena_Commando_F_Dieselpunk.CID_224_Athena_Commando_F_Dieselpunk",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_225_Athena_Commando_M_Octoberfest.CID_225_Athena_Commando_M_Octoberfest",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_226_Athena_Commando_F_Octoberfest.CID_226_Athena_Commando_F_Octoberfest",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_227_Athena_Commando_F_Vampire.CID_227_Athena_Commando_F_Vampire",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_228_Athena_Commando_M_Vampire.CID_228_Athena_Commando_M_Vampire",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_229_Athena_Commando_F_DarkBomber.CID_229_Athena_Commando_F_DarkBomber",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_230_Athena_Commando_M_Werewolf.CID_230_Athena_Commando_M_Werewolf",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_233_Athena_Commando_M_FortniteDJ.CID_233_Athena_Commando_M_FortniteDJ",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_235_Athena_Commando_M_Scarecrow.CID_235_Athena_Commando_M_Scarecrow",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_236_Athena_Commando_F_Scarecrow.CID_236_Athena_Commando_F_Scarecrow",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_240_Athena_Commando_F_Plague.CID_240_Athena_Commando_F_Plague",
@@ -2865,6 +2905,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_242_Athena_Commando_F_Bullseye.CID_242_Athena_Commando_F_Bullseye",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_243_Athena_Commando_M_PumpkinSlice.CID_243_Athena_Commando_M_PumpkinSlice",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_244_Athena_Commando_M_PumpkinSuit.CID_244_Athena_Commando_M_PumpkinSuit",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_245_Athena_Commando_F_DurrburgerPjs.CID_245_Athena_Commando_F_DurrburgerPjs",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_246_Athena_Commando_F_Grave.CID_246_Athena_Commando_F_Grave",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_247_Athena_Commando_M_GuanYu.CID_247_Athena_Commando_M_GuanYu",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_248_Athena_Commando_M_BlackWidow.CID_248_Athena_Commando_M_BlackWidow",
@@ -2892,7 +2933,10 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_275_Athena_Commando_M_SniperHood.CID_275_Athena_Commando_M_SniperHood",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_276_Athena_Commando_F_SniperHood.CID_276_Athena_Commando_F_SniperHood",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_277_Athena_Commando_M_Moth.CID_277_Athena_Commando_M_Moth",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_279_Athena_Commando_M_TacticalSanta.CID_279_Athena_Commando_M_TacticalSanta",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_280_Athena_Commando_M_Snowman.CID_280_Athena_Commando_M_Snowman",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_286_Athena_Commando_F_NeonCat.CID_286_Athena_Commando_F_NeonCat",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_287_Athena_Commando_M_ArcticSniper.CID_287_Athena_Commando_M_ArcticSniper",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_290_Athena_Commando_F_BlueBadass.CID_290_Athena_Commando_F_BlueBadass",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_291_Athena_Commando_M_Dieselpunk02.CID_291_Athena_Commando_M_Dieselpunk02",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_292_Athena_Commando_F_Dieselpunk02.CID_292_Athena_Commando_F_Dieselpunk02",
@@ -2935,6 +2979,11 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_341_Athena_Commando_F_SkullBrite.CID_341_Athena_Commando_F_SkullBrite",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_344_Athena_Commando_M_IceCream.CID_344_Athena_Commando_M_IceCream",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_345_Athena_Commando_M_LoveLlama.CID_345_Athena_Commando_M_LoveLlama",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_347_Athena_Commando_M_PirateProgressive.CID_347_Athena_Commando_M_PirateProgressive",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_349_Athena_Commando_M_Banana.CID_349_Athena_Commando_M_Banana",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_350_Athena_Commando_M_MasterKey.CID_350_Athena_Commando_M_MasterKey",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_351_Athena_Commando_F_FireElf.CID_351_Athena_Commando_F_FireElf",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_352_Athena_Commando_F_Shiny.CID_352_Athena_Commando_F_Shiny",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_353_Athena_Commando_F_Bandolier.CID_353_Athena_Commando_F_Bandolier",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_354_Athena_Commando_M_MunitionsExpert.CID_354_Athena_Commando_M_MunitionsExpert",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_355_Athena_Commando_M_Farmer.CID_355_Athena_Commando_M_Farmer",
@@ -2969,6 +3018,12 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_397_Athena_Commando_F_TreasureHunterFashion.CID_397_Athena_Commando_F_TreasureHunterFashion",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_398_Athena_Commando_M_TreasureHunterFashion.CID_398_Athena_Commando_M_TreasureHunterFashion",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_401_Athena_Commando_M_Miner.CID_401_Athena_Commando_M_Miner",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_403_Athena_Commando_M_Rooster.CID_403_Athena_Commando_M_Rooster",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_404_Athena_Commando_F_BountyHunter.CID_404_Athena_Commando_F_BountyHunter",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_405_Athena_Commando_F_Masako.CID_405_Athena_Commando_F_Masako",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_407_Athena_Commando_M_BattleSuit.CID_407_Athena_Commando_M_BattleSuit",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_408_Athena_Commando_F_StrawberryPilot.CID_408_Athena_Commando_F_StrawberryPilot",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_409_Athena_Commando_M_BunkerMan.CID_409_Athena_Commando_M_BunkerMan",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_410_Athena_Commando_M_CyberScavenger.CID_410_Athena_Commando_M_CyberScavenger",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_411_Athena_Commando_F_CyberScavenger.CID_411_Athena_Commando_F_CyberScavenger",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_412_Athena_Commando_F_Raptor.CID_412_Athena_Commando_F_Raptor",
@@ -3015,6 +3070,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_464_Athena_Commando_M_Flamingo.CID_464_Athena_Commando_M_Flamingo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_465_Athena_Commando_M_PuffyVest.CID_465_Athena_Commando_M_PuffyVest",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_468_Athena_Commando_F_TennisWhite.CID_468_Athena_Commando_F_TennisWhite",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_469_Athena_Commando_F_BattleSuit.CID_469_Athena_Commando_F_BattleSuit",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_470_Athena_Commando_M_Anarchy.CID_470_Athena_Commando_M_Anarchy",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_471_Athena_Commando_F_Bani.CID_471_Athena_Commando_F_Bani",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_472_Athena_Commando_F_CyberKarate.CID_472_Athena_Commando_F_CyberKarate",
@@ -3025,6 +3081,11 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_480_Athena_Commando_F_Bubblegum.CID_480_Athena_Commando_F_Bubblegum",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_481_Athena_Commando_F_Geode.CID_481_Athena_Commando_F_Geode",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_482_Athena_Commando_F_PizzaPit.CID_482_Athena_Commando_F_PizzaPit",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_483_Athena_Commando_F_GraffitiRemix.CID_483_Athena_Commando_F_GraffitiRemix",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_485_Athena_Commando_F_SparkleRemix.CID_485_Athena_Commando_F_SparkleRemix",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_486_Athena_Commando_F_StreetRacerDrift.CID_486_Athena_Commando_F_StreetRacerDrift",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_488_Athena_Commando_M_RustRemix.CID_488_Athena_Commando_M_RustRemix",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_489_Athena_Commando_M_VoyagerRemix.CID_489_Athena_Commando_M_VoyagerRemix",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_490_Athena_Commando_M_BlueBadass.CID_490_Athena_Commando_M_BlueBadass",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_491_Athena_Commando_M_BoneWasp.CID_491_Athena_Commando_M_BoneWasp",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_492_Athena_Commando_M_Bronto.CID_492_Athena_Commando_M_Bronto",
@@ -3080,6 +3141,9 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_561_Athena_Commando_M_RebirthDefaultB.CID_561_Athena_Commando_M_RebirthDefaultB",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_562_Athena_Commando_M_RebirthDefaultC.CID_562_Athena_Commando_M_RebirthDefaultC",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_563_Athena_Commando_M_RebirthDefaultD.CID_563_Athena_Commando_M_RebirthDefaultD",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_566_Athena_Commando_M_CrazyEight.CID_566_Athena_Commando_M_CrazyEight",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_570_Athena_Commando_M_SlurpMonster.CID_570_Athena_Commando_M_SlurpMonster",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_571_Athena_Commando_F_Sheath.CID_571_Athena_Commando_F_Sheath",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_573_Athena_Commando_M_Haunt.CID_573_Athena_Commando_M_Haunt",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_576_Athena_Commando_M_CODSquadPlaid.CID_576_Athena_Commando_M_CODSquadPlaid",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_578_Athena_Commando_F_Fisherman.CID_578_Athena_Commando_F_Fisherman",
@@ -3112,6 +3176,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_611_Athena_Commando_M_WeepingWoods.CID_611_Athena_Commando_M_WeepingWoods",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_612_Athena_Commando_F_StreetOpsPink.CID_612_Athena_Commando_F_StreetOpsPink",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_614_Athena_Commando_M_MissingLink.CID_614_Athena_Commando_M_MissingLink",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_615_Athena_Commando_F_Bane.CID_615_Athena_Commando_F_Bane",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_616_Athena_Commando_F_CavalryBandit.CID_616_Athena_Commando_F_CavalryBandit",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_617_Athena_Commando_F_ForestQueen.CID_617_Athena_Commando_F_ForestQueen",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_618_Athena_Commando_M_ForestDweller.CID_618_Athena_Commando_M_ForestDweller",
@@ -3165,11 +3230,17 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_687_Athena_Commando_M_AgentAce.CID_687_Athena_Commando_M_AgentAce",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_688_Athena_Commando_F_AgentRogue.CID_688_Athena_Commando_F_AgentRogue",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_689_Athena_Commando_M_SpyTechHacker.CID_689_Athena_Commando_M_SpyTechHacker",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_690_Athena_Commando_F_Photographer.CID_690_Athena_Commando_F_Photographer",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_691_Athena_Commando_F_TNTina.CID_691_Athena_Commando_F_TNTina",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_692_Athena_Commando_M_HenchmanTough.CID_692_Athena_Commando_M_HenchmanTough",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_693_Athena_Commando_M_BuffCat.CID_693_Athena_Commando_M_BuffCat",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_694_Athena_Commando_M_CatBurglar.CID_694_Athena_Commando_M_CatBurglar",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_696_Athena_Commando_F_DarkHeart.CID_696_Athena_Commando_F_DarkHeart",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_697_Athena_Commando_F_GraffitiFuture.CID_697_Athena_Commando_F_GraffitiFuture",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_698_Athena_Commando_M_CuteDuo.CID_698_Athena_Commando_M_CuteDuo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_699_Athena_Commando_F_BrokenHeart.CID_699_Athena_Commando_F_BrokenHeart",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_700_Athena_Commando_M_Candy.CID_700_Athena_Commando_M_Candy",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_701_Athena_Commando_M_BananaAgent.CID_701_Athena_Commando_M_BananaAgent",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_702_Athena_Commando_M_AssassinX.CID_702_Athena_Commando_M_AssassinX",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_706_Athena_Commando_M_HenchmanBad_34LVU.CID_706_Athena_Commando_M_HenchmanBad_34LVU",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_707_Athena_Commando_M_HenchmanGood_9OBH6.CID_707_Athena_Commando_M_HenchmanGood_9OBH6",
@@ -3216,10 +3287,15 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_760_Athena_Commando_F_NeonTightSuit.CID_760_Athena_Commando_F_NeonTightSuit",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_762_Athena_Commando_M_BrightGunnerSpy.CID_762_Athena_Commando_M_BrightGunnerSpy",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_763_Athena_Commando_F_ShinyJacket.CID_763_Athena_Commando_F_ShinyJacket",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_765_Athena_Commando_F_SpaceWanderer.CID_765_Athena_Commando_F_SpaceWanderer",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_767_Athena_Commando_F_BlackKnight.CID_767_Athena_Commando_F_BlackKnight",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_768_Athena_Commando_F_HardcoreSportz.CID_768_Athena_Commando_F_HardcoreSportz",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_769_Athena_Commando_M_HardcoreSportz.CID_769_Athena_Commando_M_HardcoreSportz",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_770_Athena_Commando_F_MechanicalEngineer.CID_770_Athena_Commando_F_MechanicalEngineer",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_771_Athena_Commando_F_OceanRider.CID_771_Athena_Commando_F_OceanRider",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_773_Athena_Commando_M_Beacon.CID_773_Athena_Commando_M_Beacon",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_775_Athena_Commando_F_StreetRacerCobraGold.CID_775_Athena_Commando_F_StreetRacerCobraGold",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_777_Athena_Commando_M_RacerZero.CID_777_Athena_Commando_M_RacerZero",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_778_Athena_Commando_M_Gator.CID_778_Athena_Commando_M_Gator",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_779_Athena_Commando_M_HenchmanGoodShorts.CID_779_Athena_Commando_M_HenchmanGoodShorts",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_780_Athena_Commando_M_HenchmanBadShorts.CID_780_Athena_Commando_M_HenchmanBadShorts",
@@ -3313,6 +3389,8 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_957_Athena_Commando_F_Ponytail.CID_957_Athena_Commando_F_Ponytail",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_958_Athena_Commando_M_PieMan.CID_958_Athena_Commando_M_PieMan",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_959_Athena_Commando_M_Corny.CID_959_Athena_Commando_M_Corny",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_962_Athena_Commando_M_FlapjackWrangler.CID_962_Athena_Commando_M_FlapjackWrangler",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_966_Athena_Commando_M_FutureSamurai.CID_966_Athena_Commando_M_FutureSamurai",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_968_Athena_Commando_M_TeriyakiFishElf.CID_968_Athena_Commando_M_TeriyakiFishElf",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_970_Athena_Commando_F_RenegadeRaiderHoliday.CID_970_Athena_Commando_F_RenegadeRaiderHoliday",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_974_Athena_Commando_F_StreetFashionHoliday.CID_974_Athena_Commando_F_StreetFashionHoliday",
@@ -3324,13 +3402,18 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_983_Athena_Commando_F_CupidWinter.CID_983_Athena_Commando_F_CupidWinter",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_984_Athena_Commando_M_HolidayLights.CID_984_Athena_Commando_M_HolidayLights",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_987_Athena_Commando_M_Frostbyte.CID_987_Athena_Commando_M_Frostbyte",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_989_Athena_Commando_M_ProgressiveJonesy.CID_989_Athena_Commando_M_ProgressiveJonesy",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_994_Athena_Commando_M_Lexa.CID_994_Athena_Commando_M_Lexa",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_008_Athena_Commando_F_CombatDoll.CID_A_008_Athena_Commando_F_CombatDoll",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_009_Athena_Commando_F_FoxWarrior_21B9R.CID_A_009_Athena_Commando_F_FoxWarrior_21B9R",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_011_Athena_Commando_M_StreetCuddles.CID_A_011_Athena_Commando_M_StreetCuddles",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_022_Athena_Commando_F_Crush.CID_A_022_Athena_Commando_F_Crush",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_029_Athena_Commando_M_LlamaHeroWinter_C83TZ.CID_A_029_Athena_Commando_M_LlamaHeroWinter_C83TZ",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_032_Athena_Commando_M_SpaceWarrior.CID_A_032_Athena_Commando_M_SpaceWarrior",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_039_Athena_Commando_M_ChickenWarrior.CID_A_039_Athena_Commando_M_ChickenWarrior",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_042_Athena_Commando_F_Scholar.CID_A_042_Athena_Commando_F_Scholar",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_043_Athena_Commando_M_DarkMinion.CID_A_043_Athena_Commando_M_DarkMinion",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_044_Athena_Commando_F_NeonCatFashion_64JW3.CID_A_044_Athena_Commando_F_NeonCatFashion_64JW3",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_045_Athena_Commando_M_BananaLeader.CID_A_045_Athena_Commando_M_BananaLeader",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_046_Athena_Commando_F_AssembleR.CID_A_046_Athena_Commando_F_AssembleR",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_047_Athena_Commando_F_Windwalker.CID_A_047_Athena_Commando_F_Windwalker",
@@ -3351,6 +3434,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_064_Athena_Commando_F_SurvivalSpecialistAutumn.CID_A_064_Athena_Commando_F_SurvivalSpecialistAutumn",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_068_Athena_Commando_M_TerrainMan.CID_A_068_Athena_Commando_M_TerrainMan",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_069_Athena_Commando_M_Accumulate.CID_A_069_Athena_Commando_M_Accumulate",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_071_Athena_Commando_M_Cranium.CID_A_071_Athena_Commando_M_Cranium",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_072_Athena_Commando_M_BuffCatComic_XG5XC.CID_A_072_Athena_Commando_M_BuffCatComic_XG5XC",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_074_Athena_Commando_M_TomatoKnight.CID_A_074_Athena_Commando_M_TomatoKnight",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_075_Athena_Commando_M_DurrburgerKnight.CID_A_075_Athena_Commando_M_DurrburgerKnight",
@@ -3364,6 +3448,9 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_097_Athena_Commando_F_WastelandWarrior.CID_A_097_Athena_Commando_F_WastelandWarrior",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_098_Athena_Commando_F_SpartanFuture.CID_A_098_Athena_Commando_F_SpartanFuture",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_104_Athena_Commando_M_TowerSentinel.CID_A_104_Athena_Commando_M_TowerSentinel",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_105_Athena_Commando_F_SpaceCuddles_5TEVA.CID_A_105_Athena_Commando_F_SpaceCuddles_5TEVA",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_113_Athena_Commando_F_Innovator.CID_A_113_Athena_Commando_F_Innovator",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_116_Athena_Commando_M_Invader.CID_A_116_Athena_Commando_M_Invader",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_117_Athena_Commando_F_Rockstar.CID_A_117_Athena_Commando_F_Rockstar",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_118_Athena_Commando_M_JonesyCattle.CID_A_118_Athena_Commando_M_JonesyCattle",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_119_Athena_Commando_M_Golf.CID_A_119_Athena_Commando_M_Golf",
@@ -3388,6 +3475,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_150_Athena_Commando_F_Pliant_D.CID_A_150_Athena_Commando_F_Pliant_D",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_151_Athena_Commando_F_Pliant_E.CID_A_151_Athena_Commando_F_Pliant_E",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_152_Athena_Commando_F_Musician.CID_A_152_Athena_Commando_F_Musician",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_153_Athena_Commando_F_BuffCatFan_TS2DR.CID_A_153_Athena_Commando_F_BuffCatFan_TS2DR",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_163_Athena_Commando_M_Stands.CID_A_163_Athena_Commando_M_Stands",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_164_Athena_Commando_M_Stands_B.CID_A_164_Athena_Commando_M_Stands_B",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_165_Athena_Commando_M_Stands_C.CID_A_165_Athena_Commando_M_Stands_C",
@@ -3405,13 +3493,20 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_178_Athena_Commando_F_TieDyeFashion_C.CID_A_178_Athena_Commando_F_TieDyeFashion_C",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_179_Athena_Commando_F_TieDyeFashion_D.CID_A_179_Athena_Commando_F_TieDyeFashion_D",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_180_Athena_Commando_F_TieDyeFashion_E.CID_A_180_Athena_Commando_F_TieDyeFashion_E",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_184_Athena_Commando_M_NinjaWolf_F09O3.CID_A_184_Athena_Commando_M_NinjaWolf_F09O3",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_188_Athena_Commando_M_ColorBlock.CID_A_188_Athena_Commando_M_ColorBlock",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_190_Athena_Commando_M_AlienAgent.CID_A_190_Athena_Commando_M_AlienAgent",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_191_Athena_Commando_M_AlienFlora.CID_A_191_Athena_Commando_M_AlienFlora",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_192_Athena_Commando_F_Suspenders.CID_A_192_Athena_Commando_F_Suspenders",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_195_Athena_Commando_M_Crisis.CID_A_195_Athena_Commando_M_Crisis",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_198_Athena_Commando_M_CerealBox.CID_A_198_Athena_Commando_M_CerealBox",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_199_Athena_Commando_M_SpaceChimp.CID_A_199_Athena_Commando_M_SpaceChimp",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_200_Athena_Commando_F_GhostHunter.CID_A_200_Athena_Commando_F_GhostHunter",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_202_Athena_Commando_F_Division.CID_A_202_Athena_Commando_F_Division",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_203_Athena_Commando_F_PunkKoi.CID_A_203_Athena_Commando_F_PunkKoi",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_209_Athena_Commando_F_Werewolf.CID_A_209_Athena_Commando_F_Werewolf",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_210_Athena_Commando_F_RenegadeSkull.CID_A_210_Athena_Commando_F_RenegadeSkull",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_211_Athena_Commando_M_Psyche_JWQP3.CID_A_211_Athena_Commando_M_Psyche_JWQP3",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_213_Athena_Commando_M_CritterCuddle.CID_A_213_Athena_Commando_M_CritterCuddle",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_217_Athena_Commando_M_CritterRaven.CID_A_217_Athena_Commando_M_CritterRaven",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_220_Athena_Commando_F_PinkEmo.CID_A_220_Athena_Commando_F_PinkEmo",
@@ -3430,6 +3525,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_252_Athena_Commando_F_ZombieElastic_D.CID_A_252_Athena_Commando_F_ZombieElastic_D",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_253_Athena_Commando_F_ZombieElastic_E.CID_A_253_Athena_Commando_F_ZombieElastic_E",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_254_Athena_Commando_M_ButterJack.CID_A_254_Athena_Commando_M_ButterJack",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_255_Athena_Commando_F_SAM_QA7ZS.CID_A_255_Athena_Commando_F_SAM_QA7ZS",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_257_Athena_Commando_M_CatBurglar_Ghost.CID_A_257_Athena_Commando_M_CatBurglar_Ghost",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_272_Athena_Commando_F_Prime.CID_A_272_Athena_Commando_F_Prime",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_273_Athena_Commando_F_Prime_B.CID_A_273_Athena_Commando_F_Prime_B",
@@ -3445,6 +3541,12 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_283_Athena_Commando_M_Prime_E.CID_A_283_Athena_Commando_M_Prime_E",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_284_Athena_Commando_M_Prime_F.CID_A_284_Athena_Commando_M_Prime_F",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_285_Athena_Commando_M_Prime_G.CID_A_285_Athena_Commando_M_Prime_G",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_287_Athena_Commando_M_LoneWolf.CID_A_287_Athena_Commando_M_LoneWolf",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_288_Athena_Commando_M_BuffLlama.CID_A_288_Athena_Commando_M_BuffLlama",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_289_Athena_Commando_M_Gumball.CID_A_289_Athena_Commando_M_Gumball",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_290_Athena_Commando_F_Motorcyclist.CID_A_290_Athena_Commando_F_Motorcyclist",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_291_Athena_Commando_F_IslandNomad.CID_A_291_Athena_Commando_F_IslandNomad",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_292_Athena_Commando_F_ExoSuit.CID_A_292_Athena_Commando_F_ExoSuit",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_308_Athena_Commando_F_Sunshine.CID_A_308_Athena_Commando_F_Sunshine",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_312_Athena_Commando_F_RainbowHat.CID_A_312_Athena_Commando_F_RainbowHat",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_313_Athena_Commando_M_BlizzardBomber.CID_A_313_Athena_Commando_M_BlizzardBomber",
@@ -3452,12 +3554,24 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_315_Athena_Commando_M_NightCapsule_B31L1.CID_A_315_Athena_Commando_M_NightCapsule_B31L1",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_318_Athena_Commando_M_KittyWarrior.CID_A_318_Athena_Commando_M_KittyWarrior",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_319_Athena_Commando_F_Peppermint.CID_A_319_Athena_Commando_F_Peppermint",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_324_Athena_Commando_F_InnovatorFestive_3FUPH.CID_A_324_Athena_Commando_F_InnovatorFestive_3FUPH",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_325_Athena_Commando_F_Scout.CID_A_325_Athena_Commando_F_Scout",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_326_Athena_Commando_M_SharpDresserBlack.CID_A_326_Athena_Commando_M_SharpDresserBlack",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_327_Athena_Commando_M_SkullPunk_9QTQI.CID_A_327_Athena_Commando_M_SkullPunk_9QTQI",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_339_Athena_Commando_F_LoveQueen.CID_A_339_Athena_Commando_F_LoveQueen",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_357_Athena_Commando_F_ValentineFashion_B3S3R.CID_A_357_Athena_Commando_F_ValentineFashion_B3S3R",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_359_Athena_Commando_F_BunnyPurple.CID_A_359_Athena_Commando_F_BunnyPurple",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_360_Athena_Commando_F_LeatherJacketPurple.CID_A_360_Athena_Commando_F_LeatherJacketPurple",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_369_Athena_Commando_F_CyberArmor.CID_A_369_Athena_Commando_F_CyberArmor",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_370_Athena_Commando_M_OrderGuard.CID_A_370_Athena_Commando_M_OrderGuard",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_371_Athena_Commando_F_Cadet.CID_A_371_Athena_Commando_F_Cadet",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_372_Athena_Commando_F_KnightCat.CID_A_372_Athena_Commando_F_KnightCat",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_373_Athena_Commando_M_OriginPrisoner.CID_A_373_Athena_Commando_M_OriginPrisoner",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_374_Athena_Commando_F_Binary.CID_A_374_Athena_Commando_F_Binary",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_378_Athena_Commando_F_Bacteria_8JYGU.CID_A_378_Athena_Commando_F_Bacteria_8JYGU",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_379_Athena_Commando_F_VampireHunter.CID_A_379_Athena_Commando_F_VampireHunter",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_393_Athena_Commando_F_Forsake.CID_A_393_Athena_Commando_F_Forsake",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_394_Athena_Commando_M_DarkStorm.CID_A_394_Athena_Commando_M_DarkStorm",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_395_Athena_Commando_F_BinaryTwin.CID_A_395_Athena_Commando_F_BinaryTwin",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_396_Athena_Commando_F_Raspberry.CID_A_396_Athena_Commando_F_Raspberry",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_398_Athena_Commando_F_NeonCatSpeed.CID_A_398_Athena_Commando_F_NeonCatSpeed",
@@ -3471,7 +3585,11 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_409_Athena_Commando_M_RebirthFresh_D.CID_A_409_Athena_Commando_M_RebirthFresh_D",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_416_Athena_Commando_M_Armadillo.CID_A_416_Athena_Commando_M_Armadillo",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_417_Athena_Commando_F_Armadillo.CID_A_417_Athena_Commando_F_Armadillo",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_418_Athena_Commando_M_ArmadilloRobot.CID_A_418_Athena_Commando_M_ArmadilloRobot",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_419_Athena_Commando_F_EternalVanguard.CID_A_419_Athena_Commando_F_EternalVanguard",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_424_Athena_Commando_M_Lancelot.CID_A_424_Athena_Commando_M_Lancelot",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_425_Athena_Commando_F_BlueJay.CID_A_425_Athena_Commando_F_BlueJay",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_428_Athena_Commando_F_PinkWidow.CID_A_428_Athena_Commando_F_PinkWidow",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_431_Athena_Commando_M_JonesyOrange.CID_A_431_Athena_Commando_M_JonesyOrange",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_436_Athena_Commando_M_RedSleeves.CID_A_436_Athena_Commando_M_RedSleeves",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_441_Athena_Commando_F_PennantSeasOne.CID_A_441_Athena_Commando_F_PennantSeasOne",
@@ -3491,6 +3609,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_456_Athena_Commando_F_Fruitcake.CID_A_456_Athena_Commando_F_Fruitcake",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_466_Athena_Commando_F_Chaos.CID_A_466_Athena_Commando_F_Chaos",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_476_Athena_Commando_F_NeonJam.CID_A_476_Athena_Commando_F_NeonJam",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_A_478_Athena_Commando_F_WildCard.CID_A_478_Athena_Commando_F_WildCard",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_Creative_Mannequin_M_Default.CID_Creative_Mannequin_M_Default",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_NPC_Athena_Commando_F_MarauderElite.CID_NPC_Athena_Commando_F_MarauderElite",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_NPC_Athena_Commando_M_MarauderGrunt.CID_NPC_Athena_Commando_M_MarauderGrunt",
@@ -4375,6 +4494,22 @@
 			"/CRD_DirectionalLauncher/SetupAssets/PID_CP_Device_DLauncherPrimal.PID_CP_Device_DLauncherPrimal",
 			"/CRD_DirectionalLauncher/SetupAssets/PID_CP_Device_DLauncherStandard.PID_CP_Device_DLauncherStandard",
 			"/CRD_EliminationFeed/SetupAssets/PID_CP_Devices_EliminationFeed.PID_CP_Devices_EliminationFeed",
+			"/CRD_Fillable_Container/Audio/SFX_CP_FillableContainer_Cue.SFX_CP_FillableContainer_Cue",
+			"/CRD_Fillable_Container/Audio/SFX_CP_Filliable_Container_Finish_Cue.SFX_CP_Filliable_Container_Finish_Cue",
+			"/CRD_Fillable_Container/SetupAssets/Material/M_ContainerLidMetal.M_ContainerLidMetal",
+			"/CRD_Fillable_Container/SetupAssets/Material/MI_Liquid_Fillable_0.MI_Liquid_Fillable_0",
+			"/CRD_Fillable_Container/SetupAssets/Material/MI_Liquid_Fillable_1.MI_Liquid_Fillable_1",
+			"/CRD_Fillable_Container/SetupAssets/Material/MI_Liquid_Fillable_2.MI_Liquid_Fillable_2",
+			"/CRD_Fillable_Container/SetupAssets/Material/MI_Liquid_Fillable_3.MI_Liquid_Fillable_3",
+			"/CRD_Fillable_Container/SetupAssets/Material/MI_Liquid_Fillable_4.MI_Liquid_Fillable_4",
+			"/CRD_Fillable_Container/SetupAssets/Material/P_Liquid.P_Liquid",
+			"/CRD_Fillable_Container/SetupAssets/Material/Shield_Potion_Mark_II_Glass.Shield_Potion_Mark_II_Glass",
+			"/CRD_Fillable_Container/SetupAssets/Model/SM_GenericContainer_0.SM_GenericContainer_0",
+			"/CRD_Fillable_Container/SetupAssets/Model/SM_GenericContainer_1.SM_GenericContainer_1",
+			"/CRD_Fillable_Container/SetupAssets/Model/SM_GenericContainer_2.SM_GenericContainer_2",
+			"/CRD_Fillable_Container/SetupAssets/Model/SM_GenericContainer_3.SM_GenericContainer_3",
+			"/CRD_Fillable_Container/SetupAssets/Model/SM_GenericContainer_4.SM_GenericContainer_4",
+			"/CRD_Fillable_Container/SetupAssets/PID_CP_Devices_Fillable_Container.PID_CP_Devices_Fillable_Container",
 			"/CRD_GameEnd/SetupAssets/PID_Device_EndGame_V2.PID_Device_EndGame_V2",
 			"/CRD_HUDController/SetupAssets/PID_Device_HUDController_V2.PID_Device_HUDController_V2",
 			"/CRD_InputTrigger/SetupAssets/PID_Device_InputTrigger.PID_Device_InputTrigger",
@@ -10884,6 +11019,7 @@
 			"/Game/Environments/Props/Rocks/Meshes/SM_LavaCliff_A.SM_LavaCliff_A",
 			"/Game/Environments/Props/Rooftops/Materials/PP2/MI_Rooftop_SmallChimney_02_Ambient.MI_Rooftop_SmallChimney_02_Ambient",
 			"/Game/Environments/Props/ShootingTargets/Meshes/SM_Target_Char12.SM_Target_Char12",
+			"/Game/Environments/Props/ShootingTargets/Meshes/SM_Target_TrackCart.SM_Target_TrackCart",
 			"/Game/Environments/Props/Shrubs/Materials/PP2/MI_Shrub_05_Atlas_Ambient.MI_Shrub_05_Atlas_Ambient",
 			"/Game/Environments/Props/Signs/Materials/MI_NomsGrocery_01.MI_NomsGrocery_01",
 			"/Game/Environments/Props/SinkHole/TextureData/TD_Props_Rocks_02.TD_Props_Rocks_02",
@@ -12516,6 +12652,7 @@
 			"/HairStrands/Emitters/StableRodsSystem.StableRodsSystem",
 			"/HairStrands/Emitters/StableSpringsSystem.StableSpringsSystem",
 			"/InterchangeAssets/Functions/MF_Iridescence.MF_Iridescence",
+			"/InterchangeAssets/Functions/MF_IridescenceNoLUT.MF_IridescenceNoLUT",
 			"/InterchangeAssets/Functions/MF_OrenNayerView.MF_OrenNayerView",
 			"/InterchangeAssets/Functions/MF_PhongToMetalRoughness.MF_PhongToMetalRoughness",
 			"/InterchangeAssets/Functions/MF_SchlickApprox.MF_SchlickApprox",
@@ -12626,6 +12763,7 @@
 			"/Irwin/Icons/T-Icon-Fauna-Chicken.T-Icon-Fauna-Chicken",
 			"/Irwin/Icons/T-Icon-Fauna-Raptor.T-Icon-Fauna-Raptor",
 			"/Irwin/Icons/T-Icon-Fauna-Wolf.T-Icon-Fauna-Wolf",
+			"/MetaHumanUEFN/Body/SKEL_MetaHuman_Base.SKEL_MetaHuman_Base",
 			"/MetaHumanUEFN/Common/Mocap/mh_arkit_mapping_pose.mh_arkit_mapping_pose",
 			"/MetaHumanUEFN/Face/Face_Archetype_Skeleton.Face_Archetype_Skeleton",
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_f_med_nrw_RBFSolver_pose.neckCorr_f_med_nrw_RBFSolver_pose",
@@ -12646,6 +12784,7 @@
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_m_tal_nrw_RBFSolver_pose.neckCorr_m_tal_nrw_RBFSolver_pose",
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_m_tal_ovw_RBFSolver_pose.neckCorr_m_tal_ovw_RBFSolver_pose",
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_m_tal_unw_RBFSolver_pose.neckCorr_m_tal_unw_RBFSolver_pose",
+			"/MetaHumanUEFN/Face/SKEL_Face.SKEL_Face",
 			"/MetaHumanUEFN/Female/Medium/NormalWeight/Body/metahuman_base_skel.metahuman_base_skel",
 			"/MetaHumanUEFN/Female/Medium/NormalWeight/Poses/f_med_nrw_calf_l_pose.f_med_nrw_calf_l_pose",
 			"/MetaHumanUEFN/Female/Medium/NormalWeight/Poses/f_med_nrw_calf_r_pose.f_med_nrw_calf_r_pose",
@@ -13671,6 +13810,7 @@
 			"/Niagara/DynamicInputs/Random/V2/RandomVector.RandomVector",
 			"/Niagara/DynamicInputs/Rotation/InvertQuaternion.InvertQuaternion",
 			"/Niagara/DynamicInputs/Rotation/LerpQuaternion.LerpQuaternion",
+			"/Niagara/DynamicInputs/Rotation/MakeQuaternion.MakeQuaternion",
 			"/Niagara/DynamicInputs/Rotation/MultiplyQuaternion.MultiplyQuaternion",
 			"/Niagara/DynamicInputs/Rotation/RandomQuaternion.RandomQuaternion",
 			"/Niagara/DynamicInputs/Scalability/IsPlatformSetActive.IsPlatformSetActive",
@@ -14235,6 +14375,7 @@
 			"/Niagara/Modules/Scalability/NumInstancesCull.NumInstancesCull",
 			"/Niagara/Modules/Scalability/SystemScalability.SystemScalability",
 			"/Niagara/Modules/Solvers/ApplyInitialForces.ApplyInitialForces",
+			"/Niagara/Modules/Solvers/ApplyRotationVector.ApplyRotationVector",
 			"/Niagara/Modules/Solvers/SolveForcesAndVelocity.SolveForcesAndVelocity",
 			"/Niagara/Modules/Solvers/SolveRotationalForcesAndVelocity.SolveRotationalForcesAndVelocity",
 			"/Niagara/Modules/Spawn/Decal/InitialDecalOrientation.InitialDecalOrientation",
@@ -14404,6 +14545,9 @@
 			"/Niagara/VectorFields/VectorFieldParticleEmitter.VectorFieldParticleEmitter",
 			"/Niagara/VectorFields/VectorFieldVisualizationSystem.VectorFieldVisualizationSystem",
 			"/NPCDefault/CharacterDefinitions/CharacterDefinition_Default.CharacterDefinition_Default",
+			"/NPCDefault/CharacterDefinitions/CharacterDefinition_FollowPlayer.CharacterDefinition_FollowPlayer",
+			"/NPCDefault/CharacterDefinitions/CharacterDefinition_Idle.CharacterDefinition_Idle",
+			"/NPCDefault/CharacterDefinitions/CharacterDefinition_RandomMovement.CharacterDefinition_RandomMovement",
 			"/Water/Icons/WaterBodyCustomSprite.WaterBodyCustomSprite",
 			"/Water/Icons/WaterBodyExclusionVolumeSprite.WaterBodyExclusionVolumeSprite",
 			"/Water/Icons/WaterBodyIslandSprite.WaterBodyIslandSprite",
@@ -14456,7 +14600,8 @@
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_OBJ/SC_BS_OBJ_WreckingBall_Whoosh.SC_BS_OBJ_WreckingBall_Whoosh",
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_VO/SC_BS_VO_Elimination.SC_BS_VO_Elimination",
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_VO/SC_BS_VO_Victory.SC_BS_VO_Victory",
-			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_030_Athena_Commando_M_Halloween.CID_030_Athena_Commando_M_Halloween"
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_030_Athena_Commando_M_Halloween.CID_030_Athena_Commando_M_Halloween",
+			"/BRCosmetics/UI/Foundation/Textures/Icons/Heroes/Athena/Soldier/T_Soldier_HID_Creative_Mannequin_M_L.T_Soldier_HID_Creative_Mannequin_M_L"
 		],
 		"VKCreateUGCPartner": [
 			"/BRCosmetics/Athena/Items/Cosmetics/Dances/EID_Bellringer.EID_Bellringer",
@@ -14970,6 +15115,7 @@
 			"/CRD_EliminationFeed/Device_EliminationFeed.Device_EliminationFeed_C",
 			"/CRD_FabricStepModulator/UI/WBP_StepModulator_AdvancedScreen.WBP_StepModulator_AdvancedScreen_C",
 			"/CRD_FabricValueSetter/UI/WBP_ValueSetterBasicScreen.WBP_ValueSetterBasicScreen_C",
+			"/CRD_Fillable_Container/Device_Fillable_Container.Device_Fillable_Container_C",
 			"/CRD_FishingZone/BGA_Athena_FlopperSpawn_World_Creative_V2.BGA_Athena_FlopperSpawn_World_Creative_V2_C",
 			"/CRD_GameEnd/Device_GameEnd.Device_GameEnd_C",
 			"/CRD_GlobalSaveData/Structs/PersistenceData_GlobalSaveData.PersistenceData_GlobalSaveData_C",
@@ -15133,6 +15279,7 @@
 			"/CreativeCoreDevices/Device_Trigger_Parent_V2.Device_Trigger_Parent_V2_C",
 			"/CreativeCoreDevices/Device_Trigger_Perception_V2.Device_Trigger_Perception_V2_C",
 			"/CreativeCoreDevices/Device_Trigger_V2.Device_Trigger_V2_C",
+			"/CreativeCoreDevices/ExperienceSettings/BP_UserOptionComponent_Cosmetic.BP_UserOptionComponent_Cosmetic_C",
 			"/CreativeCoreDevices/ExperienceSettings/TestPlayerDefinitionComponent.TestPlayerDefinitionComponent_C",
 			"/CreativeCoreDevices/HUDMessage/MVVM_UEFN_HUDMessage.MVVM_UEFN_HUDMessage_C",
 			"/CreativeCoreDevices/HUDMessage/Widget_HUDMessage_Default.Widget_HUDMessage_Default_C",
@@ -26906,7 +27053,9 @@
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_ControlRigRigidBody_Template.MetaHuman_ControlRigRigidBody_Template_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_DummyControlRig.MetaHuman_DummyControlRig_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_RigidBody_Template.MetaHuman_RigidBody_Template_C",
+			"/MetaHumanUEFN/Body/ABP_Body_PostProcess.ABP_Body_PostProcess_C",
 			"/MetaHumanUEFN/Common/metahuman_proc_ControlRig.metahuman_proc_ControlRig_C",
+			"/MetaHumanUEFN/Face/ABP_Face_PostProcess.ABP_Face_PostProcess_C",
 			"/MetaHumanUEFN/Face/Face_AnimBP.Face_AnimBP_C",
 			"/MetaHumanUEFN/Face/Face_PostProcess_AnimBP.Face_PostProcess_AnimBP_C",
 			"/MetaHumanUEFN/Face/HeadMovementIK_Proc_CtrlRig.HeadMovementIK_Proc_CtrlRig_C",
@@ -27091,7 +27240,8 @@
 			"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros_C",
 			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C",
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C",
-			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C"
+			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C",
+			"/NPCDefault/Types/CharacterType_Participant.CharacterType_Participant_C"
 		],
 		"VKCreateUGCPartner": [
 			"/CRD_VideoPlayer/Device_VideoPlayer_V3.Device_VideoPlayer_V3_C"

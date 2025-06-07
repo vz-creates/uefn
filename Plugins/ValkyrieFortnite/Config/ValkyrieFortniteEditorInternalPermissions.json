@@ -755,18 +755,6 @@
 				"/Script/Engine.KismetMathLibrary:Xor_Int64Int64",
 				"/Script/Engine.KismetMathLibrary:Xor_IntInt",
 				"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros:IsValid",
-				"/Script/FortniteUI.FortItemDurabilityVM:ShouldShowDurability",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetItemName",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetPreviewImage",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetNumInStack",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetRemainingAmmo",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetLoadedAmmo",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetTotalAmmo",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetRarityColor",
-				"/Script/FortniteUI.HUDItemEntryViewModel:GetRaritySecondaryColor",
-				"/Script/FortniteUI.HUDItemEntryViewModel:IsFocused",
-				"/Script/FortniteUI.HUDItemEntryViewModel:HasItem",
-				"/Script/FortniteUI.HUDItemEntryViewModel:ShouldShowRemainingAmmo"
 			]
 		},
 		"UnrestrictedBlueprintTypes": [
@@ -783,6 +771,10 @@
 			]
 		}
 	},
+	"ValkyrieExperimentalSettings": {
+		"bAllowAccessToExperimentalScriptedTools": true,
+		"bAllowAccessToExperimentalInventorySettings": true
+	},
 	"ValkyrieAudioSettings": {
 		"bEnableLoadingBehaviorForceInline": true
 	},
@@ -796,7 +788,6 @@
 		},
 		"AllowedMVVMConversionClass": {
 			"+": [
-				"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftInputAction"
 			]
 		}
 	},
@@ -1064,8 +1055,6 @@
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance":			{ "Visible": true },
 			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
 			"/Script/FortniteGame.FortGameUserSettings":				{ "Visible": true },
-			"/Script/FortniteUI.FortItemDurabilityVM":					{ "Visible": true },
-			"/Script/FortniteUI.HUDItemEntryViewModel":					{ "Visible": true },
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode":		{  },
 			"/Script/GameplayCameras.OcclusionMaterialCameraNode":		{  },
 			"/Script/GameplayCameras.ArrayCameraNode":					{  },
@@ -1085,7 +1074,6 @@
 			"/Script/ValkyrieCommon.ValkyrieContentWorkerDebugManager": { "Visible": true },
 			"/Script/VerseAssets.PropertyInterface":					{ "Visible": true },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":		{ "Visible": true },
-			"/Script/Engine.InheritableComponentHandler":				{  },
 			"/Script/MovieScene.MovieSceneBindingOverrides":			{  },
 			"/Script/MusicEnvironment.FrameBasedMusicMap":              {  },
 			"/Script/MusicalMode.MovieSceneMusicalClock":               {  },
@@ -1379,11 +1367,11 @@
 			},
 			{
 					"Type": "/Script/DaySequence.DaySequenceModifierComponent",
-				"AllowList": [ "bUseCollection", "DaySequenceCollection", "Mode", "BlendPolicy", "BlendAmount", "Bias", "VolumeShapeComponents", "DayNightCycle", "DayNightCycleTime" ]
+				"AllowList": [ "bUseCollection", "DaySequenceCollections", "Mode", "BlendPolicy", "BlendAmount", "Bias", "VolumeShapeComponents", "DayNightCycle", "DayNightCycleTime" ]
 			},
 			{
 				"Type": "/Script/DaySequence.DaySequenceActor",
-				"AllowList": [ "DaySequenceCollection" ]
+				"AllowList": [ "DaySequenceCollections" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.FortDaySequenceActor",
@@ -1431,6 +1419,10 @@
 			{
 				"Type": "/Script/Engine.BodyInstance",
 				"AllowList": [ "WalkableSlopeOverride", "bOverrideWalkableSlopeOnInstance" ]
+			},
+			{
+				"Type": "/Script/ValkyrieEditor.ValkyrieAutoLocalizationSettings",
+				"AllowList": [ "bAutoBuildLocalization" ]
 			}
 		],
 		"-": [

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-35.20-CL-42911808
+# Generated from build: ++Fortnite+Release-36.00-CL-43214806
 #################################################
 
 AINavigation<public> := module {
@@ -145,27 +145,22 @@ using { /Verse.org/Assets }
 using { /Verse.org/SceneGraph }
 # Module import path: /UnrealEngine.com/BasicShapes
 BasicShapes<public> := module {
-  @experimental
   cone<public> := class<final><public>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
 
-  @experimental
   cube<public> := class<final><public>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
 
-  @experimental
   cylinder<public> := class<final><public>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
 
-  @experimental
   plane<public> := class<final><public>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
 
-  @experimental
   sphere<public> := class<final><public>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
@@ -174,15 +169,12 @@ BasicShapes<public> := module {
 using { /Verse.org/Simulation/Tags }
 # Module import path: /UnrealEngine.com/ComponentTestSuite
 ComponentTestSuite<public> := module {
-  @experimental
   @hide_in_editor
   test_component_key_component_a<native><epic_internal> := class(test_component_key_component_base) {}
 
-  @experimental
   @hide_in_editor
   test_component_key_component_b<native><epic_internal> := class(test_component_key_component_base) {}
 
-  @experimental
   @hide_in_editor
   test_component_key_component_base<native><epic_internal> := class<final_super>(component) {}
 
@@ -223,32 +215,60 @@ ComponentTestSuite<public> := module {
   test_tag_vehicle_car_datsun<native><epic_internal> := class(test_tag_vehicle_car) {}
 }
 
-EditableSubclass<public> := module {
-  using { /Verse.org/Assets }
-  verse_editable_subclass<native><epic_internal> := class(asset) {}
+# Module import path: /UnrealEngine.com/ControlInput
+ControlInput<public> := module {
+  GetPlayerInput<native><epic_internal>(Player: player)<transacts><decides>: player_input
+
+  MakeInputAsset<native><epic_internal>((
+    InputAction: input_action(t),
+    Path: string
+  ) where t: type)<converges>: input_action(t)
+
+  input_events<native><public>(t: type) := class<epic_internal> {
+    ActivationCanceledEvent<native><public>: listenable(tuple(player, t, float)) = external {}
+
+    ActivationTriggeredEvent<native><public>: listenable(tuple(player, t)) = external {}
+
+    DetectionBeginEvent<native><public>: listenable(tuple(player, t)) = external {}
+
+    DetectionEndEvent<native><public>: listenable(tuple(player, float)) = external {}
+
+    DetectionOngoingEvent<native><public>: listenable(tuple(player, t, float)) = external {}
+  }
+
+  player_input<native><epic_internal> := class {
+    AddInputMapping<native><public>(InputMapping: input_mapping): void
+
+    GetInputEvents<native><public>(ActionToBind: input_action(t) where t: type): input_events(t)
+
+    MakeFloatInputEvents<native_callable><epic_internal>(): input_events(float) = external {}
+
+    MakeLogicInputEvents<native_callable><epic_internal>(): input_events(logic) = external {}
+
+    MakeVector2InputEvents<native_callable><epic_internal>(): input_events(vector2) = external {}
+
+    MakeVector3InputEvents<native_callable><epic_internal>(): input_events((/UnrealEngine.com/Temporary/SpatialMath:)vector3) = external {}
+
+    RemoveInputMapping<native><public>(InputMapping: input_mapping): void
+  }
 }
 
 using { /Verse.org/Simulation }
 # Module import path: /UnrealEngine.com/EntityRegistryTestSuite
 EntityRegistryTestSuite<public> := module {
   @hide_in_editor
-  @experimental
   entity_registry_not_used_test_entity<native><epic_internal> := class(entity) {}
 
   @hide_in_editor
-  @experimental
   entity_registry_other_test_component<native><epic_internal> := class<final_super>(component) {}
 
   @hide_in_editor
-  @experimental
   entity_registry_test_component<native><epic_internal> := class<final_super>(component) {}
 
   @hide_in_editor
-  @experimental
   entity_registry_test_entity<native><epic_internal> := class(entity) {}
 
   @hide_in_editor
-  @experimental
   entity_registry_unused_test_component<native><epic_internal> := class<final_super>(component) {}
 }
 
@@ -256,11 +276,9 @@ using { /Verse.org/Temporary/EpicGamesRestricted/Network }
 # Module import path: /UnrealEngine.com/EntityTestSuite
 EntityTestSuite<public> := module {
   @hide_in_editor
-  @experimental
   derived_test_component<native><epic_internal> := class(test_component) {}
 
   @hide_in_editor
-  @experimental
   lambda_test_component<native><epic_internal> := class<final_super>(component) {
     OnAddedToSceneInternal<native><override>(): void
 
@@ -278,7 +296,6 @@ EntityTestSuite<public> := module {
   }
 
   @hide_in_editor
-  @experimental
   lambda_test_component_2<native><epic_internal> := class<final_super>(component) {
     OnAddedToSceneInternal<native><override>(): void
 
@@ -296,15 +313,12 @@ EntityTestSuite<public> := module {
   }
 
   @hide_in_editor
-  @experimental
   second_derived_test_component<native><epic_internal> := class(test_component) {}
 
   @hide_in_editor
-  @experimental
   test_component<native><epic_internal> := class<final_super>(component) {}
 
   @hide_in_editor
-  @experimental
   test_contentscope_events_component<native><epic_internal> := class<final_super>(component) {
     KeyframeReachedEvent<native><public>: listenable(tuple()) = external {}
 
@@ -312,20 +326,17 @@ EntityTestSuite<public> := module {
   }
 
   @hide_in_editor
-  @experimental
   test_contentscope_execution_component<native><epic_internal> := class<final_super>(component) {
     OnBeginSimulation<override>(): void = external {}
   }
 
   @hide_in_editor
-  @experimental
   test_replication_component<native><epic_internal> := class<final_super>(component) {
     @replicated("")
     var<private> TestReplicatedSubObject<native><epic_internal>: ?test_replication_object = external {}
   }
 
   @hide_in_editor
-  @experimental
   test_replication_object<native><epic_internal> := class {}
 }
 
@@ -351,7 +362,7 @@ Itemization<public> := module {
     Inventory<native><public>: inventory_component
   }
 
-  @editable_subclass
+  @editor_type
   @experimental
   basic_inventory_setup_data<native><epic_internal> := class<concrete>(inventory_setup_data) {
     ApplyTo<native><override>(Target: inventory_component)<decides>: inventory_setup_data_result
@@ -438,7 +449,7 @@ Itemization<public> := module {
   using { /Verse.org/Simulation/Tags }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   @experimental
-  failure_reason<native><epic_internal> := class {}
+  failure_reason<native><epic_internal> := class<castable><concrete><reads> {}
 
   @experimental
   inventory_backpack_component<epic_internal> := class(inventory_component) {
@@ -447,22 +458,24 @@ Itemization<public> := module {
 
   @experimental
   inventory_component<native><epic_internal> := class<final_super>(component) {
+    AddInventory<native><final><public>(Inventory: inventory_component)<transacts><decides>: add_inventory_result
+
     AddItem<native><final><public>(Item: entity)<transacts><decides>: add_items_result
 
     AddItemsEvent<native><public>: listenable(add_items_result) = external {}
 
-    AddRule<native><final><public>(Rule: inventory_rule_interface)<decides>: cancelable
+    AddRule<native><final><public>(Rule: inventory_rule_interface)<transacts><decides>: cancelable
 
-    CanAddItem<final><native><public>(Item: entity)<reads>: ?failure_reason
+    CanAddItem<final><native><public>(Item: entity): ?failure_reason
 
-    CanRemoveItem<final><native><public>(Item: entity)<reads>: ?failure_reason
+    CanRemoveItem<final><native><public>(Item: entity): ?failure_reason
 
     @available { MinUploadedAtFNVersion := 2930 }
     FindItems<native><final><public>()<reads>: generator(entity)
 
     GetItemSlot<native><epic_internal>(Item: entity)<reads>: int
 
-    GetItems<native><final><public>()<reads>: []entity
+    GetItems<native><final><public>(): []entity
 
     InventoryAddedEvent<native><epic_internal>: listenable(add_inventory_result) = external {}
 
@@ -475,6 +488,8 @@ Itemization<public> := module {
     OnInitializedInternal<native><override>(): void
 
     OnUninitializingInternal<native><override>(): void
+
+    RemoveInventory<native><final><public>(Inventory: inventory_component)<transacts><decides>: remove_inventory_result
 
     RemoveItem<native><final><public>(Item: entity)<transacts><decides>: remove_items_result
 
@@ -523,6 +538,9 @@ Itemization<public> := module {
   }
 
   @experimental
+  inventory_full_failure_reason<epic_internal> := class<final><reads>(failure_reason) {}
+
+  @experimental
   inventory_properties<native><epic_internal> := class<epic_internal>(inventory_properties_base) {
     @editable
     InventoryClass<native><public>: subtype(inventory_component)
@@ -561,17 +579,17 @@ Itemization<public> := module {
     CanAddItem<native_callable><public>(
       InventoryComponent: inventory_component,
       Item: entity
-    )<reads>: ?failure_reason = external {}
+    ): ?failure_reason = external {}
 
     CanMergeItem<native_callable><public>(
       InventoryComponent: inventory_component,
       Item: entity
-    )<reads>: ?failure_reason = external {}
+    ): ?failure_reason = external {}
 
     CanRemoveItem<native_callable><public>(
       InventoryComponent: inventory_component,
       Item: entity
-    )<reads>: ?failure_reason = external {}
+    ): ?failure_reason = external {}
 
     OnRuleAdded<native_callable><public>(InventoryComponent: inventory_component): void = external {}
   }
@@ -663,11 +681,15 @@ Itemization<public> := module {
 
     CanMergeIntoInternal<final><native><epic_internal>(TargetItem: entity): tuple(logic, logic)
 
+    CloneItem<final><native><epic_internal>()<transacts>: entity
+
     Drop<native><public>()<transacts><decides>: void
 
     EquippedChangedEvent<native><public>: listenable(item_equipped_change) = external {}
 
-    GetParentInventory<native><public>()<decides><converges>: inventory_component
+    GetParentInventory<native><final><public>()<reads><decides>: inventory_component
+
+    InventoryChangeEvent<native><public>: listenable(item_inventory_change) = external {}
 
     IsItemEquipped<native><final><public>()<decides>: void
 
@@ -676,7 +698,7 @@ Itemization<public> := module {
     MergeInto<final><native_callable><public>(
       TargetItem: entity,
       ?TargetAmount: ?int = external {}
-    )<decides>: void = external {}
+    )<transacts><decides>: void = external {}
 
     MergeIntoInternal<final><native><epic_internal>(TargetItem: entity, TargetAmount: int)<transacts><decides>: int
 
@@ -687,11 +709,13 @@ Itemization<public> := module {
 
     PickUp<native><public>(Inventory: inventory_component)<transacts><decides>: void
 
-    SetMaxStackSize<final><native><public>(NewMaxStackSize: int, ?ClampStackSize: logic = external {}): void
+    SetMaxStackSize<final><native><public>(NewMaxStackSize: int, ?ClampStackSize: logic = external {})<transacts>: void
 
-    SetStackSize<final><native><public>(NewStackSize: int): void
+    SetStackSize<final><native><public>(NewStackSize: int)<transacts>: void
 
     StackSizeChangedEvent<native><public>: listenable(item_stack_size_change) = external {}
+
+    Take<final><native><epic_internal>(Amount: int)<transacts><decides>: entity
 
     @replicated("")
     var<private> ItemDefinition<native><epic_internal>: ?item_definition_base = external {}
@@ -737,6 +761,23 @@ Itemization<public> := module {
   }
 
   @experimental
+  item_inventory_change<native><epic_internal> := class<epic_internal> {
+    CurrentInventory<native><public>: ?inventory_component
+
+    ItemComponent<native><public>: item_component
+
+    PreviousInventory<native><public>: ?inventory_component
+  }
+
+  @experimental
+  item_limit_inventory_rule<native><epic_internal> := class(inventory_rule_interface) {
+    CanAddItem<override>(InventoryComponent: inventory_component, Item: entity): ?failure_reason = external {}
+
+    @editable
+    ItemLimit<native><public>: int = external {}
+  }
+
+  @experimental
   item_max_stack_size_change<native><epic_internal> := class<epic_internal> {
     CurrentMaxStackSize<native><public>: ?int
 
@@ -749,7 +790,7 @@ Itemization<public> := module {
   item_mergeable_interface<public> := interface<unique> {
     CanMergeInto<public>(TargetItem: entity)<reads><decides>: void = external {}
 
-    OnMergeInto<public>(TargetItem: entity, MergeAmount: int): void = external {}
+    OnMergeInto<public>(TargetItem: entity, MergeAmount: int)<transacts>: void = external {}
   }
 
   @experimental
@@ -863,7 +904,7 @@ Itemization<public> := module {
   # Loot Data
   loot<native><epic_internal> := struct<concrete> {
     @editable
-    Items<native>: []entity = external {}
+    Items<native>: []subtype(entity) = external {}
 
     @editable
     LootPools<native>: []loot_pool = external {}
@@ -887,7 +928,7 @@ Itemization<public> := module {
     IsEnabled<native><override>()<transacts><decides>: void
 
     @editable
-    Items<native><public>: []entity = external {}
+    Items<native><public>: []subtype(entity) = external {}
 
     @editable
     LootPools<native><public>: []loot_pool = external {}
@@ -936,7 +977,7 @@ Itemization<public> := module {
   loot_weight_calculator_info<native><epic_internal> := struct {
     Instigators<native>: []agent = external {}
 
-    Items<native>: []entity = external {}
+    Items<native>: []subtype(entity) = external {}
 
     LootPools<native>: []loot_pool = external {}
 
@@ -987,8 +1028,45 @@ JSON<public> := module {
   }
 }
 
+using { /UnrealEngine.com/Temporary/UI }
+# Module import path: /UnrealEngine.com/SceneGraph
+(/UnrealEngine.com:)SceneGraph<public> := module {
+  # Module import path: /UnrealEngine.com/SceneGraph/UI
+  (/UnrealEngine.com/SceneGraph:)UI<public> := module {
+    @experimental
+    umg_frame_component<native><epic_internal> := class<abstract>(frame_component) {
+      Asset<native><epic_internal>: umg_widget_class_asset
+
+      GetNamedSlotOptional_<native><epic_internal>(NamedSlotName: []char)<transacts>: ?widget
+
+      GetNamedSlot_<native><epic_internal>(NamedSlotName: []char)<transacts>: widget
+
+      GetViewmodelOptional_<native><epic_internal>(viewmodel_type: type, ViewmodelName: []char)<transacts>: viewmodel_type
+
+      GetViewmodel_<native><epic_internal>(viewmodel_type: type, ViewmodelName: []char)<transacts>: viewmodel_type
+
+      SetNamedSlotOptional_<native><epic_internal>(NamedSlotName: []char, NamedSlotInstance: ?widget)<transacts>: void
+
+      SetNamedSlot_<native><epic_internal>(NamedSlotName: []char, NamedSlotInstance: widget)<transacts>: void
+
+      SetViewmodelOptional_<native><epic_internal>(
+        viewmodel_type: type,
+        ViewmodelName: []char,
+        ViewmodelInstance: viewmodel_type
+      )<transacts>: void
+
+      SetViewmodel_<native><epic_internal>(
+        viewmodel_type: type,
+        ViewmodelName: []char,
+        ViewmodelInstance: viewmodel_type
+      )<transacts>: void
+    }
+  }
+}
+
 Temporary<public> := module {
   using { /UnrealEngine.com/Temporary/Diagnostics }
+  using { /Verse.org/SpatialMath }
   # Module import path: /UnrealEngine.com/Temporary/Curves
   Curves<public> := module {
     editable_curve<native><public> := class<final><concrete> {
@@ -1011,9 +1089,9 @@ Temporary<public> := module {
       ClearChannel<native><public>()<transacts>: void
 
       # Draws an arrow pointing from Start to End locations, and using the provided draw parameters.
-      DrawArrow<native><public>(
-        Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-        End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      DrawArrow<native><epic_internal>(
+        Start: (/Verse.org/SpatialMath:)vector3,
+        End: (/Verse.org/SpatialMath:)vector3,
         ?ArrowSize: float = external {},
         ?Color: color = external {},
         ?Thickness: float = external {},
@@ -1021,8 +1099,30 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
+      # Draws an arrow pointing from Start to End locations, and using the provided draw parameters.
+      DrawArrow<public>(
+        Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        ?ArrowSize: float = external {},
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void = external {}
+
       # Draws a box at the named location, and using the provided draw parameters
-      DrawBox<native><public>(
+      DrawBox<native><epic_internal>(
+        Center: (/Verse.org/SpatialMath:)vector3,
+        Rotation: (/Verse.org/SpatialMath:)rotation,
+        ?Extent: (/Verse.org/SpatialMath:)vector3 = external {},
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void
+
+      # Draws a box at the named location, and using the provided draw parameters
+      DrawBox<public>(
         Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
         ?Extent: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {},
@@ -1030,12 +1130,12 @@ Temporary<public> := module {
         ?Thickness: float = external {},
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
         ?Duration: float = external {}
-      )<transacts>: void
+      )<transacts>: void = external {}
 
       # Draws a capsule at the named location, and using the provided draw parameters.
-      DrawCapsule<native><public>(
-        Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-        Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+      DrawCapsule<native><epic_internal>(
+        Center: (/Verse.org/SpatialMath:)vector3,
+        Rotation: (/Verse.org/SpatialMath:)rotation,
         ?Height: float = external {},
         ?Radius: float = external {},
         ?Color: color = external {},
@@ -1044,10 +1144,22 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
+      # Draws a capsule at the named location, and using the provided draw parameters.
+      DrawCapsule<public>(
+        Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+        ?Height: float = external {},
+        ?Radius: float = external {},
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void = external {}
+
       # Draws a cone at the named location, and using the provided draw parameters.
-      DrawCone<native><public>(
-        Origin: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-        Direction: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      DrawCone<native><epic_internal>(
+        Origin: (/Verse.org/SpatialMath:)vector3,
+        Direction: (/Verse.org/SpatialMath:)vector3,
         ?Height: float = external {},
         ?NumSides: int = external {},
         ?AngleWidthRadians: float = external {},
@@ -1058,12 +1170,48 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
+      # Draws a cone at the named location, and using the provided draw parameters.
+      DrawCone<public>(
+        Origin: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        Direction: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        ?Height: float = external {},
+        ?NumSides: int = external {},
+        ?AngleWidthRadians: float = external {},
+        ?AngleHeightRadians: float = external {},
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void = external {}
+
       # Draws a cylinder at the named location, and using the provided draw parameters.
-      DrawCylinder<native><public>(
+      DrawCylinder<native><epic_internal>(
+        Start: (/Verse.org/SpatialMath:)vector3,
+        End: (/Verse.org/SpatialMath:)vector3,
+        ?NumSegments: int = external {},
+        ?Radius: float = external {},
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void
+
+      # Draws a cylinder at the named location, and using the provided draw parameters.
+      DrawCylinder<public>(
         Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         ?NumSegments: int = external {},
         ?Radius: float = external {},
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void = external {}
+
+      # Draws a line from Start to End locations, and using the provided draw parameters.
+      DrawLine<native><epic_internal>(
+        Start: (/Verse.org/SpatialMath:)vector3,
+        End: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
         ?Thickness: float = external {},
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
@@ -1071,9 +1219,18 @@ Temporary<public> := module {
       )<transacts>: void
 
       # Draws a line from Start to End locations, and using the provided draw parameters.
-      DrawLine<native><public>(
+      DrawLine<public>(
         Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        ?Color: color = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void = external {}
+
+      # Draws a point at the named location, and using the provided draw parameters.
+      DrawPoint<native><epic_internal>(
+        Position: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
         ?Thickness: float = external {},
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
@@ -1081,17 +1238,17 @@ Temporary<public> := module {
       )<transacts>: void
 
       # Draws a point at the named location, and using the provided draw parameters.
-      DrawPoint<native><public>(
+      DrawPoint<public>(
         Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         ?Color: color = external {},
         ?Thickness: float = external {},
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
         ?Duration: float = external {}
-      )<transacts>: void
+      )<transacts>: void = external {}
 
       # Draws a sphere at the named location, and using the provided draw parameters.
-      DrawSphere<native><public>(
-        Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+      DrawSphere<native><epic_internal>(
+        Center: (/Verse.org/SpatialMath:)vector3,
         ?Radius: float = external {},
         ?Color: color = external {},
         ?NumSegments: int = external {},
@@ -1099,6 +1256,17 @@ Temporary<public> := module {
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
         ?Duration: float = external {}
       )<transacts>: void
+
+      # Draws a sphere at the named location, and using the provided draw parameters.
+      DrawSphere<public>(
+        Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        ?Radius: float = external {},
+        ?Color: color = external {},
+        ?NumSegments: int = external {},
+        ?Thickness: float = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {}
+      )<transacts>: void = external {}
 
       # Hide Debug Draw for the channel for all users.
       HideChannel<native><public>()<transacts>: void
@@ -1136,7 +1304,7 @@ Temporary<public> := module {
       # Print message using the given log level
       (/UnrealEngine.com/Temporary/Diagnostics/log:)Print<public>(Message: string, ?Level: log_level = external {})<computes>: void = external {}
 
-      # Prints current script call stack using the give log level
+      # Prints the current script call stack using the given log level
       PrintCallStack<native><public>(?Level: log_level = external {})<computes>: void
     }
 
@@ -1158,32 +1326,22 @@ Temporary<public> := module {
   }
 
   # Stably sort `Array` using `Less` where `Less` succeeding indicates `Left` should precede `Right`
-  SortBy<native><public>(Array: []t, Less: type { _(: t, : t)<computes><decides>: void } where t: type)<computes>: []t
+  SortBy<native><public>((Array: []t, Less: type { _(: t, : t)<computes><decides>: void }) where t: type)<computes>: []t
 
   using { /Verse.org/Native }
-  using { /Verse.org/SpatialMath }
   # Module import path: /UnrealEngine.com/Temporary/SpatialMath
   (/UnrealEngine.com/Temporary:)SpatialMath<public> := module {
-    # Makes a `rotation` by applying `PitchUpRadians` of right-handed rotation around the local +Y axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)ApplyPitch<native><public>(PitchUpRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
-
-    # Makes a `rotation` by applying `RollClockwiseRadians` of right-handed rotation around the local +X axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)ApplyRoll<native><public>(RollClockwiseRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
-
-    # Makes a `rotation` by applying `YawRightRadians` of left-handed rotation around the local +Z axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)ApplyYaw<native><public>(YawRightRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
-
-    # Makes a `rotation` by composing `AdditionalRotation` to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)RotateBy<native><public>(AdditionalRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
-
-    # Makes a `rotation` by composing the inverse of `RotationToRemove` from `InitialRotation`. such that InitialRotation = RotateBy(UnrotateBy(InitialRotation, RotationToRemove), RotationToRemove). This is equivalent to RotateBy(InitialRotation, InvertRotation(RotationToRemove))
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)UnrotateBy<native><public>(RotationToRemove: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
-
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Y axis to `InitialRotation`.
     (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyLocalRotationY<public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Z axis to `InitialRotation`.
     (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyLocalRotationZ<public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
+
+    # Makes a `rotation` by applying `PitchUpRadians` of right-handed rotation around the local +Y axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyPitch<native><public>(PitchUpRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+
+    # Makes a `rotation` by applying `RollClockwiseRadians` of right-handed rotation around the local +X axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyRoll<native><public>(RollClockwiseRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +X axis to `InitialRotation`.
     (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationX<native><public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
@@ -1194,24 +1352,18 @@ Temporary<public> := module {
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +Z axis to `InitialRotation`.
     (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationZ<native><public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Returns the radians of `rotation` around the axis of `rotation`. See also `GetAxis`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetAngle<native><public>()<reads>: float
+    # Makes a `rotation` by applying `YawRightRadians` of left-handed rotation around the local +Z axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyYaw<native><public>(YawRightRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+
+    # Makes a `rotation` by composing `AdditionalRotation` to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).RotateBy<native><public>(AdditionalRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+
+    # Makes a `rotation` by composing the inverse of `RotationToRemove` from `InitialRotation`. such that InitialRotation = RotateBy(UnrotateBy(InitialRotation, RotationToRemove), RotationToRemove). This is equivalent to RotateBy(InitialRotation, InvertRotation(RotationToRemove))
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).UnrotateBy<native><public>(RotationToRemove: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     # Makes a `vector3` from the axis of `rotation`.
     # If `rotation` is nearly identity, this will return the +X axis. See also `GetAngle`.
     (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetAxis<native><public>()<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
-
-    # Makes a unit `vector3` pointing in the local space *forward* direction in world space coordinates.
-    # This is equivalent to: `RotateVector(Rotation, vector3{X:=1.0, Y:=0.0, Z:=0.0})`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetLocalForward<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
-
-    # Makes a unit `vector3` pointing in the the local space *right* direction in world space coordinates.
-    # This is equivalent to: `RotateVector(Rotation, vector3{X:=0.0, Y:=1.0, Z:=0.0})`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetLocalRight<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
-
-    # Makes a unit `vector3` pointing in the local space *up* direction in world space coordinates.
-    # This is equivalent to: `RotateVector(Rotation, vector3{X:=0.0, Y:=0.0, Z:=1.0})`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetLocalUp<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes an `[]float` with three elements:
     #  * *yaw* degrees of `rotation`
@@ -1226,11 +1378,26 @@ Temporary<public> := module {
     # Returns `Rotation` if it does not contain `NaN`, `Inf` or `-Inf`.
     (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)IsFinite<native><public>()<decides><converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
+    # Returns the radians of `rotation` around the axis of `rotation`. See also `GetAxis`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetAngle<native><public>()<reads>: float
+
+    # Makes a unit `vector3` pointing in the local space *forward* direction in world space coordinates.
+    # This is equivalent to: `RotateVector(Rotation, vector3{X:=1.0, Y:=0.0, Z:=0.0})`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetLocalForward<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+
+    # Makes a unit `vector3` pointing in the the local space *right* direction in world space coordinates.
+    # This is equivalent to: `RotateVector(Rotation, vector3{X:=0.0, Y:=1.0, Z:=0.0})`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetLocalRight<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+
+    # Makes a unit `vector3` pointing in the local space *up* direction in world space coordinates.
+    # This is equivalent to: `RotateVector(Rotation, vector3{X:=0.0, Y:=0.0, Z:=1.0})`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetLocalUp<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+
     # Makes a `vector3` by applying `Rotation` to `Vector`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)RotateVector<native><public>(Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).RotateVector<native><public>(Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     # Makes a `vector3` by applying the inverse of `Rotation` to `Vector`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)UnrotateVector<native><public>(Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).UnrotateVector<native><public>(Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     # Succeeds when each component of `V` is within `AbsoluteTolerance` of `0.0`.
     (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostZero<public>(AbsoluteTolerance: float)<computes><decides>: void = external {}
@@ -1273,13 +1440,13 @@ Temporary<public> := module {
     (V: vector2).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<reads><decides>: vector2 = external {}
 
     # Returns the 'smallest angular distance' between `Rotation1` and `Rotation2` in radians.
-    (/UnrealEngine.com/Temporary/SpatialMath:)AngularDistance<native><public>(
+    AngularDistance<native><public>(
       Rotation1: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       Rotation2: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<reads>: float
 
     # Returns the cross product of `V1` and `V2`.
-    CrossProduct<public>(
+    (/UnrealEngine.com/Temporary/SpatialMath:)CrossProduct<public>(
       V1: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       V2: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
@@ -1341,34 +1508,36 @@ Temporary<public> := module {
     # Fails if any component of `V1` does not equal the corresponding component of `V2`.
     Equals<public>(V1: vector2i, V2: vector2i)<computes><decides>: vector2i = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 3400 }
     # Util function for converting a `rotation` from /UnrealEngine.com/Temporary/SpatialMath to a `rotation` from /Verse.org/SpatialMath.
     FromRotation<public>(InRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<reads>: (/Verse.org/SpatialMath:)rotation = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 3400 }
     # Util function for converting a `rotation` from /Verse.org/SpatialMath to a `rotation` from /UnrealEngine.com/Temporary/SpatialMath.
     FromRotation<public>(InRotation: (/Verse.org/SpatialMath:)rotation)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
-    @experimental
+    @available { MinUploadedAtFNVersion := 3600 }
+    # Util function for converting a scalar `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
+    FromScalarVector3<public>(InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @available { MinUploadedAtFNVersion := 3600 }
+    # Util function for converting a scalar `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
+    FromScalarVector3<public>(InVector3: (/Verse.org/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+
     @available { MinUploadedAtFNVersion := 3400 }
     # Util function for converting a `transform` from /UnrealEngine.com/Temporary/SpatialMath to a `transform` from /Verse.org/SpatialMath.
     FromTransform<public>(InTransform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<reads>: (/Verse.org/SpatialMath:)transform = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 3400 }
     # Util function for converting a `transform` from /Verse.org/SpatialMath to a `transform` from /UnrealEngine.com/Temporary/SpatialMath.
     FromTransform<public>(InTransform: (/Verse.org/SpatialMath:)transform)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
+    # Util function for converting a translation/position `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
     FromVector3<public>(InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
+    # Util function for converting a translation/position `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
     FromVector3<public>(InVector3: (/Verse.org/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes the identity `rotation`.
@@ -1398,13 +1567,13 @@ Temporary<public> := module {
 
     # Makes a new `rotation` from the component wise subtraction of the Euler angle components in `RotationA` by
     # the Euler angle components in `RotationB` and ensures the returned value is normalized.
-    (/UnrealEngine.com/Temporary/SpatialMath:)MakeComponentWiseDeltaRotation<native><public>(
+    MakeComponentWiseDeltaRotation<native><public>(
       RotationA: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       RotationB: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     # Makes a `rotation` from `Axis` and `AngleRadians` using a left-handed sign convention (e.g. a positive rotation around +Z takes +X to +Y). If `Axis.IsAlmostZero[]`, make the identity rotation.
-    (/UnrealEngine.com/Temporary/SpatialMath:)MakeRotation<native><public>(
+    MakeRotation<native><public>(
       Axis: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       AngleRadians: float
     )<reads><converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
@@ -1487,13 +1656,13 @@ Temporary<public> := module {
     ToVector2i<public>(V: vector2)<reads><decides>: vector2i = external {}
 
     # Makes a `vector3` by applying `InTransform` to `InVector`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)TransformVector<public>(
+    TransformVector<public>(
       InTransform: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
       InVector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector3` by applying `InTransform` to `InVector` without applying `InTransform.Scale`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)TransformVectorNoScale<public>(
+    TransformVectorNoScale<public>(
       InTransform: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
       InVector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
@@ -2433,6 +2602,11 @@ Tests<public> := module {
       PrintEpicAPIFunctionLog<native><public>(): void
     }
   }
+}
+
+VerseTypeEditor<public> := module {
+  using { /Verse.org/Assets }
+  verse_type_editor_asset<native><epic_internal> := class(asset) {}
 }
 
 WebAPI<public> := module {

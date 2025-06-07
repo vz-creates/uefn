@@ -6,6 +6,11 @@
 			"FriendlyName": "FortCreativeObject",
 			"Version": 2
 		},
+		"04E744884BAC8717BBB1869439F8F3CE":
+		{
+			"FriendlyName": "PCGExportSelectedAttributes",
+			"Version": 0
+		},
 		"0925477B763D40019D91D6730B75B411":
 		{
 			"FriendlyName": "CommonUIVer",
@@ -84,7 +89,7 @@
 		"23D9FD274F6A0FDFEA0554807D4B3AB0":
 		{
 			"FriendlyName": "Dev-MLDeformer",
-			"Version": 2
+			"Version": 3
 		},
 		"24BB7AF356464F831F2F2DC249AD96FF":
 		{
@@ -214,7 +219,7 @@
 		"601D1886AC644F84AA16D3DE0DEAC7D6":
 		{
 			"FriendlyName": "FortniteMain",
-			"Version": 198
+			"Version": 207
 		},
 		"60C4F0DE8B264C34AA9372015DFF09CC":
 		{
@@ -229,7 +234,7 @@
 		"62915CA31C8E4BF7A30E12C7C8219DF7":
 		{
 			"FriendlyName": "EngineNetworkVersion",
-			"Version": 41
+			"Version": 42
 		},
 		"6304A3E700594F598CFC21BD7721FD4E":
 		{
@@ -279,7 +284,7 @@
 		"717F9EE7E9B0493A88B391321B388107":
 		{
 			"FriendlyName": "AssetRegistry",
-			"Version": 20
+			"Version": 21
 		},
 		"76A52329092345B598AED841CF2F6AD8":
 		{
@@ -354,7 +359,7 @@
 		"93EDE1AA10CA73754DF98A2849B157A0":
 		{
 			"FriendlyName": "Dev-Optimus",
-			"Version": 13
+			"Version": 14
 		},
 		"9513202EEBA1B279F17FE5BAAB90C3F2":
 		{
@@ -509,7 +514,7 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 84
+			"Version": 89
 		},
 		"C2A15278BFE74AFE6C1790FF531DF755":
 		{
@@ -549,7 +554,7 @@
 		"D89B5E4224BD4D468412ACA8DF641779":
 		{
 			"FriendlyName": "UE5-Release",
-			"Version": 51
+			"Version": 56
 		},
 		"DB16D0C2F1F244C5A2B52DEB3E9B9C9A":
 		{
@@ -559,7 +564,7 @@
 		"DC49959B53C04DE79156EA885E7C5D39":
 		{
 			"FriendlyName": "Dev-RigVM",
-			"Version": 16
+			"Version": 18
 		},
 		"DD09A19C88FE4EC2F7D9F60BC547C8BF":
 		{
@@ -599,7 +604,7 @@
 		"E68A5C1A42C3CA0DB01441B228C1F2DD":
 		{
 			"FriendlyName": "Dev-PhysicsControl",
-			"Version": 13
+			"Version": 20
 		},
 		"E70863686B234C5884391B7016265E91":
 		{
@@ -624,7 +629,7 @@
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
 			"FriendlyName": "Dev-IKRig",
-			"Version": 5
+			"Version": 6
 		},
 		"F94941FB19B64F5C851315EF0BF61F81":
 		{
@@ -639,7 +644,7 @@
 		"FCF57AFA50764283B9A9E658FFA02D32":
 		{
 			"FriendlyName": "NiagaraVer",
-			"Version": 91
+			"Version": 92
 		}
 	},
 	"ExtensionAllowList": [
@@ -930,6 +935,7 @@
 			"/Script/Engine.HLODBuilderSettings",
 			"/Script/Engine.HLODInstancedStaticMeshComponent",
 			"/Script/Engine.HLODLayer",
+			"/Script/Engine.InheritableComponentHandler",
 			"/Script/Engine.InstancedStaticMeshComponent",
 			"/Script/Engine.InterpToMovementComponent",
 			"/Script/Engine.Level",
@@ -1322,6 +1328,7 @@
 			"/Script/FortniteGame.BuildingActor",
 			"/Script/FortniteGame.BuildingAutoNav",
 			"/Script/FortniteGame.BuildingContainer",
+			"/Script/FortniteGame.BuildingContainerEditorComponent",
 			"/Script/FortniteGame.BuildingCorner",
 			"/Script/FortniteGame.BuildingDeco",
 			"/Script/FortniteGame.BuildingFloor",
@@ -1349,6 +1356,7 @@
 			"/Script/FortniteGame.CreativeProxyManagerComponent",
 			"/Script/FortniteGame.CreativeQuestComponent",
 			"/Script/FortniteGame.CreativeRegisteredPlayersManagerComponent",
+			"/Script/FortniteGame.CreativeVersionComponent",
 			"/Script/FortniteGame.FortActorComponent_Affiliation",
 			"/Script/FortniteGame.FortActorMetadataComponent",
 			"/Script/FortniteGame.FortActorTemplatesComponent",
@@ -1439,18 +1447,26 @@
 			"/Script/FortniteGame.LevelSaveRecordCollection",
 			"/Script/FortniteGame.MinimapHiddenComponent",
 			"/Script/FortniteGame.PlayStopPauseInterface",
+			"/Script/FortniteGame.VkConversationNode_Anim",
 			"/Script/FortniteGame.VkConversationNode_Choice",
+			"/Script/FortniteGame.VkConversationNode_Color",
 			"/Script/FortniteGame.VkConversationNode_DefaultEntryPoint",
 			"/Script/FortniteGame.VkConversationNode_Event",
+			"/Script/FortniteGame.VkConversationNode_Hide",
+			"/Script/FortniteGame.VkConversationNode_Material",
 			"/Script/FortniteGame.VkConversationNode_Random",
 			"/Script/FortniteGame.VkConversationNode_Repeat",
 			"/Script/FortniteGame.VkConversationNode_Restart",
 			"/Script/FortniteGame.VkConversationNode_Speech",
+			"/Script/FortniteGame.VkConversationNode_TextCrawl",
+			"/Script/FortniteGame.VkConversationNode_Title",
 			"/Script/FortniteGame.WaterVolume_Athena",
 			"/Script/FortniteUI.FortCTAButton",
+			"/Script/FortniteUI.FortItemDurabilityVM",
 			"/Script/FortniteUI.HUDEquippedItemViewModel",
 			"/Script/FortniteUI.HUDPlayerInfoListViewmodel",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel",
+			"/Script/FortniteUI.HUDQuickbarSlotViewModel",
 			"/Script/FortNPCCharacterMovieSceneBindings.FortNPCCharacterMovieSceneReplaceableBinding",
 			"/Script/FortNPCCharacterMovieSceneBindings.FortNPCCharacterMovieSceneSpawnableBinding",
 			"/Script/GameplayAbilities.AbilitySystemComponent",
@@ -2175,7 +2191,6 @@
 			"/Script/Engine.AnimSequenceBase",
 			"/Script/Engine.BlendSpace",
 			"/Script/Engine.EdGraphNode",
-			"/Script/Engine.InheritableComponentHandler",
 			"/Script/Engine.KismetArrayLibrary",
 			"/Script/Engine.KismetMathLibrary",
 			"/Script/Engine.KismetSystemLibrary",
@@ -2193,8 +2208,6 @@
 			"/Script/FortniteGame.FortInputMappingContext",
 			"/Script/FortniteGame.FortPlayerMappableKeySettings",
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance",
-			"/Script/FortniteUI.FortItemDurabilityVM",
-			"/Script/FortniteUI.HUDItemEntryViewModel",
 			"/Script/GameplayCameras.ArrayCameraNode",
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode",
 			"/Script/GameplayCameras.BaseFramingCameraNode",
@@ -2252,6 +2265,7 @@
 			"/Script/AnimationCore.EulerTransform",
 			"/Script/AnimationCore.FilterOptionPerAxis",
 			"/Script/AnimationCore.TransformFilter",
+			"/Script/ChaosNiagara.ChaosDestructionEvent",
 			"/Script/ControlRig.CachedRigElement",
 			"/Script/ControlRig.ConstraintParent",
 			"/Script/ControlRig.ControlRigComponentMappedElement",
@@ -2378,6 +2392,7 @@
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEvent",
 			"/Script/Niagara.MeshTriCoordinate",
 			"/Script/Niagara.NiagaraBool",
+			"/Script/Niagara.NiagaraCollisionEventPayload",
 			"/Script/Niagara.NiagaraFloat",
 			"/Script/Niagara.NiagaraHalf",
 			"/Script/Niagara.NiagaraHalfVector2",
@@ -11398,6 +11413,7 @@
 			"/HairStrands/Emitters/StableRodsSystem.StableRodsSystem",
 			"/HairStrands/Emitters/StableSpringsSystem.StableSpringsSystem",
 			"/InterchangeAssets/Functions/MF_Iridescence.MF_Iridescence",
+			"/InterchangeAssets/Functions/MF_IridescenceNoLUT.MF_IridescenceNoLUT",
 			"/InterchangeAssets/Functions/MF_OrenNayerView.MF_OrenNayerView",
 			"/InterchangeAssets/Functions/MF_PhongToMetalRoughness.MF_PhongToMetalRoughness",
 			"/InterchangeAssets/Functions/MF_SchlickApprox.MF_SchlickApprox",
@@ -11504,6 +11520,7 @@
 			"/InterchangeAssets/gltf/Textures/T_White_srgb.T_White_srgb",
 			"/InterchangeAssets/Utilities/New_LUT.New_LUT",
 			"/InterchangeAssets/Utilities/T_Bayer64_Grayscale_64px.T_Bayer64_Grayscale_64px",
+			"/MetaHumanUEFN/Body/SKEL_MetaHuman_Base.SKEL_MetaHuman_Base",
 			"/MetaHumanUEFN/Common/Mocap/mh_arkit_mapping_pose.mh_arkit_mapping_pose",
 			"/MetaHumanUEFN/Face/Face_Archetype_Skeleton.Face_Archetype_Skeleton",
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_f_med_nrw_RBFSolver_pose.neckCorr_f_med_nrw_RBFSolver_pose",
@@ -11524,6 +11541,7 @@
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_m_tal_nrw_RBFSolver_pose.neckCorr_m_tal_nrw_RBFSolver_pose",
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_m_tal_ovw_RBFSolver_pose.neckCorr_m_tal_ovw_RBFSolver_pose",
 			"/MetaHumanUEFN/Face/neckPoses/neckCorr_m_tal_unw_RBFSolver_pose.neckCorr_m_tal_unw_RBFSolver_pose",
+			"/MetaHumanUEFN/Face/SKEL_Face.SKEL_Face",
 			"/MetaHumanUEFN/Female/Medium/NormalWeight/Body/metahuman_base_skel.metahuman_base_skel",
 			"/MetaHumanUEFN/Female/Medium/NormalWeight/Poses/f_med_nrw_calf_l_pose.f_med_nrw_calf_l_pose",
 			"/MetaHumanUEFN/Female/Medium/NormalWeight/Poses/f_med_nrw_calf_r_pose.f_med_nrw_calf_r_pose",
@@ -12550,6 +12568,7 @@
 			"/Niagara/DynamicInputs/Random/V2/RandomVector.RandomVector",
 			"/Niagara/DynamicInputs/Rotation/InvertQuaternion.InvertQuaternion",
 			"/Niagara/DynamicInputs/Rotation/LerpQuaternion.LerpQuaternion",
+			"/Niagara/DynamicInputs/Rotation/MakeQuaternion.MakeQuaternion",
 			"/Niagara/DynamicInputs/Rotation/MultiplyQuaternion.MultiplyQuaternion",
 			"/Niagara/DynamicInputs/Rotation/RandomQuaternion.RandomQuaternion",
 			"/Niagara/DynamicInputs/Scalability/IsPlatformSetActive.IsPlatformSetActive",
@@ -13114,6 +13133,7 @@
 			"/Niagara/Modules/Scalability/NumInstancesCull.NumInstancesCull",
 			"/Niagara/Modules/Scalability/SystemScalability.SystemScalability",
 			"/Niagara/Modules/Solvers/ApplyInitialForces.ApplyInitialForces",
+			"/Niagara/Modules/Solvers/ApplyRotationVector.ApplyRotationVector",
 			"/Niagara/Modules/Solvers/SolveForcesAndVelocity.SolveForcesAndVelocity",
 			"/Niagara/Modules/Solvers/SolveRotationalForcesAndVelocity.SolveRotationalForcesAndVelocity",
 			"/Niagara/Modules/Spawn/Decal/InitialDecalOrientation.InitialDecalOrientation",
@@ -13405,6 +13425,7 @@
 			"/CreativeCoreDevices/Device_ExperienceSettings_V2_UEFN.Device_ExperienceSettings_V2_UEFN_C",
 			"/CreativeCoreDevices/Device_ItemSpawner_Parent_V2.Device_ItemSpawner_Parent_V2_C",
 			"/CreativeCoreDevices/Device_Trigger_Parent_V2.Device_Trigger_Parent_V2_C",
+			"/CreativeCoreDevices/ExperienceSettings/BP_UserOptionComponent_Cosmetic.BP_UserOptionComponent_Cosmetic_C",
 			"/CreativeCoreDevices/ExperienceSettings/TestPlayerDefinitionComponent.TestPlayerDefinitionComponent_C",
 			"/CreativeCoreDevices/HUDMessage/MVVM_UEFN_HUDMessage.MVVM_UEFN_HUDMessage_C",
 			"/CreativeCoreDevices/PowerUp/LastActiveCustomPlayerFXComponent.LastActiveCustomPlayerFXComponent_C",
@@ -25403,7 +25424,9 @@
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_ControlRigRigidBody_Template.MetaHuman_ControlRigRigidBody_Template_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_DummyControlRig.MetaHuman_DummyControlRig_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_RigidBody_Template.MetaHuman_RigidBody_Template_C",
+			"/MetaHumanUEFN/Body/ABP_Body_PostProcess.ABP_Body_PostProcess_C",
 			"/MetaHumanUEFN/Common/metahuman_proc_ControlRig.metahuman_proc_ControlRig_C",
+			"/MetaHumanUEFN/Face/ABP_Face_PostProcess.ABP_Face_PostProcess_C",
 			"/MetaHumanUEFN/Face/Face_AnimBP.Face_AnimBP_C",
 			"/MetaHumanUEFN/Face/Face_PostProcess_AnimBP.Face_PostProcess_AnimBP_C",
 			"/MetaHumanUEFN/Face/HeadMovementIK_Proc_CtrlRig.HeadMovementIK_Proc_CtrlRig_C",

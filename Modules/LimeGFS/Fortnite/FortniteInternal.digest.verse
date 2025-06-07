@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-35.20-CL-42911808
+# Generated from build: ++Fortnite+Release-36.00-CL-43214806
 #################################################
 
 AI<public> := module {
@@ -188,7 +188,7 @@ AI<public> := module {
 
   @experimental
   # Generate a navigation_target from an entity
-  MakeNavigationTarget<native><public>(Entity: entity)<decides>: navigation_target
+  MakeNavigationTarget<native><public>(Entity: entity): navigation_target
 
   # Generate a navigation_target from any position
   MakeNavigationTarget<native><public>(Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): navigation_target
@@ -873,6 +873,9 @@ AI<public> := module {
     # Returns the agent associated with this behavior.
     GetAgent<native><public>()<transacts><decides>: agent
 
+    # Returns the `fort_playspace` associated with this behavior.
+    GetPlayspace<native><epic_internal>()<transacts><decides>: fort_playspace
+
     # This function is called when the NPC is added to the simulation.
     OnBegin<native_callable><public>()<suspends>: void = external {}
 
@@ -1381,13 +1384,11 @@ Characters<public> := module {
 }
 
 Devices<public> := module {
-  @experimental
   # Returns the simulation entity at the root of the experience this `creative_device` is operating within.
   #   * The simulation entity is the rootmost entity in an experience.
   #   * Fails if this `creative_device` is not operating in a context with a valid SimulationEntity.
   (CreativeDevice: creative_device).(/Fortnite.com/Devices:)GetSimulationEntity<native><public>()<transacts><decides>: entity
 
-  @experimental
   # Returns the simulation entity at the root of the experience this `creative_object` is operating within.
   #   * The simulation entity is the rootmost entity in an experience.
   #   * Fails if this `creative_object` is not operating in a context with a valid SimulationEntity.
@@ -1411,7 +1412,6 @@ Devices<public> := module {
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on a default constructed object.
   (InCreativeDevice: creative_device_base).FindCreativeObjectsWithTag<public>(Tag: tag)<transacts>: generator(creative_object_interface) = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 2930 }
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on an `entity` that is not in the scene.
   (InEntity: entity).FindCreativeObjectsWithTag<native><public>(Tag: tag)<transacts>: generator(creative_object_interface)
@@ -3035,6 +3035,9 @@ Devices<public> := module {
     # Check if an `agent` can initiate a conversation.
     CanInitiateConversation<public>(Agent: agent)<transacts><decides>: void = external {}
 
+    # Signalled when a conversation has ended early by EndConversation or EndConversationForAll.
+    CancelEvent<public>: listenable(agent) = external {}
+
     # Disables this device.
     # A disabled conversation device will not listen for inputs and trigger conversations.
     Disable<override>(): void = external {}
@@ -3049,8 +3052,14 @@ Devices<public> := module {
     # Ends all active conversations with this device.
     EndConversationForAll<public>(): void = external {}
 
+    # Signalled when a conversation has ended.
+    EndEvent<public>: listenable(agent) = external {}
+
     # Returns the count of currently-active conversations with this device.
     GetActiveConversationsCount<public>()<transacts>: int = external {}
+
+    # Hide the conversation UI for an 'agent'. Responses cannot be selected while the UI is hidden. This will work with Box and Custom UI.
+    HideConversation<public>(Agent: agent): void = external {}
 
     # Begins the assigned conversation with the `agent`.
     # The conversation will not start if the device or the `agent` are otherwise incapable of having a conversation.
@@ -3066,9 +3075,19 @@ Devices<public> := module {
     # Sends the `agent` that triggered the event, and `EventNumber` is the number specified in the Conversation Event node.
     OnConversationEvent<public>: listenable(tuple(agent, int)) = external {}
 
+    # Show the conversation UI for an 'agent'. This will work with Box and Custom UI.
+    ShowConversation<public>(Agent: agent): void = external {}
+
     # Sets the number of conversations allowed at once with the device.
     # This will not make any conversations exit if there are more current conversations than allowed after this call.
     var AllowedConversationCount<public>: int = external {}
+
+    # The constant rate that characters are revealed over the course of a second when a Speech node activates.
+    # The exact characters in the respective speech node are revealed and do not combine into glyphs.
+    # When the value is changed, active conversations are not updated. Works with the Box and Custom UI.
+    # The value of CharactersPerSecond is the default value used when initiating a conversation.
+    # CharactersPerSecond will be clamped between 0.25 and 100.0. If set to false all the characters will reveal instantly.
+    var CharactersPerSecond<public>: ?float = external {}
 
     # The range that the Indicator Bubble will be seen at. Clamps to range[0, 25].
     var IndicatorBubbleRange<public>: float = external {}
@@ -3082,7 +3101,8 @@ Devices<public> := module {
     # Whether the device will show the Speaker when nearby.
     var ShowNameWhenNearby<public>: logic = external {}
 
-    # The Speaker Name of the device.
+    # The Speaker Name of the device. When the value is changed, active conversations are not updated.
+    # The value of SpeakerName is the default value used when initiating a conversation.
     var SpeakerName<public>: message = external {}
   }
 
@@ -3476,6 +3496,9 @@ Devices<public> := module {
     TargetName<native><public>: string
   }
 
+  # Implementation of `device_event(:type)` with a `float` payload.
+  device_event_float<native><epic_internal> := class(device_event(float)) {}
+
   # Implementation of `device_event(:type)` with required `int` payload.
   device_event_int<native><epic_internal> := class(device_event(int)) {}
 
@@ -3491,8 +3514,17 @@ Devices<public> := module {
   # Implementation of `device_event(:type)` with a `tuple(?agent, fort_vehicle, int)` payload.
   device_event_optional_agent_vehicle_int<native><epic_internal> := class(device_event(tuple(?agent, fort_vehicle, int))) {}
 
+  # Implementation of `device_event(:type)` with a `tuple(player, creative_device_base)` payload.
+  device_event_player_creative_device<native><epic_internal> := class(device_event(tuple(player, creative_device_base))) {}
+
+  # Implementation of `device_event(:type)` with a `tuple(player, ?agent)` payload.
+  device_event_player_optional_agent<native><epic_internal> := class(device_event(tuple(player, ?agent))) {}
+
   # Implementation of `device_event(:type)` with required `creative_prop` payload.
   device_event_prop<native><epic_internal> := class(device_event(creative_prop)) {}
+
+  # Implementation of `device_event(:type)` with required `string` payload.
+  device_event_string<native><epic_internal> := class(device_event([]char)) {}
 
   # Implementation of `device_event(:type)` with required `fort_vehicle` payload.
   device_event_vehicle<native><epic_internal> := class(device_event(fort_vehicle)) {}
@@ -4073,6 +4105,9 @@ Devices<public> := module {
       ?ForgetDistance: float = external {}
     ): void = external {}
 
+    # Get all agents created by this device.
+    GetAgents<epic_internal>()<transacts>: []agent = external {}
+
     # Returns the spawn limit of the device.
     GetSpawnLimit<public>()<transacts>: int = external {}
 
@@ -4154,6 +4189,167 @@ Devices<public> := module {
     # Will not apply to any currently applied effects.
     # For the Health Powerup, this is the amount of health or shield that the powerup will add or remove,
     SetMagnitude<public>(Magnitude: float): void = external {}
+  }
+
+  # An indestructible chest that can be locked and unlocked.
+  hero_chest_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Disable the device. While disabled, the chest can't be interacted with.
+    Disable<override>(): void = external {}
+
+    # Enable the device, allowing interaction.
+    Enable<override>(): void = external {}
+
+    # Returns the chest rank as a `string`.
+    GetRankAsString<public>(): string = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if the chest is locked for `Agent`.
+    IsLocked<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    # Succeeds if the chest's default locked state is Locked.
+    #  * The default locked state is initialized by the *Start Locked* user option and is overridden by *LockForAll* and *UnlockForAll*.
+    IsLockedForAll<public>()<transacts><decides>: void = external {}
+
+    # Succeeds if the chest is currently open, fails if it's closed.
+    IsOpen<public>()<transacts><decides>: void = external {}
+
+    # Lock the chest for `Agent`. Has no effect if the chest is open.
+    Lock<public>(Agent: agent): void = external {}
+
+    # Lock the chest for everyone, and set this chest's default state to Locked.
+    LockForAll<public>(): void = external {}
+
+    # Open the chest.
+    Open<public>(): void = external {}
+
+    # Triggers whenever the chest is opened, returning the `agent` who opened it if applicable.
+    OpenEvent<public>: listenable(?agent) = external {}
+
+    # Close the chest, refresh its loot, and set the chest to its default locked state for everyone.
+    #  * The default locked state is initialized by the *Start Locked* user option and is overridden by *LockForAll* and *UnlockForAll*.
+    Reset<public>(): void = external {}
+
+    StringToMessage<localizes><epic_internal>(Value: string): message = external {}
+
+    # Unlock the chest for `Agent`. Has no effect if the chest is open.
+    Unlock<public>(Agent: agent): void = external {}
+
+    # Unlock the chest for everyone, and set this chest's default state to Unlocked.
+    UnlockForAll<public>(): void = external {}
+
+    # Determines the hologram that appears above the chest, as well as the loot the chest contains.
+    #  * From low to high, the ranks are C, B, A, and S.
+    var ChestRank<public>: hero_chest_rank = external {}
+
+    # Text shown when interacting while the chest is unlocked.
+    #  * By default, this says 'Loot Hero Chest'.
+    var InteractText<epic_internal>: message = external {}
+
+    # Descriptive text shown when interacting while the chest is locked.
+    #  * By default, this says 'You cannot open this right now.'.
+    var LockedDescription<public>: message = external {}
+
+    # Main text shown when interacting while the chest is locked.
+    #  * The default is 'Rank X Chest' where X is the value of *Rank*.
+    var LockedLabel<public>: message = external {}
+
+    # Additional text shown when interacting while the chest is locked.
+    #  * By default, this says 'Unable to open'.
+    var LockedSublabel<public>: message = external {}
+
+    # Whether to show the rank hologram while the chest is closed.
+    var ShowHologram<public>: logic = external {}
+  }
+
+  hero_chest_rank<public> := enum<open> {
+    A
+
+    B
+
+    C
+
+    S
+  }
+
+  # The hiding prop device can be used to give players a place to hide, or to allow players a special way to commence a Hidden Travel to another Hiding prop.
+  hiding_prop_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Signaled when a player hides in this Hiding prop.
+    BeginPlayerHideEvent<public>: listenable(player) = external {}
+
+    # Disable this device.
+    #  When this device is disabled, it cannot be interacted with.
+    Disable<override>(): void = external {}
+
+    # Eject all players hiding in this hiding prop.
+    #  Returns an array of all players that were ejected.
+    EjectAllHiddenPlayers<public>(): []player = external {}
+
+    # Eject a specific player from this hiding prop.
+    EjectHiddenPlayer<public>(Player: player)<transacts><decides>: void = external {}
+
+    # Enable this device.
+    #  When this device is enabled, it can be interacted with.
+    Enable<override>(): void = external {}
+
+    # Signaled when a player stops hiding in this hiding prop.
+    EndPlayerHideEvent<public>: listenable(player) = external {}
+
+    # Hides all players within the provided meters of a hiding prop.
+    #  Returns an array of all players that were hidden.
+    #  This event will not allow more players than is specified in 'MaxNumberOfOccupants' to be hidden in this device.
+    HideNearbyPlayers<public>(DistanceInMeters: float): []player = external {}
+
+    # Succeeds if the object is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Signaled when a hidden travel completes to another hiding prop.
+    PlayerHiddenTravelEvent<public>: listenable(tuple(player, hiding_prop_device)) = external {}
+
+    # This value maps to the 'Attempt No Repeat Destinations' user option.
+    #  If this is set to On, the prop will avoid sending a player to the previous hiding prop twice in a row, unless there is no other hiding prop available.
+    #  Modifying this value will take effect the next time a player attempts a hidden travel.
+    #  Leaving this value unset means that this hiding_prop_device will not be able to initiate hidden travel.
+    var AttemptNoRepeatDestinations<public>: logic = external {}
+
+    # This value maps to the 'Block Hide Time' user option.
+    #  When a player leaves the prop, this determines the amount of time another player must wait before they can hide in the prop.
+    #  Modifying this value will not affect any player who is currently blocked from hiding, but will affect all players who eject from the hiding prop after it has been modified.
+    var BlockHideTime<public>: float = external {}
+
+    # This value controls whether or not Hidden Travel is enabled or disabled
+    #  Modifying this value will take effect the next time a player attempts a hidden travel.
+    var EnableHiddenTravel<public>: logic = external {}
+
+    # This value maps to the 'Hidden Travel Group' user option.
+    #  To make use of the hidden travel feature, you must assign this hiding prop to a Hidden Travel Group.
+    #  Modifying this value will take effect the next time a player attempts a hidden travel.
+    #  Leaving this value unset will make it so other hiding_prop_device are ineligible to travel to this one.
+    var HiddenTravelGroup<public>: ?int = external {}
+
+    # This value maps to the 'Hidden Travel Target Group' user option.
+    #  Determines which group of hiding props can be targeted as a hidden travel destination.
+    #  You can set this to the same value as the Hidden Travel Group option, or if you have multiple groups of hiding props you can target a different group.
+    #  Modifying this value will take effect the next time a player attempts a hidden travel.
+    #  Leaving this value unset means that this hiding_prop_device will not be able to cause a Hidden Travel when players hide inside of it.
+    var HiddenTravelTargetGroup<public>: ?int = external {}
+
+    # This value maps to the 'Max Hiding Time' user option.
+    #  Sets a maximum amount of time a player can hide in the prop before being ejected.
+    #  Setting this value to False will disable any limit to how long a player can hide.
+    #  Modifying this value will instantly take effect, if any players hiding are now exceeding the Max Hiding time, they will be immediately ejected.
+    var MaxHideTime<public>: ?float = external {}
+
+    # This value maps to the 'Max Number Of Occupants' user option.
+    #  Determines how many players can hide in this prop at one time.
+    #  Modifying this value will not eject any players who are currently hiding, but will otherwise take effect immediately.
+    var MaxNumberOfOccupants<public>: int = external {}
+
+    # This value maps to the 'Should Wobble While Hiding' user option.
+    #  Modifying this value will take effect the next time a player hides inside of this device.
+    #  By default, the prop alerts other players with sound and animation that a player is hiding in the prop. Set this to Off to disable these effects.
+    var ShouldWobbleWhileHiding<public>: logic = external {}
   }
 
   # Used to create a holographic screen that displays a clock or other curated images.
@@ -4675,6 +4871,9 @@ Devices<public> := module {
     # Enables this device. Characters will start to spawn.
     Enable<public>(): void = external {}
 
+    # Get all agents created by this device.
+    GetAgents<epic_internal>()<transacts>: []agent = external {}
+
     # Resets the spawn count allowing spawning of a new batch of characters.
     Reset<public>(): void = external {}
 
@@ -4990,6 +5189,41 @@ Devices<public> := module {
     SecondItemValueReachedEvent<public>: listenable(agent) = external {}
   }
 
+  # Used to update the player character's movement settings on different movement mode.
+  player_movement_settings_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Adds the movement settings to the provided agent, activating if it is in the highest priority.
+    #  * The highest priority device is applied to players and test players. Ties are broken by which is applied most recently.
+    #  * Fails if the provided agent is unsupported including NPC agents like Guard, Wildlife or Custom NPCs.
+    AddTo<public>(Agent: agent): void = external {}
+
+    # Adds the movement settings to all the agents in the scene, activating if it is in the highest priority.
+    #  * The highest priority device is applied to players and test players. Ties are broken by which is applied most recently.
+    AddToAll<public>(): void = external {}
+
+    # Disables this device, revoking its change to the registered player characters.
+    # Disabling this does not clear the list of registered players.
+    Disable<override>(): void = external {}
+
+    # Enables this device, allowing its properties to affect the registered player characters' movement.
+    Enable<override>(): void = external {}
+
+    # Returns the priority of the device, the active device in the highest priority will be applied to the provided agents.
+    GetPriority<public>()<reads>: float = external {}
+
+    # Returns the player agents registered to this device.
+    GetRegisteredAgents<public>()<reads>: []agent = external {}
+
+    # Succeeds if the object is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Removes the movement settings from the provided agent.
+    # Fails if the provided agent doesn't have the movement settings applied.
+    RemoveFrom<public>(Agent: agent): void = external {}
+
+    # Removes the movement settings from all the active agents.
+    RemoveFromAll<public>(): void = external {}
+  }
+
   # Used to relay `agent` statistics to other devices and `agent`s. Can transmit statistics such as elimination count, eliminated count, or scores when certain conditions are met. Can also project a hologram of the `agent` and display text that can be altered in various positions and curvatures.
   player_reference_device<public> := class<concrete><final>(creative_device_base) {
     # Ends the round/game.
@@ -5211,6 +5445,59 @@ Devices<public> := module {
 
     # Spawns the powerup into the experience so users can interact with it.
     Spawn<public>(): void = external {}
+  }
+
+  # This device is used to associate changes in progression with a mesh transition. As the device's progression changes, it will transition between a set of defined meshes.
+  #  The ThresholdMesh field can be found under the 'Visuals' category on an instance of a progress_based_mesh_device in Unreal Editor Fortnite.
+  progress_based_mesh_device<public> := class<concrete><final>(creative_device_base) {
+    # This event is fired whenever 'CurrentProgress' reaches 0.
+    EmptyEvent<public>: listenable(tuple()) = external {}
+
+    # This event is fired whenever 'CurrentProgress' reaches the 'ProgressTarget'.
+    FillEvent<public>: listenable(tuple()) = external {}
+
+    # This event is fired whenever 'CurrentProgress' value gets changed, whether through direct modification, or as a result of the Progress or Regress state.
+    ProgressChangeEvent<public>: listenable(float) = external {}
+
+    # # This event fires whenever this device changes meshes as a result of 'CurrentProgress' value causing a new Threshold to be met.
+    #  The ThresholdMeshe field can be found under the 'Visuals' category on an instance of a progress_based_mesh_device in Unreal Editor Fortnite.
+    ProgressThresholdCrossEvent<public>: listenable(float) = external {}
+
+    # The current progress this device has made towards its ProgressTarget.
+    #  This value will be clamped between 0 and Progress Target.
+    #  Modifying this value will cause changes Mesh Changes corresponding to your defined ThresholdMeshes.
+    var CurrentProgress<public>: float = external {}
+
+    # This value maps to the 'ProgressRate' user option.
+    #  When this device is in the Progress state, 'CurrentProgress' will be increased by this value per second until it reaches the 'ProgressTarget'.
+    #  Utilizing this value is not required, as 'CurrentProgress' can also be modified directly.
+    var ProgressRate<public>: float = external {}
+
+    # The current state of this device.
+    var ProgressState<public>: progress_device_state = external {}
+
+    # This value maps to the 'ProgressTarget' user option.
+    #  The target Progress goal of this value.
+    #  Setting this value will clamp it between 0 and 100.
+    #  If 'ProgressTarget' is set to a value lower than 'CurrentProgress', 'CurrentProgress' will be clamped to 'ProgressTarget', and fire any threshold related events.
+    var ProgressTarget<public>: float = external {}
+
+    # This value maps to the 'RegressRate' user option.
+    #  When this device is in the Regress state, 'CurrentProgress' will be decreased by this value per second until it reaches the 0.
+    #  Utilizing this value is not required, as 'CurrentProgress' can also be modified directly.
+    var RegressRate<public>: float = external {}
+  }
+
+  # The state of a progress_based_mesh_device.
+  progress_device_state<public> := enum<open> {
+    # This device is currently paused. It will not progress or regress automatically.
+    Pause
+
+    # This device is currently progressing, and will increase its 'CurrentProgress' by its 'ProgressRate'.
+    Progress
+
+    # This device is currently regressing, and will decrease its 'CurrentProgress' by its 'RegressRate'.
+    Regress
   }
 
   # Used to manipulate the properties of one or more props in a specified area (e.g. Visibility/Destructibility).
@@ -6361,10 +6648,10 @@ Devices<public> := module {
     #  Returns -1.0 if there is no active reset timer.
     GetCurrentResetTime<public>(Agent: agent): float = external {}
 
-    # Returns the current state of this switch: true (on) or false (off). Use this overload  of `GetCurrentState` when this device has *Store State Per Player* set to *No*.
+    # Succeeds if the current state of this switch is on, fails otherwise. Use this overload  of `GetCurrentState` when this device has *Store State Per Player* set to *No*.
     GetCurrentState<public>()<transacts><decides>: void = external {}
 
-    # Returns the current state of this switch: true (on) or false (off). Use this overload  of `GetCurrentState` when this device has *Store State Per Player* set to *Yes*.
+    # Succeeds if the current state of this switch is on, fails otherwise. Use this overload  of `GetCurrentState` when this device has *Store State Per Player* set to *Yes*.
     GetCurrentState<public>(Agent: agent)<transacts><decides>: void = external {}
 
     # Returns the *Interaction Time* required to activate this device (in seconds).
@@ -7663,6 +7950,9 @@ Devices<public> := module {
     # Sends the `agent` wildlife that was spawned.
     ForceSpawnedEvent<public>: listenable(agent) = external {}
 
+    # Get all agents created by this device.
+    GetAgents<epic_internal>()<transacts>: []agent = external {}
+
     # Returns the spawn limit of the device.
     GetSpawnLimit<public>()<transacts>: int = external {}
 
@@ -8094,11 +8384,9 @@ Game<public> := module {
   # Deactivate a camera component for a player, restoring the player's view target to the default
   (InCameraBehavior: camera_component).DeactivateForPlayer<native><epic_internal>(InPlayer: player)<transacts><decides>: void
 
-  @experimental
   # Returns the fort game events component, if it exists.
   (InEntity: entity).GetFortGameEvents<epic_internal>()<transacts><decides>: fort_game_events_component = external {}
 
-  @experimental
   # Returns the round manager from the simulation entity.
   (InEntity: entity).GetFortRoundManager<public>()<transacts><decides>: fort_round_manager = external {}
 
@@ -8192,7 +8480,6 @@ Game<public> := module {
     var Health<public>: float = external {}
   }
 
-  @experimental
   fort_game_events_component<native><epic_internal> := class<final_super>(component, fort_round_manager) {
     EndGameEvent<native><epic_internal>: listenable(tuple()) = external {}
 
@@ -8219,10 +8506,14 @@ Game<public> := module {
   }
 
   @experimental
+  fort_player_camera_activation<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
+  }
+
+  @experimental
   # Component used to associate a camera behavior component with a player
   fort_player_camera_view<native><epic_internal> := class<epic_internal>(player_camera_view) {}
 
-  @experimental
   # This interface is implemented by the round manager living on the simulation entity.
   fort_round_manager<native><public> := interface<epic_internal> {
     # Subscribed callbacks will be invoked when a Fortnite round ends
@@ -8235,7 +8526,6 @@ Game<public> := module {
     SubscribeRoundStarted<public>(Callback: type { _()<suspends>: void }): cancelable
   }
 
-  @experimental
   # The subscription type returned from the round manager interfaces.
   fort_round_subscription<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
@@ -8424,7 +8714,6 @@ InputDoNotUseYet<public> := module {
 
 # Module import path: /Fortnite.com/Playspaces
 Playspaces<public> := module {
-  @experimental
   # Returns an associated `fort_playspace` for this entity.  * Fails if this entity is not in the scene, and therefore not associated with a playspace.
   (InEntity: entity).GetPlayspaceForEntity<native><public>()<transacts><decides>: fort_playspace
 
@@ -8747,6 +9036,14 @@ UI<public> := module {
   }
 
   creative_hud_identifier_team_info<public> := class<final>(hud_element_gameplay_tag_identifier_base) {
+    InternalTag<override>: string = external {}
+  }
+
+  creative_hud_identifier_text_chat<epic_internal> := class<final>(hud_element_gameplay_tag_identifier_base) {
+    InternalTag<override>: string = external {}
+  }
+
+  creative_hud_identifier_text_chat_prompt<epic_internal> := class<final>(hud_element_gameplay_tag_identifier_base) {
     InternalTag<override>: string = external {}
   }
 
@@ -9311,6 +9608,7 @@ VerseInternalTesting<public> := module {
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /UnrealEngine.com/Temporary/Testing }
   using { /Verse.org/Colors }
+  using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
   NexusFramework<public> := module {
@@ -9425,6 +9723,12 @@ VerseInternalTesting<public> := module {
       var ArgInt<public>: int = external {}
     }
 
+    device_event_player_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(player)): void = external {}
+
+      var ArgPlayer<public>: ?player = external {}
+    }
+
     device_event_void_handler_mock<public> := class(test_device_event_handler_mock) {
       Subscribe<public>(Event: listenable(tuple())): void = external {}
     }
@@ -9467,6 +9771,30 @@ VerseInternalTesting<public> := module {
       GetCallCount<public>(): int = external {}
 
       ResetCallCount<public>(): void = external {}
+    }
+
+    test_event_entity_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(entity)): void = external {}
+
+      var ArgEntity<public>: ?entity = external {}
+    }
+
+    test_event_float_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(float)): void = external {}
+
+      var ArgFloat<public>: ?float = external {}
+    }
+
+    test_event_tuple_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple())): void = external {}
+
+      var ArgTuple<public>: ?tuple() = external {}
+    }
+
+    test_event_tuple_int_logic_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(int, logic))): void = external {}
+
+      var ArgTuple<public>: ?tuple(int, logic) = external {}
     }
 
     test_runner<epic_internal> := class {

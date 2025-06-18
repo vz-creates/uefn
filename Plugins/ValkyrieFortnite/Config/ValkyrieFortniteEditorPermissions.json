@@ -65,7 +65,8 @@
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetRaritySecondaryColor",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:IsFocused",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:HasItem",
-			"/Script/FortniteUI.HUDQuickbarSlotViewModel:ShouldShowRemainingAmmo"
+			"/Script/FortniteUI.HUDQuickbarSlotViewModel:ShouldShowRemainingAmmo",
+			"/Script/FortniteUI.HUDQuickbarSlotViewModel:IsHarvestTool"
 		],
 		"AllowedEnums": [
 			"/Script/AnimationCore.EEulerRotationOrder",
@@ -2322,7 +2323,13 @@
 				"AllowList": [ "ToggleRealTime", "DisableRealtimeOverride", "DisableRealtimeOverrideSeparator", "ToggleStats", "ToggleFPS", "ToggleViewportToolbar", "FOVAngle", "FarViewPlane", "ScreenPercentage", "ToggleCinematicPreview", "ToggleGameView", "ToggleImmersive", "HighResScreenshot", "Bookmark", "Configs" ]
 			},
 			"LevelEditor.LevelViewportToolbar.Show": {
-				"AllowList": [ "UseDefaultShowFlags", "Common_AntiAliasing", "Common_Atmosphere", "Common_BSP", "Common_Collision", "Common_Decals", "Common_Fog", "Common_Grid", "Common_Landscape", "Common_MediaPlanes", "Common_Navigation", "Common_Particles", "Common_SkeletalMeshes", "Common_StaticMeshes", "Common_Translucency", "ShowHLODsMenu", "ShowRevisionControlMenu", "ShowCoopNotes" ]
+				"AllowList": [ "UseDefaultShowFlags", "Common_AntiAliasing", "Common_Atmosphere", "Common_BSP", "Common_Collision", "Common_Decals", "Common_Fog", "Common_Grid", "Common_Landscape", "Common_MediaPlanes", "Common_Navigation", "Common_Particles", "Common_SkeletalMeshes", "Common_StaticMeshes", "Common_Translucency", "ShowHLODsMenu", "ShowRevisionControlMenu", "ShowCoopNotes", "Animation" ]
+			},
+			"LevelEditor.LevelViewportToolbar.Show.Animation": {
+				"AllowList": [ "AxisOnSelection", "Hierarchy", "ControlsAsOverlay", "ControlShapes", "Nulls", "ProxyControls", "Sockets" ]
+			},
+			"LevelEditor.LevelViewportToolbar.Show.Animation.AxisOnSelection": {
+				"AllowList": [ "AxisScale" ]
 			},
 			"LevelEditor.MainMenu": {
 				"AllowList": [ "File", "Edit", "Window", "Tools", "Verse", "Build", "Select", "Help", "Utility" ]
@@ -2411,6 +2418,9 @@
 			},
 			"SpatialProfiler.SettingsToolBar.SettingsMenu": {
 				"AllowList": [ "ShowHistogram" ]
+			},
+			"SpatialProfiler.Grid.ContextualMenu": {
+				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
 			}
 		},
 		"AllowedTabs": {
@@ -2840,7 +2850,12 @@
 			"DarkVortex_Gameplay_Template",
 			"Lucky_AssemblyDevice",
 			"Technodrome_Starter_Island",
-			"Gunfight"
+			"Gunfight",
+			"Minigame_Mastery",
+			"Social_Deduction",
+			"GreasyGames",
+			"LEGO_Seed_Template",
+			"LEGO_BrickEditor"
 		]
 	},
 	"PropertyEditorClassPermissionList": {

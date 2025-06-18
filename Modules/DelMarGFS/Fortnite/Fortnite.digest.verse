@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.00-CL-43214806
+# Generated from build: ++Fortnite+Release-36.10-CL-43486998
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -45,15 +45,15 @@ AI<public> := module {
   # Generate a navigation_target from an entity
   MakeNavigationTarget<native><public>(Entity: entity): navigation_target
 
-  # Generate a navigation_target from any position
-  MakeNavigationTarget<native><public>(Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): navigation_target
-
   # Generate a navigation_target from an agent
   MakeNavigationTarget<native><public>(Target: agent): navigation_target
 
   @experimental
   # Create a `navigation_target` from a `fort_target_info`.
   MakeNavigationTarget<native><public>(TargetInfo: fort_target_info): navigation_target
+
+  # Generate a navigation_target from any position
+  MakeNavigationTarget<public>(Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): navigation_target = external {}
 
   @experimental
   # Result of an AI action
@@ -777,7 +777,6 @@ Devices<public> := module {
     TestAwardEvent<public>: listenable(agent) = external {}
   }
 
-  using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Native }
   # Used in conjunction with `advanced_storm_controller_device` to customize individual storm phases.
   advanced_storm_beacon_device<public> := class<concrete><final>(creative_device_base) {
@@ -1380,6 +1379,112 @@ Devices<public> := module {
     # Signaled when spawned item is returned.
     # Sends the `agent` that returned the item.
     ItemReturnedEvent<public>: listenable(agent) = external {}
+  }
+
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  # Used to spawn a carryable object into the experience.
+  carryable_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Despawn the carryable, if it exists.
+    Despawn<public>(): void = external {}
+
+    # Disables this device, preventing it from listening for inputs and sending events.
+    # When disabled, the carryable is unspawned, if it exists.
+    Disable<override>(): void = external {}
+
+    # Signaled when `agent` drops the carryable.
+    # Includes manual drop as well as force drop, which can occur on entering a state that doesn't support carrying, such as elimination.
+    DropEvent<public>: listenable(agent) = external {}
+
+    # Enables this device, allowing it to listen for inputs and send events.
+    Enable<override>(): void = external {}
+
+    # Explode the carryable, if it exists.
+    Explode<public>(): void = external {}
+
+    # Explode the carryable, if it exists.
+    # Assigns the provided `agent` as the explosion instigator.
+    Explode<public>(Agent: agent): void = external {}
+
+    # Signaled when the carryable explodes.
+    # Returns the instigating `agent`, if one exists.
+    #  * The `agent` provided to the *Explode* function, or the agent who dealt lethal damage to the carryable.
+    #  * Otherwise, the `agent` who most recently carried the item.
+    # Returns an array of `agent`s affected by the explosion.
+    ExplodeEvent<public>: listenable(tuple(?agent, []agent)) = external {}
+
+    # Forces the carryable to be carried by the provided `player`, teleporting it into their hands.
+    # If not in a viable state to carry the item (such as in a vehicle), or if the `player` fails the device's filters, it is ignored.
+    ForcePlayerToCarry<public>(Player: player): void = external {}
+
+    # Succeeds if the object is enabled, fails if it is disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Fails if the carryable does not exist in-world.
+    IsSpawned<public>()<reads><decides>: void = external {}
+
+    # Signaled when `agent` picks up the carryable.
+    PickUpEvent<public>: listenable(agent) = external {}
+
+    # Signaled when `agent` stops carrying the carryable.
+    # This includes dropping, throwing, despawning, or force pickup by another player.
+    ReleaseEvent<public>: listenable(agent) = external {}
+
+    # Spawn the carryable from the device if it doesn't currently exist.
+    Spawn<public>(): void = external {}
+
+    # Signaled when the carryable spawns, either by the `Spawn` function, or by timer.
+    SpawnEvent<public>: listenable(tuple()) = external {}
+
+    # Signaled when `agent` throws the carryable.
+    ThrowEvent<public>: listenable(agent) = external {}
+
+    # Maps to the device option for *Takes Damage*.
+    # Whether or not the carryable takes damage / can be destroyed.
+    var CanTakeDamage<public>: logic = external {}
+
+    # Maps to the device option for *Explosion Character Damage*.
+    # Describes how much damage is done to characters caught in the carryable explosion.
+    var ExplosionDamage<public>: float = external {}
+
+    # Maps to the device option for *Explosion Environmental Damage*.
+    # Describes how much damage is done to world objects caught in the carryable explosion.
+    var ExplosionEnvironmentalDamage<public>: float = external {}
+
+    # Maps to the device option for *Explosion Impulse*.
+    # Describes the strength of the knockback impulse applied by the carryable explosion.
+    var ExplosionImpulse<public>: float = external {}
+
+    # Maps to the device option for *Explosion Radius*.
+    # Describes the radius (in meters) of the carryable explosion.
+    var ExplosionRadius<public>: float = external {}
+
+    # Maps to the device option for *Impact Character Damage*.
+    # Describes how much damage is done to characters hit by the carryable.
+    # This value is scaled by the impact magnitude to calculate the applied damage.
+    var ImpactDamage<public>: float = external {}
+
+    # Maps to the device option for *Impact Environmental Damage*.
+    # Describes how much damage is done to world objects hit by the carryable.
+    # This value is scaled by the impact magnitude to calculate the applied damage.
+    var ImpactEnvironmentalDamage<public>: float = external {}
+
+    # Maps to the device option for *Initial Spawn Angle*.
+    # The angle (in degrees) of the cone from which the carryable will be randomly tossed when it first spawns.
+    var InitialSpawnAngle<public>: float = external {}
+
+    # Maps to the device option for *Initial Spawn Velocity*.
+    # The velocity (in meters per second) applied to the carryable when it first spawns.
+    var InitialSpawnVelocity<public>: float = external {}
+
+    # Maps to the device option for *Starting Health*.
+    # Describes how much health the carryable spawns with.
+    var StartingHealth<public>: float = external {}
+
+    # The carryable transform, if the carryable exists in-world.
+    var<private> CarryableObjectTransform<public>: ?(/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
+
+    # The `agent` carrying the carryable, if one exists.
+    var<private> CarryingAgent<public>: ?agent = external {}
   }
 
   # Creates a chair where `Agent`s can sit.
@@ -2062,6 +2167,47 @@ Devices<public> := module {
     Target<native><public>: ?agent
   }
 
+  # Used to apply a cosmetic disguise to the player.
+  # The disguise to apply is defined on the device, as are the conditions for when the disguise breaks.
+  disguise_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Applies the disguise to the provided `player`.
+    # If the provided `player` does not pass the device's filter settings, or if another disguise is already present and the device's *Stomp Existing Disguise* option is set to false, the disguise will not be applied.
+    ApplyDisguise<public>(Player: player): void = external {}
+
+    # Signaled when a disguise from this device is successfully applied to `player`.
+    ApplyDisguiseEvent<public>: listenable(player) = external {}
+
+    # Signaled when a disguise applied by this device on `player` is broken.
+    # The second optional `agent` describes who broke the disguise (the damage source if broken by damage or elimination).
+    # The conditions triggering a disguise to break are set in the device's user options.
+    BreakDisguiseEvent<public>: listenable(tuple(player, ?agent)) = external {}
+
+    # Disables this device, preventing it from listening to inputs.
+    # Disguises applied by this device are not removed when the device is disabled.
+    Disable<override>(): void = external {}
+
+    # Enables this device, allowing it to listen for inputs.
+    Enable<override>(): void = external {}
+
+    # Succeeds if the provided `player` has a disguise applied from this device.
+    IsDisguiseApplied<public>(Player: player)<transacts><decides>: void = external {}
+
+    # Succeeds if the object is enabled, fails if it is disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Removes the disguise applied by this device, if it exists, from the provided `player`.
+    RemoveDisguise<public>(Player: player): void = external {}
+
+    # Signaled when a disguise applied by this device on `player` is removed.
+    # Removal can occur from calling the *Remove Disguise* function, or from getting stomped by another disguise device.
+    # This event will not trigger if the disguise is broken.
+    RemoveDisguiseEvent<public>: listenable(player) = external {}
+
+    # Maps to the user option for *Should Apply Disguise on Spawn*.
+    #  If this is true, the device will apply a disguise to the player as soon as they spawn, so long as they pass the device's filter options.
+    var ShouldApplyDisguiseOnPlayerSpawn<public>: logic = external {}
+  }
+
   # Used to customize (or prevent) the 'down but not out' player state between 'healthy' and 'removed from game'.
   down_but_not_out_device<public> := class<concrete><final>(creative_device_base) {
     # Signaled when an `agent` is set to the `down but not out` player state.
@@ -2196,7 +2342,7 @@ Devices<public> := module {
 
   # Hazard which deals damage in a radius around it when destroyed or triggered.
   explosive_device<public> := class<concrete><final>(creative_device_base) {
-    # Triggers this device to explode. Passes `Agent` as the instigator of the explosion.
+    # Triggers this device to explode. Passes `Agent` as the instigator of the resulting `ExplodedEvent`.
     Explode<public>(Agent: agent): void = external {}
 
     # Signaled when this device explodes.
@@ -4441,6 +4587,11 @@ Devices<public> := module {
   # Visuals may vary, but always feature a scrubber that moves from 0.0 to 1.0.
   # Good and perfect zones are defined on the device, describing at what point the player must provide input to succeed.
   skilled_interaction_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Signaled when the `agent` moves from the queue into interacting.
+    #  An agent enters the queue if BeginInteract is called for them but there is no room for them to begin an interaction given the current configuration.
+    #  This event will fire when an agent who is waiting in that queue advances from it and begins an interaction, removing it from the queue
+    AdvanceAgentFromQueueEvent<public>: listenable(agent) = external {}
+
     # Signaled when the `agent` provides a bad input.
     # Bad input occurs when input is provided while the scrubber is outside the *Good Zone*.
     # Sends the `agent` that provided the input.
@@ -4448,17 +4599,47 @@ Devices<public> := module {
     BadInputTriggeredEvent<public>: listenable(tuple(agent, float)) = external {}
 
     # Begins the interaction for the provided `agent`.
-    # Will cancel any other interactions already in progress for the `agent`.
+    # Will cancel any other interactions already in progress for the `agent` if a queue is not being utilized.
+    # If a queue is being utilized and duplicate player entries are not allowed then any duplicate player entries in the queue will not be added.
+    # If the number of agents requesting interact fits into the current interaction configuration, then those agents will begin
+    # interact immediately and skip the queue entirely.
     BeginInteraction<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    # Begins the interaction for the provided `agent`(s).
+    # Will cancel any other interactions already in progress for the `agent` if a queue is not being utilized.
+    # If a queue is being utilized and duplicate player entries are not allowed then any duplicate player entries in the queue will not be added.
+    # If the number of agents requesting interact fits into the current interaction configuration, then those agents will begin
+    # interact immediately and skip the queue entirely.
+    BeginInteraction<public>(Agents: []agent)<transacts><decides>: void = external {}
+
+    # Clears the queue of all `agent`(s).
+    #  Returns an array of all the players that were still in the queue.
+    ClearQueue<public>(): []agent = external {}
 
     # Disable this device.
     Disable<override>(): void = external {}
+
+    # Fired when the queue empties of all queued agents.
+    #  The queue has to have at least one agent in it for this to fire.
+    #  If BeginInteraction is called and a queue is not created, then this event will not be triggered.
+    EmptyQueueEvent<public>: listenable(tuple()) = external {}
 
     # Enable this device.
     Enable<override>(): void = external {}
 
     # Cancels the interaction, if in progress, for the provided `agent`.
+    # Does not clear the queue of any agent awaiting interaction
     EndInteraction<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    # Cancels the interaction, if in progress, for the provided `agent`(s).
+    # Does not clear the queue of any agent awaiting interaction
+    EndInteraction<public>(Agents: []agent)<transacts><decides>: void = external {}
+
+    # Gets the `agent`(s) who are currently interacting
+    GetInteractingAgents<public>(): []agent = external {}
+
+    # Gets the queue of `agent`(s) who are awaiting interaction.
+    GetQueue<public>(): []agent = external {}
 
     # Signaled when the `agent` provides a good input.
     # Good input occurs when input is provided while the scrubber is within the *Good Zone* (excluding the *Perfect Zone*).
@@ -4496,6 +4677,91 @@ Devices<public> := module {
     # Sends the `agent` that provided the input.
     # Sends the `float` position of the meter scrubber from `0.0` to `1.0`.
     PerfectInputTriggeredEvent<public>: listenable(tuple(agent, float)) = external {}
+
+    # Signaled when the `agent` is put into the queue but has not started an interaction.
+    # If an agent skips the queue and is put directly into interacting, this event is skipped.
+    QueueAgentEvent<public>: listenable(agent) = external {}
+
+    # Signaled when the `agent` has been removed from the queue.
+    # This can happen in a few ways
+    # * An agent is removed without advancing into an interaction.
+    # * If `Disable` is called while an agent is in the queue.
+    # * The queue size is shrunk, causing agents to be removed.
+    RemoveAgentFromQueueEvent<public>: listenable(agent) = external {}
+
+    # Remove `agent`(s) from the queue, has the option to remove all entries that exist for that agent or not
+    #  This does not end the interaction for any agents.
+    #  Returns the number of agents that were removed.
+    RemoveFromQueue<public>(Agents: []agent, AllEntries: logic): int = external {}
+
+    # Maps to the user option 'Allow duplicate Player Entries'
+    # If this is toggled while a queue exists then the queue will not be affected,
+    # but any new additions to the queue will use the new behavior.
+    # ie; if duplicate entries exist and this is set to true, the duplicate entries will not be removed
+    # but any new duplicates will be rejected.
+    var AllowDuplicatePlayerEntries<public>: logic = external {}
+
+    # Maps to the 'Failure Limit' user option.
+    # Determines how many times a bad input can be provided before failing the minigame.
+    # Value is clamped between 0 and 5.
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var FailureLimit<public>: int = external {}
+
+    # Maps to the 'Good Zone Size' user option.
+    # Sets the good zone's size as a ratio of the total meter.
+    # Value is clamped between 0 and 1.
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var GoodZoneSize<public>: float = external {}
+
+    # Maps to the 'Interact Time Limit' user option.
+    # Sets how long the player has to complete the interaction. Taking too long will result in failure.
+    # Value is clamped between 0 and 120 seconds.
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var InteractTimeLimit<public>: float = external {}
+
+    # Maps to the 'Lock Out on Fail Time' user option.
+    # If a bad input is provided, the interact will lock for the amount of time set. Set to 0 to disable this function.
+    # Value must be greater than or equal to 0
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var LockOutOnFailTime<public>: float = external {}
+
+    # Maps to the user option 'Maximum Queued players'.
+    # If queue size is changed while players are already queued, then entries will be removed from the list.
+    # ie; if you have a queue of 10 agents and then adjust the size to 6, then 4 agents will be removed from the queue.
+    # each of those agents will receive a AgentRemoveFromQueueEvent
+    # Can only be set to values greater than or equal to 0
+    var MaximumQueuedPlayers<public>: int = external {}
+
+    # Maps to the 'Movement Speed' user option.
+    # Determines how fast the meter moves across the interaction in percent per second.
+    # Value is clamped between 1 and 400.
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var MeterSpeed<public>: float = external {}
+
+    # Maps to the user option for 'Next In Queue execution Delay'
+    # Determines how much time to wait (0 being instant), before triggering the next interaction in the queue.
+    # When modified will take effect after the current interaction is completed.
+    # Can only be set to values greater than or equal to 0
+    var NextInQueueExecutionDelay<public>: float = external {}
+
+    # Maps to the 'Perfect Zone Size' user option.
+    # Determines the perfect zone's size as a ratio of the good zone.
+    # Value is clamped between 0 and 1.
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var PerfectZoneSize<public>: float = external {}
+
+    # Maps to the 'Success Target' user option.
+    # Sets how many successful inputs are required for the minigame to complete.
+    # Value is clamped between 0 and 5.
+    # Any modifications to this event will take effect the next time an interaction is started.
+    var SuccessTarget<public>: int = external {}
+
+    # Maps to the user option for 'Synchronous Player Limit'.
+    # If the queue is configured to be synchronous, this is the number of players that will interact at the same time
+    # before moving onto the next batch of agents in the queue.
+    # When modified, it will take effect on the next Interaction, and does not affect any active interaction.
+    # Can only be set to values greater than or equal to 0
+    var SynchronousPlayerLimit<public>: int = external {}
   }
 
   # Used to create a zone where players are put into a skydive state. Can customize the amount of force used to push the player, and how fast players are launched into the air. The direction of the push is in relation to the device, so you can rotate and overlap several devices, then use variable speeds to create pneumatic tubes that propel players in different directions. You can even create unique traversal (traveling) options, where players can use these zones to reach places on your island they couldn't reach any other way.

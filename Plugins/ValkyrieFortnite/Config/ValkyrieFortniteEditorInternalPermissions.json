@@ -1152,6 +1152,11 @@
 					"=": []
 				}
 			},
+			"SpatialProfiler.Grid.ContextualMenu": {
+				"DenyList": {
+					"=": []
+				}
+			},
 			"DaySequence.ViewportToolbar": {
 				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence", "SelectDaySequenceActor", "RefreshDaySequenceActor", "OpenDaySequenceActor", "RespawnDaySequenceActor" ]
 			}
@@ -1165,7 +1170,7 @@
 			},
 			"Global": {
 				"AllowList": {
-					"+": [ "SessionFrontend" ]
+					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab" ]
 				}
 			}
 		},
@@ -1387,7 +1392,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "bEnableWorkspaceFeature", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
+				"AllowList": [ "bEnableWorkspaces", "bEnableWorkspaceSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.FortGameUserSettings",

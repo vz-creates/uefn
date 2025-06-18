@@ -279,7 +279,7 @@
 		"70371DB9DD6C4D2EA51DF7BD2C462558":
 		{
 			"FriendlyName": "FortWeaponItemDefinitionVersion",
-			"Version": 3
+			"Version": 4
 		},
 		"717F9EE7E9B0493A88B391321B388107":
 		{
@@ -656,6 +656,8 @@
 		"vmodule",
 		"ugcloc",
 		"po",
+		"locmeta",
+		"locres",
 		"png"
 	],
 	"ClassAllowLists":
@@ -4495,6 +4497,8 @@
 			"/CRD_DirectionalLauncher/SetupAssets/PID_CP_Device_DLauncherStandard.PID_CP_Device_DLauncherStandard",
 			"/CRD_EliminationFeed/SetupAssets/PID_CP_Devices_EliminationFeed.PID_CP_Devices_EliminationFeed",
 			"/CRD_Fillable_Container/Audio/SFX_CP_FillableContainer_Cue.SFX_CP_FillableContainer_Cue",
+			"/CRD_Fillable_Container/Audio/SFX_CP_Filliable_Container_Drain_01_Cue.SFX_CP_Filliable_Container_Drain_01_Cue",
+			"/CRD_Fillable_Container/Audio/SFX_CP_Filliable_Container_Fill_01_Cue.SFX_CP_Filliable_Container_Fill_01_Cue",
 			"/CRD_Fillable_Container/Audio/SFX_CP_Filliable_Container_Finish_Cue.SFX_CP_Filliable_Container_Finish_Cue",
 			"/CRD_Fillable_Container/SetupAssets/Material/M_ContainerLidMetal.M_ContainerLidMetal",
 			"/CRD_Fillable_Container/SetupAssets/Material/MI_Liquid_Fillable_0.MI_Liquid_Fillable_0",
@@ -4535,6 +4539,8 @@
 			"/CRD_RacingCheckpoint/SetupAssets/Manager/ID/PID_Device_RaceManager_V2.PID_Device_RaceManager_V2",
 			"/CRD_RealTimeClock/SetupAssets/PID_Devices_RealTimeClock_V2.PID_Devices_RealTimeClock_V2",
 			"/CRD_SavePoint/SetupAssets/PID_Device_SavePoint.PID_Device_SavePoint",
+			"/CRD_Simple_Voting_Option/SetupAssets/PID_CP_Devices_Simple_Voting_Group.PID_CP_Devices_Simple_Voting_Group",
+			"/CRD_Simple_Voting_Option/SetupAssets/PID_CP_Devices_Simple_Voting_Option.PID_CP_Devices_Simple_Voting_Option",
 			"/CRD_SkydomeDevice/SetupAssets/PID_CP_Devices_Skydome.PID_CP_Devices_Skydome",
 			"/CRD_SkydomeDevice/SetupAssets/PID_DaySequence_Device.PID_DaySequence_Device",
 			"/CRD_SkydomeDevice/SetupAssets/PID_Device_Skydome.PID_Device_Skydome",
@@ -6276,6 +6282,8 @@
 			"/Game/Athena/Effects/Materials/NeoTilted/NeoTilited_Spotlight_WPO_Pink_Animated.NeoTilited_Spotlight_WPO_Pink_Animated",
 			"/Game/Athena/Environments/Blueprints/DudeBro/HVAC_FX/FX_Wind.FX_Wind",
 			"/Game/Athena/Environments/Blueprints/SkyTube/FX/SM_Storm_Energy_Cylinder.SM_Storm_Energy_Cylinder",
+			"/Game/Athena/Environments/Blueprints/SkyTube/FX/SM_Wind_Tunnel_Connector.SM_Wind_Tunnel_Connector",
+			"/Game/Athena/Environments/Blueprints/SkyTube/FX/SM_Wind_Tunnel_Connector_Blur.SM_Wind_Tunnel_Connector_Blur",
 			"/Game/Athena/Environments/Cattus/Materials/TD_Cattus_Env_Skull_CP.TD_Cattus_Env_Skull_CP",
 			"/Game/Athena/Environments/Festivus/Blueprints/C_Festivus_HoloPulse.C_Festivus_HoloPulse",
 			"/Game/Athena/Environments/Festivus/MotorizedLights/M_SpotStrip-x4_Cone_PG.M_SpotStrip-x4_Cone_PG",
@@ -15156,6 +15164,8 @@
 			"/CRD_RacingCheckpoint/Device_RacingCheckpoint_V2.Device_RacingCheckpoint_V2_C",
 			"/CRD_RealTimeClock/Device_RealTimeClock_V2.Device_RealTimeClock_V2_C",
 			"/CRD_SavePoint/Device_SavePoint_V2.Device_SavePoint_V2_C",
+			"/CRD_Simple_Voting_Option/Device_Simple_Voting_Group.Device_Simple_Voting_Group_C",
+			"/CRD_Simple_Voting_Option/Device_Simple_Voting_Option.Device_Simple_Voting_Option_C",
 			"/CRD_SkilledInteractionDevice/UI/UEFN_SkilledInteraction_ViewModel.UEFN_SkilledInteraction_ViewModel_C",
 			"/CRD_SkydomeDevice/BP_Skydome_Device.BP_Skydome_Device_C",
 			"/CRD_SkydomeDevice/Device_Skydome_V2.Device_Skydome_V2_C",

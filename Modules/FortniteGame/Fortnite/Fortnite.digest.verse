@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.10-CL-43486998
+# Generated from build: ++Fortnite+Release-36.20-CL-43847582
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -6083,11 +6083,9 @@ Devices<public> := module {
     # Succeeds when `Agent` is in the volume.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
 
-    @experimental
     # Signaled when an `creative_prop` entered the device volume.
     PropEnterEvent<public>: listenable(creative_prop) = external {}
 
-    @experimental
     # Signaled when an `creative_prop` exited the device volume.
     PropExitEvent<public>: listenable(creative_prop) = external {}
   }

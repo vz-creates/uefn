@@ -432,6 +432,11 @@
 					"Output Log"
 				]
 			},
+			"FortniteGame": {
+				"Names": [
+					"FortniteEditorSettings"
+				]
+			},
 			"LevelEditor": {
 				"Names": [
 					"Viewport"
@@ -1435,6 +1440,7 @@
 			"/Script/FortniteAI.AthenaNavSystemConfig":							{  },
 			"/Script/FortniteAI.AthenaTrapAIPerceptionStimuliSourceComponent":	{  },
 			"/Script/FortniteAI.FortAIPerceptionComponent":						{  },
+			"/Script/FortniteAI.FortAISenseConfig_Sight":						{ "Visible": true },
 			"/Script/FortniteAI.FortAISpawnerUtilityComponent":					{  },
 			"/Script/FortniteAI.FortCollisionResponseSwapperComponent":			{  },
 			"/Script/FortniteAI.FortCreativeCreatureManagerInfoComponent":		{  },
@@ -1537,6 +1543,7 @@
 			"/Script/FortniteGame.FortMinigamePlayerStartComponent":			{  },
 			"/Script/FortniteGame.FortMinigameProgressComponent":				{  },
 			"/Script/FortniteGame.FortMutatorListComponent":					{  },
+			"/Script/FortniteGame.FortPhysicsImpulseComponent":                 {  },
 			"/Script/FortniteGame.FortPhysicsObjectComponent":					{  },
 			"/Script/FortniteGame.FortPhysicsComponent":						{ "Visible": true },
 			"/Script/FortniteGame.FortPlayerMannequin":							{  },
@@ -3323,6 +3330,10 @@
 				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
 			},
 			{
+				"Type": "/Script/FortniteGame.FortniteEditorSettings",
+				"AllowList": ["bKeepCurrentBuildingActorTexturesOnEditorReplace"]
+			},
+			{
 				"Type": "/Script/FortniteGame.FortHidingProp",
 				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "FixedEntranceDirection", "MaxInteractAngle", "InteractBelowPropDistance", "SetEntranceRotation", "EnterAnimMontage" ]
 			},
@@ -3569,7 +3580,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "EnabledPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride" ]
 			},
 			{
 				"Type": "/Script/CinematicCamera.CineCameraActor",
@@ -3775,7 +3786,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",
-				"AllowList": [ "Title", "Description", "DocsUrl", "VersePath", "VerseVersion", "UGCLocDescriptor", "AutoLocalizationSettings", "ExperimentalAccessWarning", "bIsUsingSceneGraphSystem", "bIsUsingExperimentalPhysics" ]
+				"AllowList": [ "Title", "Description", "DocsUrl", "VersePath", "VerseVersion", "UGCLocDescriptor", "AutoLocalizationSettings", "ExperimentalAccessWarning" ]
 			},
 			{
 				"Type": "/Script/Engine.CameraShakeBase",
@@ -4053,6 +4064,10 @@
 			{
 				"Type": "/CRD_Fillable_Container/Device_Fillable_Container.Device_Fillable_Container_C",
 				"AllowList": [ "ThresholdMeshes", "ProgessAudio", "RegressAudio", "FinishAudio" ]
+			},
+			{
+				"Type": "/CRD_SpireSpike/Device_SpireSpike.Device_SpireSpike_C",
+				"DenyList": [ "PerceptionListenerHandle", "HF_SlagHealth", "SearchingSoundCueLoop", "LootRepeatSoundCue", "OnDamageSoundCue", "OnDeathSoundCue" , "SearchedMesh", "SearchedMaterialOverrides", "SearchBounceRadiusOverride", "bDestroyContainerOnSearch", "bStartAlreadySearched_Athena", "bRegenerateLoot", "SearchSpeed", "SearchText", "TimeUntilLootRegenerates"  ]
 			}
 		]
 	},
@@ -4203,7 +4218,7 @@
 			},
 			{
 				"Type": "/Script/Engine.HierarchicalInstancedStaticMeshComponent",
-				"AllowList": ["CacheMeshExtendedBounds", "TranslatedInstanceSpaceOrigin", "SortedInstances", "NumBuiltInstances", "BuiltInstanceBounds", "bEnableDensityScaling", "InstanceCountToRender", "OcclusionLayerNumNodes", "UnbuiltInstanceBounds"],
+				"AllowList": ["CacheMeshExtendedBounds", "TranslatedInstanceSpaceOrigin", "SortedInstances", "NumBuiltInstances", "BuiltInstanceBounds", "bEnableDensityScaling", "InstanceCountToRender", "OcclusionLayerNumNodes", "UnbuiltInstanceBounds", "bUseTranslatedInstanceSpace", "TranslatedInstanceSpaceOrigin"],
 				"bAllowListAllSubclassProperties": true
 			},
 			{
@@ -4616,7 +4631,7 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.FortStaticMeshActor",
-				"AllowList": ["EdRenderComp", "ActorTemplateID", "SavedActorGuid", "PlaysetPackagePathName"],
+				"AllowList": ["EdRenderComp", "ActorTemplateID", "SavedActorGuid", "PlaysetPackagePathName", "SavedStaticMesh", "SavedMaterials"],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
 			},

@@ -11,6 +11,11 @@
 			"FriendlyName": "PCGExportSelectedAttributes",
 			"Version": 0
 		},
+		"06B5A7684699A6BE24C80B9DBB94B744":
+		{
+			"FriendlyName": "FortCharacterDynamicsStateLogicCustomVersion",
+			"Version": 0
+		},
 		"0925477B763D40019D91D6730B75B411":
 		{
 			"FriendlyName": "CommonUIVer",
@@ -514,7 +519,7 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 89
+			"Version": 90
 		},
 		"C2A15278BFE74AFE6C1790FF531DF755":
 		{
@@ -1320,6 +1325,7 @@
 			"/Script/FortniteAI.AthenaNavSystemConfig",
 			"/Script/FortniteAI.AthenaTrapAIPerceptionStimuliSourceComponent",
 			"/Script/FortniteAI.FortAIPerceptionComponent",
+			"/Script/FortniteAI.FortAISenseConfig_Sight",
 			"/Script/FortniteAI.FortAISpawnerUtilityComponent",
 			"/Script/FortniteAI.FortCollisionResponseSwapperComponent",
 			"/Script/FortniteAI.FortCreativeCreatureManagerInfoComponent",
@@ -1405,6 +1411,7 @@
 			"/Script/FortniteGame.FortMiniMapComponent",
 			"/Script/FortniteGame.FortMutatorListComponent",
 			"/Script/FortniteGame.FortPhysicsComponent",
+			"/Script/FortniteGame.FortPhysicsImpulseComponent",
 			"/Script/FortniteGame.FortPhysicsObjectComponent",
 			"/Script/FortniteGame.FortPlayerMannequin",
 			"/Script/FortniteGame.FortPlayerStart",
@@ -24931,6 +24938,7 @@
 			"/Game/Environments/Blockout/Blueprints/Pillar/BP_Blockout_Pillar_Corner_A_A.BP_Blockout_Pillar_Corner_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Corner_A_A.BP_Blockout_Corner_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Medium_A.BP_Blockout_Prop_Medium_A_C",
+			"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Small_A.BP_Blockout_Prop_Small_A_C",
 			"/Game/Environments/Blockout/Blueprints/Railings/BP_Blockout_Railing_A_A.BP_Blockout_Railing_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Roof/BP_Blockout_Roof_A_A.BP_Blockout_Roof_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Roof/BP_Blockout_Roof_InnerCrn_A_A.BP_Blockout_Roof_InnerCrn_A_A_C",

@@ -25,7 +25,7 @@ A basic repository to track multiple UEFN related diffs.
 | :---: | :---: | :---: | :---: |
 | FortniteGame | [`/Verse`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Verse/) | [`/UnrealEngine`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/UnrealEngine/) | [`/Fortnite`](https://github.com/vz-creates/uefn/blob/main/Modules/FortniteGame/Fortnite/) |
 
-- [Verse Language Quick Reference by Epic Games](https://dev.epicgames.com/documentation/en-us/uefn/verse-language-quick-reference)
+- [Verse Language Quick Reference by Epic Games](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-quick-reference)
 
 ***
 

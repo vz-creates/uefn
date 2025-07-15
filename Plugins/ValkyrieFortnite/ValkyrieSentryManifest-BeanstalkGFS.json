@@ -11,6 +11,11 @@
 			"FriendlyName": "PCGExportSelectedAttributes",
 			"Version": 0
 		},
+		"06B5A7684699A6BE24C80B9DBB94B744":
+		{
+			"FriendlyName": "FortCharacterDynamicsStateLogicCustomVersion",
+			"Version": 0
+		},
 		"0925477B763D40019D91D6730B75B411":
 		{
 			"FriendlyName": "CommonUIVer",
@@ -514,7 +519,7 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 89
+			"Version": 90
 		},
 		"C2A15278BFE74AFE6C1790FF531DF755":
 		{
@@ -1316,6 +1321,7 @@
 			"/Script/FortniteAI.AthenaNavSystemConfig",
 			"/Script/FortniteAI.AthenaTrapAIPerceptionStimuliSourceComponent",
 			"/Script/FortniteAI.FortAIPerceptionComponent",
+			"/Script/FortniteAI.FortAISenseConfig_Sight",
 			"/Script/FortniteAI.FortAISpawnerUtilityComponent",
 			"/Script/FortniteAI.FortCollisionResponseSwapperComponent",
 			"/Script/FortniteAI.FortCreativeCreatureManagerInfoComponent",
@@ -1413,6 +1419,7 @@
 			"/Script/FortniteGame.FortMiniMapComponent",
 			"/Script/FortniteGame.FortMutatorListComponent",
 			"/Script/FortniteGame.FortPhysicsComponent",
+			"/Script/FortniteGame.FortPhysicsImpulseComponent",
 			"/Script/FortniteGame.FortPhysicsObjectComponent",
 			"/Script/FortniteGame.FortPlayerMannequin",
 			"/Script/FortniteGame.FortPlayerStart",
@@ -6363,6 +6370,7 @@
 			"/Game/Athena/Environments/Landscape/LayerInfo/Athena_Terrain/SnowClumps_LayerInfo.SnowClumps_LayerInfo",
 			"/Game/Athena/Environments/Landscape/LayerInfo/Athena_Tutorial/BiomeA_LayerInfo.BiomeA_LayerInfo",
 			"/Game/Athena/Environments/Landscape/LayerInfo/Test/Arid/Mud_LayerInfo.Mud_LayerInfo",
+			"/Game/Athena/Environments/Landscape/Material/Athena_Terrain_Mat_Biome_Cliff_ForceMountain.Athena_Terrain_Mat_Biome_Cliff_ForceMountain",
 			"/Game/Athena/Environments/Landscape/Material/Athena_Terrain_Mat_Biome_Inst.Athena_Terrain_Mat_Biome_Inst",
 			"/Game/Athena/Environments/Landscape/Material/Athena_Terrain_Mat_Concerte_Inst.Athena_Terrain_Mat_Concerte_Inst",
 			"/Game/Athena/Environments/Landscape/Material/M_Athena_JungleSand.M_Athena_JungleSand",
@@ -7282,6 +7290,7 @@
 			"/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/Textures_V2/64x64/T_UI_IconLibrary_Zap_64.T_UI_IconLibrary_Zap_64",
 			"/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/Textures_V2/64x64/T_UI_IconLibrary_ZipLine_64.T_UI_IconLibrary_ZipLine_64",
 			"/Game/Athena/UI/InGame/Creative/PropertyEditor/Icon_Picker/Textures_V2/64x64/T_UI_IconLibrary_ZMarker_64.T_UI_IconLibrary_ZMarker_64",
+			"/Game/Athena/WinterArt/Materials/M_Athena_IceTransparent.M_Athena_IceTransparent",
 			"/Game/Athena/WinterArt/Materials/M_BaseSimple_4Layers.M_BaseSimple_4Layers",
 			"/Game/Athena/WinterArt/Materials/M_Ice_Snow_Cliff_02_Creative.M_Ice_Snow_Cliff_02_Creative",
 			"/Game/Athena/WinterArt/Materials/M_IceWater_Inst_Creative.M_IceWater_Inst_Creative",
@@ -8391,6 +8400,8 @@
 			"/Game/Creative/TextureData/CP_Water_Swamp_2Sided.CP_Water_Swamp_2Sided",
 			"/Game/Creative/TextureData/Cube_Water_Turquoise_2Sided.Cube_Water_Turquoise_2Sided",
 			"/Game/Effects/Fort_Effects/Effects/Environment/Desert/Dust/Organize/FadeBasedOnViewAngle.FadeBasedOnViewAngle",
+			"/Game/Effects/Fort_Effects/Effects/Environment/Desert/Dust/Organize/SM_WindSpline.SM_WindSpline",
+			"/Game/Effects/Fort_Effects/Effects/Environment/Snow/M_WindSplines_Snow_OpenArea_Inst1.M_WindSplines_Snow_OpenArea_Inst1",
 			"/Game/Effects/Fort_Effects/Effects/Water/P_WaterFall_New.P_WaterFall_New",
 			"/Game/Effects/Fort_Effects/Materials/_Functions/Color_Time_of_Day.Color_Time_of_Day",
 			"/Game/Effects/Fort_Effects/Materials/_Functions/CurveColor_Time_of_Day.CurveColor_Time_of_Day",
@@ -8471,6 +8482,7 @@
 			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_Frame_Metal.Agency_Frame_Metal",
 			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_GravelPath_Str.Agency_GravelPath_Str",
 			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_Ornate_Wall_Btm.Agency_Ornate_Wall_Btm",
+			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_Reception_Desk_Neutral.Agency_Reception_Desk_Neutral",
 			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_StairTrim_Base.Agency_StairTrim_Base",
 			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_Wall_Interior_Bottom.Agency_Wall_Interior_Bottom",
 			"/Game/Environments/Apollo/Sets/Agency/TextureData/Agency_Wall_Interior_Bottom_Plain.Agency_Wall_Interior_Bottom_Plain",
@@ -8582,6 +8594,7 @@
 			"/Game/Environments/Apollo/Sets/Catwalks/Textures/T_CatWalk_Floor_Colored_D.T_CatWalk_Floor_Colored_D",
 			"/Game/Environments/Apollo/Sets/Catwalks/Textures/T_CatWalk_Floor_N.T_CatWalk_Floor_N",
 			"/Game/Environments/Apollo/Sets/Catwalks/Textures/T_CatWalk_Floor_S.T_CatWalk_Floor_S",
+			"/Game/Environments/Apollo/Sets/ChopShop/Props/Meshes/S_ChopShop_Slab_01.S_ChopShop_Slab_01",
 			"/Game/Environments/Apollo/Sets/ChopShop/Texturedata/TD_Chopshop_Cardboard_Boxes_01.TD_Chopshop_Cardboard_Boxes_01",
 			"/Game/Environments/Apollo/Sets/ChopShop/Texturedata/TD_Chopshop_Trim_02.TD_Chopshop_Trim_02",
 			"/Game/Environments/Apollo/Sets/Coastal/Props/DataAssets/Bench_Brown.Bench_Brown",
@@ -11618,9 +11631,12 @@
 			"/Game/Environments/Sets/Neo/Vehicles/Materials/Color_Overrides/NeoT_Semi_Tractor_Black.NeoT_Semi_Tractor_Black",
 			"/Game/Environments/Sets/Neo/Vehicles/Materials/Color_Overrides/NeoT_Semi_Trailer_Black.NeoT_Semi_Trailer_Black",
 			"/Game/Environments/Sets/Neo/Vehicles/Materials/Color_Overrides/NeoT_Semi_Trailer_Red.NeoT_Semi_Trailer_Red",
+			"/Game/Environments/Sets/Neo/Vehicles/Materials/Truck_Color1.Truck_Color1",
 			"/Game/Environments/Sets/Neo/Vehicles/Materials/Truck_Color2.Truck_Color2",
 			"/Game/Environments/Sets/Neo/Vehicles/Materials/Truck_Color3.Truck_Color3",
 			"/Game/Environments/Sets/Oak/Materials/Decals/MI_Oak_Decal_Symbol_02.MI_Oak_Decal_Symbol_02",
+			"/Game/Environments/Sets/Oak/Props/Meshes/Shipping/S_Oak_Arid_RockSpike_01.S_Oak_Arid_RockSpike_01",
+			"/Game/Environments/Sets/Oak/Props/Meshes/Shipping/S_Oak_Arid_RockWall_01.S_Oak_Arid_RockWall_01",
 			"/Game/Environments/Sets/Oak/Props/TextureData/TD_Oak_Banner_Dark.TD_Oak_Banner_Dark",
 			"/Game/Environments/Sets/Oak/Props/TextureData/TD_Oak_Barrel_Black.TD_Oak_Barrel_Black",
 			"/Game/Environments/Sets/Oak/Props/TextureData/TD_Oak_Container_Blue.TD_Oak_Container_Blue",
@@ -17364,6 +17380,7 @@
 			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_Table_01.Apollo_Farm_Table_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_TankCart_01.Apollo_Farm_TankCart_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_Tractor_01.Apollo_Farm_Tractor_01_C",
+			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_Trailer_01.Apollo_Farm_Trailer_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_WaterWheel_01.Apollo_Farm_WaterWheel_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_Weathervane_01.Apollo_Farm_Weathervane_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Farm/Props/Apollo_Farm_WheelBarrow_01.Apollo_Farm_WheelBarrow_01_C",
@@ -18171,6 +18188,7 @@
 			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_NewsPaperBox_01.Apollo_Street_NewsPaperBox_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_ParkingMeter_01.Apollo_Street_ParkingMeter_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_PayPhone_01.Apollo_Street_PayPhone_01_C",
+			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_SignKeepOut_01.Apollo_Street_SignKeepOut_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_SignNoParking_01.Apollo_Street_SignNoParking_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_StreetSign_01.Apollo_Street_StreetSign_01_C",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Street/Props/Apollo_Street_TelegraphPole_C.Apollo_Street_TelegraphPole_C_C",
@@ -19510,6 +19528,7 @@
 			"/Game/Athena/Items/Traps/PoisonDartTrap/BP_PoisonDartTrap_Floor.BP_PoisonDartTrap_Floor_C",
 			"/Game/Athena/Items/Traps/PoisonDartTrap/BP_PoisonDartTrap_Wall.BP_PoisonDartTrap_Wall_C",
 			"/Game/Athena/Items/Traps/Trap_Floor_OilSlick.Trap_Floor_OilSlick_C",
+			"/Game/Athena/Playset/MinigamePlayerStartPlate.MinigamePlayerStartPlate_C",
 			"/Game/Athena/Playspace_GameMode.Playspace_GameMode_C",
 			"/Game/Athena/SupplyDrops/Llama/AthenaCreativeSpawnDrop.AthenaCreativeSpawnDrop_C",
 			"/Game/Athena/Valkyrie/Valkyrie_Creative_GameMode.Valkyrie_Creative_GameMode_C",
@@ -20920,6 +20939,7 @@
 			"/Game/Building/ActorBlueprints/Prop/IND_FactoryArm_01.IND_FactoryArm_01_C",
 			"/Game/Building/ActorBlueprints/Prop/IND_FactoryArm_01_Orange.IND_FactoryArm_01_Orange_C",
 			"/Game/Building/ActorBlueprints/Prop/IND_FactoryArm_03.IND_FactoryArm_03_C",
+			"/Game/Building/ActorBlueprints/Prop/IND_ForemanOffice_Chair.IND_ForemanOffice_Chair_C",
 			"/Game/Building/ActorBlueprints/Prop/IND_Forklift_01.IND_Forklift_01_C",
 			"/Game/Building/ActorBlueprints/Prop/IND_LaserWeldingMachine.IND_LaserWeldingMachine_C",
 			"/Game/Building/ActorBlueprints/Prop/IND_LatheMachine.IND_LatheMachine_C",
@@ -21527,6 +21547,7 @@
 			"/Game/Building/ActorBlueprints/Prop/WildWest_WaterPump_01.WildWest_WaterPump_01_C",
 			"/Game/Building/ActorBlueprints/Prop/WildWest_WaterWell_02.WildWest_WaterWell_02_C",
 			"/Game/Building/ActorBlueprints/Prop/WildWest_WoodFurnace_01.WildWest_WoodFurnace_01_C",
+			"/Game/Building/ActorBlueprints/Prop/Winter/Apollo_Misfit_TeddyBear_01.Apollo_Misfit_TeddyBear_01_C",
 			"/Game/Building/ActorBlueprints/Prop/Winter_StringLights.Winter_StringLights_C",
 			"/Game/Building/ActorBlueprints/Roof/Apollo_Cabin01_Corner_Brace.Apollo_Cabin01_Corner_Brace_C",
 			"/Game/Building/ActorBlueprints/Roof/Apollo_Cabin01_Straight_Brace.Apollo_Cabin01_Straight_Brace_C",
@@ -26560,6 +26581,7 @@
 			"/Game/Environments/Blockout/Blueprints/Pillar/BP_Blockout_Pillar_Corner_A_A.BP_Blockout_Pillar_Corner_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Corner_A_A.BP_Blockout_Corner_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Medium_A.BP_Blockout_Prop_Medium_A_C",
+			"/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Small_A.BP_Blockout_Prop_Small_A_C",
 			"/Game/Environments/Blockout/Blueprints/Railings/BP_Blockout_Railing_A_A.BP_Blockout_Railing_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Roof/BP_Blockout_Roof_A_A.BP_Blockout_Roof_A_A_C",
 			"/Game/Environments/Blockout/Blueprints/Roof/BP_Blockout_Roof_InnerCrn_A_A.BP_Blockout_Roof_InnerCrn_A_A_C",
@@ -27251,7 +27273,8 @@
 			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C",
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C",
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C",
-			"/NPCDefault/Types/CharacterType_Participant.CharacterType_Participant_C"
+			"/NPCDefault/Types/CharacterType_Participant.CharacterType_Participant_C",
+			"/NPCDefault/Types/Modifiers/CharacterModifier_Bots.CharacterModifier_Bots_C"
 		],
 		"VKCreateUGCPartner": [
 			"/CRD_VideoPlayer/Device_VideoPlayer_V3.Device_VideoPlayer_V3_C"

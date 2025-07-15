@@ -3,8 +3,25 @@
 		"+": [
 			{
 				"Type": "/Script/FortniteGame.FortPhysicsComponent",
-				"AllowList": [ "bCustomSimulatePhysics", "bCustomMassOverride", "CustomMass", "bCustomEnabledGravity", "bCustomStartAwake", "CustomLinearDamping", "CustomAngularDamping","ImpulseOnHitMultiplier",
-				                "bLockRotation", "bLockXRotation", "bLockYRotation", "bLockZRotation", "bLockTranslation", "bLockXTranslation", "bLockYTranslation", "bLockZTranslation" ]
+				"AllowList": [
+					"bCustomSimulatePhysics",
+					"bCustomMassOverride",
+					"CustomMass",
+					"bCustomEnabledGravity",
+					"bCustomStartAwake",
+					"CustomLinearDamping",
+					"CustomAngularDamping",
+					"ImpulseOnHitMultiplier",
+					"bLockRotation",
+					"bLockXRotation",
+					"bLockYRotation",
+					"bLockZRotation",
+					"bLockTranslation",
+					"bLockXTranslation",
+					"bLockYTranslation",
+					"bLockZTranslation",
+					"SoundAndVfxPreset"
+				]
 			},
 			{
 				"Type": "/CreativeCoreDevices/Device_ExperienceSettings_V2.Device_ExperienceSettings_V2_C",

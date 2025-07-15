@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.10-CL-43486998
+# Generated from build: ++Fortnite+Release-36.20-CL-43847582
 #################################################
 
 AINavigation<public> := module {
@@ -327,6 +327,16 @@ EntityTestSuite<public> := module {
 
   @hide_in_editor
   test_contentscope_execution_component<native><epic_internal> := class<final_super>(component) {
+    OnBeginSimulation<override>(): void = external {}
+  }
+
+  @hide_in_editor
+  test_material<native><epic_internal> := class(material) {
+    ___PropertyInterface_On_BaseColor_Changed<epic_internal>(): void = external {}
+  }
+
+  @hide_in_editor
+  test_material_component<native><epic_internal> := class<final_super>(component) {
     OnBeginSimulation<override>(): void = external {}
   }
 
@@ -1089,7 +1099,7 @@ Temporary<public> := module {
       ClearChannel<native><public>()<transacts>: void
 
       # Draws an arrow pointing from Start to End locations, and using the provided draw parameters.
-      DrawArrow<native><epic_internal>(
+      DrawArrow<native><public>(
         Start: (/Verse.org/SpatialMath:)vector3,
         End: (/Verse.org/SpatialMath:)vector3,
         ?ArrowSize: float = external {},
@@ -1111,7 +1121,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a box at the named location, and using the provided draw parameters
-      DrawBox<native><epic_internal>(
+      DrawBox<native><public>(
         Center: (/Verse.org/SpatialMath:)vector3,
         Rotation: (/Verse.org/SpatialMath:)rotation,
         ?Extent: (/Verse.org/SpatialMath:)vector3 = external {},
@@ -1133,7 +1143,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a capsule at the named location, and using the provided draw parameters.
-      DrawCapsule<native><epic_internal>(
+      DrawCapsule<native><public>(
         Center: (/Verse.org/SpatialMath:)vector3,
         Rotation: (/Verse.org/SpatialMath:)rotation,
         ?Height: float = external {},
@@ -1157,7 +1167,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a cone at the named location, and using the provided draw parameters.
-      DrawCone<native><epic_internal>(
+      DrawCone<native><public>(
         Origin: (/Verse.org/SpatialMath:)vector3,
         Direction: (/Verse.org/SpatialMath:)vector3,
         ?Height: float = external {},
@@ -1185,7 +1195,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a cylinder at the named location, and using the provided draw parameters.
-      DrawCylinder<native><epic_internal>(
+      DrawCylinder<native><public>(
         Start: (/Verse.org/SpatialMath:)vector3,
         End: (/Verse.org/SpatialMath:)vector3,
         ?NumSegments: int = external {},
@@ -1209,7 +1219,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a line from Start to End locations, and using the provided draw parameters.
-      DrawLine<native><epic_internal>(
+      DrawLine<native><public>(
         Start: (/Verse.org/SpatialMath:)vector3,
         End: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
@@ -1229,7 +1239,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a point at the named location, and using the provided draw parameters.
-      DrawPoint<native><epic_internal>(
+      DrawPoint<native><public>(
         Position: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
         ?Thickness: float = external {},
@@ -1247,7 +1257,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a sphere at the named location, and using the provided draw parameters.
-      DrawSphere<native><epic_internal>(
+      DrawSphere<native><public>(
         Center: (/Verse.org/SpatialMath:)vector3,
         ?Radius: float = external {},
         ?Color: color = external {},

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.10-CL-43486998
+# Generated from build: ++Fortnite+Release-36.20-CL-43847582
 #################################################
 
 AI<public> := module {
@@ -531,6 +531,10 @@ AI<public> := module {
   # Fortnite NPC AI actions management
   fort_npc_actions<native><public> := interface<epic_internal>(navigatable, focus_interface) {
     @experimental
+    # Equip the best weapon.
+    EquipBestWeapon<epic_internal>(): void
+
+    @experimental
     # Fires the currently equipped weapon.
     FireCurrentWeapon<epic_internal>()<suspends>: void
 
@@ -546,6 +550,9 @@ AI<public> := module {
   @experimental
   # Fortnite NPC AI actions management
   fort_npc_actions_component<native><epic_internal> := class<final_super><epic_internal>(component, fort_npc_actions) {
+    # Equip the best weapon.
+    EquipBestWeapon<native><override>(): void
+
     # Fires the currently equipped weapon.
     FireCurrentWeapon<native><override>()<suspends>: void
 
@@ -8152,11 +8159,9 @@ Devices<public> := module {
     # Succeeds when `Agent` is in the volume.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
 
-    @experimental
     # Signaled when an `creative_prop` entered the device volume.
     PropEnterEvent<public>: listenable(creative_prop) = external {}
 
-    @experimental
     # Signaled when an `creative_prop` exited the device volume.
     PropExitEvent<public>: listenable(creative_prop) = external {}
   }
@@ -8563,7 +8568,7 @@ FeralCorgi<public> := module {
   }
 
   player_display_info_manager<native><epic_internal> := class {
-    GetDisplayInfo<native><epic_internal>(InPlayer: player)<reads>: player_display_info
+    GetDisplayInfo<native><epic_internal>(InAgent: agent)<reads>: player_display_info
   }
 
   ranked_track_progress<native><epic_internal> := struct<concrete> {

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.20-CL-43847582
+# Generated from build: ++Fortnite+Release-36.30-CL-44367537
 #################################################
 
 AI<public> := module {
@@ -591,6 +591,9 @@ AI<public> := module {
 
     # Stop navigation
     StopNavigation<native><override>(): void
+
+    # Simulate the Use button.
+    Use<native><epic_internal>(Duration: float)<suspends>: void
 
     # Wait for a specific duration
     Wait<native><override>(?Duration: float = external {})<suspends>: void
@@ -1732,6 +1735,9 @@ Devices<public> := module {
   # A default asset to be used when creating an editor-specified `creative_prop_asset` variable.
   DefaultCreativePropAsset<public>: creative_prop_asset = external {}
 
+  # Succeeds if Left and Right are equal.
+  (/Fortnite.com/Devices:)Equals<native><epic_internal>(Left: creative_object, Right: creative_object)<transacts><decides>: void
+
   @deprecated
   # Deprecated, use `FindCreativeObjectsWithTag` instead.
   # Returns an array containing all creative objects which have been marked with the specified `Tag`.
@@ -1973,6 +1979,9 @@ Devices<public> := module {
 
   # Returns a `string` representation of `move_to_internal_result` objects.
   (/Fortnite.com/Devices:)ToString<epic_internal>(MoveToInternalResult: move_to_internal_result)<computes>: string = external {}
+
+  # Makes a `string` from `creative_object`.
+  (/Fortnite.com/Devices:)ToString<native><epic_internal>(InCreativeObject: creative_object)<computes>: string
 
   # Used to set up islands so players will earn Battle Pass XP when they interact with your island. Accolades are achievements or accomplishments that players can complete to earn XP.
   accolades_device<public> := class<concrete><final>(creative_device_base) {
@@ -2703,6 +2712,9 @@ Devices<public> := module {
     # Signaled when spawned item is returned.
     # Sends the `agent` that returned the item.
     ItemReturnedEvent<public>: listenable(agent) = external {}
+
+    # Force the agent to pick up the item.
+    PickUpIItem<epic_internal>(Agent: agent): void = external {}
   }
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -7067,6 +7079,15 @@ Devices<public> := module {
     # Is true if `Agent` is on *Team*.
     IsOnTeam<public>(Agent: agent)<transacts><decides>: void = external {}
 
+    # Removes the `agent` from its Temporary Team.
+    # Decides based on whether the `agent` was on a Temporary Team.
+    # This will return them to the team they were on before they joined a Temporary Team
+    RemoveTemporaryMemberFromTeam<public>(Agent: agent): void = external {}
+
+    # Returns all temporary team members for this Device’s Team Setting Value back to their original Teams.
+    # If the device is configured to All, then this function will remove all Temporary Team members from any Temporary Team they are on, returning them to their original team.
+    RemoveTemporaryMembersFromTeam<public>(): void = external {}
+
     # Signaled when a member of *Team* is eliminated.
     # Sends the `agent` that was eliminated.
     TeamMemberEliminatedEvent<public>: listenable(agent) = external {}
@@ -7076,6 +7097,15 @@ Devices<public> := module {
 
     # Signaled when *Team* runs out of respawns.
     TeamOutOfRespawnsEvent<public>: listenable(tuple()) = external {}
+
+    # This variable maps to the AllowTemporaryTeamMemberInvitations user option.
+    # Modifying this value does not affect the state of any existing Temporary Team member.
+    # If a player is currently on a Temporary Team, they will maintain access to the leave team emote regardless of this value.
+    # Available values:
+    # * If this option is unset, use the global setting configured in Island Settings
+    # * If this is set to TRUE, it allows members of this team to Emote and invite other players to their team.
+    # * If this is set to FALSE, it prevents members of this team from using an Emote to invite other players to this team.
+    var AllowTemporaryTeamMemberInvitations<public>: ?logic = external {}
   }
 
   # Customizable rift that allows `agent`s to move instantly between locations. You can use this to move players around your island, or create multi-island experiences with teleporters that take players from one island to another.
@@ -10088,6 +10118,12 @@ VerseInternalTesting<public> := module {
       GetCallCount<public>(): int = external {}
 
       ResetCallCount<public>(): void = external {}
+    }
+
+    test_event_creative_prop_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(creative_prop)): void = external {}
+
+      var ArgProp<public>: ?creative_prop = external {}
     }
 
     test_event_entity_handler_mock<public> := class(test_device_event_handler_mock) {

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.20-CL-43847582
+# Generated from build: ++Fortnite+Release-36.30-CL-44367537
 #################################################
 
 using { /Fortnite.com/Characters }
@@ -5191,6 +5191,15 @@ Devices<public> := module {
     # Is true if `Agent` is on *Team*.
     IsOnTeam<public>(Agent: agent)<transacts><decides>: void = external {}
 
+    # Removes the `agent` from its Temporary Team.
+    # Decides based on whether the `agent` was on a Temporary Team.
+    # This will return them to the team they were on before they joined a Temporary Team
+    RemoveTemporaryMemberFromTeam<public>(Agent: agent): void = external {}
+
+    # Returns all temporary team members for this Device’s Team Setting Value back to their original Teams.
+    # If the device is configured to All, then this function will remove all Temporary Team members from any Temporary Team they are on, returning them to their original team.
+    RemoveTemporaryMembersFromTeam<public>(): void = external {}
+
     # Signaled when a member of *Team* is eliminated.
     # Sends the `agent` that was eliminated.
     TeamMemberEliminatedEvent<public>: listenable(agent) = external {}
@@ -5200,6 +5209,15 @@ Devices<public> := module {
 
     # Signaled when *Team* runs out of respawns.
     TeamOutOfRespawnsEvent<public>: listenable(tuple()) = external {}
+
+    # This variable maps to the AllowTemporaryTeamMemberInvitations user option.
+    # Modifying this value does not affect the state of any existing Temporary Team member.
+    # If a player is currently on a Temporary Team, they will maintain access to the leave team emote regardless of this value.
+    # Available values:
+    # * If this option is unset, use the global setting configured in Island Settings
+    # * If this is set to TRUE, it allows members of this team to Emote and invite other players to their team.
+    # * If this is set to FALSE, it prevents members of this team from using an Emote to invite other players to this team.
+    var AllowTemporaryTeamMemberInvitations<public>: ?logic = external {}
   }
 
   # Customizable rift that allows `agent`s to move instantly between locations. You can use this to move players around your island, or create multi-island experiences with teleporters that take players from one island to another.

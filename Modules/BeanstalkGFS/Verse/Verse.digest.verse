@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.20-CL-43847582
+# Generated from build: ++Fortnite+Release-36.30-CL-44367537
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -1484,13 +1484,13 @@ SceneGraph<public> := module {
     # alternate origin than the default parent entity
     var Origin<public>: ?origin = external {}
 
-    var<private> GlobalTransformInternal<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+    var<private> GlobalTransformInternal<native><private>: (/Verse.org/SpatialMath:)transform = external {}
 
     @editable {}
-    var<private> LocalTransformInternal<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+    var<private> LocalTransformInternal<native><private>: (/Verse.org/SpatialMath:)transform = external {}
 
     @editable {}
-    var<private> OriginInternal<native><public>: ?origin = external {}
+    var<private> OriginInternal<native><private>: ?origin = external {}
   }
 }
 

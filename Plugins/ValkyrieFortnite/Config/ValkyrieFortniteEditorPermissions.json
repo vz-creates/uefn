@@ -2067,7 +2067,11 @@
 			"/Script/Engine.FloatSpringState":									{  },
 			"/Script/Engine.QuaternionSpringState":								{  },
 			"/Script/FeralCorgiGameplayRuntime.FortUserOptionComponent_TickRate":{ },
-			"/Script/FortniteUI.HUDEquippedItemViewModel": { "Visible": true }
+			"/Script/FortniteUI.HUDEquippedItemViewModel": { "Visible": true },
+			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams": { "Visible": true },
+			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams_TeamSettingsAndInventory": { "Visible": true },
+			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C": { "Visible": true },
+			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C": { "Visible": true }
 		},
 		"AllowedMenus": {
 			"AssetEditor.IKRetargetEditor.MainMenu.CreateMenu": {
@@ -2403,7 +2407,7 @@
 				"AllowExtenders": false
 			},
 			"Sequencer.MainToolBar": {
-				"AllowList": [ "Save", "FindInContentBrowser", "CreateCamera", "Actions", "ViewOptions", "PlaybackOptions", "KeyGroup", "AutoChange", "ToggleAutoKeyEnabled", "AllowEditsMode", "ToggleIsSnapEnabled", "SnapOptions", "PlayRate", "ToggleLimitViewportSelection", "ToggleShowCurveEditor" ]
+				"AllowList": [ "Save", "FindInContentBrowser", "CreateCamera", "Actions", "ViewOptions", "PlaybackOptions", "KeyGroup", "AutoChange", "ToggleAutoKeyEnabled", "AllowEditsMode", "ToggleIsSnapEnabled", "SnapOptions", "PlayRate", "ToggleLimitViewportSelection", "ToggleShowCurveEditor", "ToggleForceWholeFrames" ]
 			},
 			"SkeletonTree.FilterMenu": {
 				"AllowList": [ "ShowRetargeting", "FilteringFlattensHierarchy", "HideParentsWhenFiltering", "ShowDebugVisualization", "ShowAllBones", "ShowMeshBones", "ShowLODBones", "ShowWeightedBones", "HideBones", "ShowActiveSockets", "ShowMeshSockets", "ShowSkeletonSockets", "ShowAllSockets", "HideSockets" ]
@@ -2836,6 +2840,7 @@
 			"MIron_Visuals",
 			"MeltedIron_Arcade_Template",
 			"PrefabExample",
+			"SceneGraph",
 			"ScarySpace",
 			"UEFNDesignASpeedwayRace",
 			"VKT_Animation101",
@@ -4060,6 +4065,14 @@
 			{
 				"Type": "/Game/Valkyrie/UMG/UEFN_Slider.UEFN_Slider_C",
 				"AllowList": [ "Value" ]
+			},
+			{
+				"Type": "/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams",
+				"AllowList": [ "bAllowTemporaryTeamInvites" ]
+			},
+			{
+				"Type": "/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams_TeamSettingsAndInventory",
+				"AllowList": [ "bAllowTemporaryTeamInvites" ]
 			},
 			{
 				"Type": "/CRD_Fillable_Container/Device_Fillable_Container.Device_Fillable_Container_C",

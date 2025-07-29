@@ -4,7 +4,7 @@ A basic repository to track multiple UEFN related diffs.
 
 ## Updates
 
-- `v37.30` | `v37.20` | `v37.10` | `v37.00`
+- `v37.51` | `v37.50` | `v37.40` | `v37.30` | `v37.20` | `v37.10` | `v37.00`
 - [`v36.30`](https://github.com/vz-creates/uefn/commit/f49e81ff8e5881a30bdbfab8d200f4199c4ee77b) | [`v36.20`](https://github.com/vz-creates/uefn/commit/4c8b3753cd6e26127735dab975306dae3b7894c5) | [`v36.10`](https://github.com/vz-creates/uefn/commit/35f761f4a2771da8453694ff87324149201afe52) | [`v36.00`](https://github.com/vz-creates/uefn/commit/728a0856f93b6265dc6b253b46e986b9f327b126)
 - [`v35.20`](https://github.com/vz-creates/uefn/commit/503006b02c80a2b2f68bcd0c8233a1d6ea8b38e6) | [`v35.10`](https://github.com/vz-creates/uefn/commit/4128dda3eb4bee8b647bb3b235b8a82bd04d5055) | [`v35.00`](https://github.com/vz-creates/uefn/commit/e8d56a62b8a267ab1d1b368308b75d6714669879)
 - [`v34.40`](https://github.com/vz-creates/uefn/commit/abcec061df5b0abd6ae00929456dc040b9b2a02a) | [`v34.30`](https://github.com/vz-creates/uefn/commit/6d6c282dd4f6694e407bf2017a708a966551924a) | [`v34.21`](https://github.com/vz-creates/uefn/commit/eb7d56e2b8f6018927cb6a0fafc6e06a6e5b879a) | [`v34.20`](https://github.com/vz-creates/uefn/commit/5c122bc375483a527285754d96df094294cc7d46) | [`v34.10`](https://github.com/vz-creates/uefn/commit/9d8e3710e9beb2043052c689be6405e38446c7df) | [`v34.00`](https://github.com/vz-creates/uefn/commit/bf35ed61c49c9770a126a7deb814455c512dcea0)

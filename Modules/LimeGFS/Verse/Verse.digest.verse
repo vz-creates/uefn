@@ -2,12 +2,23 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.30-CL-44367537
+# Generated from build: ++Fortnite+Release-37.00-CL-44501951
 #################################################
 
+using { /Verse.org/Simulation }
 # Module import path: /Verse.org/Assets
 Assets<public> := module {
   animation_sequence<native><public> := class<computes><final><epic_internal> {}
+
+  # Interface that provides an icon.
+  has_icon<public> := interface {
+    @editable
+    var<protected> Icon<public>: texture
+  }
+
+  input_action<native><public>(t: type) := class<computes><epic_internal> {}
+
+  input_mapping<native><public> := class<computes><epic_internal> {}
 
   material<native><public> := class<epic_internal> {}
 
@@ -20,7 +31,6 @@ Assets<public> := module {
   texture<native><public> := class<computes><final><epic_internal> {}
 }
 
-using { /Verse.org/Simulation }
 # Module import path: /Verse.org/Colors
 Colors<public> := module {
   # Makes an ACES 2065-1 `color` from `Hue`, `Saturation`, and `Value` components.
@@ -424,6 +434,7 @@ Native<public> := module {
   @attribscope_struct
   @attribscope_enum
   @attribscope_interface
+  @attribscope_module
   import_as_attribute<epic_internal> := class<computes><internal>(attribute) {}
 }
 
@@ -742,7 +753,6 @@ SceneGraph<public> := module {
   }
 
   using { /Verse.org/Simulation }
-  @experimental
   # An interactable component with a composable feature set.
   basic_interactable_component<native><public> := class(interactable_component) {
     # Attempt to cancel an interaction. Fails if the supplied agent is not currently interacting with the component.
@@ -1133,7 +1143,6 @@ SceneGraph<public> := module {
     SucceededEvent<native><public>: listenable(agent) = external {}
   }
 
-  @experimental
   # Used to set a cooldown when interacted.
   interactable_cooldown<native><public> := class<concrete> {
     # Event which fires when the shared cooldown expires.
@@ -1149,7 +1158,6 @@ SceneGraph<public> := module {
     var<public> RemainingDuration<public>: float = external {}
   }
 
-  @experimental
   # Used to set a cooldown per agent when interacted.
   interactable_cooldown_per_agent<native><public> := class<concrete> {
     # Event which fires when the per agent cooldown expires. Sends the agent which was previously affected by the cooldown.
@@ -1165,7 +1173,6 @@ SceneGraph<public> := module {
     var<private> RemainingDuration<native><public>: [agent]float = external {}
   }
 
-  @experimental
   # Used to set an interaction duration.
   interactable_duration<native><public> := class<concrete> {
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.Returns the same value when called multiple times within a transaction.
@@ -1187,7 +1194,6 @@ SceneGraph<public> := module {
     var MaxSimultaneousInteractors<native><public>: ?int = external {}
   }
 
-  @experimental
   # Used to set a limit of times to interact.
   interactable_success_limit<native><public> := class<concrete> {
     # Resets the counter for the times this component has had a successful interaction.
@@ -1513,7 +1519,7 @@ Simulation<public> := module {
   # Module import path: /Verse.org/Simulation/Tags
   Tags<public> := module {
     # A single gameplay tag, which represents a hierarchical name of the form x.y that is registered in the GameplayTagsManager You can filter the gameplay tags displayed in the editor.
-    tag<native><public> := class<abstract> {}
+    tag<native><public> := class<abstract><castable> {}
 
     # Advanced tag search criteria
     tag_search_criteria<native><public> := class {

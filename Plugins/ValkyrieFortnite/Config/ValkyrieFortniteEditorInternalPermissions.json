@@ -754,7 +754,7 @@
 				"/Script/Engine.KismetMathLibrary:Wrap",
 				"/Script/Engine.KismetMathLibrary:Xor_Int64Int64",
 				"/Script/Engine.KismetMathLibrary:Xor_IntInt",
-				"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros:IsValid",
+				"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros:IsValid"
 			]
 		},
 		"UnrestrictedBlueprintTypes": [
@@ -781,6 +781,7 @@
 	"ValkyrieUMGSettings": {
 		"AllowedPaletteWidgets": {
 			"+": [
+				"/Script/UMG.SafeZone",
 				"/Script/CommonUIMVVMExtensions.ActionWidget",
 				"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C",
 				"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C"
@@ -788,11 +789,14 @@
 		},
 		"AllowedMVVMConversionClass": {
 			"+": [
+				"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftInputAction"
 			]
 		}
 	},
 	"ValkyrieEditorSettings": {
 		"AllowedAssetTypes": {
+			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Rules": ["View","Create"] },
+			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Rules": ["View","Create"] },
 			"/Script/AmbientAudio.AmbientAudioComponent": 		{ "Rules": ["View"] },
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View","Create"] },
 			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create" ] },
@@ -836,6 +840,10 @@
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":	{ "Rules": ["View","Create"] }
 		},
 		"AllowedClasses": {
+			"/Script/MusicEnvironment.FrameBasedMusicMap": { },
+			"/Script/MusicalMode.MovieSceneMusicalClock": { },
+			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Visible": true },
+			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Visible": true },
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C":	{ "Visible": true },
 			"/Script/AmbientAudio.AmbientAudioComponent": 				{ "Visible": true },
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 				{ "Visible": true },
@@ -1066,6 +1074,8 @@
 			"/Script/GameplayCameras.BaseFramingCameraNode":			{  },
 			"/Script/GameplayCameras.DollyFramingCameraNode":			{  },
 			"/Script/GameplayCameras.PanningFramingCameraNode":			{  },
+			"/Script/UMG.SafeZone":										{ "Visible": true },
+			"/Script/UMG.SafeZoneSlot":									{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{ "Visible": true },
@@ -1157,6 +1167,11 @@
 					"=": []
 				}
 			},
+			"SpatialProfiler.MainToolBar": {
+				"DenyList": {
+					"=": []
+				}
+			},
 			"DaySequence.ViewportToolbar": {
 				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence", "SelectDaySequenceActor", "RefreshDaySequenceActor", "OpenDaySequenceActor", "RespawnDaySequenceActor" ]
 			}
@@ -1212,6 +1227,16 @@
 					"bSampleAndHold",
 					"PatchSettings",
 					"bBypass"
+				]
+			},
+			{
+				"Type": "/Script/UMG.SafeZoneSlot",
+				"DenyList": [
+					"Padding",
+					"HAlign",
+					"VAlign",
+					"bIsTitleSafe",
+					"SafeAreaScale"
 				]
 			},
 			{
@@ -1371,8 +1396,8 @@
 				"AllowList": [ "NumChannels", "SampleRate", "ImportedSampleRate", "Duration", "TotalSamples", "ModulationSettings", "LoadingBehavior", "bMature", "bManualWordWrap", "bSingleLine", "SubtitlePriority", "Subtitles", "Comment" ]
 			},
 			{
-					"Type": "/Script/DaySequence.DaySequenceModifierComponent",
-				"AllowList": [ "bUseCollection", "DaySequenceCollections", "Mode", "BlendPolicy", "BlendAmount", "Bias", "VolumeShapeComponents", "DayNightCycle", "DayNightCycleTime" ]
+				"Type": "/Script/DaySequence.DaySequenceModifierComponent",
+				"AllowList": [ "bUseCollection", "DaySequenceCollections", "Mode", "BlendPolicy", "BlendAmount", "BlendTime", "Bias", "VolumeShapeComponents", "DayNightCycle", "DayNightCycleTime", "UserBlendWeight" ]
 			},
 			{
 				"Type": "/Script/DaySequence.DaySequenceActor",
@@ -1415,7 +1440,7 @@
 			},
 			{
 				"Type": "/Script/FeralCorgiGameplayRuntime.FortUserOptionComponent_TickRate",
-				"DenyList": [ "DesiredTickRate" ]
+				"DenyList": [ "DesiredTickRate", "DesiredPhysicsTickRate" ]
 			}
 		]
 	},

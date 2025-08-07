@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.30-CL-44367537
+# Generated from build: ++Fortnite+Release-37.00-CL-44501951
 #################################################
 
 using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -1080,6 +1080,9 @@ Temporary<public> := module {
       # The opacity of the displayed text. Used only during initialization of the widget and not modified by SetTextOpacity.
       DefaultTextOpacity<native><public>: type { _X: float where 0.000000 <= _X, _X <= 1.000000 } = external {}
 
+      # The size of the displayed text. Used only during initialization of the widget and not modified by SetTextSize.
+      DefaultTextSize<native><public>: float = external {}
+
       # Gets the text justification in the widget.
       GetJustification<native><public>(): text_justification
 
@@ -1095,6 +1098,9 @@ Temporary<public> := module {
       # Gets the opacity of the displayed text.
       GetTextOpacity<native><public>(): type { _X: float where 0.000000 <= _X, _X <= 1.000000 }
 
+      # Gets the size of the displayed text.
+      GetTextSize<native><public>(): float
+
       # Sets the text justification in the widget.
       SetJustification<native><public>(InJustification: text_justification): void
 
@@ -1109,6 +1115,9 @@ Temporary<public> := module {
 
       # Sets the opacity of the displayed text.
       SetTextOpacity<native><public>(InOpacity: type { _X: float where 0.000000 <= _X, _X <= 1.000000 }): void
+
+      # Sets the size of the displayed text.
+      SetTextSize<native><public>(InSize: float): void
     }
 
     # Text justification values:

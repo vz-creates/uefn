@@ -2,11 +2,17 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-36.30-CL-44367537
+# Generated from build: ++Fortnite+Release-37.00-CL-44501951
 #################################################
 
+using { /Fortnite.com/AI }
 using { /Fortnite.com/Characters }
+using { /Fortnite.com/Game }
 using { /Fortnite.com/Teams }
+using { /Verse.org/Assets }
+using { /Verse.org/Native }
+using { /Verse.org/SceneGraph }
+using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/AI
 AI<public> := module {
   # Returns the `npc_behavior` for `InAgent`.
@@ -486,13 +492,6 @@ Characters<public> := module {
   }
 }
 
-using { /Fortnite.com/AI }
-using { /Fortnite.com/Game }
-using { /Verse.org/Assets }
-using { /Verse.org/Native }
-using { /Verse.org/SceneGraph }
-using { /Verse.org/Simulation/Tags }
-# Module import path: /Fortnite.com/Devices
 Devices<public> := module {
   # Returns the simulation entity at the root of the experience this `creative_device` is operating within.
   #   * The simulation entity is the rootmost entity in an experience.
@@ -1001,7 +1000,6 @@ Devices<public> := module {
   }
 
   using { /Fortnite.com/Game }
-  using { /Verse.org/Simulation }
   # Used to create a customizable turret that can search for nearby targets.
   automated_turret_device<public> := class<concrete><final>(creative_device_base, healthful, healable) {
     # Triggers when someone enters the activation radius while nobody else is there.
@@ -1091,14 +1089,17 @@ Devices<public> := module {
   }
 
   # A vault door that requires a start of a sequence to damage a number of weakpoints to open.
-  bank_vault_device<public> := class<concrete><final>(creative_device_base, enableable) {
-    # Triggers when a weakpoint is activated. The weakpoint will begin to glow, but does not become vulnerable until a subsequent `WeakpointVulnerableEvent`
+  bank_vault_device<public> := class<concrete><final>(creative_device_base, bank_vault_interface) {
+    # Triggers when a weakpoint is activated. The weakpoint will begin to glow, but does not become vulnerable until a subsequent `WeakpointVulnerableEvent`.
     #  * Sends the `agent` that activated the vault or none if the sequence was triggered by a function, and the `int` index of the weakpoint from 0-4, in order of activation.
-    ActivateWeakpointEvent<public>: listenable(tuple(?agent, int)) = external {}
+    ActivateWeakpointEvent<override>: listenable(tuple(?agent, int)) = external {}
+
+    # Destroy the active weakpoint. Requires the device to be enabled. Must have active weakpoint.
+    DestroyActiveWeakpoint<override>(): void = external {}
 
     # Triggers when a weakpoint is destroyed.
     #  * Sends the last `agent` that damaged the weakpoint or the `agent` that started the sequence if no external damage was done or none if the sequence was triggered by a function, and the `int` index of the weakpoint from 0-4, in order of activation.
-    DestroyWeakpointEvent<public>: listenable(tuple(?agent, int)) = external {}
+    DestroyWeakpointEvent<override>: listenable(tuple(?agent, int)) = external {}
 
     # Disable the device. Pauses vault sequence.
     Disable<override>(): void = external {}
@@ -1107,34 +1108,128 @@ Devices<public> := module {
     Enable<override>(): void = external {}
 
     # Destroys the remaining weakpoints and opens the vault door. Requires the device to be enabled.
-    ForceOpen<public>(): void = external {}
+    ForceOpen<override>(): void = external {}
+
+    # Get active weakpoint's health. If there is no active weakpoint, returns false.
+    GetActiveWeakpointHealth<override>()<transacts><decides>: float = external {}
+
+    # Gets the active weakpoint's index starting at `0`, regardless of device's enabled state. Returns false if there is no active weakpoint, such as when the sequence is not active or directly after a weakpoint is destroyed.
+    GetActiveWeakpointIndex<override>()<transacts><decides>: int = external {}
+
+    # Gets the total number of weakpoints.
+    GetWeakpointCount<override>(): int = external {}
 
     # Succeeds if the device is enabled, fails if it's disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
 
     # Whether the vault sequence is currently active and not paused.
-    IsSequenceActive<public>()<transacts><decides>: void = external {}
+    IsSequenceActive<override>()<transacts><decides>: void = external {}
 
     # Triggers when the vault is opened either by the destruction of its weakpoints or by an event.
     #  * Sends the last `agent` that damaged a weakpoint or the `agent` that started the sequence if no external damage was done or none if the sequence was triggered by a function.
-    OpenEvent<public>: listenable(?agent) = external {}
+    OpenEvent<override>: listenable(?agent) = external {}
 
     # Disable the weakpoint vulnerability and freeze the progress of each one. Weakpoints can only be damaged while the vault sequence is active.
-    PauseSequence<public>(): void = external {}
+    PauseSequence<override>(): void = external {}
 
     # Restores vault to default state, deactivates the device, and heals all weakpoints to max health. Requires the device to be enabled.
-    Reset<public>(): void = external {}
+    Reset<override>(): void = external {}
+
+    # Restores the active weakpoint to full health. Requires the device to be enabled. Must have active weakpoint.
+    RestoreActiveWeakpoint<override>(): void = external {}
+
+    # Set active weakpoint's health. Setting it to `0.0` will destroy the weakpoint. Clamps to maximum of WeakpointMaxHealth.
+    SetActiveWeakpointHealth<override>(NewHealth: float): void = external {}
 
     # Begin the sequence of events to open the vault door without thermite, or unpauses the sequence if it was paused. Requires the device to be enabled. Weakpoints can only be damaged while the vault sequence is active.
-    StartSequence<public>(): void = external {}
+    StartSequence<override>(): void = external {}
 
     # Triggers when the vault sequence is started by a player or event.
-    #  * Sends the triggering `agent` or none if the sequence was triggered by a function.
-    StartSequenceEvent<public>: listenable(?agent) = external {}
+    #  * Sends the `agent` that triggered this event, if applicable.
+    StartSequenceEvent<override>: listenable(?agent) = external {}
 
     # Triggers when a weakpoint becomes vulnerable.
     #  * Sends the `agent` that activated the vault or none if the sequence was triggered by a function, and the `int` index of the weakpoint from 0-4, in order of activation.
-    WeakpointVulnerableEvent<public>: listenable(tuple(?agent, int)) = external {}
+    WeakpointVulnerableEvent<override>: listenable(tuple(?agent, int)) = external {}
+
+    # The max health of this device's weakpoints.
+    var MaxWeakpointHealth<override>: float = external {}
+
+    # Whether the player needs thermite when interacting with the door to start the vault opening sequence.
+    var RequireThermite<override>: logic = external {}
+
+    # Damage dealt to the active weakpoint each second. Negative numbers heal the weakpoint. Weakpoints can only be damaged while the vault sequence is active.
+    var WeakpointDamagePerSecond<override>: float = external {}
+
+    # Whether the weakpoint takes damage from weapons and items while vault sequence is active.
+    var WeakpointTakesExternalDamage<override>: logic = external {}
+  }
+
+  bank_vault_interface<public> := interface<epic_internal>(enableable) {
+    # Triggers when a weakpoint is activated. The weakpoint will begin to glow, but does not become vulnerable until a subsequent `WeakpointVulnerableEvent`.
+    #  * Sends the `agent` that activated the vault or none if the sequence was triggered by a function, and the `int` index of the weakpoint from 0-4, in order of activation.
+    ActivateWeakpointEvent<public>: listenable(tuple(?agent, int))
+
+    # Destroy the active weakpoint. Requires the device to be enabled. Must have active weakpoint.
+    DestroyActiveWeakpoint<public>(): void
+
+    # Triggers when a weakpoint is destroyed.
+    #  * Sends the last `agent` that damaged the weakpoint or the `agent` that started the sequence if no external damage was done or none if the sequence was triggered by a function, and the `int` index of the weakpoint from 0-4, in order of activation.
+    DestroyWeakpointEvent<public>: listenable(tuple(?agent, int))
+
+    # Destroys the remaining weakpoints and opens the vault door. Requires the device to be enabled.
+    ForceOpen<public>(): void
+
+    # Get active weakpoint's health. If there is no active weakpoint, returns false.
+    GetActiveWeakpointHealth<public>()<transacts><decides>: float
+
+    # Gets the active weakpoint's index starting at `0`, regardless of device's enabled state. Returns false if there is no active weakpoint, such as when the sequence is not active or directly after a weakpoint is destroyed.
+    GetActiveWeakpointIndex<public>()<transacts><decides>: int
+
+    # Gets the total number of weakpoints.
+    GetWeakpointCount<public>(): int
+
+    # Whether the vault sequence is currently active and not paused.
+    IsSequenceActive<public>()<transacts><decides>: void
+
+    # Triggers when the vault is opened either by the destruction of its weakpoints or by an event.
+    #  * Sends the last `agent` that damaged a weakpoint or the `agent` that started the sequence if no external damage was done or none if the sequence was triggered by a function.
+    OpenEvent<public>: listenable(?agent)
+
+    # Disable the weakpoint vulnerability and freeze the progress of each one. Weakpoints can only be damaged while the vault sequence is active.
+    PauseSequence<public>(): void
+
+    # Restores vault to default state, deactivates the device, and heals all weakpoints to max health. Requires the device to be enabled.
+    Reset<public>(): void
+
+    # Restores the active weakpoint to full health. Requires the device to be enabled. Must have active weakpoint.
+    RestoreActiveWeakpoint<public>(): void
+
+    # Set active weakpoint's health. Setting it to `0.0` or false will destroy the weakpoint. Clamps to maximum of WeakpointMaxHealth.
+    SetActiveWeakpointHealth<public>(newHealth: float): void
+
+    # Begin the sequence of events to open the vault door without thermite, or unpauses the sequence if it was paused. Requires the device to be enabled. Weakpoints can only be damaged while the vault sequence is active.
+    StartSequence<public>(): void
+
+    # Triggers when the vault sequence is started by a player or event.
+    #  * Sends the `agent` that triggered this event, if applicable.
+    StartSequenceEvent<public>: listenable(?agent)
+
+    # Triggers when a weakpoint becomes vulnerable.
+    #  * Sends the `agent` that activated the vault or none if the sequence was triggered by a function, and the `int` index of the weakpoint from 0-4, in order of activation.
+    WeakpointVulnerableEvent<public>: listenable(tuple(?agent, int))
+
+    # Whether the player needs thermite when interacting with the door to start the vault opening sequence.
+    var RequireThermite<public>: logic
+
+    # Damage dealt to the active weakpoint each second. Negative numbers heal the weakpoint. Weakpoints can only be damaged while the vault sequence is active.
+    var WeakpointDamagePerSecond<public>: float
+
+    # Whether the weakpoint takes damage from weapons and items while vault sequence is active.
+    var WeakpointTakesExternalDamage<public>: logic
+
+    # The max health of this device's weakpoints.
+    var<internal> MaxWeakpointHealth<public>: float
   }
 
   # Creates an impenetrable zone that can block `agent` movement and weapon fire.
@@ -2674,6 +2769,53 @@ Devices<public> := module {
     UnawareEvent<public>: listenable(agent) = external {}
   }
 
+  # An interface for shared functionality between different spire devices
+  has_spire_functionality<public> := interface<epic_internal>(enableable) {
+    # Triggers when the Spire becomes activated from players entering the `Activation Distance`
+    ActivateEvent<public>: listenable(?agent)
+
+    # Triggers when the Spire becomes deactivated, either from players leaving the `Activation Distance`
+    DeactivateEvent<public>: listenable(tuple())
+
+    # Sets the Spire’s health to zero, destroying it.
+    Destroy<public>(): void
+
+    # Triggers when the Spire is destroyed from damage or events
+    DestroyEvent<public>: listenable(?agent)
+
+    # If this Spire is currently activated.
+    #  * Succeeds if activated. Fails if deactivated
+    #  * An activated will react to enemies and take damage
+    #  * Becomes activated from being enabled and players entering the `Activation Distance`
+    IsActivated<public>()<transacts><decides>: void
+
+    # Succeeds if this Spire’s health has reached 0. Fails otherwise
+    IsDestroyed<public>()<transacts><decides>: void
+
+    # Succeeds if this Spire is in a spawned state. Fails if the Spire is destroyed or has not spawned.
+    IsSpawned<public>()<transacts><decides>: void
+
+    # Resets the Spire to its initial state.
+    Reset<public>(): void
+
+    # Spawns the Spire, causing it to become visible and enabling collision
+    #  *  Does nothing if the Spire is already spawned or destroyed
+    Spawn<public>(): void
+
+    # Determines the distance where approaching players activate the Spire.
+    var ActivationDistance<public>: float
+
+    # The Spire's current health. Clamped between 0 and `MaxHealth`.
+    #  * Setting this value does nothing if the Spire is destroyed.
+    var Health<public>: float
+
+    # Determines if a Spire-specific icon should be displayed on the map while the Spire is spawned
+    var ShowMapIcon<public>: logic
+
+    # The maximum health of this Spire.
+    var<private> MaxHealth<public>: float
+  }
+
   # Use to create a cactus with healing fruits that can be burst to heal nearby players.
   healing_cactus_device<public> := class<concrete><final>(creative_device_base) {
     # Burst the plant if the device is enabled, passing in the triggering `agent`.
@@ -2983,6 +3125,12 @@ Devices<public> := module {
     # Enables this device.
     Enable<public>(): void = external {}
 
+    # Returns the number of items this item granter will award for at the specified index in the Item Granter.
+    # This will return 0 if the index is invalid.
+    # If *Cycle Behavior* is *Stop*, `ItemIndex` is clamped to the number of items in the Item Granter.
+    #  If *Cycle Behavior* is *Wrap*, `ItemIndex` is modulo'd to the number of items in the Item Granter.
+    GetItemGrantCountAtIndex<public>(Index: int)<transacts>: int = external {}
+
     # Returns the current Item Index that this device will grant when activated.
     GetItemIndex<public>()<transacts>: int = external {}
 
@@ -3007,16 +3155,30 @@ Devices<public> := module {
     GrantItemToAll<public>(): void = external {}
 
     # Signaled when an item is granted to an `agent`.
+    # Sends the `agent` that was granted the item, as well as the number of items granted.
+    GrantItemWithCountEvent<public>: listenable(tuple(agent, int)) = external {}
+
+    # Signaled when an item is granted to an `agent`.
     # Sends the `agent` that was granted the item.
     ItemGrantedEvent<public>: listenable(agent) = external {}
 
     # Restocks this device back to its starting inventory count.
     RestockItems<public>(): void = external {}
 
+    # Sets the number of items this item granter will award for the item at `ItemIndex`.
+    # `Count` must be greater than 0.
+    # If *Cycle Behavior* is *Stop*, `ItemIndex` is clamped to the number of items in the Item Granter.
+    #  If *Cycle Behavior* is *Wrap*, `ItemIndex` is modulo'd to the number of items in the Item Granter.
+    SetItemGrantCountAtIndex<public>(ItemIndex: int, Count: int): void = external {}
+
     # Sets the next item to be granted.
     #  * `Index` should be between `0` and the available item count - 1.
     #  * Calling `SetNextItem` with an invalid index will do nothing.
     SetNextItem<public>(Index: int): void = external {}
+
+    # Gets or sets the default number of items that will be awarded for all items in the Item Granter that have not been overwritten.
+    # `Count` must be greater than 0.
+    var DefaultItemCount<public>: int = external {}
   }
 
   # Allows pickup items to be placed in the world..
@@ -3371,6 +3533,269 @@ Devices<public> := module {
 
     # Shows this device in the world.
     Show<public>(): void = external {}
+  }
+
+  # A boss-like environmental encounter that will attack players with different abilities
+  overlord_spire_device<public> := class<concrete><final>(creative_device_base, has_spire_functionality) {
+    # Triggers when the Spire becomes activated from players entering the `Activation Distance`
+    ActivateEvent<override>: listenable(?agent) = external {}
+
+    # Triggers when the Spire begins charging up its beam attack
+    BeginBeamEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire starts spawning homing projectiles to fire
+    BeginHomingProjectileEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire begins to perform the scream.
+    BeginScreamEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire begins its slam attack
+    BeginSlamEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire begins trying to recover from the slam attack, when the appendage weakpoint is stuck in the ground.
+    BeginSlamRecoverEvent<public>: listenable(tuple()) = external {}
+
+    # Removes the target set from `SetTarget` and allows the Spire to return to its normal targeting pattern
+    ClearTarget<public>(): void = external {}
+
+    # Triggers when the Spire becomes deactivated, either from players leaving the `Activation Distance`
+    DeactivateEvent<override>: listenable(tuple()) = external {}
+
+    # Sets the Spire's health to zero, destroying it.
+    #  *  Does nothing if the Spire has not spawned or is already destroyed.
+    Destroy<override>(): void = external {}
+
+    # Triggers when the Spire is destroyed from damage or events
+    #  * Includes the `agent` that destroyed it, if any.
+    DestroyEvent<override>: listenable(?agent) = external {}
+
+    # Disable the device which causes the Spire to become deactivated, stopping the behaviors and attacks, as well as preventing activation when players are within the `Activation Distance`.
+    #  * Does nothing if the Spire is destroyed or already disabled.
+    Disable<override>(): void = external {}
+
+    # Enable the device, causing the Spire to become activated when players are within the `Activation Distance`.
+    #  * Does nothing if the Spire is destroyed or already enabled.
+    Enable<override>(): void = external {}
+
+    # Triggers when the Spire finishes shooting its beam attack
+    EndBeamEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the last homing projectile has exploded
+    EndHomingProjectileEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire has finished performing the scream
+    EndScreamEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire has finished recovering from the slam attack
+    EndSlamEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire finishes recovering from the slam attack and the appendage weakpoint is no longer stuck in the ground.
+    EndSlamRecoverEvent<public>: listenable(tuple()) = external {}
+
+    # Fades out the preview clouds above where the Spire spawns.
+    HideClouds<public>(): void = external {}
+
+    # If this Spire is currently activated.
+    #  * Succeeds if activated. Fails if deactivated
+    #  * An activated will react to enemies and take damage * Becomes activated from being enabled and players entering the `Activation Distance`
+    IsActivated<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if this Spire's health has reached 0. Fails otherwise
+    IsDestroyed<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if the device is enabled. Fails if the Spire is disabled. While disabled, the Spire is deactivated and will not react to approaching players, nor take damage.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if this Spire is in a spawned state. Fails if the Spire is destroyed or has not spawned.
+    IsSpawned<override>()<transacts><decides>: void = external {}
+
+    # Resets the Spire to its initial state.
+    Reset<override>(): void = external {}
+
+    # Sets the main target of the Spire, causing the Spire to focus attacks on the 'TargetAgent' while they are within the `Activation Distance`.
+    #  * `TargetAgent` is an invalid `agent`, this function will clear the target.
+    SetTarget<public>(TargetAgent: ?agent): void = external {}
+
+    # Fades in the preview clouds above where the Spire spawns.
+    ShowClouds<public>(): void = external {}
+
+    # Spawns the Spire, causing it to become visible and enabling collision
+    #  *  Does nothing if the Spire is already spawned or destroyed
+    Spawn<override>(): void = external {}
+
+    # Triggers when the Spire is spawned, either from players entering the `Activation Distance` or by events.
+    SpawnEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire’s player target is changed to a different player
+    TargetChangeEvent<public>: listenable(agent) = external {}
+
+    # Determines the distance where approaching players activate the Spire.
+    #  * Values are clamped between `500.0` and `10000.0` cm
+    var ActivationDistance<override>: float = external {}
+
+    # Determines the distance/angle that the beam will travel
+    #  * Values are clamped between `0.0` and `360.0` degrees
+    var BeamArc<public>: float = external {}
+
+    # Determines the amount of time that the Spire must wait to use the beam attack after previously using it
+    #  * Values are clamped between `0.0` and `60.0` seconds
+    var BeamCooldownTime<public>: float = external {}
+
+    # Determines how much total damage the beam attack does per second to buildings.
+    #  * Values are clamped between `0.0` and `1000.0`
+    #  * A portion of the damage is applied multiple times per second while a target is within the beam.
+    var BeamDamagePerSecondToBuildings<public>: float = external {}
+
+    # Determines how much total damage the beam attack does per second to creatures.
+    #  * Values are clamped between `0.0` and `1000.0`
+    #  * A portion of the damage is applied multiple times per second while a target is within the beam.
+    var BeamDamagePerSecondToCreatures<public>: float = external {}
+
+    # Determines how much total damage the beam attack does per second to guards.
+    #  * Values are clamped between `0.0` and `1000.0`
+    #  * A portion of the damage is applied multiple times per second while a target is within the beam.
+    var BeamDamagePerSecondToGuards<public>: float = external {}
+
+    # Determines how much total damage the beam attack does per second to players.
+    #  * Values are clamped between `0.0` and `1000.0`
+    #  * A portion of the damage is applied multiple times per second while a target is within the beam.
+    var BeamDamagePerSecondToPlayers<public>: float = external {}
+
+    # Determines how much total damage the beam attack does per second to vehicles.
+    #  * Values are clamped between `0.0` and `1000.0`
+    #  * A portion of the damage is applied multiple times per second while a target is within the beam.
+    var BeamDamagePerSecondToVehicles<public>: float = external {}
+
+    # Determines how much total damage the beam attack does per second to wildlife.
+    #  * Values are clamped between `0.0` and `1000.0`
+    #  * A portion of the damage is applied multiple times per second while a target is within the beam.
+    var BeamDamagePerSecondToWildlife<public>: float = external {}
+
+    # Determines how long the Spire takes to complete the beam attack
+    #  * Values are clamped between `1.0` and `60.0` seconds
+    var BeamDuration<public>: float = external {}
+
+    # The Spire's current health. Clamped between 0 and `MaxHealth`.
+    #  * Setting this value does nothing if the Spire is destroyed.
+    var Health<override>: float = external {}
+
+    # Determines the amount of time that the Spire must wait to use the homing projectile attack after previously using it
+    #  * Values are clamped between `0.0` and `60.0` seconds
+    var HomingProjectileCooldownTime<public>: float = external {}
+
+    # Determines how much total damage the homing projectile attack does to creatures.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var HomingProjectileDamageCreatures<public>: float = external {}
+
+    # Determines how much total damage the homing projectile attack does to buildings.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var HomingProjectileDamageToBuildings<public>: float = external {}
+
+    # Determines how much total damage the homing projectile attack does to guards.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var HomingProjectileDamageToGuards<public>: float = external {}
+
+    # Determines how much total damage the homing projectile attack does to players.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var HomingProjectileDamageToPlayers<public>: float = external {}
+
+    # Determines how much total damage the homing projectile attack does to vehicles.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var HomingProjectileDamageToVehicles<public>: float = external {}
+
+    # Determines how much total damage the homing projectile attack does to wildlife.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var HomingProjectileDamageWildlife<public>: float = external {}
+
+    # Determines the maximum speed that homing projectiles can accelerate to.
+    #  * Values are clamped between `100.0` and `5000.0` meters per second
+    var HomingProjectileMaxSpeed<public>: float = external {}
+
+    # Determines if the Spire is able to use the beam attack. Setting this to false will not interrupt the attack if it is currently in progress.
+    var IsBeamAttackEnabled<public>: logic = external {}
+
+    # Determines if the Spire is able to use the homing projectile attack. Setting this to false will not interrupt the attack if it is currently in progress.
+    var IsHomingProjectileAttackEnabled<public>: logic = external {}
+
+    # Determines if the Spire is able to perform the scream attack.
+    #  * The scream is an ability used when the spire drops below a health threshold. It performs an animation and events can be hooked up to it for things like spawning a wave of Guards to fight for it.
+    #  * Setting this to false will not interrupt the ability if it is currently in progress.
+    var IsScreamAttackEnabled<public>: logic = external {}
+
+    # Determines if the Spire is able to use the slam attack. Setting this to false will not interrupt the attack if it is currently in progress.
+    var IsSlamAttackEnabled<public>: logic = external {}
+
+    # The maximum health of this Spire.
+    var MaxHealth<override>: float = external {}
+
+    # Determines the maximum amount of time that the Spire must wait to use another ability after previously using one
+    #  * The actual time to wait after each ability is chosen at random between this value and MinimumTimeBetweenAbilities
+    #  * This is effectively a global cooldown across all abilities.
+    #  * Values are clamped between `0.0` and `60.0` seconds
+    var MaximumTimeBetweenAbilities<public>: float = external {}
+
+    # Determines the minimum amount of time that the Spire must wait to use another ability after previously using one
+    #  * The actual time to wait after each ability is chosen at random between this value and MaximumTimeBetweenAbilities
+    #  * This is effectively a global cooldown across all abilities.
+    #  * Values are clamped between `0.0` and `60.0` seconds
+    var MinimumTimeBetweenAbilities<public>: float = external {}
+
+    # Determines the number of homing projectiles that can be fired per attack.
+    #  * Values are clamped between `1` and `20` projectiles
+    var NumberOfHomingProjectiles<public>: int = external {}
+
+    # Determines if a Spire-specific icon should be displayed on the map while the Spire is spawned
+    var ShowMapIcon<override>: logic = external {}
+
+    # Determines how much total damage the slam attack does to creatures.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var SlamAttackDamageCreatures<public>: float = external {}
+
+    # Determines how much total damage the slam attack does to buildings.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var SlamAttackDamageToBuildings<public>: float = external {}
+
+    # Determines how much total damage the slam attack does to guards.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var SlamAttackDamageToGuards<public>: float = external {}
+
+    # Determines how much total damage the slam attack does to players.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var SlamAttackDamageToPlayers<public>: float = external {}
+
+    # Determines how much total damage the slam attack does to vehicles.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var SlamAttackDamageToVehicles<public>: float = external {}
+
+    # Determines how much total damage the slam attack does to wildlife.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var SlamAttackDamageWildlife<public>: float = external {}
+
+    # Determines the amount of time the Spire must wait to use the slam attack after previously using it
+    #  * Values are clamped between `0.0` and `60.0` seconds
+    var SlamCooldownTime<public>: float = external {}
+
+    # Determines the radius that the slam attack initially affects before the shockwave spreads.
+    #  * Values are clamped between `100.0` and `1000.0` meters
+    var SlamInitialRadius<public>: float = external {}
+
+    # Determines the amount of time it takes for the Spire to recover from the slam attack.
+    #  * Values are clamped between `0.0` and `60.0` seconds
+    #  * The higher the value, the longer the weakpoint is exposed.
+    var SlamRecoveryTime<public>: float = external {}
+
+    # Determines the time it takes for the slam attack's shockwave to reach the maximum radius.
+    #  * Values are clamped between `1.0` and `30.0` seconds
+    var SlamShockwaveDuration<public>: float = external {}
+
+    # Determines the maximum radius that the slam attack's shockwave can spread
+    #  * Values are clamped between `100.0` and `5000.0` meters
+    var SlamShockwaveMaxRadius<public>: float = external {}
+
+    # Succeeds if the Spire must wait until all projectiles have spawned before moving on to the next attack
+    #  * Fails if the Spire will move on to the next attack when it finishes the spawning animation.
+    #  * This setting is useful to make the encounter more challenging by allowing the Spire to shoot a large number of homing projectiles and to move on to another attack while they are still spawning
+    var WaitForAllProjectilesToSpawnBeforeNextAttack<public>: logic = external {}
   }
 
   # Specialized `trigger_base_device` that will fire output events based on line of sight between `agent`s and the device.
@@ -4397,6 +4822,132 @@ Devices<public> := module {
     SetToAgentScore<public>(Agent: agent): void = external {}
   }
 
+  # A boss-like environmental encounter that will attack players with different abilities
+  scout_spire_device<public> := class<concrete><final>(creative_device_base, has_spire_functionality) {
+    # Triggers when the Spire becomes activated from players entering the `Activation Distance`
+    ActivateEvent<override>: listenable(?agent) = external {}
+
+    # Triggers when the Spire begins its laser attack
+    BeginChargeLaserEvent<public>: listenable(tuple()) = external {}
+
+    # Triggers when the Spire becomes deactivated, either from players leaving the `Activation Distance`
+    DeactivateEvent<override>: listenable(tuple()) = external {}
+
+    # Hides the spire immediately without playing any vfx
+    #  * Does nothing if the Spire is already destroyed or despawned.
+    Despawn<public>(): void = external {}
+
+    # Sets the Spire's health to zero, destroying it.
+    #  *  Does nothing if the Spire has not spawned or is already destroyed.
+    Destroy<override>(): void = external {}
+
+    # Triggers when the Spire is destroyed from damage or events
+    #  * Includes the `agent` that destroyed it, if any.
+    DestroyEvent<override>: listenable(?agent) = external {}
+
+    # Disable the device which causes the Spire to become deactivated, stopping the behaviors and attacks, as well as preventing activation when players are within the `Activation Distance`.
+    #  * Does nothing if the Spire is destroyed or already disabled.
+    Disable<override>(): void = external {}
+
+    # Enable the device, causing the Spire to become activated when players are within the `Activation Distance`.
+    #  * Does nothing if the Spire is destroyed or already enabled.
+    Enable<override>(): void = external {}
+
+    # Triggers when the Spire shoots its laser attack. Triggers once, even if it shoots at multiple targets
+    EndChargeAndFireLaserEvent<public>: listenable(tuple()) = external {}
+
+    # If this Spire is currently activated.
+    #  * Succeeds if activated. Fails if deactivated
+    #  * An activated Spire will react to enemies and take damage * Becomes activated from being enabled and players entering the `Activation Distance`
+    IsActivated<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if this Spire's health has reached 0. Fails otherwise.
+    IsDestroyed<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if the device is enabled. Fails if the Spire is disabled. While disabled, the Spire is deactivated and will not react to approaching players, nor take damage.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if this Spire is in a spawned state. Fails if the Spire is destroyed or has not spawned.
+    IsSpawned<override>()<transacts><decides>: void = external {}
+
+    # Resets the Spire to its initial state.
+    Reset<override>(): void = external {}
+
+    # Spawns the Spire, causing it to become visible and enabling collision
+    #  *  Does nothing if the Spire is already spawned or destroyed.
+    Spawn<override>(): void = external {}
+
+    # Determines the distance where approaching players activate the Spire.
+    #  * Values are clamped between `500.0` and `10000.0` cm
+    var ActivationDistance<override>: float = external {}
+
+    # The Spire's current health. Clamped between 0 and `MaxHealth`.
+    #  * Setting this value does nothing if the Spire is destroyed.
+    var Health<override>: float = external {}
+
+    # If the invulnerable shield for this Spire is active. While active, the Spire cannot take damage.
+    #  * Setting this value does nothing if the Spire is destroyed.
+    var IsShieldActive<public>: logic = external {}
+
+    # Determines the additive vertical force of the impulse applied to targets of the laser attack.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAdditionalVerticalImpulseForce<public>: float = external {}
+
+    # Determines how much total damage the laser attack does to buildings.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAttackDamageToBuildings<public>: float = external {}
+
+    # Determines how much total damage the laser attack does to creatures.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAttackDamageToCreatures<public>: float = external {}
+
+    # Determines how much total damage the laser attack does to guards.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAttackDamageToGuards<public>: float = external {}
+
+    # Determines how much total damage the laser attack does to players.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAttackDamageToPlayers<public>: float = external {}
+
+    # Determines how much total damage the laser attack does to vehicles.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAttackDamageToVehicles<public>: float = external {}
+
+    # Determines how much total damage the laser attack does to wildlife.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserAttackDamageToWildlife<public>: float = external {}
+
+    # Determines the time it takes for the Spire to charge up its laser attack.
+    #  * Values are clamped between `0.5` and `60.0`
+    var LaserChargeTime<public>: float = external {}
+
+    # Determines the amount of time that the Spire must wait to use the laser attack after previously using it.
+    #  * Values are clamped between `0.5` and `60.0`
+    var LaserCooldownTime<public>: float = external {}
+
+    # Determines the radius of the blast from where the laser hits.
+    #  * Values are clamped between `100.0` and `1000.0`
+    var LaserEffectRadius<public>: float = external {}
+
+    # Determines the multiplicative horizontal force of the impulse applied to targets of the laser attack based on distance.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserHorizontalImpulseForce<public>: float = external {}
+
+    # Determines the multiplicative vertical force of the impulse applied to targets of the laser attack based on distance.
+    #  * Values are clamped between `0.0` and `10000.0`
+    var LaserVerticalImpulseForce<public>: float = external {}
+
+    # Determines the number of targets the Spire can shoot lasers at per charged attack.
+    #  * Values are clamped between `1` and `50`
+    var LasersPerCharge<public>: int = external {}
+
+    # The maximum health of this Spire.
+    var MaxHealth<override>: float = external {}
+
+    # Determines if a Spire-specific icon should be displayed on the map while the Spire is spawned.
+    var ShowMapIcon<override>: logic = external {}
+  }
+
   # Generates an AI bot that spawns in a location and usually attacks players when they come in range.
   sentry_device<public> := class<concrete><final>(creative_device_base) {
     # Signaled when the sentry is alerted to an `agent`.
@@ -4881,6 +5432,75 @@ Devices<public> := module {
 
     # An unknown error occurred. If this happens frequently, contact Epic support.
     UnknownError
+  }
+
+  # A Destroyable environment prop that when destroyed, drops loot. When players approach the Spire Spike, they start a countdown to a knockback ability. When players are knocked back, they do not receive damage from the knockback ability or take fall damage. They can destroy structures near the knockback location. Damaging the spike can also start the countdown to the knockback or restart the countdown if it is already started.
+  spire_spike_device<public> := class<concrete><final>(creative_device_base) {
+    # Force begins the knockback charge timer. Will restart the charge timer if already active.
+    ChargeKnockback<public>(): void = external {}
+
+    # Despawns the Spire Spike. It will not drop loot.
+    Despawn<public>(): void = external {}
+
+    # Destroy the Spire Spike. Will cause the Spire Spike to drop its loot.
+    Destroy<public>(Instigator: ?agent): void = external {}
+
+    # Triggers when the Spire Spike is destroyed.
+    # Includes the `agent` that destroyed it, if any.
+    DestroyEvent<public>: listenable(?agent) = external {}
+
+    # Returns if Spire Spike is currently spawned.
+    IsSpawned<public>()<transacts><decides>: void = external {}
+
+    # Force the Spire Spike to trigger its knockback ability immediately.
+    Knockback<public>(): void = external {}
+
+    # Triggers when the Spire Spike does its knockback ability.
+    KnockbackEvent<public>: listenable(tuple()) = external {}
+
+    # Spawn the Spire Spike. Resets CurrentHealth back to max health. Resets any timers currently active.
+    Spawn<public>(): void = external {}
+
+    # Additive vertical force on the knockback ability. Clamped between `0.0` and `100.0`.
+    var AdditionalVerticalKnockback<public>: float = external {}
+
+    # Determine if the Spire Spike should drop loot when destroyed or not.
+    var CanGrantItems<public>: logic = external {}
+
+    # The current health of the Spire Spike. Setting to `0.0` or negative will destroy the Spire Spike. Clamps to the maximum of MaxHealth.
+    var CurrentHealth<public>: float = external {}
+
+    # Horizontal force on the knockback ability. Clamped between `0.0` and `100.0`.
+    var HorizontalKnockbackMultiplier<public>: float = external {}
+
+    # Determines if the Spire Spike can take any damage.
+    var IsInvulnerable<public>: logic = external {}
+
+    # The remaining time (in seconds) on the knockback charge timer. Clamped between `0.0` and `60.0`.
+    #  * When setting, this also sets the length of this Spire Spike's future knockback charge timers.
+    #  * If there is no active timer, getting returns `0.0`.
+    var KnockbackChargeTimer<public>: float = external {}
+
+    # The length of the knockback charge timer in seconds, regardless of the timer's current state. Clamped between `0.0` and `60.0`.
+    var KnockbackChargeTimerLength<public>: float = external {}
+
+    # The range (in meters) a player needs to be within to trigger the proximity countdown. This is also the range of the knockback abilities affected targets. Clamped between `2.0` and `10.0`.
+    var KnockbackTriggerRange<public>: float = external {}
+
+    # The max health of the Spire Spike. Must be greater than or equal to `1.0`. Current health will be scaled up or down based on the scale difference between the old and new MaxHealth.
+    var MaxHealth<public>: float = external {}
+
+    # Determines if the knockback ability should charge once a player has entered the trigger range.
+    var ShouldChargeKnockbackOnPlayerProximity<public>: logic = external {}
+
+    # Determines if taking damage should start the knockback charge timer. If the timer was already active and this is true, taking damage will restart the timer.
+    var ShouldKnockbackChargeFromTakingDamage<public>: logic = external {}
+
+    # Determines if structures should be destroyed if a player is knocked back into them.
+    var ShouldKnockbackDestroyStructures<public>: logic = external {}
+
+    # Vertical force on the knockback ability. Clamped between `0.0` and `100.0`.
+    var VerticalKnockbackMultiplier<public>: float = external {}
   }
 
   # A device that generates a scoreboard stat that can be used by the game to determine Game End and Round End conditions.
@@ -5846,7 +6466,9 @@ Devices<public> := module {
   vehicle_spawner_armored_battle_bus_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
   # Specialized `vehicle_spawner_device` that allows an armored transport to be configured and spawned.
-  vehicle_spawner_armored_transport_device<public> := class<concrete><final>(vehicle_spawner_device) {}
+  vehicle_spawner_armored_transport_device<public> := class<concrete><final>(vehicle_spawner_device) {
+    var<private> Vault<public>: bank_vault_interface = external {}
+  }
 
   # Specialized `vehicle_spawner_device` that allows an ATK (all terrain kart) to be configured and spawned.
   vehicle_spawner_atk_device<public> := class<concrete><final>(vehicle_spawner_device) {}
@@ -6055,7 +6677,7 @@ Devices<public> := module {
   }
 
   # Used to place visual effects around your island. You can use these effects to enhance the overall theme and experience of your game.
-  vfx_spawner_device<public> := class<concrete><final>(creative_device_base) {
+  vfx_spawner_device<native><public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
     Disable<public>(): void = external {}
 
@@ -6069,7 +6691,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Restarts the VFX. Triggers the VFX if it's Burst VFX.
-    Restart<public>(): void = external {}
+    Restart<native><public>(): void
   }
 
   # Used to display curated videos onto in-game screens or player HUDs.
@@ -6163,6 +6785,89 @@ Devices<public> := module {
 
     # Signaled when an `creative_prop` exited the device volume.
     PropExitEvent<public>: listenable(creative_prop) = external {}
+  }
+
+  using { /Verse.org/Simulation }
+  #  Represents a poll.
+  # For example, in a poll “What to have for lunch?” the group represents the question and contains the possible answers.
+  # Owns the overall state of the poll and keeps track of available options.
+  # A group can have multiple options, connected via an internal ID.
+  vote_group_device<public> := class<concrete><final>(creative_device_base) {
+    # Allows votes to be cast for this group’s options, and starts a timer if applicable.
+    BeginVote<final><public>(): void = external {}
+
+    # Triggered when voting begins.
+    BeginVoteEvent<final><public>: listenable(tuple()) = external {}
+
+    # Prevents any more votes from being cast and picks a winner based on vote count.
+    EndVote<final><public>(): void = external {}
+
+    # Triggered when voting has completed.
+    EndVoteEvent<final><public>: listenable(tuple()) = external {}
+
+    # The total number of times each player can vote in this poll.
+    #  If zero or less, players cannot vote.
+    GetMaxVotesPerPlayer<final><public>(): int = external {}
+
+    # The display text for this poll.
+    #  For example the string “What to have for lunch?”
+    GetPollQuestion<final><public>(): message = external {}
+
+    # The amount of time this poll is available before ending, in seconds.
+    #  If set to zero, the poll will not be ended by a time limit.
+    GetTimeLimit<final><public>(): float = external {}
+
+    # Get the list of options currently in this voting group.
+    GetVotingOptions<final><public>(): []vote_option_interface = external {}
+
+    # Triggered when voting ends and at least two options are tied for first place.
+    VoteTiedEvent<final><public>: listenable(tuple()) = external {}
+  }
+
+  vote_option_device<public> := class(vote_option_interface, creative_device_base) {
+    CastVote<override>(Agent: agent)<transacts><decides>: void = external {}
+
+    CastVoteEvent<override>: listenable(agent) = external {}
+
+    GetOptionDescription<override>(): message = external {}
+
+    GetVoteCount<override>(): int = external {}
+
+    GetVoteGroup<override>(): ?vote_group_device = external {}
+
+    HasAgentVoted<override>(Agent: agent)<transacts><decides>: void = external {}
+
+    WinVoteEvent<override>: listenable(?agent) = external {}
+  }
+
+  # Represents an individual choice in a poll.
+  #  For example, in a poll “What to have for lunch?” an option might be “Tacos”
+  #  Tracks how many times each agent has voted for this option.
+  #  An option is associated with only one group device (or “poll”) via an internal ID.
+  vote_option_interface<public> := interface {
+    # Attempts to cast a vote for ‘Agent’
+    #  If the voting agent has votes remaining and the voting group has started a vote, the vote will be cast successfully.
+    #  Fails if Agent does not have votes remaining or voting group has not started.
+    CastVote<public>(Agent: agent)<transacts><decides>: void
+
+    # Triggered when a vote is cast by ‘agent’
+    CastVoteEvent<public>: listenable(agent)
+
+    # The string to display to the user when choosing which option to select.
+    GetOptionDescription<public>(): message
+
+    # Returns the total votes cast for this option.
+    GetVoteCount<public>(): int
+
+    # Returns the group device this option corresponds to, if any.
+    #  Fails if the option is not in a group, or there is no corresponding group device with the same ID.
+    GetVoteGroup<public>(): ?vote_group_device
+
+    # Succeeds if `Agent` has voted for this option, fails if not.
+    HasAgentVoted<public>(Agent: agent)<transacts><decides>: void
+
+    # Triggered if this option wins the vote.
+    WinVoteEvent<public>: listenable(?agent)
   }
 
   # Used to create and manipulate volumes of water where players can swim, fish, or drive boats.

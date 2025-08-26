@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.00-CL-44501951
+# Generated from build: ++Fortnite+Release-37.10-CL-45056983
 #################################################
 
 AI<public> := module {
@@ -2758,9 +2758,29 @@ Devices<public> := module {
     PickUpIItem<epic_internal>(Agent: agent): void = external {}
   }
 
+  # Payload of `device_event_carryable_spawner_agent_impact`.
+  carryable_spawner_agent_impact_result<native><public> := struct<epic_internal> {
+    # Damage applied by the impact.
+    Damage<native><public>: float
+
+    # Whether the impact was a direct result of being thrown (as opposed to an indirect hit from bouncing or rolling).
+    ImpactedFromThrow<native><public>: logic
+
+    # The agent responsible for the impact. Either the thrower, or if none exists, the agent who instigated the carryable to spawn.
+    Source<native><public>: ?agent
+
+    # Agent impacted by the carryable.
+    Target<native><public>: ?agent
+  }
+
   using { /UnrealEngine.com/Temporary/SpatialMath }
   # Used to spawn a carryable object into the experience.
   carryable_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Signaled when the carryable collides with an agent.
+    # Damage applied is based off the collision velocity, as well as the device's *Impact Damage* settings.
+    # This event will fire even if the damage applied is 0
+    AgentCollideEvent<public>: listenable(carryable_spawner_agent_impact_result) = external {}
+
     # Despawn the carryable, if it exists.
     Despawn<public>(): void = external {}
 
@@ -3699,6 +3719,13 @@ Devices<public> := module {
     TargetName<native><public>: string
   }
 
+  # Implementation of `device_event(:type)` with `carryable_spawner_agent_impact_result` payload.
+  device_event_carryable_spawner_agent_impact<native><epic_internal> := class(device_event(carryable_spawner_agent_impact_result)) {
+    SourceName<native><public>: string
+
+    TargetName<native><public>: string
+  }
+
   # Implementation of `device_event(:type)` with a `float` payload.
   device_event_float<native><epic_internal> := class(device_event(float)) {}
 
@@ -3888,12 +3915,22 @@ Devices<public> := module {
   # Used to apply a cosmetic disguise to the player.
   # The disguise to apply is defined on the device, as are the conditions for when the disguise breaks.
   disguise_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Signaled when any disguise is successfully applied to `player`.
+    # Includes disguises applied by any disguise device, or by a disguise kit.
+    ApplyAnyDisguiseEvent<public>: listenable(player) = external {}
+
     # Applies the disguise to the provided `player`.
     # If the provided `player` does not pass the device's filter settings, or if another disguise is already present and the device's *Stomp Existing Disguise* option is set to false, the disguise will not be applied.
     ApplyDisguise<public>(Player: player): void = external {}
 
     # Signaled when a disguise from this device is successfully applied to `player`.
     ApplyDisguiseEvent<public>: listenable(player) = external {}
+
+    # Signaled when any applied disguise on `player` is broken.
+    # Includes disguises applied by any disguise device, or by a disguise kit.
+    # The second optional `agent` describes who broke the disguise (the damage source if broken by damage or elimination).
+    # The conditions triggering a disguise to break are set in the device's user options.
+    BreakAnyDisguiseEvent<public>: listenable(tuple(player, ?agent)) = external {}
 
     # Signaled when a disguise applied by this device on `player` is broken.
     # The second optional `agent` describes who broke the disguise (the damage source if broken by damage or elimination).
@@ -3907,22 +3944,36 @@ Devices<public> := module {
     # Enables this device, allowing it to listen for inputs.
     Enable<override>(): void = external {}
 
+    # Succeeds if the provided `player` has any disguise applied.
+    # Includes disguises applied by any disguise device, or by a disguise kit.
+    IsAnyDisguiseApplied<public>(Player: player)<transacts><decides>: void = external {}
+
     # Succeeds if the provided `player` has a disguise applied from this device.
     IsDisguiseApplied<public>(Player: player)<transacts><decides>: void = external {}
 
     # Succeeds if the object is enabled, fails if it is disabled.
     IsEnabled<override>()<transacts><decides>: void = external {}
 
+    # Removes any applied disguise from `player`.
+    # Includes disguises applied by any disguise device, or by a disguise kit.
+    RemoveAnyDisguise<public>(Player: player): void = external {}
+
+    # Signaled when any applied disguise on `player` is removed.
+    # Includes disguises applied by any disguise device, or by a disguise kit.
+    # Removal can occur from calling the *Remove Disguise* function, or from getting replaced by another disguise.
+    # This event will not trigger if the disguise is broken.
+    RemoveAnyDisguiseEvent<public>: listenable(player) = external {}
+
     # Removes the disguise applied by this device, if it exists, from the provided `player`.
     RemoveDisguise<public>(Player: player): void = external {}
 
     # Signaled when a disguise applied by this device on `player` is removed.
-    # Removal can occur from calling the *Remove Disguise* function, or from getting stomped by another disguise device.
+    # Removal can occur from calling the *Remove Disguise* function, or from getting replaced by another disguise.
     # This event will not trigger if the disguise is broken.
     RemoveDisguiseEvent<public>: listenable(player) = external {}
 
     # Maps to the user option for *Should Apply Disguise on Spawn*.
-    #  If this is true, the device will apply a disguise to the player as soon as they spawn, so long as they pass the device's filter options.
+    # If this is true, the device will apply a disguise to the player as soon as they spawn, so long as they pass the device's filter options.
     var ShouldApplyDisguiseOnPlayerSpawn<public>: logic = external {}
   }
 
@@ -4788,7 +4839,7 @@ Devices<public> := module {
     # Enables this device.
     Enable<public>(): void = external {}
 
-    # Returns the number of items this item granter will award for all items in the Item Granter.
+    # Returns the number of items this Item Granter will award for all items.
     GetItemCount<epic_internal>()<transacts>: int = external {}
 
     @deprecated
@@ -4798,10 +4849,10 @@ Devices<public> := module {
 
     GetItemDisplayNameAtIndex<epic_internal>(Index: int)<transacts>: string = external {}
 
-    # Returns the number of items this item granter will award for at the specified index in the Item Granter.
-    # This will return 0 if the index is invalid.
-    # If *Cycle Behavior* is *Stop*, `ItemIndex` is clamped to the number of items in the Item Granter.
-    #  If *Cycle Behavior* is *Wrap*, `ItemIndex` is modulo'd to the number of items in the Item Granter.
+    # Returns the number of items this Item Granter will award for the item at the specified `Index`.
+    # This will return 0 if `Index` is invalid.
+    # If *Cycle Behavior* is *Stop*, `Index` is clamped to the number of items in the Item Granter.
+    #  If *Cycle Behavior* is *Wrap*, `Index` is modulo'd to the number of items in the Item Granter.
     GetItemGrantCountAtIndex<public>(Index: int)<transacts>: int = external {}
 
     # Returns the current Item Index that this device will grant when activated.
@@ -4846,7 +4897,7 @@ Devices<public> := module {
     # Restocks this device back to its starting inventory count.
     RestockItems<public>(): void = external {}
 
-    # Sets the number of items this item granter will award for all items in the Item Granter. `Number` must be greater than 0.
+    # Sets the number of items this Item Granter will award for all items. `Number` must be greater than 0.
     SetItemCount<epic_internal>(Count: int): void = external {}
 
     @deprecated
@@ -4857,7 +4908,7 @@ Devices<public> := module {
     #  If *Cycle Behavior* is *Wrap*, `ItemIndex` is modulo'd to the number of items in the Item Granter.
     SetItemCountAtIndex<epic_internal>(ItemIndex: int, Count: int): void = external {}
 
-    # Sets the number of items this item granter will award for the item at `ItemIndex`.
+    # Sets the number of items this Item Granter will award for the item at the specified `ItemIndex`.
     # `Count` must be greater than 0.
     # If *Cycle Behavior* is *Stop*, `ItemIndex` is clamped to the number of items in the Item Granter.
     #  If *Cycle Behavior* is *Wrap*, `ItemIndex` is modulo'd to the number of items in the Item Granter.
@@ -7515,6 +7566,13 @@ Devices<public> := module {
     # Destroys the balloon and causes the supply crate to freefall.
     DestroyBalloon<public>(): void = external {}
 
+    # Signaled when the supply crate is destroyed.
+    # Sends the destroying `agent`. If no `agent` destroyed the crate then `false` is returned.
+    DestroyCrateEvent<public>: listenable(?agent) = external {}
+
+    # Destroys supply drops spawned by this device.
+    DestroySpawnedDrops<public>(): void = external {}
+
     # Signaled when the supply crate lands for the first time.
     LandingEvent<public>: listenable(tuple()) = external {}
 
@@ -7699,7 +7757,7 @@ Devices<public> := module {
     # Signaled when *Team* runs out of respawns.
     TeamOutOfRespawnsEvent<public>: listenable(tuple()) = external {}
 
-    # This variable maps to the AllowTemporaryTeamMemberInvitations user option.
+    # This variable maps to the 'Dynamic Team Emotes' user option.
     # Modifying this value does not affect the state of any existing Temporary Team member.
     # If a player is currently on a Temporary Team, they will maintain access to the leave team emote regardless of this value.
     # Available values:
@@ -8556,6 +8614,9 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a GetAway Car to be configured and spawned.
   vehicle_spawner_getaway_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Specialized `vehicle_spawner_device` that allows a Hammerhead Choppa to be configured and spawned.
+  vehicle_spawner_hammerhead_choppa_device<public> := class<concrete><final>(vehicle_spawner_device) {}
+
   # Specialized `vehicle_spawner_device` that allows an anti-vehicle turret to be configured and spawned.
   vehicle_spawner_heavy_turret_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -9118,6 +9179,14 @@ FeralCorgi<public> := module {
     )<transacts><decides>: void
   }
 
+  # Module import path: /Fortnite.com/FeralCorgi/FeralCorgiRespawnLogic
+  FeralCorgiRespawnLogic<epic_internal> := module {
+    RunRespawnEQS<native><epic_internal>(
+      InAgent: agent,
+      RespawnQueryLocation: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<reads>: respawn_query_info
+  }
+
   # Module import path: /Fortnite.com/FeralCorgi/FeralLoggingBridge
   FeralLoggingBridge<epic_internal> := module {
     LogError<native><epic_internal>(Format: string, ?Args: []string = external {})<transacts>: void
@@ -9125,6 +9194,15 @@ FeralCorgi<public> := module {
     LogMessage<native><epic_internal>(Format: string, ?Args: []string = external {})<transacts>: void
 
     LogWarning<native><epic_internal>(Format: string, ?Args: []string = external {})<transacts>: void
+  }
+
+  # Module import path: /Fortnite.com/FeralCorgi/FeralMatchmakingBridge
+  FeralMatchmakingBridge<epic_internal> := module {
+    CanUseReadyUpBridge<native><epic_internal>()<transacts><decides>: void
+
+    ReadyUpPlayer<native><epic_internal>(Player: player): void
+
+    UnreadyPlayer<native><epic_internal>(Player: player): void
   }
 
   # Module import path: /Fortnite.com/FeralCorgi/PlayerLoadingStatusBridge
@@ -9310,6 +9388,14 @@ FeralCorgi<public> := module {
     bProgressIsStale<native><public>: logic = external {}
 
     bSkippedRequestDueToTTL<native><public>: logic = external {}
+  }
+
+  respawn_query_info<native><epic_internal> := struct {
+    QueryDirection<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+
+    QueryLocation<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+
+    QueryScore<native><public>: float = external {}
   }
 }
 
@@ -10842,6 +10928,18 @@ VerseInternalTesting<public> := module {
       var ArgFloat<public>: ?float = external {}
     }
 
+    test_event_int_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(int)): void = external {}
+
+      var ArgInt<public>: int = external {}
+    }
+
+    test_event_tuple_agent_vehicle_int_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(tuple(?agent, fort_vehicle, int))): void = external {}
+
+      var ArgTuple<public>: ?tuple(?agent, fort_vehicle, int) = external {}
+    }
+
     test_event_tuple_handler_mock<public> := class(test_device_event_handler_mock) {
       Subscribe<public>(Event: listenable(tuple())): void = external {}
 
@@ -10988,6 +11086,8 @@ VerseInternalTesting<public> := module {
       Run<public>()<suspends>: void = external {}
 
       RunTestSuites<public>()<suspends>: void = external {}
+
+      var CurrentFunctionName<public>: string = external {}
 
       var CurrentTestSuite<public>: string = external {}
 

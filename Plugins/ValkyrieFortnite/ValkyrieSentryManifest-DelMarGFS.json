@@ -621,6 +621,11 @@
 			"FriendlyName": "FortItemDefinitionVersion",
 			"Version": 21
 		},
+		"EF5C1478500C48258B801E46C07A5391":
+		{
+			"FriendlyName": "FLandscapeStaticMeshVersion",
+			"Version": 0
+		},
 		"F2AED0AC9AFE416F8664AA7FFA26D6FC":
 		{
 			"FriendlyName": "Dev-Niagara",
@@ -1701,6 +1706,7 @@
 			"/Script/MovieScene.MovieSceneSubSection",
 			"/Script/MovieScene.MovieSceneSubTrack",
 			"/Script/MovieScene.MovieSceneTimeWarpCurve",
+			"/Script/MovieScene.MovieSceneTimeWarpDecoration",
 			"/Script/MovieScene.MovieSceneTimeWarpSection",
 			"/Script/MovieScene.MovieSceneTimeWarpTrack",
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEventSection",

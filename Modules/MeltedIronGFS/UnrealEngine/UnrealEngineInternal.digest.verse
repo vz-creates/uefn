@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.00-CL-44501951
+# Generated from build: ++Fortnite+Release-37.10-CL-45056983
 #################################################
 
 AINavigation<public> := module {
@@ -215,6 +215,7 @@ ComponentTestSuite<public> := module {
   test_tag_vehicle_car_datsun<native><epic_internal> := class(test_tag_vehicle_car) {}
 }
 
+using { /Verse.org/SpatialMath }
 # Module import path: /UnrealEngine.com/ControlInput
 ControlInput<public> := module {
   # Access input-related data and settings for a player.
@@ -277,7 +278,7 @@ ControlInput<public> := module {
 
     MakeVector2InputEvents<native_callable><epic_internal>(): input_events(vector2) = external {}
 
-    MakeVector3InputEvents<native_callable><epic_internal>(): input_events((/UnrealEngine.com/Temporary/SpatialMath:)vector3) = external {}
+    MakeVector3InputEvents<native_callable><epic_internal>(): input_events((/Verse.org/SpatialMath:)vector3) = external {}
 
     RemoveInputMapping<native><public>(InputMapping: input_mapping): void
   }
@@ -406,9 +407,6 @@ Itemization<public> := module {
     ApplyTo<native><override>(Target: inventory_component)<decides>: inventory_setup_data_result
 
     @editable
-    EquippableInventoryList<native><public>: []equippable_inventory_properties = external {}
-
-    @editable
     InventoryList<native><public>: []inventory_properties = external {}
 
     @editable
@@ -427,55 +425,6 @@ Itemization<public> := module {
     Inventory<native><public>: inventory_component
 
     SlotChangedItems<native><public>: []item_slot_change
-  }
-
-  @experimental
-  equippable_inventory_component<native><epic_internal> := class(inventory_component) {
-    CanEquipItem<native><public>(Item: entity)<transacts><decides>: void
-
-    EquipItem<native><public>(Item: entity)<transacts><decides>: void
-
-    GetEquippedItems<final><native><public>(): []entity
-
-    GetInputAction<epic_internal>(ItemSlot: int): ?input_action(type) = external {}
-
-    GetNativeInputAction<native><epic_internal>(ItemSlot: int): ?input_action(type)
-
-    @editable
-    ShowSlotBindings<native><public>: logic = external {}
-
-    @editable
-    SlotBindingList<native><epic_internal>: []tuple(input_action(type), int) = external {}
-
-    UnequipItem<native><public>(Item: entity)<transacts><decides>: void
-  }
-
-  @experimental
-  equippable_inventory_hotbar_component<native><epic_internal> := class(equippable_inventory_component) {
-    var TotalSlots<override>: int = external {}
-  }
-
-  @experimental
-  equippable_inventory_properties<native><epic_internal> := class<epic_internal>(inventory_properties_base) {
-    @editable
-    InventoryClass<native><public>: subtype(equippable_inventory_component)
-
-    @editable
-    SlotBindings<native><public>: []equippable_inventory_slot_binding_definition
-  }
-
-  @experimental
-  equippable_inventory_slot_binding_definition<native><epic_internal> := struct<concrete><epic_internal> {
-    @editable
-    InputAction<native><public>: input_action(type) = external {}
-
-    @editable_number(int) { MinValue := option { 0 } }
-    Slot<native><public>: int = external {}
-  }
-
-  @experimental
-  equippable_inventory_slot_component<native><epic_internal> := class(equippable_inventory_component) {
-    var TotalSlots<override>: int = external {}
   }
 
   using { /UnrealEngine.com/Abilities }
@@ -501,9 +450,6 @@ Itemization<public> := module {
   invalid_item_failure_reason<epic_internal> := class<final><reads>(failure_reason) {}
 
   @experimental
-  inventory_backpack_component<epic_internal> := class(inventory_component) {}
-
-  @experimental
   inventory_component<native><epic_internal> := class<final_super>(component) {
     AddInventory<native><final><epic_internal>(Inventory: inventory_component)<transacts><decides>: add_inventory_result
 
@@ -523,7 +469,11 @@ Itemization<public> := module {
       ?AllowPartialItemMove: logic = external {}
     )<transacts>: ?failure_reason
 
+    CanEquipItem<native><epic_internal>(Item: entity)<transacts><decides>: void
+
     CanRemoveItem<final><native><public>(Item: entity)<transacts>: ?failure_reason
+
+    EquipItem<native><epic_internal>(Item: entity)<transacts><decides>: void
 
     @available { MinUploadedAtFNVersion := 2930 }
     FindInventories<native><final><public>()<reads>: generator(inventory_component)
@@ -531,11 +481,17 @@ Itemization<public> := module {
     @available { MinUploadedAtFNVersion := 2930 }
     FindItems<native><final><public>()<reads>: generator(entity)
 
+    GetEquippedItems<final><native><epic_internal>(): []entity
+
+    GetInputAction<epic_internal>(ItemSlot: int): ?input_action(type) = external {}
+
     GetInventories<native><final><public>()<reads>: []inventory_component
 
     GetItemSlot<native><epic_internal>(Item: entity)<reads>: int
 
     GetItems<native><final><public>()<reads>: []entity
+
+    GetNativeInputAction<native><epic_internal>(ItemSlot: int): ?input_action(type)
 
     InventoryAddedEvent<native><epic_internal>: listenable(add_inventory_result) = external {}
 
@@ -554,6 +510,14 @@ Itemization<public> := module {
     RemoveItem<native><final><public>(Item: entity)<transacts><decides>: remove_items_result
 
     RemoveItemsEvent<native><public>: listenable(remove_items_result) = external {}
+
+    @editable
+    ShowSlotBindings<native><epic_internal>: logic = external {}
+
+    @editable
+    SlotBindingList<native><epic_internal>: []tuple(input_action(type), int) = external {}
+
+    UnequipItem<native><epic_internal>(Item: entity)<transacts><decides>: void
 
     @editable
     VerseGameplayTags<native><epic_internal>: tag_container = external {}
@@ -602,13 +566,15 @@ Itemization<public> := module {
   inventory_full_failure_reason<epic_internal> := class<final><reads>(failure_reason) {}
 
   @experimental
-  inventory_properties<native><epic_internal> := class<epic_internal>(inventory_properties_base) {
-    @editable
-    InventoryClass<native><public>: subtype(inventory_component)
+  inventory_hotbar_component<native><epic_internal> := class(inventory_component) {
+    var TotalSlots<override>: int = external {}
   }
 
   @experimental
-  inventory_properties_base<native><epic_internal> := class<epic_internal> {
+  inventory_properties<native><epic_internal> := class<epic_internal> {
+    @editable
+    InventoryClass<native><public>: subtype(inventory_component)
+
     @editable
     InventoryDescription<native><localizes><public>: message = external {}
 
@@ -623,6 +589,9 @@ Itemization<public> := module {
 
     @editable
     PickupPriority<native><public>: int = external {}
+
+    @editable
+    SlotBindings<native><public>: []inventory_slot_binding_definition
 
     @editable_number(int) { MinValue := option { 0 } }
     TotalSlotsOverride<native><public>: int = external {}
@@ -667,6 +636,15 @@ Itemization<public> := module {
     AddedInventoryMap<native><public>: []tuple(inventory_component, []entity)
 
     Inventory<native><public>: inventory_component
+  }
+
+  @experimental
+  inventory_slot_binding_definition<native><epic_internal> := struct<concrete><epic_internal> {
+    @editable
+    InputAction<native><public>: input_action(type) = external {}
+
+    @editable_number(int) { MinValue := option { 0 } }
+    Slot<native><public>: int = external {}
   }
 
   @experimental
@@ -1319,6 +1297,28 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
+      # Draws a 3D text at the named location, and using the provided draw parameters.
+      DrawText<epic_internal>(
+        Text: string,
+        Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        ?Color: color = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {},
+        ?FontScale: float = external {},
+        ?DrawShadow: logic = external {}
+      )<transacts>: void = external {}
+
+      # Draws a 3D text at the named location, and using the provided draw parameters.
+      DrawText<native><epic_internal>(
+        Text: string,
+        Position: (/Verse.org/SpatialMath:)vector3,
+        ?Color: color = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {},
+        ?FontScale: float = external {},
+        ?DrawShadow: logic = external {}
+      )<transacts>: void
+
       # Hide Debug Draw for the channel for all users.
       HideChannel<native><public>()<transacts>: void
 
@@ -1569,10 +1569,12 @@ Temporary<public> := module {
 
     @available { MinUploadedAtFNVersion := 3600 }
     # Util function for converting a scalar `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
+    # Use this function when your vector indicates a magnitude on each axis but not a direction, such as when you convert a scale measurement rather than a translation or position.
     FromScalarVector3<public>(InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3600 }
     # Util function for converting a scalar `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
+    # Use this function when your vector indicates a magnitude on each axis but not a direction, such as when you convert a scale measurement rather than a translation or position.
     FromScalarVector3<public>(InVector3: (/Verse.org/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
@@ -1886,8 +1888,11 @@ Temporary<public> := module {
       # The name of this `test_reporter`. Used when displaying results summary.
       Name<native><epic_internal>: string = external {}
 
-      # Prints a summary of test results to the log stream and resets the test results.
+      # Prints a summary of test results to the log stream.
       PrintSummary<native><epic_internal>(?Level: log_level = external {}): void
+
+      # Prints a json summary of test results to the log stream.
+      PrintSummaryJson<native><epic_internal>(): void
 
       # Report a test result of `Failed`. `Category` and `SubCategory` are used to calculate test result stats as part of printing the summary.
       ReportTestFailed<native><epic_internal>(

@@ -1746,6 +1746,7 @@
 			"/Script/MovieScene.MovieSceneTimeWarpSection":						{ "Visible": true },
 			"/Script/MovieScene.MovieScenePlayRateCurve":						{ "Visible": true },
 			"/Script/MovieScene.MovieSceneTimeWarpCurve":						{ "Visible": true },
+			"/Script/MovieScene.MovieSceneTimeWarpDecoration":                  {  },
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEventTrack": { "Visible": true },
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEventSection": { "Visible": true },
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEvent": { "Visible": true },
@@ -2479,7 +2480,7 @@
 				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
 			},
 			"SpatialProfiler.MainToolBar": {
-				"DenyList": [ "StaticMeshHeatmaps" ]
+				"DenyList": [ "StaticMeshHeatmaps", "ActorCountHeatmaps" ]
 			}
 		},
 		"AllowedTabs": {
@@ -3959,7 +3960,7 @@
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
-				"DenyList": [ "CharacterCosmeticAssetId" ],
+				"DenyList": [ "CharacterCosmeticAssetId"],
 				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook" ]
 			},
 			{

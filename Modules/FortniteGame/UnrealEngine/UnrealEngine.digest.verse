@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.00-CL-44501951
+# Generated from build: ++Fortnite+Release-37.10-CL-45056983
 #################################################
 
 using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -506,10 +506,12 @@ Temporary<public> := module {
 
     @available { MinUploadedAtFNVersion := 3600 }
     # Util function for converting a scalar `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
+    # Use this function when your vector indicates a magnitude on each axis but not a direction, such as when you convert a scale measurement rather than a translation or position.
     FromScalarVector3<public>(InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3600 }
     # Util function for converting a scalar `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
+    # Use this function when your vector indicates a magnitude on each axis but not a direction, such as when you convert a scale measurement rather than a translation or position.
     FromScalarVector3<public>(InVector3: (/Verse.org/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }

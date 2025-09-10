@@ -109,7 +109,6 @@
 				"/Script/AnimGraphRuntime.SkeletalControlLibrary:ConvertToSkeletalControlPure",
 				"/Script/AnimGraphRuntime.SkeletalControlLibrary:GetAlpha",
 				"/Script/AnimGraphRuntime.SkeletalControlLibrary:SetAlpha",
-				"/Script/CommonUI.CommonActionWidget:SetEnhancedInputAction",
 				"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputExtension:AddInputMapping",
 				"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputExtension:RemoveInputMapping",
 				"/Script/Engine.KismetArrayLibrary:Array_Add",
@@ -772,8 +771,7 @@
 		}
 	},
 	"ValkyrieExperimentalSettings": {
-		"bAllowAccessToExperimentalScriptedTools": true,
-		"bAllowAccessToExperimentalInventorySettings": true
+		"bAllowAccessToExperimentalScriptedTools": true
 	},
 	"ValkyrieAudioSettings": {
 		"bEnableLoadingBehaviorForceInline": true
@@ -782,7 +780,6 @@
 		"AllowedPaletteWidgets": {
 			"+": [
 				"/Script/UMG.SafeZone",
-				"/Script/CommonUIMVVMExtensions.ActionWidget",
 				"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C",
 				"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C"
 			]
@@ -828,6 +825,7 @@
 			"/Script/EnhancedInput.InputTriggerPressed":        { "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortInputMappingContext":     { "Rules": ["View","Create"] },
+			"/Script/FortniteGame.FortItemComponentData_Pickup":{ "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortPlayerMappableKeySettings":{ "Rules": ["View","Create"]},
 			"/Script/GameplayCameras.CameraRigAsset":			{ "Rules": ["View","Create"] },
 			"/Script/GameplayCameras.CameraVariableAsset":		{ "Rules": ["View","Create"], "Subclasses": "All"},
@@ -1010,7 +1008,6 @@
 			"/Script/BlueprintGraph.K2Node_VariableGet":				{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_VariableSet":				{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_VariableSetRef":				{ "Visible": true },
-			"/Script/CommonUIMVVMExtensions.ActionWidget":				{ "Visible": true },
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputExtension":{ "Visible": true },
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputClassExtension":{  },
 			"/Script/CommonUIExtensionsBP.MVVMBlueprintViewExtension_EnhancedInput":{  },
@@ -1051,8 +1048,8 @@
 			"/Script/Engine.KismetMathLibrary":							{ "Visible": true },
 			"/Script/Engine.KismetSystemLibrary":						{ "Visible": true },
 			"/Script/Engine.PoseLink": {},
-			"/Script/EnhancedInput.InputAction":						{  },
-			"/Script/EnhancedInput.InputMappingContext":				{  },
+			"/Script/EnhancedInput.InputAction":						{ "Visible": true },
+			"/Script/EnhancedInput.InputMappingContext":				{ "Visible": true },
 			"/Script/EnhancedInput.InputTrigger":						{ "Visible": true },
 			"/Script/EnhancedInput.InputTriggerPressed": 				{ "Visible": true },
 			"/Script/FortniteGame.FortInputMappingContext": 			{ "Visible": true },
@@ -1063,6 +1060,7 @@
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance":			{ "Visible": true },
 			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
 			"/Script/FortniteGame.FortGameUserSettings":				{ "Visible": true },
+			"/Script/FortniteGame.FortItemComponentData_Pickup":		{ "Visible": true },
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode":		{  },
 			"/Script/GameplayCameras.OcclusionMaterialCameraNode":		{  },
 			"/Script/GameplayCameras.ArrayCameraNode":					{  },

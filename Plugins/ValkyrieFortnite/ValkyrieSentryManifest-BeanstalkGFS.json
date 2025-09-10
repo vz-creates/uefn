@@ -71,6 +71,11 @@
 			"FriendlyName": "JunoBuildInstructionsItemDefinition",
 			"Version": 1
 		},
+		"1BEC4D51C1134D4298A2E1B4E03A04C5":
+		{
+			"FriendlyName": "FortFirstPersonAdjustmentVersion",
+			"Version": 1
+		},
 		"1ED048F42F2E4C6889D053A4F18F102D":
 		{
 			"FriendlyName": "WorldSettingVer",
@@ -639,7 +644,7 @@
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
 			"FriendlyName": "Dev-IKRig",
-			"Version": 6
+			"Version": 7
 		},
 		"F94941FB19B64F5C851315EF0BF61F81":
 		{
@@ -696,6 +701,8 @@
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeBehavior.CharacterModifier_WildlifeBehavior_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeSpawn.CharacterModifier_WildlifeSpawn_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeVerseBehavior.CharacterModifier_WildlifeVerseBehavior_C",
+			"/CRD_Simple_Voting_Option/UI/UEFN_VotingGroup_ViewModel.UEFN_VotingGroup_ViewModel_C",
+			"/CRD_Simple_Voting_Option/UI/UEFN_VotingOption_ViewModel.UEFN_VotingOption_ViewModel_C",
 			"/CRD_SkilledInteractionDevice/UI/UEFN_SkilledInteraction_ViewModel.UEFN_SkilledInteraction_ViewModel_C",
 			"/CRD_StatManager/UI/MVVM_UEFN_Stat.MVVM_UEFN_Stat_C",
 			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C",
@@ -842,6 +849,7 @@
 			"/Script/CommonConversationGraph.ConversationGraphNode_Task",
 			"/Script/CommonConversationRuntime.ConversationDatabase",
 			"/Script/CommonUI.CommonButtonBase",
+			"/Script/CommonUIMVVMExtensions.ActionWidget",
 			"/Script/Constraints.ConstraintsActor",
 			"/Script/Constraints.ConstraintsManager",
 			"/Script/Constraints.TickableLookAtConstraint",
@@ -2236,7 +2244,6 @@
 			"/Script/BlueprintGraph.K2Node_VariableSet",
 			"/Script/BlueprintGraph.K2Node_VariableSetRef",
 			"/Script/CommonUIExtensionsBP.MVVMBlueprintViewExtension_EnhancedInput",
-			"/Script/CommonUIMVVMExtensions.ActionWidget",
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputClassExtension",
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputExtension",
 			"/Script/CoreUObject.Function",
@@ -2452,6 +2459,8 @@
 			"/Script/IKRig.IKRigPoleSolver",
 			"/Script/IKRig.IKRigSetTransform",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon",
+			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
+			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits",
 			"/Script/LocalizableMessage.LocalizableMessage",
 			"/Script/LocalizableMessage.LocalizableMessageParameterEntry",
@@ -2516,8 +2525,7 @@
 			"/Script/Engine.ComponentSpacePoseLink",
 			"/Script/Engine.InputScaleBiasClampConstants",
 			"/Script/Engine.PoseLink",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize"
+			"/Script/FortniteGame.FortItemComponentData_Pickup"
 		],
 		"VKCreateUGCPartner": []
 	},
@@ -15417,6 +15425,8 @@
 			"/CRD_SavePoint/Device_SavePoint_V2.Device_SavePoint_V2_C",
 			"/CRD_Simple_Voting_Option/Device_Simple_Voting_Group.Device_Simple_Voting_Group_C",
 			"/CRD_Simple_Voting_Option/Device_Simple_Voting_Option.Device_Simple_Voting_Option_C",
+			"/CRD_Simple_Voting_Option/UI/UEFN_VotingGroup_ViewModel.UEFN_VotingGroup_ViewModel_C",
+			"/CRD_Simple_Voting_Option/UI/UEFN_VotingOption_ViewModel.UEFN_VotingOption_ViewModel_C",
 			"/CRD_SkilledInteractionDevice/UI/UEFN_SkilledInteraction_ViewModel.UEFN_SkilledInteraction_ViewModel_C",
 			"/CRD_SkydomeDevice/BP_Skydome_Device.BP_Skydome_Device_C",
 			"/CRD_SkydomeDevice/Device_Skydome_V2.Device_Skydome_V2_C",
@@ -15451,7 +15461,7 @@
 			"/CRD_Zipline/Device_ZiplineControlPoint.Device_ZiplineControlPoint_C",
 			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C",
 			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C",
-			"/CreativeCoreDevices/AirVent/B_HVAC_Prop_V2.B_HVAC_Prop_V2_C",
+			"/CreativeCoreDevices/AirVent/BP_HVAC_Prop_V2.BP_HVAC_Prop_V2_C",
 			"/CreativeCoreDevices/AlwaysCook/Device_Beacon_V2_Beam_Blue.Device_Beacon_V2_Beam_Blue_C",
 			"/CreativeCoreDevices/AlwaysCook/Device_Beacon_V2_Beam_Green.Device_Beacon_V2_Beam_Green_C",
 			"/CreativeCoreDevices/AlwaysCook/Device_Beacon_V2_Beam_Orange.Device_Beacon_V2_Beam_Orange_C",

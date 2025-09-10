@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.10-CL-45056983
+# Generated from build: ++Fortnite+Release-37.20-CL-45566402
 #################################################
 
 using { /Verse.org/Native }
@@ -599,7 +599,7 @@ Restricted<public> := module {
 
     IsSignaled<native><public>()<decides>: void
 
-    Signal<native><override>(__dupe___unnamed_parameter_24: t): void
+    Signal<native><override>(__dupe___unnamed_parameter_28: t): void
   }
 
   sticky_event<public>() := sticky_event(void)
@@ -768,7 +768,7 @@ SceneGraph<public> := module {
     VisibilityOverlapAll<public>: collision_profile = external {}
   }
 
-  DefaultChannelToInteraction<epic_internal>(__dupe___unnamed_parameter_42: collision_channel)<computes>: collision_interaction = external {}
+  DefaultChannelToInteraction<epic_internal>(__dupe___unnamed_parameter_46: collision_channel)<computes>: collision_interaction = external {}
 
   @available { MinUploadedAtFNVersion := 2930 }
   EmptyOverlapHitsGenerator<native><epic_internal>()<transacts>: generator(overlap_hit)
@@ -1970,9 +1970,9 @@ SceneGraph<public> := module {
   execution_subscription<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
 
-    RunAfter<native><epic_internal>(__dupe___unnamed_parameter_32: execution_subscription): void
+    RunAfter<native><epic_internal>(__dupe___unnamed_parameter_36: execution_subscription): void
 
-    RunBefore<native><epic_internal>(__dupe___unnamed_parameter_33: execution_subscription): void
+    RunBefore<native><epic_internal>(__dupe___unnamed_parameter_37: execution_subscription): void
   }
 
   @experimental
@@ -2066,11 +2066,11 @@ SceneGraph<public> := module {
     ExpiredEvent<native><public>: listenable(tuple()) = external {}
 
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
-    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_70: accessor)<transacts>: float
+    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_74: accessor)<transacts>: float
 
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_69: accessor,
+      __dupe___unnamed_parameter_73: accessor,
       InRemainingDuration: float
     )<transacts>: void
 
@@ -2091,13 +2091,13 @@ SceneGraph<public> := module {
 
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
     GetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_72: accessor,
+      __dupe___unnamed_parameter_76: accessor,
       Agent: agent
     )<transacts>: float
 
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_71: accessor,
+      __dupe___unnamed_parameter_75: accessor,
       Agent: agent,
       InRemainingDuration: float
     )<transacts>: void
@@ -2115,15 +2115,24 @@ SceneGraph<public> := module {
   # Used to set an interaction duration.
   interactable_duration<native><public> := class<concrete> {
     # Interact duration getter.
-    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_74: accessor)<transacts>: float
+    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_78: accessor)<transacts>: float
+
+    # Max Simultaneous Interactors duration getter.
+    GetMaxSimultaneousInteractors<native><epic_internal>(__dupe___unnamed_parameter_80: accessor)<transacts>: ?int
 
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.Returns the same value when called multiple times within a transaction.
     GetRemainingInteractDurationForAgent<final><native><public>(Agent: agent)<reads><decides>: float
 
     # Interact duration setter.
     SetInteractDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_73: accessor,
+      __dupe___unnamed_parameter_77: accessor,
       InRemainingDuration: float
+    )<transacts>: void
+
+    # Max Simultaneous Interactors duration setter.
+    SetMaxSimultaneousInteractors<native><epic_internal>(
+      __dupe___unnamed_parameter_79: accessor,
+      InRemainingDuration: ?int
     )<transacts>: void
 
     # Sets an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.
@@ -2139,13 +2148,19 @@ SceneGraph<public> := module {
     @editable
     # The max number of simultaneous interactors. A value of false is unlimited.  This value represents how many agents may have active interactions.
     # If this changes to a value less than the current number of active interactions, those interactions are not canceled but new interactions will not start.
-    var MaxSimultaneousInteractors<native><public>: ?int = external {}
+    var MaxSimultaneousInteractors<public>: ?int = external {}
 
     @replicated("")
     @editable
     @display_name("Interact Duration")
     # Internal InteractDuration value.
     var _InteractDuration<native><epic_internal>: float = external {}
+
+    @replicated("")
+    @editable
+    @display_name("MaxSimultaneousInteractors")
+    # Internal Max Simultaneous Interactors value.
+    var _MaxSimultaneousInteractors<native><epic_internal>: ?int = external {}
   }
 
   # Used to set a limit of times to interact.
@@ -2154,12 +2169,12 @@ SceneGraph<public> := module {
     ClearSuccessfulInteractionCount<native><public>()<transacts>: void
 
     # Get the maximum number of successful interactions possible.
-    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_76: accessor)<transacts>: ?int
+    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_82: accessor)<transacts>: ?int
 
     # Update the maximum number of successful interactions possible, a value of false is unlimited.
     # If the current number of tracked interactions is greater than the value specified here, all current interactions will be canceled.
     SetMaxSuccessfulInteractions<native><epic_internal>(
-      __dupe___unnamed_parameter_75: accessor,
+      __dupe___unnamed_parameter_81: accessor,
       InMaxSuccessfulInteractions: ?int
     )<transacts>: void
 
@@ -3241,10 +3256,10 @@ Simulation<public> := module {
     MakeTagFromSubClass<native><epic_internal>(tag_type: subtype(tag))<transacts><decides>: tag
 
     # Get a string representation of the gameplay tag. Useful for debugging.
-    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_32: tag)<computes>: string
+    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_36: tag)<computes>: string
 
     # Returns abbreviated human readable Tag list. Useful for debugging.
-    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_35: tag_container)<computes>: string
+    (/Verse.org/Simulation/Tags:)ToString<native><epic_internal>(__dupe___unnamed_parameter_39: tag_container)<computes>: string
 
     # A single gameplay tag, which represents a hierarchical name of the form x.y that is registered in the GameplayTagsManager You can filter the gameplay tags displayed in the editor.
     tag<native><public> := class<abstract><castable> {}
@@ -4068,6 +4083,9 @@ Verse<public> := module {
   # Returns the base `B` logarithm of `X`.
   Log<public>(B: float, X: float)<reads>: float = external {}
 
+  @available { MinUploadedAtFNVersion := 3720 }
+  MakeError<epic_internal>(Result: error_type where error_type: type): result(false, error_type) = external {}
+
   MakeLocalizableValue<epic_internal>(V: float): localizable_float = external {}
 
   MakeLocalizableValue<epic_internal>(V: int): localizable_int = external {}
@@ -4077,6 +4095,9 @@ Verse<public> := module {
   MakeLocalizableValue<epic_internal>(V: string): localizable_string = external {}
 
   MakeMessageInternal<native><epic_internal>(K: string, D: string, S: [string]localizable_value)<converges>: message
+
+  @available { MinUploadedAtFNVersion := 3720 }
+  MakeSuccess<epic_internal>(Result: success_type where success_type: type): result(success_type, false) = external {}
 
   # Returns the maximum of `X` and `Y` unless either are `NaN`.
   # Returns `NaN` if either `X` or `Y` are `NaN`.
@@ -4285,6 +4306,16 @@ Verse<public> := module {
 
   # Concatenates a normal string with a diagnostic message, yielding a diagnostic message.
   operator'+'<public>(Lhs: string, Rhs: diagnostic)<computes>: diagnostic = external {}
+
+  @available { MinUploadedAtFNVersion := 3720 }
+  # Implemented by classes that provide a result for an operation, which can fail or be successful
+  result<epic_internal>(success_type: type, error_type: type) := interface<internal> {
+    # Returns the error data of the specified type.
+    GetError<native_callable><public>()<computes><decides>: error_type
+
+    # Returns the success data of the specified type.
+    GetSuccess<native_callable><public>()<computes><decides>: success_type
+  }
 
   # A parametric interface implemented by events with a `payload` that can be signaled.
   # Can be used with `awaitable`, `subscribable`, or both (see: `listenable`).

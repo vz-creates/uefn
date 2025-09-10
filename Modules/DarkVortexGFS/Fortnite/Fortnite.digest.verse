@@ -2,15 +2,13 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.10-CL-45056983
+# Generated from build: ++Fortnite+Release-37.20-CL-45566402
 #################################################
 
 using { /Fortnite.com/AI }
 using { /Fortnite.com/Characters }
 using { /Fortnite.com/Game }
 using { /Fortnite.com/Teams }
-using { /Verse.org/Assets }
-using { /Verse.org/Native }
 using { /Verse.org/SceneGraph }
 using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/AI
@@ -7231,6 +7229,48 @@ Game<public> := module {
     # Sets the shield state of the object.
     #  * Shield state will be clamped between 0.0 and `MaxShield`.
     SetShield<public>(Shield: float)<transacts>: void
+  }
+}
+
+using { /Verse.org/Assets }
+using { /Verse.org/Native }
+@available { MinUploadedAtFNVersion := 3720 }
+# Module import path: /Fortnite.com/Input
+Input<public> := module {
+  @available { MinUploadedAtFNVersion := 3720 }
+  # Module import path: /Fortnite.com/Input/Character
+  Character<public> := module {
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    Crouch<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    Jump<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    RangedWeaponMapping<public>: input_mapping = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    Reload<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    Sprint<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    TraversalMapping<public>: input_mapping = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    WeaponPrimary<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3720 }
+    @experimental
+    WeaponSecondary<public>: input_action(logic) = external {}
   }
 }
 

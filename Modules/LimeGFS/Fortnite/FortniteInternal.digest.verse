@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.10-CL-45056983
+# Generated from build: ++Fortnite+Release-37.20-CL-45566402
 #################################################
 
 AI<public> := module {
@@ -301,6 +301,9 @@ AI<public> := module {
     # Change stance to crouch
     Crouch<epic_internal>()<suspends>: ai_action_result
 
+    # Start jumping
+    Jump<epic_internal>(): ai_action_result
+
     # Move in range to attack the current target
     MoveInRangeToAttack<public>()<suspends>: ai_action_result
 
@@ -340,6 +343,9 @@ AI<public> := module {
 
     # Change stance to crouch
     Crouch<native><override>()<suspends>: ai_action_result
+
+    # Start jumping
+    Jump<native><override>(): ai_action_result
 
     # Move in range to attack the current target
     MoveInRangeToAttack<native><override>()<suspends>: ai_action_result
@@ -941,7 +947,6 @@ using { /Fortnite.com/Characters }
 using { /Fortnite.com/Teams }
 using { /Fortnite.com/Vehicles }
 using { /UnrealEngine.com/Temporary/Diagnostics }
-using { /Verse.org/Assets }
 using { /Verse.org/SpatialMath }
 # Module import path: /Fortnite.com/Animation
 Animation<public> := module {
@@ -4764,6 +4769,116 @@ Devices<public> := module {
     #  Modifying this value will take effect the next time a player hides inside of this device.
     #  By default, the prop alerts other players with sound and animation that a player is hiding in the prop. Set this to Off to disable these effects.
     var ShouldWobbleWhileHiding<public>: logic = external {}
+  }
+
+  # A strange organic object that may have something or someone inside of it.
+  hive_stash_device<epic_internal> := class<concrete><final>(creative_device_base, enableable, healthful) {
+    # Clear the link between the hive stash and a spawner device.
+    ClearSpawnerLink<epic_internal>(): void = external {}
+
+    # Disable the device, preventing players from interacting with it. Changes to health and state, such as those caused by damage, can still be applied.
+    Disable<override>(): void = external {}
+
+    # Enable the device, allowing players to interact with it.
+    Enable<override>(): void = external {}
+
+    # Get the device's current health.
+    GetHealth<override>()<transacts>: float = external {}
+
+    # Get the device's current maximum health.
+    GetMaxHealth<override>()<transacts>: float = external {}
+
+    # Succeeds if the device currently has a linked spawner, fails otherwise.
+    HasLinkedSpawner<epic_internal>()<transacts><decides>: void = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if the hive stash is currently open, fails otherwise.
+    IsOpen<epic_internal>()<transacts><decides>: void = external {}
+
+    # Open the hive stash. If a spawner is linked, trigger it and rescue the resulting `agent` from the hive stash.
+    #  * When the `agent` is rescued, if *ShouldPlayRescuedAnimation* is `true`, they will play a short animation to get off the hive stash.
+    Open<epic_internal>(): void = external {}
+
+    # Triggers whenever the hive stash is opened, returning the instigating `agent` if applicable.
+    OpenEvent<epic_internal>: listenable(?agent) = external {}
+
+    # Teleport `Agent` to the hive stash. If *ShouldPlayRescuedAnimation* is `true`, they will play a short animation to get off the hive stash.
+    #  * If the hive stash is closed, it will burst open first, ignoring a linked spawner. This will not clear a linked spawner.
+    #  * Has no effect if `Agent` cannot be teleported for any reason, such as not being in the game anymore.
+    RescueAgent<epic_internal>(Agent: agent): void = external {}
+
+    # Triggers when the rescue animation ends.
+    #  * Returns the rescued `agent`.
+    RescueAnimationEndEvent<epic_internal>: listenable(agent) = external {}
+
+    # Triggers whenever an `agent` is rescued, either by the hive stash opening with a linked spawner, or by calling *RescueAgent* while the hive stash is closed.
+    #  * Returns the rescued `agent`.
+    RescueEvent<epic_internal>: listenable(agent) = external {}
+
+    # Reset the hive stash. This closes it, sets it to full health, and sets *ShouldPlayRescuedAnimation*, *CanBeDamaged*, *CanDropItems*, *InteractTextOverride*, and *HiveStashStyle* to their initial values.
+    #  * This can also clear the link to a spawner depending on *ShouldKeepLinkOnReset*.
+    #  * The hive stash will not reset if the rescue animation is currently playing.
+    Reset<epic_internal>(): void = external {}
+
+    # Set the device's current health.
+    SetHealth<override>(Health: float)<transacts>: void = external {}
+
+    # Link the hive stash to `GuardSpawner`. This overrides the hive stash's existing link if one exists.
+    #  * If the hive stash opens with a linked spawner, trigger the spawner and rescue the resulting `agent` from the hive stash.
+    #  * The rescued `agent` respects its spawner's events, functions, spawn count, and spawn limits.
+    SetLinkedSpawner<epic_internal>(GuardSpawner: guard_spawner_device): void = external {}
+
+    # Link the hive stash to `NPCSpawner`. This overrides the hive stash's existing link if one exists.
+    #  * If the hive stash opens with a linked spawner, trigger the spawner and rescue the resulting `agent` from the hive stash.
+    #  * The rescued `agent` respects its spawner's events, functions, spawn count, and spawn limits.
+    SetLinkedSpawner<epic_internal>(NPCSpawner: npc_spawner_device): void = external {}
+
+    # If `Agent` was spawned by a `guard_spawner_device` or `npc_spawner_device`, link the hive stash to that spawner. This overrides the hive stash's existing link if one exists.
+    #  * Has no effect if `Agent` is not from a `guard_spawner_device` or `npc_spawner_device`, or if `Agent` was already eliminated.
+    #  * If the hive stash opens with a linked spawner, trigger the spawner and rescue the resulting `agent` from the hive stash.
+    #  * The rescued `agent` respects its spawner's events, functions, spawn count, and spawn limits.
+    SetLinkedSpawnerFromAgent<epic_internal>(Agent: agent): void = external {}
+
+    # Set the device's current maximum health.
+    SetMaxHealth<override>(MaxHealth: float)<transacts>: void = external {}
+
+    StringToMessage<localizes><epic_internal>(Value: string): message = external {}
+
+    # Whether the hive stash can be damaged.
+    #  * `true` by default.
+    var CanBeDamaged<epic_internal>: logic = external {}
+
+    # Whether the hive stash drops items when opened. This can happen in addition to an `agent` being rescued.
+    #  * `true` by default.
+    var CanDropItems<epic_internal>: logic = external {}
+
+    # Determines what players can see inside the hive stash, as well as its interaction text. This does not affect what happens when it opens.
+    #  * `Empty` shows nothing and says `Break Open`.
+    #  * `Loot` shows a chest and says `Break Open`.
+    #  * `Trapped` shows a floating character and says `Rescue`.
+    var HiveStashStyle<epic_internal>: hive_stash_style = external {}
+
+    # If set, this overrides the text shown when interacting while the hive stash is closed.
+    var InteractTextOverride<epic_internal>: message = external {}
+
+    # Whether to keep or clear a spawner link when *Reset* is called. Links can always be cleared with *ClearSpawnerLink*.
+    #  * `true` by default.
+    var ShouldKeepLinkOnReset<epic_internal>: logic = external {}
+
+    # Whether an `agent` spawned from registered data or teleported by *FreeAgent* plays a short animation to get them off the hive stash.
+    #  * The animation may not work properly on skeletons other than the average player skeleton.
+    #  * `true` by default.
+    var ShouldPlayRescuedAnimation<epic_internal>: logic = external {}
+  }
+
+  hive_stash_style<epic_internal> := enum<open> {
+    Empty
+
+    Loot
+
+    Trapped
   }
 
   # Used to create a holographic screen that displays a clock or other curated images.
@@ -9188,7 +9303,6 @@ using { /Fortnite.com/Playspaces }
 using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /UnrealEngine.com/Temporary/UI }
 using { /Verse.org/Colors }
-using { /Verse.org/Native }
 using { /Verse.org/Simulation }
 FeralCorgi<public> := module {
   # Module import path: /Fortnite.com/FeralCorgi/AnalyticsBridge
@@ -9230,6 +9344,11 @@ FeralCorgi<public> := module {
       InAgent: agent,
       RespawnQueryLocation: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<reads>: respawn_query_info
+  }
+
+  # Module import path: /Fortnite.com/FeralCorgi/FeralEliminationInfoBridge
+  FeralEliminationInfoBridge<epic_internal> := module {
+    GetEliminationInfoForPlayer<native><epic_internal>(Agent: agent)<reads>: elimination_info
   }
 
   # Module import path: /Fortnite.com/FeralCorgi/FeralLoggingBridge
@@ -9355,6 +9474,14 @@ FeralCorgi<public> := module {
 
   @import_as("/Script/FeralCorgiGameplayRuntime.UCheatBridge")
   cheat_bridge_base<native><epic_internal> := class<abstract><epic_internal> {}
+
+  elimination_info<native><epic_internal> := struct {
+    WasBlindShot<native>: logic = external {}
+
+    WasDeadShot<native>: logic = external {}
+
+    WasHeadShot<native>: logic = external {}
+  }
 
   # Base class to inherit from to pass to feral_analytics_attributes_request.AppendToAttributes to inject attributes in an analytics event
   feral_analytics_attributes_base<native><epic_internal> := class<persistent> {}
@@ -9848,31 +9975,43 @@ Game<public> := module {
   }
 }
 
-InputExperimental<public> := module {
-  using { /Verse.org/Assets }
-  # Module import path: /Fortnite.com/InputExperimental/Character
-  Character<epic_internal> := module {
+using { /Verse.org/Assets }
+using { /Verse.org/Native }
+@available { MinUploadedAtFNVersion := 3720 }
+# Module import path: /Fortnite.com/Input
+Input<public> := module {
+  @available { MinUploadedAtFNVersion := 3720 }
+  # Module import path: /Fortnite.com/Input/Character
+  Character<public> := module {
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     Crouch<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     Jump<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     RangedWeaponMapping<public>: input_mapping = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     Reload<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     Sprint<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     TraversalMapping<public>: input_mapping = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     WeaponPrimary<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     WeaponSecondary<public>: input_action(logic) = external {}
   }

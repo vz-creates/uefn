@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.10-CL-45056983
+# Generated from build: ++Fortnite+Release-37.20-CL-45566402
 #################################################
 
 AINavigation<public> := module {
@@ -215,9 +215,11 @@ ComponentTestSuite<public> := module {
   test_tag_vehicle_car_datsun<native><epic_internal> := class(test_tag_vehicle_car) {}
 }
 
+using { /Verse.org/Native }
 using { /Verse.org/SpatialMath }
 # Module import path: /UnrealEngine.com/ControlInput
 ControlInput<public> := module {
+  @available { MinUploadedAtFNVersion := 3630 }
   # Access input-related data and settings for a player.
   GetPlayerInput<native><public>(Player: player)<transacts><decides>: player_input
 
@@ -226,6 +228,7 @@ ControlInput<public> := module {
     Path: string
   ) where t: type)<converges>: input_action(t)
 
+  @available { MinUploadedAtFNVersion := 3630 }
   # Input_events is a container for user input events which can be subscribed to.
   #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an input_events object for a given player.
   #   * Low-level notifications of current user input: DetectionBeginEvent, DetectionOngoingEvent, and DetectionEndEvent.
@@ -266,6 +269,7 @@ ControlInput<public> := module {
     DetectionOngoingEvent<native><public>: listenable(tuple(player, t, float)) = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 3630 }
   # This is the main manager class for input-related settings and functions for a player.
   player_input<native><public> := class {
     AddInputMapping<native><public>(InputMapping: input_mapping): void
@@ -275,8 +279,6 @@ ControlInput<public> := module {
     MakeFloatInputEvents<native_callable><epic_internal>(): input_events(float) = external {}
 
     MakeLogicInputEvents<native_callable><epic_internal>(): input_events(logic) = external {}
-
-    MakeVector2InputEvents<native_callable><epic_internal>(): input_events(vector2) = external {}
 
     MakeVector3InputEvents<native_callable><epic_internal>(): input_events((/Verse.org/SpatialMath:)vector3) = external {}
 
@@ -383,19 +385,26 @@ EntityTestSuite<public> := module {
 
 Itemization<public> := module {
   @experimental
-  (InAgent: agent).GetInventory<native><epic_internal>()<transacts><decides>: inventory_component
+  (InAgent: agent).GetInventory<native><epic_internal>()<reads><decides>: inventory_component
 
   DefaultText<localizes><epic_internal>: message = external {}
 
   @experimental
-  add_inventory_result<native><epic_internal> := struct<epic_internal> {
+  add_inventory_result<native><epic_internal> := class<epic_internal> {
     Inventory<native><public>: inventory_component
 
     ParentInventory<native><public>: inventory_component
   }
 
   @experimental
-  add_items_result<native><epic_internal> := struct<epic_internal> {
+  add_item_event<native><epic_internal> := class<epic_internal>(scene_event) {
+    ItemComponent<native><public>: item_component
+
+    var EligibleInventories<native><public>: []inventory_with_priority
+  }
+
+  @experimental
+  add_items_result<native><epic_internal> := class<epic_internal> {
     AddedItems<native><public>: []entity
 
     Inventory<native><public>: inventory_component
@@ -451,15 +460,15 @@ Itemization<public> := module {
 
   @experimental
   inventory_component<native><epic_internal> := class<final_super>(component) {
-    AddInventory<native><final><epic_internal>(Inventory: inventory_component)<transacts><decides>: add_inventory_result
+    AddInventory<native><final><epic_internal>(Inventory: inventory_component)<transacts><decides>: void
 
     AddItem<native><final><public>(
       Item: entity,
       ?AllowMergeItems: logic = external {},
       ?AllowPartialItemMove: logic = external {}
-    )<transacts><decides>: add_items_result
+    )<transacts><decides>: void
 
-    AddItemsEvent<native><public>: listenable(add_items_result) = external {}
+    AddItemsEvent<native><final><public>: listenable(add_items_result) = external {}
 
     AddRule<native><final><public>(Rule: inventory_rule_interface)<transacts><decides>: cancelable
 
@@ -493,82 +502,56 @@ Itemization<public> := module {
 
     GetNativeInputAction<native><epic_internal>(ItemSlot: int): ?input_action(type)
 
-    InventoryAddedEvent<native><epic_internal>: listenable(add_inventory_result) = external {}
+    InventoryAddedEvent<native><final><epic_internal>: listenable(add_inventory_result) = external {}
 
-    InventoryPropertyChangedEvent<native><epic_internal>: listenable(inventory_property_change_result) = external {}
+    InventoryPropertyChangedEvent<native><final><epic_internal>: listenable(inventory_property_change_result) = external {}
 
-    InventoryRemovedEvent<native><epic_internal>: listenable(remove_inventory_result) = external {}
+    InventoryRemovedEvent<native><final><epic_internal>: listenable(remove_inventory_result) = external {}
 
-    ItemsSlotChangedEvent<native><epic_internal>: listenable(change_items_slot_result) = external {}
+    ItemsSlotChangedEvent<native><final><epic_internal>: listenable(change_items_slot_result) = external {}
 
     OnInitializedInternal<native><override>(): void
 
     OnUninitializingInternal<native><override>(): void
 
-    RemoveInventory<native><final><epic_internal>(Inventory: inventory_component)<transacts><decides>: remove_inventory_result
+    RemoveInventory<native><final><epic_internal>(Inventory: inventory_component)<transacts><decides>: void
 
-    RemoveItem<native><final><public>(Item: entity)<transacts><decides>: remove_items_result
+    RemoveItem<native><final><public>(Item: entity)<transacts><decides>: void
 
-    RemoveItemsEvent<native><public>: listenable(remove_items_result) = external {}
+    RemoveItemsEvent<native><final><public>: listenable(remove_items_result) = external {}
 
-    @editable
     ShowSlotBindings<native><epic_internal>: logic = external {}
 
-    @editable
     SlotBindingList<native><epic_internal>: []tuple(input_action(type), int) = external {}
 
     UnequipItem<native><epic_internal>(Item: entity)<transacts><decides>: void
 
-    @editable
-    VerseGameplayTags<native><epic_internal>: tag_container = external {}
-
-    @editable
     @replicated("")
     var<private> EnableItemStacking<native><epic_internal>: logic = external {}
 
-    @editable
     @replicated("")
     var<private> InventoryDescription<native><epic_internal>: message = external {}
 
-    @editable
     @replicated("")
     var<private> InventoryDisplayName<native><epic_internal>: message = external {}
 
     @replicated("")
     var<private> InventoryMaxStackSizeOverride<native><epic_internal>: int = external {}
 
-    @editable
     @replicated("")
     var<private> InventoryName<native><epic_internal>: string = external {}
 
     var<private> InventoryRuleList<native><public>: []inventory_rule_interface = external {}
 
-    @editable
     @replicated("")
     var<private> PickupPriority<native><epic_internal>: int = external {}
 
-    @editable
     @replicated("")
     var<private> TotalSlots<native><protected>: int = external {}
   }
 
   @experimental
-  inventory_debug<native><epic_internal> := class {
-    AddTestItem<native_callable><public>(InInventory: inventory_component): void = external {}
-
-    # Adds a mergeable item which can be stacked to the inventory.
-    AddTestStackableItem<native_callable><public>(InInventory: inventory_component): void = external {}
-
-    RemoveAllItems<native_callable><public>(InInventory: inventory_component): void = external {}
-  }
-
-  @experimental
   inventory_full_failure_reason<epic_internal> := class<final><reads>(failure_reason) {}
-
-  @experimental
-  inventory_hotbar_component<native><epic_internal> := class(inventory_component) {
-    var TotalSlots<override>: int = external {}
-  }
 
   @experimental
   inventory_properties<native><epic_internal> := class<epic_internal> {
@@ -660,6 +643,13 @@ Itemization<public> := module {
   }
 
   @experimental
+  inventory_with_priority<native><epic_internal> := class {
+    Inventory<native><public>: inventory_component
+
+    Priority<native><public>: float
+  }
+
+  @experimental
   item_ability_binding<native><final><epic_internal> := class<concrete> {
     @editable
     var<private> Ability<native><public>: ?ability = external {}
@@ -712,8 +702,15 @@ Itemization<public> := module {
   @experimental
   item_attachment_definition<native><epic_internal> := class<unique><concrete> {
     @editable
-    var AttachmentVisibility<native><public>: item_state_filter = external {}
+    var VisibleWhenEquipped<native><public>: logic = external {}
+
+    @editable
+    var VisibleWhenUnequipped<native><public>: logic = external {}
   }
+
+  @experimental
+  # item_category is used to classify items.
+  item_category<native><public> := class<castable><concrete><unique><final> {}
 
   @experimental
   # Anything using this component should be considered an item. Required to interact with inventories.
@@ -722,19 +719,22 @@ Itemization<public> := module {
 
     CanMergeIntoInternal<final><native><epic_internal>(TargetItem: entity)<reads>: tuple(logic, logic)
 
+    @editable
+    Categories<native><public>: []item_category = external {}
+
     CloneItem<final><native><epic_internal>()<transacts>: entity
 
     Drop<native><public>()<transacts><decides>: void
 
-    EquippedChangedEvent<native><public>: listenable(item_equipped_change) = external {}
+    EquippedChangedEvent<native><final><public>: listenable(item_equipped_change) = external {}
 
     GetParentInventory<native><final><public>()<reads><decides>: inventory_component
 
-    InventoryChangeEvent<native><public>: listenable(item_inventory_change) = external {}
+    InventoryChangeEvent<native><final><public>: listenable(item_inventory_change) = external {}
 
     IsItemEquipped<native><final><public>()<reads><decides>: void
 
-    MaxStackSizeChangedEvent<native><public>: listenable(item_max_stack_size_change) = external {}
+    MaxStackSizeChangedEvent<native><final><public>: listenable(item_max_stack_size_change) = external {}
 
     MergeInto<final><native_callable><public>(
       TargetItem: entity,
@@ -754,9 +754,9 @@ Itemization<public> := module {
 
     SetStackSize<final><native><public>(NewStackSize: int)<transacts>: void
 
-    StackSizeChangedEvent<native><public>: listenable(item_stack_size_change) = external {}
+    StackSizeChangedEvent<native><final><public>: listenable(item_stack_size_change) = external {}
 
-    Take<final><native><epic_internal>(Amount: int)<transacts><decides>: entity
+    Take<final><native><public>(Amount: int)<transacts><decides>: entity
 
     @replicated("")
     var<private> ItemDefinition<native><epic_internal>: ?item_definition_base = external {}
@@ -874,28 +874,6 @@ Itemization<public> := module {
   }
 
   @experimental
-  item_stack_size_component<native><final><epic_internal> := class<final_super>(component) {
-    SetMaxStackSize<native><public>(NewMaxStackSize: int): void
-
-    SetStackSize<native><public>(NewStackSize: int)<transacts>: void
-
-    @editable
-    var<private> MaxStackSize<native><public>: int = external {}
-
-    @editable
-    var<private> StackSize<native><public>: int = external {}
-  }
-
-  @experimental
-  item_state_filter<native><epic_internal> := enum {
-    Equipped
-
-    EquippedAndActive
-
-    Owned
-  }
-
-  @experimental
   item_type<native><epic_internal> := class<concrete><unique> {
     @editable
     ItemTypeDescription<native><public>: message = external {}
@@ -921,6 +899,16 @@ Itemization<public> := module {
   @experimental
   item_type_source<native><epic_internal> := class<abstract> {
     GetItemType<native><native_callable><epic_internal>(Default: item_type): item_type
+  }
+
+  @experimental
+  itemization_core_debug_library<native><epic_internal> := class {
+    AddTestItem<native_callable><public>(InInventory: inventory_component): void = external {}
+
+    # Adds a mergeable item which can be stacked to the inventory.
+    AddTestStackableItem<native_callable><public>(InInventory: inventory_component): void = external {}
+
+    RemoveAllItems<native_callable><public>(InInventory: inventory_component): void = external {}
   }
 
   @experimental
@@ -1018,14 +1006,14 @@ Itemization<public> := module {
   pose_modifier<native><epic_internal> := class<concrete><unique>(asset) {}
 
   @experimental
-  remove_inventory_result<native><epic_internal> := struct<epic_internal> {
+  remove_inventory_result<native><epic_internal> := class<epic_internal> {
     Inventory<native><public>: inventory_component
 
     ParentInventory<native><public>: inventory_component
   }
 
   @experimental
-  remove_items_result<native><epic_internal> := struct<epic_internal> {
+  remove_items_result<native><epic_internal> := class<epic_internal> {
     Inventory<native><public>: inventory_component
 
     RemovedItems<native><public>: []entity

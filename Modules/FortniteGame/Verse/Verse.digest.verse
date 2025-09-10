@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.10-CL-45056983
+# Generated from build: ++Fortnite+Release-37.20-CL-45566402
 #################################################
 
 using { /Verse.org/Simulation }
@@ -1191,7 +1191,7 @@ SceneGraph<public> := module {
     @editable
     # The max number of simultaneous interactors. A value of false is unlimited.  This value represents how many agents may have active interactions.
     # If this changes to a value less than the current number of active interactions, those interactions are not canceled but new interactions will not start.
-    var MaxSimultaneousInteractors<native><public>: ?int = external {}
+    var MaxSimultaneousInteractors<public>: ?int = external {}
   }
 
   # Used to set a limit of times to interact.

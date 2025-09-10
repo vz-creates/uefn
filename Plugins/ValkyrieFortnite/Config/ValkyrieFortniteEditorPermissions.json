@@ -40,6 +40,7 @@
 			"/Script/UMG.UserWidget:QueuePlayAnimationTimeRange",
 			"/Script/UMG.UserWidget:QueueStopAllAnimations",
 			"/Script/UMG.UserWidget:QueueStopAnimation",
+			"/Script/CommonUI.CommonActionWidget:SetEnhancedInputAction",
 			"/Script/FortniteUI.FortItemDurabilityVM:ShouldShowDurability",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel:GetPlayerName",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel:IsDBNO",
@@ -286,6 +287,7 @@
 			"/Script/UMG.UniformGridPanel",
 			"/Script/UMG.WidgetSwitcher",
 			"/Script/UMG.WrapBox",
+			"/Script/CommonUIMVVMExtensions.ActionWidget",
 			"/Game/Valkyrie/UMG/UEFN_Button_Loud.UEFN_Button_Loud",
 			"/Game/Valkyrie/UMG/UEFN_Button_Quiet.UEFN_Button_Quiet",
 			"/Game/Valkyrie/UMG/UEFN_Button_Regular.UEFN_Button_Regular",
@@ -494,6 +496,8 @@
 			"/Script/Entity.EntityPrefab":						{ "Rules": ["View","Create"] },
 			"/Script/Engine.Font":								{ "Rules": ["View"] },
 			"/Script/Engine.HLODLayer":							{ "Rules": ["View","Create"] },
+			"/Script/EnhancedInput.InputAction":                { "Rules": ["View"] },
+            "/Script/EnhancedInput.InputMappingContext":        { "Rules": ["View"] },
 			"/Script/Engine.LocalFogVolume":					{ "Rules": ["View","Create"] },
 			"/Script/Engine.LocalFogVolumeComponent":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.Material":							{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
@@ -518,10 +522,9 @@
 			"/Script/Engine.TextureLightProfile": 				{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.VolumeTexture":						{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.World":								{ "Rules": ["View","Create","Import"] },
-			"/Script/EnhancedInput.InputAction":                { "Rules": ["View"] },
-            "/Script/EnhancedInput.InputMappingContext":        { "Rules": ["View"] },
 			"/Script/Foliage.FoliageType_InstancedStaticMesh":	{ "Rules": ["View","Create"], "Subclasses": "All" },
 			"/Script/FortniteGame.BuildingTextureData":			{ "Rules": [ "View", "ModuleAPI" ] },
+			"/Script/FortniteGame.FortInputMappingContext":						{ "Rules": ["View"] },
 			"/Script/CommonConversationRuntime.ConversationDatabase":			{ "Rules": ["View","Create"] },
 			"/Script/CommonConversationGraph.ConversationGraph": 				{ "Rules": ["View"] },
 			"/Script/CommonConversationGraph.ConversationGraphNode_EntryPoint": { "Rules": ["View"] },
@@ -540,7 +543,6 @@
 			"/Script/FortniteGame.VkConversationNode_TextCrawl":				{ "Rules": ["View"] },
 			"/Script/FortniteGame.VkConversationNode_Title":					{ "Rules": ["View"] },
 			"/Script/FortniteGame.FortGameFeatureData":			{ "Rules": ["View"] },
-			"/Script/FortniteGame.FortInputMappingContext":        { "Rules": ["View"] },
 			"/Script/FortniteGame.FortItemDefinition":			{ "Rules": ["View"], "Subclasses": "All" },
 			"/Script/FortniteGame.FortItemComponentData_LevelLimits":		{ "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortItemComponentData_LargeIcon":	{ "Rules": ["View","Create"] },
@@ -848,6 +850,7 @@
 			"/Script/CinematicCamera.CineCameraActor":							{ "Visible": true },
 			"/Script/CinematicCamera.CineCameraComponent":						{ "Visible": true },
 			"/Script/CommonUI.CommonButtonBase":								{  },
+			"/Script/CommonUIMVVMExtensions.ActionWidget":						{ "Visible": true },
 			"/Script/Constraints.ConstraintsActor":								{  },
 			"/Script/Constraints.ConstraintsManager":							{  },
 			"/Script/Constraints.TickableLookAtConstraint":						{  },
@@ -1480,7 +1483,7 @@
 			"/Script/FortniteGame.BuildingStairs":								{ "Visible": true },
 			"/Script/FortniteGame.BuildingStairsActorClassData":				{  },
 			"/Script/FortniteGame.BuildingTextureData":							{ "Visible": true },
-			"/Script/FortniteGame.FortInputMappingContext":						{ "Visible": true },
+			"/Script/FortniteGame.FortInputMappingContext":						{  },
 			"/Script/CommonConversationRuntime.ConversationDatabase":			{ "Visible": true },
 			"/Script/CommonConversationGraph.ConversationGraph": 				{ "Visible": true },
 			"/Script/CommonConversationGraph.ConversationGraphNode_EntryPoint": { "Visible": true },
@@ -1665,6 +1668,8 @@
 			"/Script/InterchangePipelines.InterchangeGenericMeshPipeline":		{  },
 			"/Script/InterchangePipelines.InterchangeGenericTexturePipeline":	{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{  },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{  },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":		{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{  },
 			"/Script/Landscape.ControlPointMeshActor":							{  },
 			"/Script/Landscape.ControlPointMeshComponent":						{  },
@@ -2116,7 +2121,10 @@
 			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams": { "Visible": true },
 			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams_TeamSettingsAndInventory": { "Visible": true },
 			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C": { "Visible": true },
-			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C": { "Visible": true }
+			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C": { "Visible": true },
+			"/CRD_Simple_Voting_Option/UI/UEFN_VotingOption_ViewModel.UEFN_VotingOption_ViewModel_C": { "Visible": true },
+			"/CRD_Simple_Voting_Option/UI/UEFN_VotingGroup_ViewModel.UEFN_VotingGroup_ViewModel_C": { "Visible": true }
+
 		},
 		"AllowedMenus": {
 			"AssetEditor.IKRetargetEditor.MainMenu.CreateMenu": {
@@ -2310,6 +2318,9 @@
 					"SaveAsPrefab", 
 					"GroupEntities",
 					"EditPrefab", 
+					"EditPrefabInplace_Start",
+					"EditPrefabInplace_StepOut",
+					"EditPrefabInplace_Exit",
 					"BrowseToPrefab", 
 					"PushPrefabOverrides"
 				]
@@ -3292,6 +3303,10 @@
 				"AllowList": [ "InnerSlotPadding", "WrapSize", "bExplicitWrapSize", "HorizontalAlignment", "Orientation" ]
 			},
 			{
+				"Type": "/Script/CommonUIMVVMExtensions.ActionWidget",
+				"AllowList": [ "EnhancedInputAction" ]
+			},
+			{
 				"Type": "/Script/AIModule.AISenseConfig_Sight",
 				"AllowList": [ "SightRadius", "LoseSightRadius", "PeripheralVisionAngleDegrees", "DetectionByAffiliation", "MaxAge" ]
 			},
@@ -3659,6 +3674,11 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
+				"Type": "/Script/Engine.CameraComponent",
+				"AllowList": [ "bConstrainAspectRatio" ],
+				"bAllowListAllSubclassProperties": true
+			},
+			{
 				"Type": "/Script/Engine.CameraShakeSourceComponent",
 				"AllowList": [ "Attenuation", "InnerAttenuationRadius", "OuterAttenuationRadius", "CameraShake", "bAutoStart" ],
 				"bAllowListAllSubclassProperties": true
@@ -3960,7 +3980,7 @@
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
-				"DenyList": [ "CharacterCosmeticAssetId"],
+				"DenyList": [ "CharacterCosmeticAssetId" ],
 				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook" ]
 			},
 			{

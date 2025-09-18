@@ -796,7 +796,10 @@
 			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Rules": ["View","Create"] },
 			"/Script/AmbientAudio.AmbientAudioComponent": 		{ "Rules": ["View"] },
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View","Create"] },
+			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent": 		{ "Rules": ["View","Create"] },
 			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create" ] },
+			"/Script/Engine.SoundEffectSubmixPreset":		{ "Rules": [ "View", "Create" ] },
+			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Rules": [ "View", "Create" ] },
 			"/Script/AnimNext.AnimNextSchedule":				{ "Rules": ["View","Create"] },
 			"/Script/AnimNext.AnimNextGraph":					{ "Rules": ["View","Create"] },
 			"/Script/AnimNext.AnimNextParameterBlock":			{ "Rules": ["View","Create"] },
@@ -841,7 +844,10 @@
 			"/Script/MusicEnvironment.FrameBasedMusicMap": { },
 			"/Script/MusicalMode.MovieSceneMusicalClock": { },
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Visible": true },
+			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent":{ "Visible": true },
 			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Visible": true },
+			"/Script/Engine.SoundEffectSubmixPreset":		{ "Visible": true },
+			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Visible": true },
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C":	{ "Visible": true },
 			"/Script/AmbientAudio.AmbientAudioComponent": 				{ "Visible": true },
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 				{ "Visible": true },
@@ -1170,6 +1176,16 @@
 					"=": []
 				}
 			},
+			"SpatialMetricsToolBar.ShowMenu": {
+				"DenyList":  {
+					"=": []
+				}
+			}, 
+			"SpatialMetricsToolBar.OptionsMenu": {
+				"DenyList":  {
+					"=": []
+				}
+			},
 			"DaySequence.ViewportToolbar": {
 				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence", "SelectDaySequenceActor", "RefreshDaySequenceActor", "OpenDaySequenceActor", "RespawnDaySequenceActor" ]
 			}
@@ -1225,6 +1241,24 @@
 					"bSampleAndHold",
 					"PatchSettings",
 					"bBypass"
+				]
+			},
+			{
+				"Type": "/Script/Engine.SoundModulationDefaultRoutingSettings",
+				"AllowList": [
+					"PitchRouting",
+					"PitchModulationDestination",
+					"HighpassRouting",
+					"HighpassModulationDestination",
+					"LowpassRouting",
+					"LowpassModulationDestination"
+				]
+			},
+			{
+				"Type": "/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent",
+				"AllowList": [
+					"SubmixOverrideSettings",
+					"Priority"
 				]
 			},
 			{

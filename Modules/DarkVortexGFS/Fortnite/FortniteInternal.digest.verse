@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.20-CL-45566402
+# Generated from build: ++Fortnite+Release-37.30-CL-45814998
 #################################################
 
 AI<public> := module {
@@ -1496,6 +1496,20 @@ Devices<public> := module {
 
   (MovableObject: creative_movable_object_base).TeleportToInternalImpl<native><epic_internal>(Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<transacts>: teleport_to_result
 
+  @experimental
+  # Removes any persona assignment for a participant.
+  (Participant: agent).ClearConversationTarget<native><public>()<transacts>: void
+
+  @experimental
+  # Returns the persona a participant is assigned to, fails if unassigned.
+  (Participant: agent).GetConversationTarget<native><public>()<reads><decides>: conversation_target
+
+  @experimental
+  # A participant can only speak to one conversation target at a time.
+  #  A conversation target can be spoken to by many participants at a time.
+  #  Fails if the conversation target refuses the addition, or if the participant is assigned to a different conversation target.
+  (Participant: agent).SetConversationTarget<native><public>(ConversationTarget: conversation_target)<transacts><decides>: void
+
   # Module import path: /Fortnite.com/Devices/CreativeAnimation
   CreativeAnimation<public> := module {
     # Returns an `animation_controller` used to animate `Prop`. Only a subset of `creative_prop` types can be animated, though this may change in the future. A few examples of props that cannot be animated yet are:
@@ -2069,6 +2083,8 @@ Devices<public> := module {
     # Signaled when a guard stops moving on the patrol path.
     PatrolPathStoppedEvent<public>: listenable(agent) = external {}
   }
+
+  ai_prompt_device<epic_internal> := class {}
 
   # Used to boost `agent`s, vehicles, and other objects upwards into the air.
   air_vent_device<public> := class<concrete><final>(creative_device_base) {
@@ -3325,6 +3341,50 @@ Devices<public> := module {
     var SpeakerName<public>: message = external {}
   }
 
+  @experimental
+  conversation_target<native><public> := interface<unique><epic_internal> {
+    # When agent targets Self for conversation.
+    AddConversationTargeterEvent<final><public>: listenable(agent) = external {}
+
+    # Allow player to to talk to this persona.
+    AddPlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
+
+    # Succeeds if the agent can target Self for conversation.
+    CanConversationTargeterBeAdded<native_callable><epic_internal>(ConversationTargeter: agent)<reads><decides>: void = external {}
+
+    # Get all the agents currently targeting Self for conversation.
+    GetConversationTargeters<native_callable><public>(): []agent = external {}
+
+    # When agent untargets Self for conversation.
+    RemoveConversationTargeterEvent<final><public>: listenable(agent) = external {}
+
+    # Stop player from being able to talk to this persona.
+    RemovePlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
+
+    # Signals the AddConversationTargeterEvent.
+    SignalAddConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
+
+    # Signals the RemoveConversationTargeterEvent.
+    SignalRemoveConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
+
+    # Listenable which is signaled when the player starts prompting the persona.
+    StartHearEvent<public>: listenable(agent)
+
+    # Listenable which is signaled when the persona starts talking.
+    #  1/ The agent (if involved) which prompted the response.
+    #  2/ Cancelable to stop the target from talking.
+    StartSayEvent<public>: listenable(tuple(?agent, cancelable))
+
+    # Listenable which is signaled when the player finishes prompting the persona.
+    StopHearEvent<public>: listenable(agent)
+
+    # Listenable which is signaled when the target stops talking.
+    StopSayEvent<public>: listenable(tuple())
+
+    # All the agents currently targeting Self for conversation.
+    var ConversationTargeters<epic_internal>: []agent
+  }
+
   # Used to place a crash pad that can bounce players and protect them from fall damage.
   crash_pad_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -4126,6 +4186,11 @@ Devices<public> := module {
     Enable<public>(): void = external {}
   }
 
+  @experimental
+  error_message<native><public> := class {
+    Message<native><public>: message
+  }
+
   # Used to customize high level properties of the game mode.
   experience_settings_device<public> := class<concrete><final>(creative_device_base) {}
 
@@ -4257,6 +4322,14 @@ Devices<public> := module {
 
   function_parameter_logic<native><epic_internal> := class<computes>(function_parameter_base) {
     Value<native><epic_internal>: logic
+  }
+
+  function_parameter_material<native><epic_internal> := class<computes>(function_parameter_base) {
+    Value<native><epic_internal>: ?material
+  }
+
+  function_parameter_mesh<native><epic_internal> := class<computes>(function_parameter_base) {
+    Value<native><epic_internal>: ?mesh
   }
 
   function_parameter_message<native><epic_internal> := class<computes>(function_parameter_base) {
@@ -5353,6 +5426,8 @@ Devices<public> := module {
     VehicleTriggeredEvent<public>: listenable(?agent) = external {}
   }
 
+  non_parametric_agent_subscribable_persona_event<epic_internal> := class(subscribable_event_intrnl(agent)) {}
+
   # Used to spawn NPCs made with Character Definition asset.
   npc_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Despawns all characters. If set, `Instigator` will be considered as the eliminator of those characters.
@@ -5720,6 +5795,103 @@ Devices<public> := module {
 
     # Succeeds when `Agent` is registered to this checkpoint.
     IsPerceived<public>(Agent: agent)<transacts><decides>: void = external {}
+  }
+
+  @experimental
+  persona_conversation_target<native><public> := class(conversation_target) {
+    # Adds a fact which is assessed at when a persona is prompted. The fact is generated by calling the FactFunc.
+    AddDynamicFact<native><public>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+
+    # Add information about, or known by, the persona. Cancelable is used to remove the fact.
+    # # The persona knows these facts, and device facts.
+    AddFact<native><public>(Fact: string)<transacts>: cancelable
+
+    # Allow player to to talk to this persona.
+    AddPlayer<native><override>(Player: agent)<transacts><decides>: void
+
+    # Fails if the participant is not in the list of participants
+    CanConversationTargeterBeAdded<override><native>(ConversationTargeter: agent)<reads><decides>: void
+
+    # Get all the agents currently targeting Self for conversation.
+    GetConversationTargeters<native><override>(): []agent
+
+    # Link this device to a agent.
+    LinkToAgent<native><epic_internal>(Agent: agent)<transacts><decides>: void
+
+    # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
+    PromptFailureEvent<native><public>: listenable(persona_prompt_error) = external {}
+
+    # Requests the Persona to talk on the topic provided.
+    PromptToTalk<native><public>(Topic: string): void
+
+    # Stop player from being able to talk to this persona.
+    RemovePlayer<native><override>(Player: agent)<transacts><decides>: void
+
+    # Listenable which is signaled when the player starts prompting the persona.
+    StartHearEvent<native><override>: listenable(agent) = external {}
+
+    # Listenable which is signaled when the persona starts talking.
+    #  1/ The agent (if involved) which prompted the response.
+    #  2/ Cancelable to stop the target from talking.
+    StartSayEvent<native><override>: listenable(tuple(?agent, cancelable)) = external {}
+
+    # Listenable which is signaled when the player finishes prompting the persona.
+    StopHearEvent<native><override>: listenable(agent) = external {}
+
+    # Listenable which is signaled when the target stops talking.
+    StopSayEvent<native><override>: listenable(tuple()) = external {}
+  }
+
+  @experimental
+  # A persona device manages conversations involving one or multiple persona objects
+  # that are either standalone (announcer) or in the future attachable to NPCs,
+  # behind the scenes using a single LLM session.
+  # The persona device sees all conversations by all personas and participants.
+  # The persona device only sees facts added to the device.
+  # A persona also sees all conversations among all of its device's personas and participants.
+  # A persona sees all facts added to its device and itself.
+  persona_device<native><public> := class<concrete><final>(creative_device_base) {
+    # Adds a fact which is assessed at when the device, or a persona is prompted. The fact is generated by calling the FactFunc.
+    AddDynamicFact<native><epic_internal>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+
+    # Add general information to the device. Cancelable is used to remove the fact.
+    # The persona knows these facts, and their persona facts.
+    AddFact<native><epic_internal>(Fact: string)<transacts>: cancelable
+
+    # Attempts to add a player to the list of participants on this device.
+    # Does nothing if the agent does not meet the criteria of participation configured on the device.
+    AddParticipant<public>(Agent: agent): void = external {}
+
+    # Removes all conversation history from the device.
+    ClearHistory<native><public>()<transacts>: void
+
+    # Prompt the device without addressing any particular persona. Only the device facts are known to the prompt.
+    Prompt<native><epic_internal>(UserPrompt: string)<suspends>: result([]char, persona_prompt_error)
+
+    # Removes an agent from the participants.
+    RemoveParticipant<public>(Agent: agent): void = external {}
+
+    # All the players in the channel with the personas managed by this device.
+    var<private> Participants<public>: []agent = external {}
+
+    # Direct access to all personas configured on this device.
+    var<private> Personas<public>: []persona_conversation_target = external {}
+  }
+
+  @experimental
+  persona_prompt_error<native><public> := class(error_message) {}
+
+  @experimental
+  persona_prompt_moderated_error<native><public> := class(persona_prompt_error) {}
+
+  @experimental
+  persona_prompt_throttled_error<native><public> := class(persona_prompt_error) {}
+
+  @experimental
+  persona_prompt_timeout_error<native><public> := class(persona_prompt_error) {}
+
+  persona_utterance<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
   }
 
   # Physics boulder that can be dislodged and damage `agent`s, vehicles, creatures, and structures.
@@ -6831,7 +7003,9 @@ Devices<public> := module {
     # Succeeds if this Spire's health has reached 0. Fails otherwise.
     IsDestroyed<override>()<transacts><decides>: void = external {}
 
-    # Succeeds if the device is enabled. Fails if the Spire is disabled. While disabled, the Spire is deactivated and will not react to approaching players, nor take damage.
+    # Succeeds if the Spire is enabled and fails if it is disabled.
+    #  * While disabled, the Spire is inactive: it will not react to players or take damage.
+    #  * If the Spire is currently despawned, this function instead reports the enabled state the Spire will have the next time it is spawned.
     IsEnabled<override>()<transacts><decides>: void = external {}
 
     # Succeeds if this Spire is in a spawned state. Fails if the Spire is destroyed or has not spawned.
@@ -9957,6 +10131,27 @@ Input<public> := module {
     @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     WeaponSecondary<public>: input_action(logic) = external {}
+  }
+}
+
+Mimic<public> := module {
+  llm_fact<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
+  }
+
+  llm_response<native><epic_internal> := class {
+    ResponseData<native><public>: string
+
+    ResponseMessage<native><public>: string
+  }
+
+  @experimental
+  llm_session<native><epic_internal> := class<concrete><final> {
+    # Adds a fact which is assessed at when the device, or a persona is prompted. The fact is generated by calling the FactFunc.
+    AddDynamicFact<native><public>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+
+    # Adds a fact to the llm, returns a cancelable which revokes the fact.
+    AddFact<native><public>(Fact: string): cancelable
   }
 }
 

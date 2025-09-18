@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.20-CL-45566402
+# Generated from build: ++Fortnite+Release-37.30-CL-45814998
 #################################################
 
 AINavigation<public> := module {
@@ -350,6 +350,15 @@ EntityTestSuite<public> := module {
 
   @hide_in_editor
   test_component<native><epic_internal> := class<final_super>(component) {}
+
+  @hide_in_editor
+  test_component_dependency_auto<native><epic_internal> := class<final_super>(component) {}
+
+  @hide_in_editor
+  test_component_dependency_init<native><epic_internal> := class<final_super>(component) {
+    @replicated("")
+    var AutoComponent<native><epic_internal>: ?component = external {}
+  }
 
   @hide_in_editor
   test_contentscope_events_component<native><epic_internal> := class<final_super>(component) {
@@ -2668,6 +2677,9 @@ Tests<public> := module {
   NexusUtils<public> := module {
     nexus_utils<native><epic_internal> := class {
       PrintEpicAPIFunctionLog<native><public>(): void
+
+      # Takes a screenshot on clients that are connected to the server this is called onPasses in the file name of the screenshot that gets saved to a fixed directory
+      ScreenshotAllClients<native><epic_internal>(ScreenshotFileName: string): void
     }
   }
 }

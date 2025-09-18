@@ -579,6 +579,7 @@
 			"/ActorWeakpointsCore/GameplayActors/BGA_WeakpointActor_Base.BGA_WeakpointActor_Base_C": { },
 			"/SpireBoss/GameplayActors/BGA_WeakpointActor_MinorSpire.BGA_WeakpointActor_MinorSpire_C": { },
 			"/CowCatcherMod/Mods/CowCatcher/BGA_Barricade_CowCatcher.BGA_Barricade_CowCatcher_C":						{  },
+			"/CRD_AIPrompt/UI/UEFN_AIPromptViewModel.UEFN_AIPromptViewModel_C":																{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Awareness.CharacterModifier_Awareness_C": 							{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C": 					{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C": 				{ "Visible": true },
@@ -817,6 +818,7 @@
 			"/Script/AIModule.AISenseConfig_Hearing":							{ "Visible": true },
 			"/Script/AIModule.AISenseConfig_Sight":								{ "Visible": true },
 			"/Script/AIModule.AISenseConfig_Touch":								{ "Visible": true },
+			"/Script/AIPrompt.AIPromptSubtitleViewModel":						{ "Visible": true },
 			"/Script/AlembicLibrary.AbcAssetImportData": 						{  },
 			"/Script/AnimationBudgetAllocator.SkeletalMeshComponentBudgeted":	{  },
 			"/Script/AnimationCore.CCDIKChainLink":								{  },
@@ -2491,7 +2493,13 @@
 				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
 			},
 			"SpatialProfiler.MainToolBar": {
-				"DenyList": [ "StaticMeshHeatmaps", "ActorCountHeatmaps" ]
+				"DenyList": [ "StaticMeshHeatmaps", "ActorCountHeatmaps", "UniquenessHeatmaps" ]
+			},
+			"SpatialMetricsToolBar.ShowMenu": {
+				"DenyList": [ "ShowStreamingRadius" ]
+			}, 
+			"SpatialMetricsToolBar.OptionsMenu": {
+				"DenyList": [ "StreamingRadius" ]
 			}
 		},
 		"AllowedTabs": {
@@ -3382,7 +3390,7 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeDeviceProp",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "OnDeleteActorBegin", "OnDeleteActorEnd" ]
 			},
 			{
 				"Type": "/Game/Creative/Items/Sword/BP_SwordPedestal_CP.BP_SwordPedestal_CP_C",
@@ -3575,7 +3583,7 @@
 			{
 				"Type": "/CreativeCoreDevices/Device_ExperienceSettings_V2.Device_ExperienceSettings_V2_C",
 				"DenyList": [ "bCanBeDamaged" ],
-				"AllowList": [ "Test Players added at Game Start (Beta)" ]
+				"AllowList": [ "Test Players added at Game Start (Beta)", "Sidekick" ]
 			},
 			{
 				"Type": "/CRD_ModalDialog/Device_PopUpDialog_V2.Device_PopUpDialog_V2_C",
@@ -4199,7 +4207,7 @@
 			},
 			{
 				"Type": "/Script/Engine.PostProcessSettings",
-				"AllowList": ["BloomIntensity", "BloomThreshold", "SceneFringeIntensity", "ChromaticAberrationStartOffset", "LensFlareIntensity", "VignetteIntensity", "ColorSaturation", "ColorContrast", "ColorGamma", "WeightedBlendables", "FilmGrainIntensity", "FilmGrainTexelSize", "TemperatureType", "WhiteTemp", "WhiteTint", "AutoExposureMethod", "AutoExposureBias", "AutoExposureApplyPhysicalCameraExposure", "AutoExposureBiasCurve", "AutoExposureMeterMask", "AutoExposureMinBrightness", "AutoExposureMaxBrightness", "AutoExposureSpeedUp", "AutoExposureSpeedDown", "SceneColorTint",
+				"AllowList": ["BloomIntensity", "BloomThreshold", "DynamicGlobalIlluminationMethod", "SceneFringeIntensity", "ChromaticAberrationStartOffset", "LensFlareIntensity", "VignetteIntensity", "ColorSaturation", "ColorContrast", "ColorGamma", "WeightedBlendables", "FilmGrainIntensity", "FilmGrainTexelSize", "TemperatureType", "WhiteTemp", "WhiteTint", "AutoExposureMethod", "AutoExposureBias", "AutoExposureApplyPhysicalCameraExposure", "AutoExposureBiasCurve", "AutoExposureMeterMask", "AutoExposureMinBrightness", "AutoExposureMaxBrightness", "AutoExposureSpeedUp", "AutoExposureSpeedDown", "SceneColorTint",
 					"LumenSkylightLeaking","LumenFullSkylightLeakingDistance", "LumenDiffuseColorBoost", "AutoExposureMethod","AutoExposureBias","AutoExposureApplyPhysicalCameraExposure","AutoExposureBiasCurve","AutoExposureMeterMask","AutoExposureMinBrightness","AutoExposureMaxBrightness","AutoExposureSpeedUp","AutoExposureSpeedDown","AutoExposureLowPercent","AutoExposureHighPercent","HistogramLogMin","HistogramLogMax","LocalExposureHighlightContrastScale","LocalExposureShadowContrastScale","LocalExposureDetailStrength","LocalExposureBlurredLuminanceBlend","LocalExposureBlurredLuminanceKernelSizePercent","LocalExposureMiddleGreyBias",
 					"CameraShutterSpeed", "CameraISO", "DepthOfFieldFstop", "DepthOfFieldMinFstop", "DepthOfFieldBladeCount", "DepthOfFieldUseHairDepth", "MotionBlurAmount", "MotionBlurMax", "MotionBlurTargetFPS", "MotionBlurPerObjectSize", "Lens", "Color Grading", "Global Illumination", "Rendering Features", "Film Grain", "Highlights", "Midtones", "Shadows", "ColorSaturationHighlights", "ColorContrastHighlights", "ColorGammaHighlights", "ColorGainHighlights", "ColorOffsetHighlights", "ColorCorrectionHighlightsMin", "ColorCorrectionHighlightsMax", "ColorSaturationMidtones", "ColorContrastMidtones", "ColorGammaMidtones", "ColorGainMidtones", "ColorOffsetMidtones", "ColorSaturationShadows",
 					"ColorContrastShadows", "ColorGammaShadows", "ColorGainShadows", "ColorOffsetShadows", "ColorCorrectionShadowsMax", "LensFlareTint", "LensFlareBokehSize", "LensFlareThreshold", "LensFlareBokehShape", "BloomDirtMask", "BloomDirtMaskIntensity", "BloomDirtMaskTint"
@@ -4256,11 +4264,13 @@
 			}
 		]
 	},
-	"PropertySaveClassPermissionList" : {
-		"=": []
-	},
-	"PropertySaveStructPermissionList" : {
-		"=": []
+	"PropertyEditorEnumPermissionList" : {
+		"=": [
+			{
+				"Type": "/Script/Engine.EDynamicGlobalIlluminationMethod",
+				"AllowList": [ "None", "Lumen" ]
+			}
+		]
 	},
 	"HiddenPropertyClassPermissionList" : {
 		"=": [

@@ -644,7 +644,7 @@
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
 			"FriendlyName": "Dev-IKRig",
-			"Version": 7
+			"Version": 9
 		},
 		"F94941FB19B64F5C851315EF0BF61F81":
 		{
@@ -679,6 +679,7 @@
 	{
 		"VKCreateUGC": [
 			"/AnimPresets/AnimPreset_BipedLocomotion.AnimPreset_BipedLocomotion_C",
+			"/CRD_AIPrompt/UI/UEFN_AIPromptViewModel.UEFN_AIPromptViewModel_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Awareness.CharacterModifier_Awareness_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C",
@@ -819,6 +820,7 @@
 			"/Script/AIModule.AISenseConfig_Hearing",
 			"/Script/AIModule.AISenseConfig_Sight",
 			"/Script/AIModule.AISenseConfig_Touch",
+			"/Script/AIPrompt.AIPromptSubtitleViewModel",
 			"/Script/AlembicLibrary.AbcAssetImportData",
 			"/Script/AnimationBudgetAllocator.SkeletalMeshComponentBudgeted",
 			"/Script/AnimationData.AnimationSequencerDataModel",
@@ -2183,6 +2185,8 @@
 			"/Script/AnimGraphRuntime.SequencePlayerLibrary",
 			"/Script/AnimGraphRuntime.SkeletalControlLibrary",
 			"/Script/AudioGameplay.AudioRequirementPreset",
+			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent",
+			"/Script/AudioMixer.SubmixEffectReverbPreset",
 			"/Script/AudioModulation.SoundModulationPatch",
 			"/Script/BlueprintGraph.K2Node",
 			"/Script/BlueprintGraph.K2Node_AddDelegate",
@@ -2267,6 +2271,7 @@
 			"/Script/Engine.PoseAsset",
 			"/Script/Engine.SoundBase",
 			"/Script/Engine.SoundConcurrency",
+			"/Script/Engine.SoundEffectSubmixPreset",
 			"/Script/Engine.UserDefinedEnum",
 			"/Script/EnhancedInput.InputTrigger",
 			"/Script/EnhancedInput.InputTriggerPressed",
@@ -14820,6 +14825,9 @@
 			"/Water/Textures/Flowmaps/RiverFlowmap_Normal.RiverFlowmap_Normal"
 		],
 		"VKCreateUGCEpicDeveloper": [
+			"/AudioModulation/HPFCutoffFrequency.HPFCutoffFrequency",
+			"/AudioModulation/LPFCutoffFrequency.LPFCutoffFrequency",
+			"/AudioModulation/Pitch.Pitch",
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_Gameplay/SC_BS_Ambience_Crowd.SC_BS_Ambience_Crowd",
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_Gameplay/SC_BS_Checkpoint.SC_BS_Checkpoint",
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_Gameplay/SC_BS_Respawn_1P.SC_BS_Respawn_1P",
@@ -15315,6 +15323,7 @@
 			"/CRD_Accolades/SetupAssets/Device_Accolades_V2.Device_Accolades_V2_C",
 			"/CRD_AIPatrolPath/AIPatrolPath_Device.AIPatrolPath_Device_C",
 			"/CRD_AIPatrolPath/BP_AIPatrolPathComponent.BP_AIPatrolPathComponent_C",
+			"/CRD_AIPrompt/UI/UEFN_AIPromptViewModel.UEFN_AIPromptViewModel_C",
 			"/CRD_AISpawner/AISpawnerPreviewerComponent.AISpawnerPreviewerComponent_C",
 			"/CRD_AISpawner/Device_AISpawner_Base.Device_AISpawner_Base_C",
 			"/CRD_AISpawner/Device_CharacterSpawner.Device_CharacterSpawner_C",
@@ -22964,6 +22973,7 @@
 			"/Game/Creative/BuildingActors/Props/CP_BirthdayCake2022_NoDestroy.CP_BirthdayCake2022_NoDestroy_C",
 			"/Game/Creative/BuildingActors/Props/CP_BirthdayCake2023_NoDestroy.CP_BirthdayCake2023_NoDestroy_C",
 			"/Game/Creative/BuildingActors/Props/CP_BirthdayCake2024_NoDestroy.CP_BirthdayCake2024_NoDestroy_C",
+			"/Game/Creative/BuildingActors/Props/CP_BirthdayCake2025_NoDestroy.CP_BirthdayCake2025_NoDestroy_C",
 			"/Game/Creative/BuildingActors/Props/CP_BirthdayCake_NoDestroy.CP_BirthdayCake_NoDestroy_C",
 			"/Game/Creative/BuildingActors/Props/CP_BP_Audio_Helios_BoomBox_A.CP_BP_Audio_Helios_BoomBox_A_C",
 			"/Game/Creative/BuildingActors/Props/CP_BP_Commerce_HangingLight_B.CP_BP_Commerce_HangingLight_B_C",

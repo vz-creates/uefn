@@ -305,6 +305,7 @@
 		],
 		"AllowedMVVMConversionClass": [
 			"/Script/CRD_ModalDialogUI.CreativeModalDialogAllowedConversionFunction",
+			"/Script/ItemizationUI.ItemizationUIAllowedConversionFunctions",
 			"/Script/ModelViewViewModel.MVVMSlateBrushConversionLibrary",
 			"/Script/VerseFortniteUI.VerseFortniteUIAllowedConversionLibrary",
 			"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftTexture",
@@ -331,6 +332,9 @@
 			"/Game/Blueprints/Blutilities/UEFNToolkit/BuildingProp_AssetActions.BuildingProp_AssetActions_C",
 			"/Game/Blueprints/Blutilities/UEFNToolkit/StaticMesh_AssetActions.StaticMesh_AssetActions_C"
 		]
+	},
+	"ValkyrieExperimentalSettings": {
+		"bAllowAccessToExperimentalInventorySettings": true
 	},
 	"_comment_ValkyrieEditorSettings": "Properties related to core editor functionality, restricting editor views/controls, allow lists for assets and classes, etc.",
 	"ValkyrieEditorSettings": {
@@ -548,6 +552,7 @@
 			"/Script/FortniteGame.FortItemComponentData_LargeIcon":	{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":		{ "Rules": ["View"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":		{ "Rules": ["View"] },
+			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset":	{ "Rules": ["View"] },
 			"/Script/HairStrandsCore.GroomAsset": 				{ "Rules": [ "View", "Create", "Import" ] },
 			"/Script/HairStrandsCore.GroomBindingAsset":		{ "Rules": [ "View", "Create" ] },
 			"/Script/HarmonixDsp.FusionPatch":					{ "Rules": [ "View", "Create" ] },
@@ -1547,6 +1552,7 @@
 			"/Script/FortniteGame.FortInspectorCameraCreativePreview":			{  },
 			"/Script/FortniteGame.FortItemComponentData_LevelLimits":			{ "Visible": true },
 			"/Script/FortniteGame.FortItemComponentData_LargeIcon":				{ "Visible": true },
+			"/Script/FortniteGame.FortItemComponentData_Pickup":				{  },
 			"/Script/FortniteGame.FortLevelInstanceSaveActor":					{  },
 			"/Script/FortniteGame.FortLevelOverlayConfig":						{  },
 			"/Script/FortniteGame.FortLevelScriptActor":						{  },
@@ -1671,8 +1677,12 @@
 			"/Script/InterchangePipelines.InterchangeGenericTexturePipeline":	{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{  },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":		{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":		{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{  },
+			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset":		{  },
+			"/Script/ItemizationCoreRuntime.InventoryConfigurationAsset":		{  },
+			"/Script/ItemizationRuntime.ItemDefinition":						{  },
 			"/Script/Landscape.ControlPointMeshActor":							{  },
 			"/Script/Landscape.ControlPointMeshComponent":						{  },
 			"/Script/Landscape.Landscape":										{  },
@@ -2124,8 +2134,8 @@
 			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams_TeamSettingsAndInventory": { "Visible": true },
 			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C": { "Visible": true },
 			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C": { "Visible": true },
-			"/CRD_Simple_Voting_Option/UI/UEFN_VotingOption_ViewModel.UEFN_VotingOption_ViewModel_C": { "Visible": true },
-			"/CRD_Simple_Voting_Option/UI/UEFN_VotingGroup_ViewModel.UEFN_VotingGroup_ViewModel_C": { "Visible": true }
+			"/Script/SimpleVotingOptionRuntime.VotingGroupViewModel": { "Visible": true },
+			"/Script/SimpleVotingOptionRuntime.VotingOptionViewModel": { "Visible": true }
 
 		},
 		"AllowedMenus": {
@@ -2163,7 +2173,7 @@
 				"AllowList": [ "ExportAsset", "AddLoopingInterpolation", "RemoveBoneTracks" ]
 			},
 			"AssetEditor.AnimationEditor.ToolBar": {
-				"AllowList": [ "SaveAsset", "FindInContentBrowser", "PreviewMesh", "CreateAsset", "ReimportAnimation", "ExportAsset", "MakeStaticMesh", "EditInSequencer"],
+				"AllowList": [ "SaveAsset", "FindInContentBrowser", "PreviewMesh", "CreateAsset", "ReimportAnimation", "ExportAsset", "MakeStaticMesh"],
 				"AllowExtenders": true
 			},
 			"AssetEditor.BlueprintEditor.MainMenu": {
@@ -2264,6 +2274,9 @@
 			},
 			"ContentBrowser.AssetContextMenu.FortPlaysetPropItemDefinition": {
 				"DenyList": [ "AssetAction_GenerateAllPlaysetPropThumbnailsInTheGame", "AssetAction_GenerateAllPlaysetsInTheGame", "AssetAction_GeneratePlaysetPropThumbnails" ]
+			},
+			"ContentBrowser.AssetContextMenu.InputAction": {
+				"DenyList": [ "InputAction_CreateContextFromSelection" ]
 			},
 			"ContentBrowser.AssetContextMenu.Skeleton": {
 				"DenyList": [ "Skeleton_Retarget" ]
@@ -2493,7 +2506,7 @@
 				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
 			},
 			"SpatialProfiler.MainToolBar": {
-				"DenyList": [ "StaticMeshHeatmaps", "ActorCountHeatmaps", "UniquenessHeatmaps" ]
+				"DenyList": ["HeatmapsPresetCombo", "GenerateHeatmap" ]
 			},
 			"SpatialMetricsToolBar.ShowMenu": {
 				"DenyList": [ "ShowStreamingRadius" ]
@@ -2936,7 +2949,8 @@
 			"Social_Deduction",
 			"GreasyGames",
 			"LEGO_Seed_Template",
-			"LEGO_BrickEditor"
+			"LEGO_BrickEditor",
+			"brightcoil_research"
 		]
 	},
 	"PropertyEditorClassPermissionList": {

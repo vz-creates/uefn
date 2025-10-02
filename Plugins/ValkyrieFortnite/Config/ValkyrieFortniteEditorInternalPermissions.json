@@ -828,14 +828,26 @@
 			"/Script/EnhancedInput.InputTriggerPressed":        { "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortInputMappingContext":     { "Rules": ["View","Create"] },
+			"/Script/FortniteGame.FortItemComponent_Pickup":	{ "Rules": ["View"] },
 			"/Script/FortniteGame.FortItemComponentData_Pickup":{ "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortPlayerMappableKeySettings":{ "Rules": ["View","Create"]},
 			"/Script/GameplayCameras.CameraRigAsset":			{ "Rules": ["View","Create"] },
 			"/Script/GameplayCameras.CameraVariableAsset":		{ "Rules": ["View","Create"], "Subclasses": "All"},
+			"/Script/ItemizationCoreRuntime.InventorySetupDataNativeBasic": { "Rules": ["View","Create"] },
+			"/Script/ItemizationCoreRuntime.ItemAttachmentDefinition":		{ "Rules": ["View","Create"], "Subclasses": "All" },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Ability":		{ "Rules": ["View","Create"] },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Attach":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":{ "Rules": ["View","Create"] },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":	{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":	{ "Rules": [ "View" ] },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Tags":		{ "Rules": [ "View" ] },
+			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset":	{ "Rules": ["View","Create"] },
+			"/Script/ItemizationCoreRuntime.InventoryConfigurationAsset":	{ "Rules": ["View","Create"] },
+			"/Script/ItemizationCoreRuntime.ItemOwnerPoseAsset":			{ "Rules": ["View"] },
+			"/Script/ItemizationRuntime.InventorySetupDataNativeFort":		{ "Rules": ["View","Create"] },
+			"/Script/ItemizationRuntime.ItemDefinition":					{ "Rules": ["View", "Create" ] },
 			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh":	{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/VerseAssets.PropertyInterfaceGeneratedClass":			{ "Rules": ["View","Create"] },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":	{ "Rules": ["View","Create"] }
@@ -1080,10 +1092,27 @@
 			"/Script/GameplayCameras.PanningFramingCameraNode":			{  },
 			"/Script/UMG.SafeZone":										{ "Visible": true },
 			"/Script/UMG.SafeZoneSlot":									{  },
+			"/Script/ItemizationCoreRuntime.InventorySetupDataNativeBasic":		{ "Visible": true },
+			"/Script/ItemizationCoreRuntime.ItemAttachmentDefinition":			{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Ability":			{ "Visible": true },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Attach":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{ "Visible": true },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":		{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":		{ "Visible": true },
+			"/Script/ItemizationCoreRuntime.ItemComponentData_Tags":			{ "Visible": true },
+			"/Script/ItemizationCoreRuntime.InventoryConfigurationAsset":		{ "Visible": true },
+			"/Script/ItemizationCoreRuntime.ItemOwnerPoseAsset":				{ "Visible": true },
+			"/Script/ItemizationRuntime.InventorySetupDataNativeFort":			{ "Visible": true },
+			"/Itemization/UI/PropertyInterfaces/InventoryPropertyInterface.InventoryPropertyInterface_C":				{ "Visible": true },
+			"/Itemization/UI/PropertyInterfaces/InventoryActionPropertyInterface.InventoryActionPropertyInterface_C":	{ "Visible": true },
+			"/Itemization/UI/PropertyInterfaces/InventoryItemPropertyInterface.InventoryItemPropertyInterface_C":		{ "Visible": true },
+			"/Itemization/UI/PropertyInterfaces/InventoryItemActionPropertyInterface.InventoryItemActionPropertyInterface_C":		{ "Visible": true },
+			"/Script/ItemizationUI.ItemizationUIAllowedConversionFunctions":	{ "Subclasses": "All" },
+			"/Script/ItemizationUI.InventoryCollectionViewModelResolver": 	{ "Visible": true },
+			"/Script/ItemizationUI.InventoryItemViewModelResolver": 		{ "Visible": true },
+			"/Script/ItemizationRuntime.ItemDefinition":						{ "Visible": true },
 			"/Script/UnrealEd.EdGraphNode_Comment":						{ "Visible": true },
 			"/Script/ValkyrieCommon.ValkyrieContentWorkerDebugManager": { "Visible": true },
 			"/Script/VerseAssets.PropertyInterface":					{ "Visible": true },
@@ -1444,12 +1473,31 @@
 				"bAllowListAllProperties": true
 			},
 			{
+				"Type": "/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset",
+				"DenyList": [ "InputMappingContext", "SystemAddedInventorySetup", "AIInventorySetup" ]
+			},
+			{
+				"Type": "/Script/FortniteGame.FortItemDefinition",
+				"AllowList": [ "MaxStackSize" ],
+				"DenyList": []
+			},
+			{
+				"Type": "/Script/FortniteGame.FortWorldItemDefinition",
+				"AllowList": [ "Dummy" ],
+				"DenyList": []
+			},
+			{
+				"Type": "/Script/ItemizationCoreRuntime.ItemDefinitionBase",
+				"AllowList": [],
+				"DenyList": [ "EditorTemplateId" ]
+			},
+			{
 				"Type": "/Script/ValkyrieCommon.ValkyrieContentWorkerDebugManager",
 				"AllowList": [ "bCrashContentWorker", "bEmitErrorFromContentWorker" ]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "bEnableWorkspaces", "bEnableWorkspaceSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
+				"AllowList": [ "bEnableWorkspaceSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.FortGameUserSettings",

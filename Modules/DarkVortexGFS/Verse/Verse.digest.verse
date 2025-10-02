@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.31-CL-46047957
+# Generated from build: ++Fortnite+Release-37.40-CL-46295673
 #################################################
 
 using { /Verse.org/Simulation }
@@ -2331,4 +2331,20 @@ Verse<public> := module {
     # Returns an unsubscriber object. Call `cancelable.Cancel` on the unsubscriber to unregister `Callback`.
     Subscribe<public>(Callback: type { _(: t): void })<transacts>: cancelable
   }
+}
+
+@experimental
+# Interface that provides descriptive names or text.
+has_description<public> := interface {
+  @editable
+  # Full description.
+  var<protected> Description<public>: message = external {}
+
+  @editable
+  # Name.
+  var<protected> Name<public>: message = external {}
+
+  @editable
+  # Short description with only the essential information.
+  var<protected> ShortDescription<public>: message = external {}
 }

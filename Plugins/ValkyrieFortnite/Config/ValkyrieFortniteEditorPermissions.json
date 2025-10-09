@@ -2584,6 +2584,7 @@
 					"TakesBrowser",
 					"ValkyrieProjectSettingsEditor",
 					"ValkyrieProjectSize",
+					"VkContentResolutionViewer",
 					"MemoryProfiler",
 					"VerseExplorerTab",
 					"NiagaraDebugger",
@@ -2950,6 +2951,7 @@
 			"GreasyGames",
 			"LEGO_Seed_Template",
 			"LEGO_BrickEditor",
+			"LEGO_ScotchBonnet",
 			"brightcoil_research"
 		]
 	},

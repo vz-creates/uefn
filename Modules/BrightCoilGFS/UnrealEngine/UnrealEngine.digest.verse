@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.40-CL-46295673
+# Generated from build: ++Fortnite+Release-37.50-CL-46578011
 #################################################
 
 using { /UnrealEngine.com/Temporary/SpatialMath }

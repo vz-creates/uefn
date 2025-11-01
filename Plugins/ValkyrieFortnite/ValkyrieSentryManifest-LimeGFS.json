@@ -109,7 +109,7 @@
 		"2763920D0F784B39986E4BB3A88D666D":
 		{
 			"FriendlyName": "PCGBaseVer",
-			"Version": 25
+			"Version": 27
 		},
 		"28B0103666B4498F99425ACADB78A9B5":
 		{
@@ -191,6 +191,11 @@
 			"FriendlyName": "EventParameter",
 			"Version": 0
 		},
+		"5426C2274B3145B29B9BED1F327FB126":
+		{
+			"FriendlyName": "OverridablePropertyBagCustomVersion",
+			"Version": 1
+		},
 		"5579F886933A4C1F83BA087B6361B92F":
 		{
 			"FriendlyName": "RecomputeTangentCustomVer",
@@ -229,7 +234,7 @@
 		"601D1886AC644F84AA16D3DE0DEAC7D6":
 		{
 			"FriendlyName": "FortniteMain",
-			"Version": 212
+			"Version": 225
 		},
 		"60C4F0DE8B264C34AA9372015DFF09CC":
 		{
@@ -244,7 +249,7 @@
 		"62915CA31C8E4BF7A30E12C7C8219DF7":
 		{
 			"FriendlyName": "EngineNetworkVersion",
-			"Version": 42
+			"Version": 43
 		},
 		"6304A3E700594F598CFC21BD7721FD4E":
 		{
@@ -364,7 +369,7 @@
 		"92738C4329884D9C9A3D9BBE6EFF9FC0":
 		{
 			"FriendlyName": "InterchangeAssetImportDataVer",
-			"Version": 1
+			"Version": 3
 		},
 		"93EDE1AA10CA73754DF98A2849B157A0":
 		{
@@ -449,12 +454,12 @@
 		"A76CBC6B51634CEE887E17DE463D4395":
 		{
 			"FriendlyName": "LevelSaveRecord",
-			"Version": 41
+			"Version": 42
 		},
 		"A7820CFB20A743598C542C149623CF50":
 		{
 			"FriendlyName": "Dev-ControlRig",
-			"Version": 39
+			"Version": 40
 		},
 		"AAFE32BD53954C14B66A5E251032D1DD":
 		{
@@ -524,7 +529,12 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 91
+			"Version": 94
+		},
+		"C1270362AB230A1FCB1EC73671275FAB":
+		{
+			"FriendlyName": "DataHierarchyElementVersion",
+			"Version": 1
 		},
 		"C2A15278BFE74AFE6C1790FF531DF755":
 		{
@@ -564,7 +574,7 @@
 		"D89B5E4224BD4D468412ACA8DF641779":
 		{
 			"FriendlyName": "UE5-Release",
-			"Version": 56
+			"Version": 61
 		},
 		"DB16D0C2F1F244C5A2B52DEB3E9B9C9A":
 		{
@@ -614,7 +624,7 @@
 		"E68A5C1A42C3CA0DB01441B228C1F2DD":
 		{
 			"FriendlyName": "Dev-PhysicsControl",
-			"Version": 23
+			"Version": 28
 		},
 		"E70863686B234C5884391B7016265E91":
 		{
@@ -644,7 +654,7 @@
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
 			"FriendlyName": "Dev-IKRig",
-			"Version": 10
+			"Version": 11
 		},
 		"F94941FB19B64F5C851315EF0BF61F81":
 		{
@@ -659,7 +669,7 @@
 		"FCF57AFA50764283B9A9E658FFA02D32":
 		{
 			"FriendlyName": "NiagaraVer",
-			"Version": 92
+			"Version": 93
 		}
 	},
 	"ExtensionAllowList": [
@@ -706,6 +716,7 @@
 			"/CRD_StatManager/UI/MVVM_UEFN_Stat.MVVM_UEFN_Stat_C",
 			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C",
 			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C",
+			"/CreativeCompanion/Assets/BP_FortUserOptionsComponent_Sidekicks.BP_FortUserOptionsComponent_Sidekicks_C",
 			"/CreativeCoreDevices/Beacon/UEFN_BeaconBadge_ViewModel.UEFN_BeaconBadge_ViewModel_C",
 			"/CreativeCoreDevices/HUDMessage/MVVM_UEFN_HUDMessage.MVVM_UEFN_HUDMessage_C",
 			"/CreativeCoreDevices/Timer/CreativeTimerViewModel.CreativeTimerViewModel_C",
@@ -903,6 +914,7 @@
 			"/Script/ControlRigDeveloper.ControlRigBlueprint",
 			"/Script/ControlRigDeveloper.ControlRigGraph",
 			"/Script/ControlRigDeveloper.ControlRigGraphNode",
+			"/Script/ControlRigEditor.AIESelectionSets",
 			"/Script/ControlRigEditor.AnimLayers",
 			"/Script/CoreUObject.MetaData",
 			"/Script/CoreUObject.ObjectRedirector",
@@ -920,6 +932,7 @@
 			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams",
 			"/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams_TeamSettingsAndInventory",
 			"/Script/CreativeCommunicationUI.CreativeBubbleChatViewModel",
+			"/Script/CreativeCompanionRuntime.FortUserOptionComponent_Sidekicks",
 			"/Script/CrowdVolume.CrowdSpawner",
 			"/Script/CurveEditor.CurveEditorBakeFilter",
 			"/Script/CurveEditor.CurveEditorEulerFilter",
@@ -1065,7 +1078,6 @@
 			"/Script/Engine.MaterialExpressionDotProduct",
 			"/Script/Engine.MaterialExpressionDoubleVectorParameter",
 			"/Script/Engine.MaterialExpressionDynamicParameter",
-			"/Script/Engine.MaterialExpressionEnumerationParameter",
 			"/Script/Engine.MaterialExpressionExponential",
 			"/Script/Engine.MaterialExpressionExponential2",
 			"/Script/Engine.MaterialExpressionEyeAdaptation",
@@ -1323,7 +1335,7 @@
 			"/Script/Engine.World",
 			"/Script/Engine.WorldDataLayers",
 			"/Script/Engine.WorldPartition",
-			"/Script/Engine.WorldPartitionDestructibleHLODMeshComponent",
+			"/Script/Engine.WorldPartitionDestructibleHLODComponent",
 			"/Script/Engine.WorldPartitionEditorSpatialHash",
 			"/Script/Engine.WorldPartitionHLOD",
 			"/Script/Engine.WorldPartitionHLODSourceActorsFromCell",
@@ -1502,6 +1514,7 @@
 			"/Script/FortniteGame.FortSplineWaterAudioComponent",
 			"/Script/FortniteGame.FortSpotLightComponent",
 			"/Script/FortniteGame.FortStaticMeshActor",
+			"/Script/FortniteGame.FortStaticMeshComponent",
 			"/Script/FortniteGame.FortStaticMeshUserData",
 			"/Script/FortniteGame.FortUndergroundVolume",
 			"/Script/FortniteGame.FortUserDefinedBehaviorSetNode",
@@ -1537,6 +1550,7 @@
 			"/Script/FortniteGame.VkConversationNode_Title",
 			"/Script/FortniteGame.WaterVolume_Athena",
 			"/Script/FortniteUI.FortCTAButton",
+			"/Script/FortniteUI.FortItemCooldownVM",
 			"/Script/FortniteUI.FortItemDurabilityVM",
 			"/Script/FortniteUI.HUDEquippedItemViewModel",
 			"/Script/FortniteUI.HUDPlayerInfoListViewmodel",
@@ -1621,6 +1635,7 @@
 			"/Script/InterchangeFactoryNodes.InterchangeTextureFactoryNode",
 			"/Script/InterchangeFactoryNodes.InterchangeTextureLightProfileFactoryNode",
 			"/Script/InterchangeFactoryNodes.InterchangeVolumeTextureFactoryNode",
+			"/Script/InterchangeImport.InterchangeFbxTranslatorSettings",
 			"/Script/InterchangeImport.MaterialExpressionMaterialXAppend3Vector",
 			"/Script/InterchangeImport.MaterialExpressionMaterialXAppend4Vector",
 			"/Script/InterchangeImport.MaterialExpressionMaterialXBurn",
@@ -1674,7 +1689,6 @@
 			"/Script/Landscape.LandscapeHeightmapTextureEdgeFixup",
 			"/Script/Landscape.LandscapeLayerInfoObject",
 			"/Script/Landscape.LandscapeMaterialInstanceConstant",
-			"/Script/Landscape.LandscapeMeshCollisionComponent",
 			"/Script/Landscape.LandscapeMeshProxyComponent",
 			"/Script/Landscape.LandscapeNaniteComponent",
 			"/Script/Landscape.LandscapeSplineActor",
@@ -1883,6 +1897,7 @@
 			"/Script/Niagara.NiagaraDataInterfaceLandscape",
 			"/Script/Niagara.NiagaraDataInterfaceMeshRendererInfo",
 			"/Script/Niagara.NiagaraDataInterfaceParticleRead",
+			"/Script/Niagara.NiagaraDataInterfaceSimpleCounter",
 			"/Script/Niagara.NiagaraDataInterfaceSkeletalMesh",
 			"/Script/Niagara.NiagaraDataInterfaceSocketReader",
 			"/Script/Niagara.NiagaraDataInterfaceSpriteRendererInfo",
@@ -2097,6 +2112,8 @@
 			"/Script/VerseFortniteAI.NPCCharacterType",
 			"/Script/VerseFortniteUI.VerseFortniteUIAllowedConversionLibrary",
 			"/Script/VerseGameplayTags.VerseTagMarkupComponent",
+			"/Script/VerseTypeEditor.VerseTypeEditorWidgetExtension",
+			"/Script/VerseTypeEditorRuntime.VerseTypeEditorClassSettings",
 			"/Script/VirtualHeightfieldMesh.MaterialExpressionHeightfieldMinMaxTexture",
 			"/Script/VolumetricRegion.VolumetricRegionNativeComponent",
 			"/Script/Water.BuoyancyManager",
@@ -2123,6 +2140,7 @@
 			"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros_C",
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C",
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C",
+			"/Itemization/UI/ItemizationUIConversionFunctionLibrary.ItemizationUIConversionFunctionLibrary_C",
 			"/Itemization/UI/PropertyInterfaces/InventoryActionPropertyInterface.InventoryActionPropertyInterface_C",
 			"/Itemization/UI/PropertyInterfaces/InventoryItemActionPropertyInterface.InventoryItemActionPropertyInterface_C",
 			"/Itemization/UI/PropertyInterfaces/InventoryItemPropertyInterface.InventoryItemPropertyInterface_C",
@@ -2355,6 +2373,7 @@
 			"/Script/MusicalMode.MovieSceneMusicalClock",
 			"/Script/MusicEnvironment.FrameBasedMusicMap",
 			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh",
+			"/Script/PhysicsCore.PhysicalMaterial",
 			"/Script/UMG.SafeZone",
 			"/Script/UMG.SafeZoneSlot",
 			"/Script/ValkyrieCommon.ValkyrieContentWorkerDebugManager",
@@ -2376,6 +2395,7 @@
 			"/Script/Engine.SoundWave",
 			"/Script/Engine.StaticMesh",
 			"/Script/Engine.Texture2D",
+			"/Script/Engine.TextureLightProfile",
 			"/Script/FortniteGame.BuildingTextureData",
 			"/Script/MetasoundEngine.MetaSoundPatch",
 			"/Script/MetasoundEngine.MetaSoundSource",
@@ -2394,6 +2414,7 @@
 		"VKCreateUGC": [
 			"/Script/AnimationCore.CCDIKChainLink",
 			"/Script/AnimationCore.EulerTransform",
+			"/Script/AnimationCore.FABRIKChainLink",
 			"/Script/AnimationCore.FilterOptionPerAxis",
 			"/Script/AnimationCore.TransformFilter",
 			"/Script/AtomModelImporterEditor.AtomModelMergeOptions",
@@ -2474,7 +2495,13 @@
 			"/Script/ControlRig.ConstraintParent",
 			"/Script/ControlRig.ControlRigComponentMappedElement",
 			"/Script/ControlRig.ControlRigExecuteContext",
+			"/Script/ControlRig.CRSimLinearSpring",
+			"/Script/ControlRig.CRSimPointConstraint",
+			"/Script/ControlRig.CRSimPointContainer",
+			"/Script/ControlRig.CRSimPointForce",
+			"/Script/ControlRig.CRSimSoftCollision",
 			"/Script/ControlRig.RegionScaleFactors",
+			"/Script/ControlRig.RigComponentKey",
 			"/Script/ControlRig.RigControlLimitEnabled",
 			"/Script/ControlRig.RigElementKey",
 			"/Script/ControlRig.RigElementKeyCollection",
@@ -2526,9 +2553,22 @@
 			"/Script/ControlRig.RigUnit_SetMultiControlVector2D_Entry",
 			"/Script/ControlRig.RigUnit_SlideChain_WorkData",
 			"/Script/ControlRig.RigUnit_SphereTrace_WorkData",
+			"/Script/ControlRig.RigUnit_SpringIK_DebugSettings",
 			"/Script/ControlRig.RigUnit_SpringIK_WorkData",
 			"/Script/ControlRig.RigUnit_TwoBoneIKSimple_DebugSettings",
 			"/Script/ControlRig.SphericalPoseReaderDebugSettings",
+			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings",
+			"/Script/ControlRigPhysics.RigPhysicsCollision",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionBox",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionCapsule",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionSphere",
+			"/Script/ControlRigPhysics.RigPhysicsDriveData",
+			"/Script/ControlRigPhysics.RigPhysicsDynamics",
+			"/Script/ControlRigPhysics.RigPhysicsJointData",
+			"/Script/ControlRigPhysics.RigPhysicsMaterial",
+			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceSettings",
+			"/Script/ControlRigPhysics.RigPhysicsSolverSettings",
+			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings",
 			"/Script/ControlRigSpline.ControlRigSpline",
 			"/Script/ControlRigSpline.RigUnit_SplineConstraint_WorkData",
 			"/Script/CoreUObject.Int64Vector2",
@@ -2544,18 +2584,25 @@
 			"/Script/CoreUObject.Vector2f",
 			"/Script/CoreUObject.Vector3f",
 			"/Script/CoreUObject.Vector4f",
+			"/Script/DataHierarchyEditor.DataHierarchyElementMetaData_SectionAssociation",
 			"/Script/DataHierarchyEditor.HierarchyElementIdentity",
+			"/Script/Engine.AngularDriveConstraint",
 			"/Script/Engine.AnimSyncMarker",
+			"/Script/Engine.ConeConstraint",
+			"/Script/Engine.ConstraintDrive",
 			"/Script/Engine.FloatAnimationAttribute",
 			"/Script/Engine.FloatSpringState",
 			"/Script/Engine.InputRange",
 			"/Script/Engine.InputScaleBiasClamp",
 			"/Script/Engine.IntegerAnimationAttribute",
+			"/Script/Engine.LinearConstraint",
+			"/Script/Engine.LinearDriveConstraint",
 			"/Script/Engine.PointerToUberGraphFrame",
 			"/Script/Engine.QuaternionSpringState",
 			"/Script/Engine.RuntimeFloatCurve",
 			"/Script/Engine.StringAnimationAttribute",
 			"/Script/Engine.TransformAnimationAttribute",
+			"/Script/Engine.TwistConstraint",
 			"/Script/Engine.VectorSpringState",
 			"/Script/FortniteGame.BuildingActorClassData",
 			"/Script/FortniteGame.BuildingFloorActorClassData",
@@ -2574,10 +2621,13 @@
 			"/Script/FortniteGame.FortItemComponentData_Pickup",
 			"/Script/FortniteGame.UserOptionDefinitionContainer",
 			"/Script/GameplayTags.GameplayTag",
+			"/Script/IKRig.IKRetargetAdditivePoseOp",
 			"/Script/IKRig.IKRetargetAlignPoleVectorOp",
 			"/Script/IKRig.IKRetargetCopyBasePoseOp",
 			"/Script/IKRig.IKRetargetCurveRemapOp",
+			"/Script/IKRig.IKRetargetFilterBoneOp",
 			"/Script/IKRig.IKRetargetFKChainsOp",
+			"/Script/IKRig.IKRetargetFloorConstraintOp",
 			"/Script/IKRig.IKRetargetIKChainsOp",
 			"/Script/IKRig.IKRetargetPelvisMotionOp",
 			"/Script/IKRig.IKRetargetPinBoneOp",
@@ -2585,12 +2635,16 @@
 			"/Script/IKRig.IKRetargetRunIKRigOp",
 			"/Script/IKRig.IKRetargetScaleSourceOp",
 			"/Script/IKRig.IKRetargetSpeedPlantingOp",
+			"/Script/IKRig.IKRetargetStretchChainOp",
 			"/Script/IKRig.IKRetargetStrideWarpingOp",
 			"/Script/IKRig.IKRigBodyMoverSolver",
 			"/Script/IKRig.IKRigFullBodyIKSolver",
+			"/Script/IKRig.IKRigGoalInput",
 			"/Script/IKRig.IKRigLimbSolver",
 			"/Script/IKRig.IKRigPoleSolver",
 			"/Script/IKRig.IKRigSetTransform",
+			"/Script/IKRig.IKRigStretchLimbSolver",
+			"/Script/IKRig.IKRigWorkData",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose",
@@ -2625,9 +2679,15 @@
 			"/Script/PBIK.PBIKSolverSettings",
 			"/Script/PBIK.PBIKWorkData",
 			"/Script/PBIK.RootPrePullSettings",
+			"/Script/PhysicsControl.PhysicsControlData",
+			"/Script/PhysicsControl.PhysicsControlModifierData",
+			"/Script/PhysicsControl.PhysicsControlModifierSparseData",
+			"/Script/PhysicsControl.PhysicsControlMultiplier",
+			"/Script/PhysicsControl.PhysicsControlTarget",
 			"/Script/RigVM.RigVMDebugDrawSettings",
 			"/Script/RigVM.RigVMExecuteContext",
 			"/Script/RigVM.RigVMInstructionSetExecuteState",
+			"/Script/RigVM.RigVMSimPoint",
 			"/Script/RigVM.RigVMUnknownType",
 			"/Script/SlateCore.Geometry",
 			"/Script/SlateCore.SlateBrush",
@@ -5273,6 +5333,7 @@
 			"/Engine/EngineMaterials/BaseFlattenNormalMap.BaseFlattenNormalMap",
 			"/Engine/EngineMaterials/BlendFunc_DefBase.BlendFunc_DefBase",
 			"/Engine/EngineMaterials/BlendFunc_DefBlend.BlendFunc_DefBlend",
+			"/Engine/EngineMaterials/DefaultBloomKernel.DefaultBloomKernel",
 			"/Engine/EngineMaterials/DefaultDiffuse.DefaultDiffuse",
 			"/Engine/EngineMaterials/DefaultNormal.DefaultNormal",
 			"/Engine/EngineMaterials/DefaultNormal_Uncompressed.DefaultNormal_Uncompressed",
@@ -12770,6 +12831,7 @@
 			"/Game/Sounds/Modulation/Buses/UEFN/CB_FortVehicles.CB_FortVehicles",
 			"/Game/Sounds/Modulation/Buses/UEFN/CB_FortVehicles_Engine.CB_FortVehicles_Engine",
 			"/Game/Sounds/Modulation/Buses/UEFN/CB_FortWeapon.CB_FortWeapon",
+			"/Game/TimeOfDay/TODM_Sequence/Textures/Bloom/T_FFTBloom_Asteria0000.T_FFTBloom_Asteria0000",
 			"/Game/UEFNExposedAssets/Devices/ChildClasses/CrowdVolume/MI_CP_Device_Volume_Frame_CrowdVolume_Placed.MI_CP_Device_Volume_Frame_CrowdVolume_Placed",
 			"/Game/UI/Foundation/Textures/Icons/Replay/T-Icon-Replay-CurrentPlayer-L.T-Icon-Replay-CurrentPlayer-L",
 			"/Game/UI/Juno_2dRenders/Figure/Season28/Icons/T-UI-Icon-Figure-PinkBearB-L.T-UI-Icon-Figure-PinkBearB-L",
@@ -13581,6 +13643,7 @@
 			"/InterchangeAssets/gltf/Textures/T_Gray_Linear.T_Gray_Linear",
 			"/InterchangeAssets/gltf/Textures/T_White_Linear.T_White_Linear",
 			"/InterchangeAssets/gltf/Textures/T_White_srgb.T_White_srgb",
+			"/InterchangeAssets/Materials/FBXLegacyPhongSurfaceMaterial.FBXLegacyPhongSurfaceMaterial",
 			"/InterchangeAssets/Utilities/New_LUT.New_LUT",
 			"/InterchangeAssets/Utilities/T_Bayer64_Grayscale_64px.T_Bayer64_Grayscale_64px",
 			"/Lime/Figure/_Figure_Core/SkeletalMesh/SKM_Figure_PlaceHolder.SKM_Figure_PlaceHolder",
@@ -14715,6 +14778,7 @@
 			"/Niagara/DefaultAssets/DefaultModule.DefaultModule",
 			"/Niagara/DefaultAssets/DefaultRIbbonMaterial.DefaultRibbonMaterial",
 			"/Niagara/DefaultAssets/DefaultSpriteMaterial.DefaultSpriteMaterial",
+			"/Niagara/DefaultAssets/DefaultSystem.DefaultSystem",
 			"/Niagara/DefaultAssets/GeometryCache/DefaultGeometryCacheAsset.DefaultGeometryCacheAsset",
 			"/Niagara/DefaultAssets/GeometryCache/M_DefaultGeometryCacheMaterial.M_DefaultGeometryCacheMaterial",
 			"/Niagara/DefaultAssets/GeometryCache/M_DefaultGeometryCacheMaterial_Blue.M_DefaultGeometryCacheMaterial_Blue",
@@ -14857,6 +14921,7 @@
 			"/Niagara/DynamicInputs/LinearColor/MakeLinearColorFromFloat4.MakeLinearColorFromFloat4",
 			"/Niagara/DynamicInputs/LinearColor/MakeLinearColorFromVectorAndFloat.MakeLinearColorFromVectorAndFloat",
 			"/Niagara/DynamicInputs/LinearColor/MakeVector4_FromLinearColor.MakeVector4_FromLinearColor",
+			"/Niagara/DynamicInputs/LinearColor/MakeVector4FromVectorAndFloat.MakeVector4FromVectorAndFloat",
 			"/Niagara/DynamicInputs/LinearColor/MultiplyLinearColor.MultiplyLinearColor",
 			"/Niagara/DynamicInputs/Masks/ConeMask.ConeMask",
 			"/Niagara/DynamicInputs/Masks/V2/ConeMask.ConeMask",
@@ -15088,6 +15153,7 @@
 			"/Niagara/Enums/ENiagaraEmitterScalabilityMode.ENiagaraEmitterScalabilityMode",
 			"/Niagara/Enums/ENiagaraEmitterScalabilityMode_Limited.ENiagaraEmitterScalabilityMode_Limited",
 			"/Niagara/Enums/ENiagaraExpansionMode.ENiagaraExpansionMode",
+			"/Niagara/Enums/ENiagaraFloatFromLinearColorOptions.ENiagaraFloatFromLinearColorOptions",
 			"/Niagara/Enums/ENiagaraFrictionMergeType.ENiagaraFrictionMergeType",
 			"/Niagara/Enums/ENiagaraGPUDepthResponseType.ENiagaraGPUDepthResponseType",
 			"/Niagara/Enums/ENiagaraGridPlacementType.ENiagaraGridPlacementType",
@@ -15447,6 +15513,7 @@
 			"/Niagara/Modules/Constraints/PendulumConstraint.PendulumConstraint",
 			"/Niagara/Modules/Constraints/PendulumSetup.PendulumSetup",
 			"/Niagara/Modules/Debug/SpriteBasedLine.SpriteBasedLine",
+			"/Niagara/Modules/Decal/Decal_Attributes.Decal_Attributes",
 			"/Niagara/Modules/Emitter/EmitterLifeCycle.EmitterLifeCycle",
 			"/Niagara/Modules/Emitter/EmitterState.EmitterState",
 			"/Niagara/Modules/Emitter/SpawnBurst_Instantaneous.SpawnBurst_Instantaneous",
@@ -15460,6 +15527,7 @@
 			"/Niagara/Modules/Events/ReceiveDeathEvent.ReceiveDeathEvent",
 			"/Niagara/Modules/Events/ReceiveLocationEvent.ReceiveLocationEvent",
 			"/Niagara/Modules/ExportParticleData/ExportParticleDataToBlueprint.ExportParticleDataToBlueprint",
+			"/Niagara/Modules/Light/Light_Attributes.Light_Attributes",
 			"/Niagara/Modules/Masks/ConeMask.ConeMask",
 			"/Niagara/Modules/Masks/V2/ConeMask.ConeMask",
 			"/Niagara/Modules/Masks/V2/RegionMask.RegionMask",
@@ -15769,6 +15837,7 @@
 			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road16.FNEC_Alley_Road16_C",
 			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road17.FNEC_Alley_Road17_C",
 			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road18.FNEC_Alley_Road18_C",
+			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road19.FNEC_Alley_Road19_C",
 			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road2.FNEC_Alley_Road2_C",
 			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road3.FNEC_Alley_Road3_C",
 			"/AlleyT_Assets/SetupAssets/Blueprints/FNEC_Alley_Road4.FNEC_Alley_Road4_C",
@@ -16018,6 +16087,7 @@
 			"/CRD_Zipline/Device_ZiplineControlPoint.Device_ZiplineControlPoint_C",
 			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C",
 			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C",
+			"/CreativeCompanion/Assets/BP_FortUserOptionsComponent_Sidekicks.BP_FortUserOptionsComponent_Sidekicks_C",
 			"/CreativeCoreDevices/AirVent/BP_HVAC_Prop_V2.BP_HVAC_Prop_V2_C",
 			"/CreativeCoreDevices/AlwaysCook/Device_Beacon_V2_Beam_Blue.Device_Beacon_V2_Beam_Blue_C",
 			"/CreativeCoreDevices/AlwaysCook/Device_Beacon_V2_Beam_Green.Device_Beacon_V2_Beam_Green_C",
@@ -25718,6 +25788,7 @@
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_StreetSigns_A/Blueprints/Asteria_NeonCity_StreetSigns_D_B.Asteria_NeonCity_StreetSigns_D_B_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_StreetSigns_A/Blueprints/Asteria_NeonCity_StreetSigns_D_Override.Asteria_NeonCity_StreetSigns_D_Override_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Sushi_Chairs_A/Blueprints/Asteria_NeonCity_Sushi_Chairs_C.Asteria_NeonCity_Sushi_Chairs_C_C",
+			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Sushi_Chairs_A/Blueprints/Asteria_NeonCity_Sushi_Chairs_E.Asteria_NeonCity_Sushi_Chairs_E_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Sushi_Tables_A/Blueprints/Asteria_NeonCity_Sushi_Tables_A.Asteria_NeonCity_Sushi_Tables_A_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Sushi_Tables_A/Blueprints/Asteria_NeonCity_Sushi_Tables_A2.Asteria_NeonCity_Sushi_Tables_A2_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Sushi_Tables_A/Blueprints/Asteria_NeonCity_Sushi_Tables_B.Asteria_NeonCity_Sushi_Tables_B_C",
@@ -25727,6 +25798,10 @@
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_SushiBar_A/Blueprints/Asteria_NeonCity_SushiBar_B.Asteria_NeonCity_SushiBar_B_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_SushiBar_A/Blueprints/Asteria_NeonCity_SushiBar_B_A.Asteria_NeonCity_SushiBar_B_A_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Tables_A/Blueprints/Asteria_NeonCity_Tables_A_D.Asteria_NeonCity_Tables_A_D_C",
+			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Tableware_A/Blueprints/Asteria_NeonCity_Tableware_A.Asteria_NeonCity_Tableware_A_C",
+			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Tableware_A/Blueprints/Asteria_NeonCity_Tableware_B.Asteria_NeonCity_Tableware_B_C",
+			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Tableware_A/Blueprints/Asteria_NeonCity_Tableware_C.Asteria_NeonCity_Tableware_C_C",
+			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Tableware_A/Blueprints/Asteria_NeonCity_Tableware_D.Asteria_NeonCity_Tableware_D_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Terminals_A/Blueprints/Asteria_NeonCity_Terminals_A.Asteria_NeonCity_Terminals_A_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Terminals_A/Blueprints/Asteria_NeonCity_Terminals_A_D.Asteria_NeonCity_Terminals_A_D_C",
 			"/Game/Environments/Asteria/Props/NeonCity/NeonCity_Terminals_A/Blueprints/BP_NeonCity_Terminals_Cluster_A.BP_NeonCity_Terminals_Cluster_A_C",
@@ -26667,6 +26742,9 @@
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_A/Blueprints/BP_Outdoor_WoodCafeTableSet_N.BP_Outdoor_WoodCafeTableSet_N_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_A/Blueprints/BP_Outdoor_WoodCafeTableSet_O.BP_Outdoor_WoodCafeTableSet_O_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_A/Blueprints/BP_Outdoor_WoodCafeTableSet_P.BP_Outdoor_WoodCafeTableSet_P_C",
+			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_B/Blueprints/BP_Outdoor_MetalCafeChair_A.BP_Outdoor_MetalCafeChair_A_C",
+			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_B/Blueprints/BP_Outdoor_MetalCafeTable_C.BP_Outdoor_MetalCafeTable_C_C",
+			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_B/Blueprints/BP_Outdoor_MetalCafeTable_D.BP_Outdoor_MetalCafeTable_D_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_B/Blueprints/BP_Outdoor_MetalCafeTableSet_L.BP_Outdoor_MetalCafeTableSet_L_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_B/Blueprints/BP_Outdoor_MetalCafeTableSet_N.BP_Outdoor_MetalCafeTableSet_N_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeFurniture_B/Blueprints/BP_Outdoor_MetalCafeTableSet_Q.BP_Outdoor_MetalCafeTableSet_Q_C",
@@ -26674,6 +26752,7 @@
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeTableSettings_A/Blueprints/BP_Outdoor_CafeTableSetting_A_B.BP_Outdoor_CafeTableSetting_A_B_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeTableSettings_A/Blueprints/BP_Outdoor_CafeTableSetting_A_C.BP_Outdoor_CafeTableSetting_A_C_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeTableSettings_B/Blueprints/BP_Outdoor_CafeTableSetting_B_A.BP_Outdoor_CafeTableSetting_B_A_C",
+			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeTableSettings_B/Blueprints/BP_Outdoor_CafeTableSetting_B_B.BP_Outdoor_CafeTableSetting_B_B_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_CafeTableSettings_B/Blueprints/BP_Outdoor_CafeTableSetting_B_C.BP_Outdoor_CafeTableSetting_B_C_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_DrinkingFountain_A/Blueprints/BP_Outdoor_DrinkingFountain_A_B.BP_Outdoor_DrinkingFountain_A_B_C",
 			"/Game/Environments/Helios/Props/Outdoor/Outdoor_FlowerBoxes_A/Blueprints/BP_Outdoor_FlowerBox_A_B.BP_Outdoor_FlowerBox_A_B_C",
@@ -28883,6 +28962,7 @@
 			"/RReels_Assets/SetupAssets/Blueprints/FNEC_Recreation_MovieScreen_A.FNEC_Recreation_MovieScreen_A_C",
 			"/RReels_Assets/SetupAssets/Blueprints/FNEC_SpeakerCab.FNEC_SpeakerCab_C",
 			"/SpireBoss/GameplayActors/BGA_WeakpointActor_MinorSpire.BGA_WeakpointActor_MinorSpire_C",
+			"/SplitscreenVisibilityControls/Creative_SplitscreenVisibility_Component.Creative_SplitscreenVisibility_Component_C",
 			"/Suburban_Assets/SetupAssets/Blueprints/Balconies/BP_Sub_Balcony_A_A_A.BP_Sub_Balcony_A_A_A_C",
 			"/Suburban_Assets/SetupAssets/Blueprints/Balconies/BP_Sub_Balcony_A_A_B.BP_Sub_Balcony_A_A_B_C",
 			"/Suburban_Assets/SetupAssets/Blueprints/Balconies/BP_Sub_Balcony_A_A_C.BP_Sub_Balcony_A_A_C_C",
@@ -29603,6 +29683,14 @@
 			"/TTides_Assets/SetupAssets/Blueprints/FNEC_BP_NeonSign_SteamedMeatDumpling.FNEC_BP_NeonSign_SteamedMeatDumpling_C",
 			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Dumpster.FNEC_Dumpster_C",
 			"/TTides_Assets/SetupAssets/Blueprints/FNEC_EasternTrafficLight_a.FNEC_EasternTrafficLight_a_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_A.FNEC_Hermes_Deco_Tableware_A_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_B.FNEC_Hermes_Deco_Tableware_B_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_C.FNEC_Hermes_Deco_Tableware_C_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_D.FNEC_Hermes_Deco_Tableware_D_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_E.FNEC_Hermes_Deco_Tableware_E_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_F.FNEC_Hermes_Deco_Tableware_F_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_G.FNEC_Hermes_Deco_Tableware_G_C",
+			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Hermes_Deco_Tableware_H.FNEC_Hermes_Deco_Tableware_H_C",
 			"/TTides_Assets/SetupAssets/Blueprints/FNEC_OutdoorFloor.FNEC_OutdoorFloor_C",
 			"/TTides_Assets/SetupAssets/Blueprints/FNEC_OutdoorFloorCorner.FNEC_OutdoorFloorCorner_C",
 			"/TTides_Assets/SetupAssets/Blueprints/FNEC_Road1.FNEC_Road1_C",
@@ -29754,6 +29842,7 @@
 			"/Game/Creative/Test/Props/Relevancy/CP_Primitive_Sphere_Solid_RM.CP_Primitive_Sphere_Solid_RM_C",
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C",
 			"/Itemization/UI/ItemizationUIAllowedConversionFunctions.ItemizationUIAllowedConversionFunctions_C",
+			"/Itemization/UI/ItemizationUIConversionFunctionLibrary.ItemizationUIConversionFunctionLibrary_C",
 			"/Itemization/UI/PropertyInterfaces/InventoryActionPropertyInterface.InventoryActionPropertyInterface_C",
 			"/Itemization/UI/PropertyInterfaces/InventoryItemActionPropertyInterface.InventoryItemActionPropertyInterface_C",
 			"/Itemization/UI/PropertyInterfaces/InventoryItemPropertyInterface.InventoryItemPropertyInterface_C",
@@ -29780,5 +29869,9 @@
 		"/Script/RigVM.RigVMMemoryStorageGeneratorClass",
 		"/Script/UMG.WidgetBlueprintGeneratedClass",
 		"/Script/VerseAssets.PropertyInterfaceGeneratedClass"
+	],
+	"Plugins": [],
+	"Packages": [
+		"/__ALL_FILTERED__/__ALL_FILTERED__"
 	]
 }

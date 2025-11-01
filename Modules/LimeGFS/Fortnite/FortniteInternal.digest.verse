@@ -2,9 +2,10 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.51-CL-46968237
+# Generated from build: ++Fortnite+Release-38.00-CL-47291259
 #################################################
 
+# Module import path: /Fortnite.com/AI
 AI<public> := module {
   @experimental
   (Agent: agent).AddInjectedBehavior<native><epic_internal>(BehaviorTreeInjection: behavior_tree_injection)<transacts>: void
@@ -44,12 +45,6 @@ AI<public> := module {
   # Returns the `entity` for `InNPCBehavior`.
   (InNPCBehavior: npc_behavior).GetEntity<native><public>()<reads><decides>: entity
 
-  using { /Fortnite.com/AI/HiredGuardCommands/PingCommand }
-  using { /Fortnite.com/Characters }
-  using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   # Module import path: /Fortnite.com/AI/HiredGuardCommands
   HiredGuardCommands<public> := module {
     @experimental
@@ -105,6 +100,12 @@ AI<public> := module {
     @experimental
     (/Fortnite.com/AI/HiredGuardCommands:)ToString<epic_internal>(Type: entity_type)<transacts>: string = external {}
 
+    using { /Fortnite.com/AI/HiredGuardCommands/PingCommand }
+    using { /Fortnite.com/Characters }
+    using { /UnrealEngine.com/Temporary/SpatialMath }
+    using { /Verse.org/Native }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
     @hide_in_editor
     @experimental
     default_npc_behavior<epic_internal> := class(npc_behavior) {}
@@ -189,10 +190,6 @@ AI<public> := module {
   # Generate a navigation_target from any position
   MakeNavigationTarget<native><epic_internal>(Position: (/Verse.org/SpatialMath:)vector3): navigation_target
 
-  @experimental
-  # Generate a navigation_target from an entity
-  MakeNavigationTarget<native><public>(Entity: entity): navigation_target
-
   # Generate a navigation_target from an agent
   MakeNavigationTarget<native><public>(Target: agent): navigation_target
 
@@ -203,6 +200,16 @@ AI<public> := module {
   # Generate a navigation_target from any position
   MakeNavigationTarget<public>(Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): navigation_target = external {}
 
+  @experimental
+  # Generate a navigation_target from an entity
+  MakeNavigationTargetEntity<native><public>(Entity: entity): navigation_target
+
+  using { /Fortnite.com/Assets }
+  using { /Fortnite.com/Characters }
+  using { /Fortnite.com/Playspaces }
+  using { /Fortnite.com/Teams }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/SpatialMath }
   @experimental
   # Result of an AI action
   ai_action_result<native><public> := enum<open> {
@@ -258,6 +265,46 @@ AI<public> := module {
     @editable
     # The decision system that this component will run.
     var<private> DecisionSystem<native><public>: decision_system
+  }
+
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Component to manage functionality specifically for an agent's equipped Sidekick.
+  equipped_sidekick_component<native><public> := class<final_super><epic_internal>(sidekick_component, showable) {
+    # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns (Previous Mood, New Mood).
+    ChangeMoodEvent<override><native>: listenable(tuple(sidekick_mood, sidekick_mood)) = external {}
+
+    # Get the Sidekick's current mood.
+    GetMood<override><native>()<reads>: sidekick_mood
+
+    # Get the agent that owns this Sidekick.
+    GetOwningAgent<native><public>()<transacts><decides>: agent
+
+    # Request to play a given reaction on the sidekick.
+    # This reaction is not guaranteed to play immediately; instead, the StartPlayReactionEvent should be used to monitor this.
+    # This will fail if the Sidekick cannot play the given reaction.
+    PlayReaction<override><native>(Reaction: sidekick_reaction)<transacts><decides>: void
+
+    # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
+    StartPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
+
+    # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
+    StopPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
+
+    # The Sidekick will run animations to react to the state of the player. Is this system enabled?
+    var AutomaticReactionsEnabled<public>: logic = external {}
+
+    # Sidekicks have a built-in player interaction; this can be disabled by setting this to false.
+    var DefaultInteractionEnabled<public>: logic = external {}
+
+    # By default, Sidekicks will change their mood depending on actions in the game.
+    # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
+    var MoodOverride<override>: ?sidekick_mood = external {}
+
+    # Is the Sidekick visible?
+    var Show<override>: logic = external {}
   }
 
   focus_interface<native><public> := interface<epic_internal> {
@@ -939,15 +986,104 @@ AI<public> := module {
     @editable
     var<private> NPCBehavior<native><public>: npc_behavior
   }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Component to manage functionality specifically for an NPC Sidekick.
+  npc_sidekick_component<native><public> := class<final_super><epic_internal>(sidekick_component) {
+    # Apply the look and customizations of agent's currently equipped Sidekick to this Sidekick NPC.
+    # This will fail if the NPC does not use the FortniteSidekick cosmetic look or if the given agent does not have a Sidekick equipped in their locker.
+    ApplyEquippedSidekickCosmetic<native><epic_internal>(Agent: agent)<transacts><decides>: void
+
+    # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
+    ChangeMoodEvent<override><native>: listenable(tuple(sidekick_mood, sidekick_mood)) = external {}
+
+    # Get the Sidekick's current mood.
+    GetMood<override><native>()<reads>: sidekick_mood
+
+    # Request to play a given reaction on the Sidekick.
+    # This reaction is not guaranteed to play immediately; instead, the StartPlayReactionEvent should be used to monitor this.
+    # This will fail if the Sidekick cannot play the given reaction.
+    PlayReaction<override><native>(Reaction: sidekick_reaction)<transacts><decides>: void
+
+    # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
+    StartPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
+
+    # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
+    StopPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
+
+    # By default, Sidekicks will change their mood depending on actions in the game.
+    # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
+    var MoodOverride<override>: ?sidekick_mood = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Component to manage functionality shared by all Sidekick types.
+  sidekick_component<native><public> := class<abstract><final_super><epic_internal>(component) {
+    # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
+    ChangeMoodEvent<public>: listenable(tuple(sidekick_mood, sidekick_mood))
+
+    # Get the Sidekick's current mood.
+    GetMood<public>()<reads>: sidekick_mood
+
+    # Request to play a given reaction on the Sidekick.
+    # This reaction is not guaranteed to play immediately; instead, the StartPlayReactionEvent should be used to monitor this.
+    # This will fail if the Sidekick cannot play the given reaction.
+    PlayReaction<public>(Reaction: sidekick_reaction)<transacts><decides>: void
+
+    # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
+    StartPlayReactionEvent<public>: listenable(sidekick_reaction)
+
+    # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
+    StopPlayReactionEvent<public>: listenable(sidekick_reaction)
+
+    # By default, Sidekicks will change their mood depending on actions in the game.
+    # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
+    var MoodOverride<public>: ?sidekick_mood
+  }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Sidekicks have a mood that modifies their animations to suit that mood.
+  # This is the list of currently supported moods.
+  sidekick_mood<native><public> := enum<open> {
+    Bored
+
+    Combat
+
+    Neutral
+
+    Worried
+  }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # The set of available reactions that can be played on the Sidekick
+  sidekick_reaction<native><public> := enum<open> {
+    Angry
+
+    Dance
+
+    Emote
+
+    Happy
+
+    Worried
+  }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # component to manage an entity that supports a Spark mode.
+  # Spark mode will transform the entity into a floating spark.
+  # The entity will enter `spark mode` whenever it enters impassable terrain or to reduce visual clutter.
+  spark_mode_component<native><public> := class<final_super><epic_internal>(component) {
+    # Signaled when the Sidekick enters spark mode.
+    BeginSparkModeEvent<native><public>: listenable(tuple()) = external {}
+
+    # Signaled when the Sidekick exits spark mode
+    EndSparkModeEvent<native><public>: listenable(tuple()) = external {}
+
+    # Automatic switching in and out of spark mode can be turned off, forcing spark mode always, by setting this value to true.
+    var SparkModeAlwaysActive<public>: logic = external {}
+  }
 }
 
-using { /Fortnite.com/AI }
-using { /Fortnite.com/Assets }
-using { /Fortnite.com/Characters }
-using { /Fortnite.com/Teams }
-using { /Fortnite.com/Vehicles }
-using { /UnrealEngine.com/Temporary/Diagnostics }
-using { /Verse.org/SpatialMath }
 # Module import path: /Fortnite.com/Animation
 Animation<public> := module {
   # Module import path: /Fortnite.com/Animation/PlayAnimation
@@ -1039,6 +1175,11 @@ Animation<public> := module {
       Stop<native><public>(): void
     }
 
+    using { /Fortnite.com/Characters }
+    using { /Verse.org/Assets }
+    using { /Verse.org/Native }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
     # Result of a PlayAndAwait request.
     play_animation_result<native><public> := enum {
       # The animation completed successfully.
@@ -1088,12 +1229,15 @@ Animation<public> := module {
 
   character_cosmetic_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
+  using { /Fortnite.com/Playspaces }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Assets }
+  using { /Verse.org/Simulation }
   emote<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   npc_character_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 }
 
-using { /Fortnite.com/FortSafeZone }
 # Module import path: /Fortnite.com/Blastberry
 Blastberry<public> := module {
   # Module import path: /Fortnite.com/Blastberry/Respawn
@@ -1136,6 +1280,11 @@ Blastberry<public> := module {
       SpawnLocation<public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     }
 
+    using { /Fortnite.com/FortSafeZone }
+    using { /Fortnite.com/Playspaces }
+    using { /UnrealEngine.com/Temporary/SpatialMath }
+    using { /Verse.org/Native }
+    using { /Verse.org/Simulation }
     team_translation_group<epic_internal> := class {
       GetAverageTranslation<public>()<transacts><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
@@ -1159,10 +1308,9 @@ Blastberry<public> := module {
   }
 }
 
-using { /UnrealEngine.com/Abilities }
-using { /Verse.org/SceneGraph/VerseCamera }
 # Module import path: /Fortnite.com/Building
 Building<public> := module {
+  using { /Verse.org/SceneGraph }
   @experimental
   building_component<native><epic_internal> := class<final><final_super>(component) {
     @experimental
@@ -1190,6 +1338,10 @@ Characters<public> := module {
   # Returns the `agent` for `InInstigator`. Fails if `InInstigator` is not an `agent`.
   (InInstigator: game_action_instigator).GetInstigatorAgent<native><public>()<transacts><decides>: agent
 
+  using { /Fortnite.com/Game }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   # Main API implemented by Fortnite characters.
   fort_character<native><public> := interface<unique><epic_internal>(
     positional,
@@ -1219,8 +1371,8 @@ Characters<public> := module {
     # Returns the agent associated with this `fort_character`. Use this when interacting with APIs that require an `agent` reference.
     GetAgent<public>()<transacts><decides>: agent
 
-    @experimental
-    GetEntity<epic_internal>()<transacts><decides>: entity
+    # Returns the entity associated with this `fort_character`. Use this when interacting with APIs that require an `entity` reference.
+    GetEntity<public>()<transacts><decides>: entity
 
     # Returns the location where this `fort_character` is looking or aiming from.
     GetViewLocation<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
@@ -1510,6 +1662,10 @@ Devices<public> := module {
   #  Fails if the conversation target refuses the addition, or if the participant is assigned to a different conversation target.
   (Participant: agent).SetConversationTarget<native><public>(ConversationTarget: conversation_target)<transacts><decides>: void
 
+  using { /Fortnite.com/AI }
+  using { /Fortnite.com/Playspaces }
+  using { /UnrealEngine.com/Temporary/Diagnostics }
+  using { /Verse.org/Simulation/Tags }
   # Module import path: /Fortnite.com/Devices/CreativeAnimation
   CreativeAnimation<public> := module {
     # Returns an `animation_controller` used to animate `Prop`. Only a subset of `creative_prop` types can be animated, though this may change in the future. A few examples of props that cannot be animated yet are:
@@ -1640,6 +1796,7 @@ Devices<public> := module {
       NotPlaying
     }
 
+    using { /UnrealEngine.com/Temporary/SpatialMath }
     # A structure for defining Bezier interpolation parameters.
     # See https://en.wikipedia.org/wiki/B%C3%A9zier_curve for more info on Bezier curves.
     cubic_bezier_parameters<native><public> := struct<computes> {
@@ -1768,6 +1925,18 @@ Devices<public> := module {
   GetCreativeObjectsWithTags<native><public>(SearchCriteria: tag_search_criteria)<transacts>: []creative_object_interface
 
   HandleMoveToInternalResult<epic_internal>(Result: move_to_internal_result): move_to_result = external {}
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakePersonaErrorResult<native_callable><epic_internal>(Result: error_type where error_type: type): result(
+    false,
+    error_type
+  ) = external {}
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakePersonaSuccessResult<native_callable><epic_internal>(Result: success_type where success_type: type): result(
+    success_type,
+    false
+  ) = external {}
 
   Patchwork<public> := module {
     cable_splitter_device<public> := class<concrete><final>(patchwork_device) {}
@@ -2852,7 +3021,6 @@ Devices<public> := module {
   }
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /Verse.org/Assets }
   # Used to spawn a carryable object into the experience.
   carryable_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
     # Signaled when the carryable collides with an agent.
@@ -3019,7 +3187,13 @@ Devices<public> := module {
   }
 
   # Allows players to change their outfit in game!
-  changing_booth_device<public> := class<concrete><final>(creative_device_base) {}
+  changing_booth_device<public> := class<concrete><final>(creative_device_base) {
+    # Signaled when a `player` enters the changing booth device.
+    PlayerEnterEvent<public>: listenable(player) = external {}
+
+    # Signaled when a `player` exits the changing booth device.
+    PlayerExitEvent<public>: listenable(player) = external {}
+  }
 
   # Sends an Event for every signal it receives. A simple relay to connect multiple devices together.
   # It can also broadcast an event to the playspace and listen for any other channel devices broadcasting
@@ -3419,9 +3593,6 @@ Devices<public> := module {
     # Succeeds if the agent can target Self for conversation.
     CanConversationTargeterBeAdded<native_callable><epic_internal>(ConversationTargeter: agent)<reads><decides>: void = external {}
 
-    # Get all the agents currently targeting Self for conversation.
-    GetConversationTargeters<native_callable><public>(): []agent = external {}
-
     # When agent untargets Self for conversation.
     RemoveConversationTargeterEvent<final><public>: listenable(agent) = external {}
 
@@ -3439,8 +3610,9 @@ Devices<public> := module {
 
     # Listenable which is signaled when the persona starts talking.
     #  1/ The agent (if involved) which prompted the response.
-    #  2/ Cancelable to stop the target from talking.
-    StartSayEvent<public>: listenable(tuple(?agent, cancelable))
+    #  2/ The message being said.
+    #  3/ Cancelable to stop the target from talking.
+    StartSayEvent<public>: listenable(tuple(?agent, message, cancelable))
 
     # Listenable which is signaled when the player finishes prompting the persona.
     StopHearEvent<public>: listenable(agent)
@@ -3449,7 +3621,7 @@ Devices<public> := module {
     StopSayEvent<public>: listenable(tuple())
 
     # All the agents currently targeting Self for conversation.
-    var ConversationTargeters<epic_internal>: []agent
+    var<private> ConversationTargeters<public>: []agent
   }
 
   # Used to place a crash pad that can bounce players and protect them from fall damage.
@@ -3601,6 +3773,10 @@ Devices<public> := module {
   creative_prop_debug_log<epic_internal> := class(log_channel) {}
 
   # Used to customize one creature type at a time. Place multiple `creature_manager_device`s for each type of creature on your island.
+  # Changing properties will respect the `Affected Creatures` property of the
+  # device. If `Affected Creatures` is set to `New Pawns Only`, only new spawns will
+  # get the changed property values. If set to `New and Existing Pawns`, all creatures
+  # spawned from this device and new ones will have the new properties.
   creature_manager_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
     Disable<public>(): void = external {}
@@ -3611,6 +3787,34 @@ Devices<public> := module {
     # Signaled when a creature of the selected *Creature Type* is eliminated.
     # Sends the `agent` that eliminated the creature.
     MatchingCreatureTypeEliminatedEvent<public>: listenable(agent) = external {}
+
+    # Determines if the selected Creature type can be knocked back by weapon impacts.
+    var AllowWeaponKnockback<public>: logic = external {}
+
+    # If a value is given, the `DamageToEnvironment` value of the creature is overridden.
+    # If an override is not specified, the default `DamageToEnvironment` of the creature is used.
+    # This value is clamped between 0 and 500.
+    var DamageToEnvironment<public>: ?float = external {}
+
+    # If a value is given, the `DamageToPlayer` value of the creature is overridden.
+    # If an override is not specified, the default `DamageToPlayer` of the creature is used.
+    # This value is clamped between 0 and 500.
+    var DamageToPlayer<public>: ?float = external {}
+
+    # If set, the health value of the creature is overridden.
+    # If an override is not specified, the default Health of the creature is used.
+    # This value is clamped between 1 and 10000.
+    var MaxHealth<public>: ?int = external {}
+
+    # If a value is given, the `SpeedMultiplier` value is applied to the default speed of the creature.
+    # If an override is not specified, the creature moves at its default speed.
+    # This value is clamped between 0.0 and 2.0.
+    var MovementSpeed<public>: ?float = external {}
+
+    # If a value is given, the `Score` value of the creature is overridden.
+    # If an override is not specified, the default `Score` of the creature is used.
+    # This value is clamped between 0 and 100.
+    var Score<public>: ?int = external {}
   }
 
   # Used to spawn a creature at a specified location.
@@ -3816,6 +4020,8 @@ Devices<public> := module {
   # Base implementation for events on `creative_device`s.
   device_event<native><epic_internal>(t: type) := class<abstract>(listenable(t)) {
     Await<native><override>()<suspends>: t
+
+    (/Fortnite.com/Devices/device_event:)Devices_device_event_Variance<private>: ?type { _(: t): tuple(t) } = external {}
 
     EventName<native><public>: string
 
@@ -4993,6 +5199,12 @@ Devices<public> := module {
 
   # Used to show custom HUD messages to one or more `agent`s.
   hud_message_device<public> := class<concrete><final>(creative_device_base) {
+    # Clears all queued *Messages* from all players that are affected by this HUD Message Device.
+    ClearAllMessages<public>(): void = external {}
+
+    # Called when all queued *Messages* from all players that are affected by this HUD Message Device have been cleared.
+    ClearAllMessagesEvent<public>: listenable(agent) = external {}
+
     # Returns the time (in seconds) for which the HUD message will be displayed. `0.0` means the message is displayed persistently.
     GetDisplayTime<public>()<transacts>: float = external {}
 
@@ -5006,6 +5218,9 @@ Devices<public> := module {
     # Hides the currently set HUD *Message* on `Agent`s screen.
     # Use this when the device is setup to target specific `agent`s.
     Hide<public>(Agent: agent): void = external {}
+
+    # Called when a *Message* has been Hidden on-screen. Returns an `Agent` if it was Hidden from a specified `Agent`'s screen.
+    HideMessageEvent<public>: listenable(agent) = external {}
 
     # Sets the time (in seconds) the HUD message will be displayed. `0.0` will display the HUD message persistently.
     SetDisplayTime<public>(Time: float): void = external {}
@@ -5025,6 +5240,9 @@ Devices<public> := module {
 
     # Displays a Custom message that you define for all PlayersSetting *DisplayTime* to `0.0` will display the HUD message persistently.If not defined, or less than `0.0` the message will show for the time set on the device.
     Show<public>(Message: message, ?DisplayTime: float = external {}): void = external {}
+
+    # Called when a *Message* has been Shown on-screen. Returns an `Agent` if it was Shown on a specified `Agent`'s screen.
+    ShowMessageEvent<public>: listenable(agent) = external {}
   }
 
   # Used to listen for the player activating or releasing certain inputs.
@@ -5498,6 +5716,7 @@ Devices<public> := module {
 
   non_parametric_agent_subscribable_persona_event<epic_internal> := class(subscribable_event_intrnl(agent)) {}
 
+  using { /Verse.org/SpatialMath }
   # Used to spawn NPCs made with Character Definition asset.
   npc_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Despawns all characters. If set, `Instigator` will be considered as the eliminator of those characters.
@@ -5515,13 +5734,21 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Get all agents created by this device.
-    GetAgents<epic_internal>()<transacts>: []agent = external {}
+    GetAgents<public>()<transacts>: []agent = external {}
 
     # Resets the spawn count allowing spawning of a new batch of characters.
     Reset<public>(): void = external {}
 
     # Tries to spawn a character.
     Spawn<public>(): void = external {}
+
+    # Spawn a NPC at the given position. When Rotation is not provided, it will default to the Device`s rotation.
+    # Returns the agent spawned or false if the device has reached its maximum spawn count.
+    # This function is `<suspends>` because it takes time to load the NPC before it can be returned.
+    SpawnAt<epic_internal>(
+      Position: (/Verse.org/SpatialMath:)vector3,
+      ?Rotation: (/Verse.org/SpatialMath:)rotation = external {}
+    )<suspends>: ?agent = external {}
 
     # Signaled when a character is spawned.
     # Sends the `agent` character who was spawned.
@@ -5867,10 +6094,13 @@ Devices<public> := module {
     IsPerceived<public>(Agent: agent)<transacts><decides>: void = external {}
   }
 
+  using { /Verse.org/Assets }
   @experimental
   # NPC Persona component
   persona_component<native><epic_internal> := class<final_super><epic_internal>(component) {
     var<epic_internal> Description<native><public>: []string = external {}
+
+    var<epic_internal> Icon<native><public>: texture_base = external {}
 
     var<epic_internal> Name<native><public>: string
 
@@ -5894,11 +6124,8 @@ Devices<public> := module {
     # Fails if the participant is not in the list of participants
     CanConversationTargeterBeAdded<override><native>(ConversationTargeter: agent)<reads><decides>: void
 
-    # Get all the agents currently targeting Self for conversation.
-    GetConversationTargeters<native><override>(): []agent
-
-    # Link this device to a agent.
-    LinkToAgent<native><epic_internal>(Agent: agent)<transacts><decides>: void
+    # Returns a diagnostic of the Persona facts, both static and dynamic.
+    DiagnoseFacts<native><epic_internal>()<reads>: diagnostic
 
     # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
     PromptFailureEvent<native><public>: listenable(persona_prompt_error) = external {}
@@ -5914,14 +6141,20 @@ Devices<public> := module {
 
     # Listenable which is signaled when the persona starts talking.
     #  1/ The agent (if involved) which prompted the response.
-    #  2/ Cancelable to stop the target from talking.
-    StartSayEvent<native><override>: listenable(tuple(?agent, cancelable)) = external {}
+    #  2/ The message being said.
+    #  3/ Cancelable to stop the target from talking.
+    StartSayEvent<native><override>: listenable(tuple(?agent, message, cancelable)) = external {}
 
     # Listenable which is signaled when the player finishes prompting the persona.
     StopHearEvent<native><override>: listenable(agent) = external {}
 
     # Listenable which is signaled when the target stops talking.
     StopSayEvent<native><override>: listenable(tuple()) = external {}
+
+    SubscribeToResponseType<native><public>(response_type: type, Callback: type { _(: ?agent, : response_type): void })<transacts>: cancelable
+
+    # All the agents currently targeting Self for conversation.
+    var ConversationTargeters<override>: []agent = external {}
   }
 
   @experimental
@@ -5945,19 +6178,26 @@ Devices<public> := module {
     AddParticipant<public>(Agent: agent): void = external {}
 
     # Attempts to add a persona on this device.
-    AddPersona<native><epic_internal>(Persona: entity)<transacts><decides>: persona_conversation_target
+    AddPersona<native><public>((local:)Persona: agent)<transacts><decides>: persona_conversation_target
 
     # Removes all conversation history from the device.
     ClearHistory<native><public>()<transacts>: void
 
-    # Prompt the device without addressing any particular persona. Only the device facts are known to the prompt.
-    Prompt<native><epic_internal>(UserPrompt: string)<suspends>: result([]char, persona_prompt_error)
+    @available { MinUploadedAtFNVersion := 3800 }
+    # The result will conform to the result type. The result type must be a struct which can contain
+    # numeric types, messages, bools and enums, as well as structs or arrays which only contain those types, anything else results in an error.
+    # Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
+    Prompt<native><epic_internal>(
+      UserPrompt: string,
+      response_type: type)<suspends>: result(response_type,
+      persona_prompt_error
+    )
 
     # Removes an agent from the participants.
     RemoveParticipant<public>(Agent: agent): void = external {}
 
     # Attempts to remove a persona on this device.
-    RemovePersona<native><epic_internal>(Persona: entity)<transacts>: void
+    RemovePersona<native><public>((local:)Persona: agent)<transacts>: void
 
     # All the players in the channel with the personas managed by this device.
     var<private> Participants<public>: []agent = external {}
@@ -5965,6 +6205,9 @@ Devices<public> := module {
     # Direct access to all personas configured on this device.
     var<private> Personas<public>: []persona_conversation_target = external {}
   }
+
+  @experimental
+  persona_prompt_character_limit_error<native><public> := class(persona_prompt_error) {}
 
   @experimental
   persona_prompt_error<native><public> := class(error_message) {}
@@ -5977,6 +6220,10 @@ Devices<public> := module {
 
   @experimental
   persona_prompt_timeout_error<native><public> := class(persona_prompt_error) {}
+
+  persona_type_subscription<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
+  }
 
   persona_utterance<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
@@ -9496,7 +9743,8 @@ Devices<public> := module {
     VerticalFillingCompletedEvent<public>: listenable(tuple()) = external {}
   }
 
-  # Used to spawn various wildlife that players can herd, hunt, or tame.
+  # Used to customize the properties of NPCs spawned by this device.
+  # Changing properties will only affect newly spawned wildlife creatures.
   wildlife_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Consumes energy from wildlife belonging to `Agent` by *Energy Consume Amount*.
     ConsumeEnergy<public>(Agent: agent): void = external {}
@@ -9550,7 +9798,7 @@ Devices<public> := module {
     ForceSpawnedEvent<public>: listenable(agent) = external {}
 
     # Get all agents created by this device.
-    GetAgents<epic_internal>()<transacts>: []agent = external {}
+    GetAgents<public>()<transacts>: []agent = external {}
 
     # Returns the spawn limit of the device.
     GetSpawnLimit<public>()<transacts>: int = external {}
@@ -9579,6 +9827,14 @@ Devices<public> := module {
     # Spawns wildlife from this device. If spawn count is exceeded the oldest wildlife will be eliminated.
     Spawn<public>(): void = external {}
 
+    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device`s rotation.
+    # Returns the agent spawned or false if the device has reached its maximum spawn count.
+    # This function is `<suspends>` because it takes time to load the NPC before it can be returned.
+    SpawnAt<epic_internal>(
+      Position: (/Verse.org/SpatialMath:)vector3,
+      ?Rotation: (/Verse.org/SpatialMath:)rotation = external {}
+    )<suspends>: ?agent = external {}
+
     # Signaled when this device spawns wildlife.
     # Sends the `agent` wildlife that was spawned.
     SpawnedEvent<public>: listenable(agent) = external {}
@@ -9601,6 +9857,71 @@ Devices<public> := module {
     # `Source` is the `agent` that tamed the wildlife.
     # `Target` is the wildlife that was untamed.
     UntamedEvent<public>: listenable(device_ai_interaction_result) = external {}
+
+    # If true, agents can ride the wildlife creature.
+    var CanRide<public>: logic = external {}
+
+    # If true and the wildlife creature supports being tamed, agents can tame the NPC.
+    var CanTame<public>: logic = external {}
+
+    # If a value is given, the `Damage` value of the wildlife creature is overridden.
+    # If an override is not specified, the default `Damage` of the wildlife creature is used.
+    # This value is clamped between 1.0 and 500.0.
+    var Damage<public>: ?float = external {}
+
+    # If a value is given, the `Damage` value of the wildlife creature is overridden when damaging the environment.
+    # If an override is not specified, the default `Damage` of the wildlife creature is used.
+    # This value is clamped between 1.0 and 500.0.
+    var DamageToEnvironment<public>: ?float = external {}
+
+    # If a value is given, the `Damage` value of the wildlife creature is overridden when damaging players.
+    # If an override is not specified, the default `Damage` of the wildlife creature is used.
+    # This value is clamped between 1.0 and 500.0.
+    var DamageToPlayer<public>: ?float = external {}
+
+    # The amount of riding energy that is consumed when the `ConsumeEnergy` function is called.
+    # This value is clamped between 0 and 100.
+    var EnergyConsumptionAmount<public>: int = external {}
+
+    # The amount of riding energy that is restored when the `RestoreEnergy` function is called.
+    # This value is clamped between 0 and 100.
+    var EnergyRestorationAmount<public>: int = external {}
+
+    # The amount of riding energy the wildlife creature spawns with.
+    # This value is clamped between 0 and 100.
+    var InitialEnergy<public>: int = external {}
+
+    # Whether the NPC can receive damage.
+    var Invincible<public>: logic = external {}
+
+    # The maximum riding energy the wildlife creature spawns with.
+    # This value is clamped between 0 and 100.
+    var MaxEnergy<public>: int = external {}
+
+    # If a value is given, the `MaxHealth` value of the wildlife creature is overridden.
+    # If an override is not specified, the default Health of the wildlife creature is used.
+    # This value is clamped between 1.0 and 10000.0.
+    var MaxHealth<public>: ?float = external {}
+
+    # If true, agents cannot manually use the interact action to dismount from the wildlife creature.
+    var PreventDismount<public>: logic = external {}
+
+    # If a value is given, the `SpeedMultiplier` value is applied to the default speed of the wildlife creature.
+    # If an override is not specified, the wildlife creature moves at its default speed.
+    # This value is clamped between 0.1 and 2.0.
+    var SpeedMultiplier<public>: float = external {}
+
+    # Distance in meters from the player who tamed it that the wildlife creature will try to stay within.
+    # If a value is given, the `TamedFollowDistance` value of the wildlife creature is overridden.
+    # If an override is not specified, the default `TamedFollowDistance` of the wildlife creature is used.
+    # This value is clamped between 2.0 and 30.0.
+    var TamedFollowDistance<public>: ?float = external {}
+
+    # Distance in meters from its spawn position from which the wildlife creature will peacefully roam.
+    # If a value is given, the `WanderRange` value of the wildlife creature is overridden.
+    # If an override is not specified, the default `WanderRange` of the wildlife creature is used.
+    # This value is clamped between 10.0 and 100.0.
+    var WanderRange<public>: ?float = external {}
   }
 
   # Used to create plants with explosive pods that players can detonate and launch.
@@ -9657,6 +9978,7 @@ Devices<public> := module {
 FeralCorgi<public> := module {
   # Module import path: /Fortnite.com/FeralCorgi/AnalyticsBridge
   AnalyticsBridge<epic_internal> := module {
+    using { /Verse.org/Simulation }
     SendELOAnalyticForPlayer<native><epic_internal>(
       Player: player,
       MatchPoints: float,
@@ -9672,6 +9994,8 @@ FeralCorgi<public> := module {
 
   # Module import path: /Fortnite.com/FeralCorgi/CommonBridge
   CommonBridge<epic_internal> := module {
+    using { /UnrealEngine.com/Temporary/SpatialMath }
+    using { /Verse.org/Simulation }
     AgentRespawnCleanup<native><epic_internal>(
       Agent: agent,
       RespawnPosition: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
@@ -9690,6 +10014,8 @@ FeralCorgi<public> := module {
 
   # Module import path: /Fortnite.com/FeralCorgi/FeralCorgiRespawnLogic
   FeralCorgiRespawnLogic<epic_internal> := module {
+    using { /UnrealEngine.com/Temporary/SpatialMath }
+    using { /Verse.org/Simulation }
     RunRespawnEQS<native><epic_internal>(
       InAgent: agent,
       RespawnQueryLocation: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
@@ -9698,6 +10024,7 @@ FeralCorgi<public> := module {
 
   # Module import path: /Fortnite.com/FeralCorgi/FeralEliminationInfoBridge
   FeralEliminationInfoBridge<epic_internal> := module {
+    using { /Verse.org/Simulation }
     GetEliminationInfoForPlayer<native><epic_internal>(Agent: agent)<reads>: elimination_info
   }
 
@@ -9714,6 +10041,7 @@ FeralCorgi<public> := module {
   FeralMatchmakingBridge<epic_internal> := module {
     CanUseReadyUpBridge<native><epic_internal>()<transacts><decides>: void
 
+    using { /Verse.org/Simulation }
     ReadyUpPlayer<native><epic_internal>(Player: player): void
 
     UnreadyPlayer<native><epic_internal>(Player: player): void
@@ -9723,6 +10051,8 @@ FeralCorgi<public> := module {
   PlayerLoadingStatusBridge<epic_internal> := module {
     AwaitPlayerReadyForGameplay<native><epic_internal>(Player: player)<suspends>: void
 
+    using { /Fortnite.com/Playspaces }
+    using { /Verse.org/Simulation }
     AwaitPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<suspends>: void
 
     GetNumPlayersLoading<native><epic_internal>(Playspace: fort_playspace)<reads>: int
@@ -9734,6 +10064,8 @@ FeralCorgi<public> := module {
 
   # Module import path: /Fortnite.com/FeralCorgi/ReservationHoldingBridge
   ReservationHoldingBridge<epic_internal> := module {
+    using { /Fortnite.com/Playspaces }
+    using { /Verse.org/Simulation }
     EnableLeavingPlayerReservationHolding<native><epic_internal>(Playspace: fort_playspace, HoldingTime: float): void
 
     FreeHeldReservation<native><epic_internal>(Playspace: fort_playspace, Player: player): logic
@@ -9768,6 +10100,8 @@ FeralCorgi<public> := module {
 
     IsQABackend<native><epic_internal>()<transacts><decides>: void
 
+    using { /Fortnite.com/Playspaces }
+    using { /Verse.org/Simulation }
     IsRankedMatch<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
     IsUsingCustomMatchKeys<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
@@ -9781,7 +10115,6 @@ FeralCorgi<public> := module {
     TeamTwoAgents<native>: []agent = external {}
   }
 
-  using { /Fortnite.com/Playspaces }
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Assets }
   using { /Verse.org/Colors }
@@ -9969,6 +10302,8 @@ FortPlayerUtilities<public> := module {
     InPreferredRenderingMode: preferred_rendering_mode
   ): void
 
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Simulation }
   # The possible dynamic resolution rendering modes
   preferred_rendering_mode<native><epic_internal> := enum {
     # Maximize the framerate
@@ -9981,7 +10316,7 @@ FortPlayerUtilities<public> := module {
 
 # Module import path: /Fortnite.com/FortSafeZone
 FortSafeZone<public> := module {
-  fort_safe_zone<native><epic_internal> := class<epic_internal>(fort_safe_zone_base) {
+  fort_safe_zone_wrapper<native><epic_internal> := class<epic_internal>(fort_safe_zone_wrapper_base) {
     GetRemainingPhaseTime<native><epic_internal>()<transacts><decides>: float
 
     GetSafeZone<native><epic_internal>()<transacts><decides>: fort_storm_safe_zone
@@ -10001,9 +10336,11 @@ FortSafeZone<public> := module {
     IsStormHolding<native><epic_internal>()<transacts>: logic
   }
 
-  @import_as("/Script/VerseFortnite.UVerseFortniteSafeZone")
-  fort_safe_zone_base<native><epic_internal> := class<abstract> {}
+  @import_as("/Script/VerseFortnite.UVerseFortniteSafeZoneWrapper")
+  fort_safe_zone_wrapper_base<native><epic_internal> := class<abstract> {}
 
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Native }
   fort_storm_safe_zone<native><epic_internal> := struct<epic_internal> {
     Center<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
@@ -10019,14 +10356,6 @@ FortSafeZone<public> := module {
 
 # Module import path: /Fortnite.com/Game
 Game<public> := module {
-  @experimental
-  # Activate a camera component for a player, setting it as the active view target
-  (InCameraBehavior: camera_component).ActivateForPlayer<native><epic_internal>(InPlayer: player)<transacts><decides>: void
-
-  @experimental
-  # Deactivate a camera component for a player, restoring the player's view target to the default
-  (InCameraBehavior: camera_component).DeactivateForPlayer<native><epic_internal>(InPlayer: player)<transacts><decides>: void
-
   # Returns the fort game events component, if it exists.
   (InEntity: entity).GetFortGameEvents<epic_internal>()<transacts><decides>: fort_game_events_component = external {}
 
@@ -10086,6 +10415,13 @@ Game<public> := module {
     DamagedEvent<public>(): listenable(damage_result)
   }
 
+  using { /Fortnite.com/Characters }
+  using { /UnrealEngine.com/Abilities }
+  using { /UnrealEngine.com/Temporary/Diagnostics }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/SceneGraph/VerseCamera }
+  using { /Verse.org/Simulation }
   # Result data for `fort_character` elimination events.
   elimination_result<native><public> := struct<epic_internal> {
     # The `fort_character` eliminated from the match by `EliminatingCharacter`.
@@ -10316,11 +10652,11 @@ Game<public> := module {
   }
 }
 
-using { /Verse.org/Assets }
 using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 3720 }
 # Module import path: /Fortnite.com/Input
 Input<public> := module {
+  using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3720 }
   # Module import path: /Fortnite.com/Input/Character
   Character<public> := module {
@@ -10332,6 +10668,8 @@ Input<public> := module {
     @experimental
     Jump<public>: input_action(logic) = external {}
 
+    using { /Verse.org/Assets }
+    using { /Verse.org/Native }
     @available { MinUploadedAtFNVersion := 3720 }
     @experimental
     RangedWeaponMapping<public>: input_mapping = external {}
@@ -10358,27 +10696,23 @@ Input<public> := module {
   }
 }
 
-using { /Fortnite.com/Devices }
-using { /Fortnite.com/Playspaces }
-using { /UnrealEngine.com/Temporary/SpatialMath }
-using { /UnrealEngine.com/Temporary/UI }
-using { /Verse.org/Colors }
 Itemization<public> := module {
   @experimental
   (Inventory: inventory_component).RegisterPropertyInterface<native><epic_internal>(
     PropertyInterface: parameterized_property_interface,
     Identifier: string
-  )<transacts><decides>: void
+  )<transacts><decides>: cancelable
 
   @experimental
   (Item: item_component).RegisterPropertyInterface<native><epic_internal>(
     PropertyInterface: parameterized_property_interface,
     Identifier: string
-  )<transacts><decides>: void
+  )<transacts><decides>: cancelable
 
   using { /UnrealEngine.com/Abilities }
   # Module import path: /Fortnite.com/Itemization/AbsoluteDoomItems
   AbsoluteDoomItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_chainsaw<public> := class<final>(entity) {}
 
@@ -10445,6 +10779,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/BallisticItems
   BallisticItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_bubble_shield<public> := class<final>(entity) {}
 
@@ -10523,6 +10858,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/CH4S1Items
   CH4S1Items<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_big_bush_bomb<public> := class<final>(entity) {}
 
@@ -10656,8 +10992,34 @@ Itemization<public> := module {
     fort_item_twin_mag_smg_uncommon<public> := class<final>(entity) {}
   }
 
+  # Module import path: /Fortnite.com/Itemization/CH6MS2Items
+  CH6MS2Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    fort_item_compact_smg_rare<public> := class<final>(entity) {}
+
+    @experimental
+    fort_item_compact_smg_uncommon<public> := class<final>(entity) {}
+
+    @experimental
+    fort_item_enhanced_compact_smg_mythic<public> := class<final>(entity) {}
+
+    @experimental
+    fort_item_suppressed_assault_rifle_common<public> := class<final>(entity) {}
+
+    @experimental
+    fort_item_suppressed_assault_rifle_uncommon<public> := class<final>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH6MS2Items:)fort_item_tactical_shotgun_epic<public> := class<final>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH6MS2Items:)fort_item_tactical_shotgun_legendary<public> := class<final>(entity) {}
+  }
+
   # Module import path: /Fortnite.com/Itemization/CreativeItems
   CreativeItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_acorn<public> := class<final>(entity) {}
 
@@ -10949,6 +11311,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/CubedItems
   CubedItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_armored_wall<public> := class<final>(entity) {}
 
@@ -11072,6 +11435,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/FlippedItems
   FlippedItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_auto_shotgun_common<public> := class<final>(entity) {}
 
@@ -11256,16 +11620,6 @@ Itemization<public> := module {
     fort_item_the_foundations_mk_seven_assault_rifle_mythic<public> := class<final>(entity) {}
   }
 
-  FortniteItemAmmoName<localizes><epic_internal>: message = external {}
-
-  FortniteItemAthenaGadgetName<localizes><epic_internal>: message = external {}
-
-  FortniteItemBackpackPickupName<localizes><epic_internal>: message = external {}
-
-  FortniteItemBadgeName<localizes><epic_internal>: message = external {}
-
-  FortniteItemBuildingPieceName<localizes><epic_internal>: message = external {}
-
   # Module import path: /Fortnite.com/Itemization/FortniteItemCategories
   FortniteItemCategories<public> := module {
     @experimental
@@ -11292,6 +11646,7 @@ Itemization<public> := module {
     @experimental
     WeaponHarvest<epic_internal>: item_category = external {}
 
+    using { /UnrealEngine.com/Itemization }
     @experimental
     WorldItem<public>: item_category = external {}
   }
@@ -11314,72 +11669,55 @@ Itemization<public> := module {
 
   FortniteItemCategoryWorldItemName<localizes><epic_internal>: message = external {}
 
-  FortniteItemCharacterPartName<localizes><epic_internal>: message = external {}
-
-  FortniteItemCollectedResourceName<localizes><epic_internal>: message = external {}
-
-  FortniteItemConsumableName<localizes><epic_internal>: message = external {}
-
-  FortniteItemCreativePlaysetName<localizes><epic_internal>: message = external {}
-
-  FortniteItemCreativeUserPrefabName<localizes><epic_internal>: message = external {}
-
-  FortniteItemCurrencyName<localizes><epic_internal>: message = external {}
-
-  FortniteItemDecoName<localizes><epic_internal>: message = external {}
-
   # Module import path: /Fortnite.com/Itemization/FortniteItemDefinitionUtils
-  FortniteItemDefinitionUtils<public> := module {
+  FortniteItemDefinitionUtils<epic_internal> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     AddItemComponents<native><epic_internal>(InEntity: entity, InItemDefinitionID: string)<converges>: void
   }
 
-  FortniteItemEditToolName<localizes><epic_internal>: message = external {}
+  # Module import path: /Fortnite.com/Itemization/FortniteItemRarities
+  FortniteItemRarities<epic_internal> := module {
+    using { /UnrealEngine.com/Itemization }
+    @experimental
+    Common<public>: item_rarity = external {}
 
-  FortniteItemFoodName<localizes><epic_internal>: message = external {}
+    @experimental
+    Epic<public>: item_rarity = external {}
 
-  FortniteItemGadgetName<localizes><epic_internal>: message = external {}
+    @experimental
+    Exotic<epic_internal>: item_rarity = external {}
 
-  FortniteItemHeroAbilityName<localizes><epic_internal>: message = external {}
+    @experimental
+    Legendary<public>: item_rarity = external {}
 
-  FortniteItemHomebaseGadgetName<localizes><epic_internal>: message = external {}
+    @experimental
+    Mythic<epic_internal>: item_rarity = external {}
 
-  FortniteItemIngredientName<localizes><epic_internal>: message = external {}
+    @experimental
+    Rare<public>: item_rarity = external {}
 
-  FortniteItemItemCacheName<localizes><epic_internal>: message = external {}
+    @experimental
+    Uncommon<public>: item_rarity = external {}
+  }
 
-  FortniteItemMissionItemName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityCommonName<localizes><epic_internal>: message = external {}
 
-  FortniteItemMultiItemName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityEpicName<localizes><epic_internal>: message = external {}
 
-  FortniteItemNpcName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityExoticName<localizes><epic_internal>: message = external {}
 
-  FortniteItemPlayerAugmentName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityLegendaryName<localizes><epic_internal>: message = external {}
 
-  FortniteItemSpyTechPerkName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityMythicName<localizes><epic_internal>: message = external {}
 
-  FortniteItemTrapName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityRareName<localizes><epic_internal>: message = external {}
 
-  FortniteItemVehicleName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWeaponCreativePhoneName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWeaponHarvestName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWeaponMeleeName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWeaponModName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWeaponName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWeaponRangedName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWorldItemName<localizes><epic_internal>: message = external {}
-
-  FortniteItemWorldResourceName<localizes><epic_internal>: message = external {}
+  FortniteItemRarityUncommonName<localizes><epic_internal>: message = external {}
 
   # Module import path: /Fortnite.com/Itemization/FortniteItems
   FortniteItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_air_strike<public> := class<final>(entity) {}
 
@@ -11526,6 +11864,12 @@ Itemization<public> := module {
 
     @experimental
     fort_item_combat_shotgun_uncommon<public> := class<final>(entity) {}
+
+    @experimental
+    fort_item_compact_smg_epic<public> := class<final>(entity) {}
+
+    @experimental
+    fort_item_compact_smg_legendary<public> := class<final>(entity) {}
 
     @experimental
     fort_item_corn<public> := class<final>(entity) {}
@@ -11930,13 +12274,13 @@ Itemization<public> := module {
     (/Fortnite.com/Itemization/FortniteItems:)fort_item_pump_shotgun_uncommon<public> := class<final>(entity) {}
 
     @experimental
-    fort_item_pumpkin_launcher_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pumpkin_launcher_epic<public> := class<final>(entity) {}
 
     @experimental
-    fort_item_pumpkin_launcher_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pumpkin_launcher_legendary<public> := class<final>(entity) {}
 
     @experimental
-    fort_item_pumpkin_launcher_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pumpkin_launcher_rare<public> := class<final>(entity) {}
 
     @experimental
     fort_item_pumpkin_launcher_uncommon<public> := class<final>(entity) {}
@@ -12181,6 +12525,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/FortniteOGItems
   FortniteOGItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_assault_rifle_common_1<public> := class<final>(entity) {}
 
@@ -12386,10 +12731,10 @@ Itemization<public> := module {
     fort_item_tactical_shotgun_common<public> := class<final>(entity) {}
 
     @experimental
-    fort_item_tactical_shotgun_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_tactical_shotgun_epic<public> := class<final>(entity) {}
 
     @experimental
-    fort_item_tactical_shotgun_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_tactical_shotgun_legendary<public> := class<final>(entity) {}
 
     @experimental
     fort_item_tactical_shotgun_rare<public> := class<final>(entity) {}
@@ -12418,6 +12763,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/HuntersItems
   HuntersItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_blizzard_grenade<public> := class<final>(entity) {}
 
@@ -12577,6 +12923,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/InvasionItems
   InvasionItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_alien_nanites<public> := class<final>(entity) {}
 
@@ -12706,6 +13053,8 @@ Itemization<public> := module {
 
     ___PropertyInterface_On_ShowBoundKey_Changed<epic_internal>(): void = external {}
 
+    ___PropertyInterface_On_SlotSize_Changed<epic_internal>(): void = external {}
+
     @replicated("RepNotify=___PropertyInterface_On_Ammo_Changed")
     var (/Fortnite.com/Itemization/InventoryItemPropertyInterface:)Ammo<public>: int = external {}
 
@@ -12762,6 +13111,9 @@ Itemization<public> := module {
 
     @replicated("RepNotify=___PropertyInterface_On_ShowBoundKey_Changed")
     var ShowBoundKey<public>: logic = external {}
+
+    @replicated("RepNotify=___PropertyInterface_On_SlotSize_Changed")
+    var SlotSize<public>: int = external {}
   }
 
   InventoryItemPropertyInterface_asset<epic_internal>: property_interface_UE5_definition = external {}
@@ -12786,6 +13138,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/LastResortItems
   LastResortItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_business_turret<public> := class<final>(entity) {}
 
@@ -12915,6 +13268,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/LawlessItems
   LawlessItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_barons_double_down_pistol_mythic<public> := class<final>(entity) {}
 
@@ -13062,6 +13416,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/MEGAItems
   MEGAItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_enhanced_havoc_shotgun_mythic<public> := class<final>(entity) {}
 
@@ -13140,6 +13495,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/MythsAndMortalsItems
   MythsAndMortalsItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_ares_modular_warforged_assault_rifle_mythic<public> := class<final>(entity) {}
 
@@ -13263,6 +13619,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/ParadiseItems
   ParadiseItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_birthday_presents<public> := class<final>(entity) {}
 
@@ -13344,6 +13701,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/PrimalItems
   PrimalItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_ammo_arrows<public> := class<final>(entity) {}
 
@@ -13539,6 +13897,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/RebellionItems
   RebellionItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_anvil_rocket_launcher_epic<public> := class<final>(entity) {}
 
@@ -13614,6 +13973,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/ShockNAwesomeItems
   ShockNAwesomeItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_bug_blaster_epic<public> := class<final>(entity) {}
 
@@ -13684,6 +14044,15 @@ Itemization<public> := module {
     fort_item_precision_air_strike<public> := class<final>(entity) {}
 
     @experimental
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_pumpkin_launcher_epic<public> := class<final>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_pumpkin_launcher_legendary<public> := class<final>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_pumpkin_launcher_rare<public> := class<final>(entity) {}
+
+    @experimental
     fort_item_shockwave_launcher_epic<public> := class<final>(entity) {}
 
     @experimental
@@ -13734,6 +14103,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/SuperItems
   SuperItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_ascended_myst_legendary<public> := class<final>(entity) {}
 
@@ -13845,6 +14215,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/UndergroundItems
   UndergroundItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_ballistic_shield_epic<public> := class<final>(entity) {}
 
@@ -14019,6 +14390,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/VibinItems
   VibinItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_charge_smg_common<public> := class<final>(entity) {}
 
@@ -14136,6 +14508,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/WildsItems
   WildsItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_cloak_gauntlets<public> := class<final>(entity) {}
 
@@ -14241,6 +14614,7 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/WreckedItems
   WreckedItems<public> := module {
+    using { /Verse.org/SceneGraph }
     @experimental
     fort_item_heavy_impact_sniper_rifle_epic<public> := class<final>(entity) {}
 
@@ -14315,37 +14689,58 @@ Itemization<public> := module {
   }
 
   @experimental
-  fort_ammo_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
+  fort_ammo_item_type_source<native><epic_internal> := class(item_type_source) {}
+
+  @experimental
+  # `fort_br_inventory_build_hotbar_component` is the FNBR inventory for Fortnite build tools.
+  fort_br_inventory_build_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
+    var TotalSlots<override>: int = external {}
   }
 
   @experimental
-  fort_build_tool_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
+  # `fort_br_inventory_harvest_tool_component` is the FNBR inventory for the Fortnite harvest tool.
+  fort_br_inventory_harvest_tool_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
+    var TotalSlots<override>: int = external {}
   }
 
   @experimental
-  fort_collection_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
+  # `fort_br_inventory_legacy_quickbar_component` is a shared class for FNBR inventories that rely on coupling to the legacy AFortQuickBars class.
+  fort_br_inventory_legacy_quickbar_component<native><epic_internal> := class(fort_inventory_component) {}
+
+  @experimental
+  # `fort_br_inventory_trap_component` is the FNBR inventory for the Fortnite trap slot.
+  fort_br_inventory_trap_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
+    var TotalSlots<override>: int = external {}
   }
 
   @experimental
-  fort_currency_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
+  # `fort_br_inventory_weapon_hotbar_component` is the FNBR inventory for Fortnite weapons and gadgets.
+  fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
+    # Sets the total number of slots.
+    SetMaxSlots<native><public>(InNumSlots: int): void
+
+    var TotalSlots<override>: int = external {}
   }
 
   @experimental
-  fort_gadget_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
-  }
+  fort_build_tool_item_type_source<native><epic_internal> := class(item_type_source) {}
+
+  @experimental
+  fort_collection_item_type_source<native><epic_internal> := class(item_type_source) {}
+
+  @experimental
+  fort_currency_item_type_source<native><epic_internal> := class(item_type_source) {}
+
+  @experimental
+  fort_gadget_item_type_source<native><epic_internal> := class(item_type_source) {}
 
   @experimental
   # `fort_inventory_ammo_component` is the inventory for Fortnite ammo.
   fort_inventory_ammo_component<native><public> := class<final>(fort_inventory_component) {}
 
   @experimental
-  # `fort_inventory_build_hotbar_component` is the inventory for Fortnite build tools.
-  fort_inventory_build_hotbar_component<native><public> := class<final>(fort_inventory_legacy_quickbar_component) {
+  # `fort_inventory_build_hotbar_component` is the UEFN inventory for Fortnite build tools.
+  fort_inventory_build_hotbar_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
 
@@ -14356,9 +14751,8 @@ Itemization<public> := module {
   # `fort_inventory_collectible_component` is the inventory for Fortnite collectibles.
   fort_inventory_collectibles_component<native><public> := class<final>(fort_inventory_component) {}
 
-  using { /Verse.org/Simulation }
   @experimental
-  # `fort_inventory_component` is a shared class for Fortnite inventories, with appropriate default UI and behavior.
+  # `fort_inventory_component` is a shared class for all Fortnite inventories, with appropriate default UI and behavior.
   fort_inventory_component<native><public> := class<epic_internal>(inventory_component) {
     # Returns the item in the specified slot, if there is one.
     GetItemInSlot<native><public>(Slot: int)<reads><decides>: item_component
@@ -14372,17 +14766,13 @@ Itemization<public> := module {
   fort_inventory_currencies_component<native><public> := class<final>(fort_inventory_component) {}
 
   @experimental
-  # `fort_inventory_harvest_tool_component` is the Fortnite harvest tool inventory.
-  fort_inventory_harvest_tool_component<native><public> := class<final>(fort_inventory_legacy_quickbar_component) {
+  # `fort_inventory_harvest_tool_component` is the UEFN inventory for the Fortnite harvest tool.
+  fort_inventory_harvest_tool_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
 
     var TotalSlots<override>: int = external {}
   }
-
-  @experimental
-  # `fort_inventory_legacy_quickbar_component` is a shared class for Fortnite inventories that rely on coupling to the legacy AFortQuickBars class.
-  fort_inventory_legacy_quickbar_component<native><epic_internal> := class<epic_internal>(fort_inventory_component) {}
 
   @experimental
   # `fort_inventory_resources_component` is the inventory for Fortnite resources.
@@ -14400,14 +14790,11 @@ Itemization<public> := module {
     CanMergeItem<native><override>(InventoryComponent: inventory_component, Item: entity): ?failure_reason
 
     CanRemoveItem<native><override>(InventoryComponent: inventory_component, Item: entity): ?failure_reason
-
-    @editable
-    ItemTypeRequirement<native><public>: ?item_type = external {}
   }
 
   @experimental
-  # `fort_inventory_trap_component` is the Fortnite trap slot inventory.
-  fort_inventory_trap_component<native><public> := class<final>(fort_inventory_legacy_quickbar_component) {
+  # `fort_inventory_trap_component` is the UEFN inventory for the Fortnite trap slot.
+  fort_inventory_trap_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
 
@@ -14415,8 +14802,8 @@ Itemization<public> := module {
   }
 
   @experimental
-  # `fort_inventory_weapon_hotbar_component` is the inventory for Fortnite weapons and gadgets.
-  fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_legacy_quickbar_component) {
+  # `fort_inventory_weapon_hotbar_component` is the UEFN inventory for Fortnite weapons and gadgets.
+  fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
 
@@ -14449,19 +14836,13 @@ Itemization<public> := module {
   }
 
   @experimental
-  fort_resource_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
-  }
+  fort_resource_item_type_source<native><epic_internal> := class(item_type_source) {}
 
   @experimental
-  fort_weapon_melee_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
-  }
+  fort_weapon_melee_item_type_source<native><epic_internal> := class(item_type_source) {}
 
   @experimental
-  fort_weapon_ranged_item_type_source<native><epic_internal> := class(item_type_source) {
-    GetItemType<native><override>(Default: item_type): item_type
-  }
+  fort_weapon_ranged_item_type_source<native><epic_internal> := class(item_type_source) {}
 
   inventory_item_action_property_interface<epic_internal> := class<public>(parameterized_property_interface) {
     RequestHoverChangedEvent<public>: subscribable_event_intrnl(inventory_item_action_property_interface) = external {}
@@ -14584,96 +14965,6 @@ Itemization<public> := module {
   }
 
   @experimental
-  item_rarity_converter<native><epic_internal> := class<concrete><final> {
-    FortniteRarityCommon<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityEpic<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityLegendary<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityMythic<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityRare<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityTranscendent<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityUnattainable<native><epic_internal>: item_rarity = external {}
-
-    FortniteRarityUncommon<native><epic_internal>: item_rarity = external {}
-  }
-
-  @experimental
-  item_type_converter<native><epic_internal> := class<concrete><final> {
-    FortniteTypeAmmo<native><epic_internal>: item_type = external {}
-
-    FortniteTypeAthenaGadget<native><epic_internal>: item_type = external {}
-
-    FortniteTypeBackpackPickup<native><epic_internal>: item_type = external {}
-
-    FortniteTypeBadge<native><epic_internal>: item_type = external {}
-
-    FortniteTypeBuildingPiece<native><epic_internal>: item_type = external {}
-
-    FortniteTypeCharacterPart<native><epic_internal>: item_type = external {}
-
-    FortniteTypeCollectedResource<native><epic_internal>: item_type = external {}
-
-    FortniteTypeConsumable<native><epic_internal>: item_type = external {}
-
-    FortniteTypeCreativePlayset<native><epic_internal>: item_type = external {}
-
-    FortniteTypeCreativeUserPrefab<native><epic_internal>: item_type = external {}
-
-    FortniteTypeCurrency<native><epic_internal>: item_type = external {}
-
-    FortniteTypeDeco<native><epic_internal>: item_type = external {}
-
-    FortniteTypeEditTool<native><epic_internal>: item_type = external {}
-
-    FortniteTypeFood<native><epic_internal>: item_type = external {}
-
-    FortniteTypeGadget<native><epic_internal>: item_type = external {}
-
-    FortniteTypeHeroAbility<native><epic_internal>: item_type = external {}
-
-    FortniteTypeHomebaseGadget<native><epic_internal>: item_type = external {}
-
-    FortniteTypeIngredient<native><epic_internal>: item_type = external {}
-
-    FortniteTypeItemCache<native><epic_internal>: item_type = external {}
-
-    FortniteTypeMissionItem<native><epic_internal>: item_type = external {}
-
-    FortniteTypeMultiItem<native><epic_internal>: item_type = external {}
-
-    FortniteTypeNpc<native><epic_internal>: item_type = external {}
-
-    FortniteTypePlayerAugment<native><epic_internal>: item_type = external {}
-
-    FortniteTypeSpyTechPerk<native><epic_internal>: item_type = external {}
-
-    FortniteTypeTrap<native><epic_internal>: item_type = external {}
-
-    FortniteTypeVehicle<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWeapon<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWeaponCreativePhone<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWeaponHarvest<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWeaponMelee<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWeaponMod<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWeaponRanged<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWorldItem<native><epic_internal>: item_type = external {}
-
-    FortniteTypeWorldResource<native><epic_internal>: item_type = external {}
-  }
-
-  @experimental
   pickup_overflow_behavior<native><epic_internal> := enum {
     DestroyExcess
 
@@ -14683,20 +14974,17 @@ Itemization<public> := module {
   play_animation_on_self<epic_internal> := class(ability) {
     GameplayAbilityPath<override>: ?string = external {}
   }
-
-  @experimental
-  smoke_test_debug_item_type<native><epic_internal> := class(item_type) {}
 }
 
 Mimic<public> := module {
+  MakeLLMString<native_callable><epic_internal>(String: string): llm_string = external {}
+
+  MakeLLMStringMessage<localizes><native_callable><epic_internal>(LLMString: llm_string): message = external {}
+
+  (/Fortnite.com/Mimic:)MakeLocalizableValue<epic_internal>(V: llm_string): localizable_llm_string = external {}
+
   llm_fact<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
-  }
-
-  llm_response<native><epic_internal> := class {
-    ResponseData<native><public>: string
-
-    ResponseMessage<native><public>: string
   }
 
   @experimental
@@ -14707,6 +14995,14 @@ Mimic<public> := module {
     # Adds a fact to the llm, returns a cancelable which revokes the fact.
     AddFact<native><public>(Fact: string): cancelable
   }
+
+  llm_string<native><epic_internal> := class {
+    Value<native><epic_internal>: string
+  }
+
+  localizable_llm_string<native><epic_internal> := class(localizable_value) {
+    Value<native><epic_internal>: string
+  }
 }
 
 # Module import path: /Fortnite.com/Playspaces
@@ -14714,6 +15010,9 @@ Playspaces<public> := module {
   # Returns an associated `fort_playspace` for this entity.  * Fails if this entity is not in the scene, and therefore not associated with a playspace.
   (InEntity: entity).GetPlayspaceForEntity<native><public>()<transacts><decides>: fort_playspace
 
+  using { /Fortnite.com/Teams }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   # A nested container that scopes objects, style, gameplay rules, visuals, etc. All objects and players in an experience will belong to a fort_playspace. There is typically one `fort_playspace` for an entire experience, though this may change in the future as the platform evolves.
   #
   # To access the `fort_playspace` for a `creative_device` use `creative_device.GetPlayspace`.
@@ -14744,10 +15043,10 @@ Playspaces<public> := module {
   }
 }
 
-using { /Verse.org/Simulation }
-using { /Verse.org/Simulation/Tags }
 # Module import path: /Fortnite.com/QuestUtilities
 QuestUtilities<public> := module {
+  using { /Verse.org/Simulation }
+  using { /Verse.org/Simulation/Tags }
   BroadcastCustomVerb<native><epic_internal>(Author: agent, CustomVerbNameTag: tag, Amount: int): void
 
   BroadcastCustomVerb<native><epic_internal>(Author: agent, CustomVerbTagString: string, Amount: int): void
@@ -14758,14 +15057,14 @@ Teams<public> := module {
   # Collection used to manage `team`s and `agent`s on those teams.
   # Use `fort_playspace.GetTeamCollection()` to get the `team_collection` for the active experience.
   fort_team_collection<native><public> := interface<epic_internal> {
-    @experimental
-    # Adds `InEntity` to the team that matches `InTeamTag`.
-    # Fails if `InTeamTag` is not a registered team in the `fort_team_collection`.
-    AddToTeam<native_callable><epic_internal>(InEntity: entity, InTeamTag: team_tag)<transacts><decides>: void
-
     # Adds `InAgent` to `InTeam`.
     # Fails if `InTeam` is not part of the `fort_team_collection`.
     AddToTeam<public>(InAgent: agent, InTeam: team)<transacts><decides>: void
+
+    @experimental
+    # Adds `InEntity` to the team that matches `InTeamTag`.
+    # Fails if `InTeamTag` is not a registered team in the `fort_team_collection`.
+    AddToTeamEntity<native_callable><epic_internal>(InEntity: entity, InTeamTag: team_tag)<transacts><decides>: void
 
     # Returns an array of all `agent`s on `InTeam`.
     # Fails if `InTeam` is not part of the `fort_team_collection`.
@@ -14776,28 +15075,9 @@ Teams<public> := module {
     # Fails if `InTeam` is not part of the `fort_team_collection`.
     GetEntities<epic_internal>(InTeam: team)<transacts><decides>: []entity
 
-    @experimental
-    # Get the `team` that `InEntity` is on.
-    # Fails if `InEntity` is not on a team in this `fort_team_collection`.
-    GetTeam<epic_internal>(InEntity: entity)<transacts><decides>: team
-
     # Get the `team` that `InAgent` is on.
     # Fails if `InAgent` is not on a team in this `fort_team_collection`.
     GetTeam<public>(InAgent: agent)<transacts><decides>: team
-
-    @experimental
-    # Returns the `team_attitude` between `Agent` and `Entity`.
-    # Fails if:
-    #  * `Agent` is not on a team in this `fort_team_collection`.
-    #  * `Entity` is not on a team in this `fort_team_collection`.
-    GetTeamAttitude<epic_internal>(Agent: agent, Entity: entity)<transacts><decides>: team_attitude
-
-    @experimental
-    # Returns the `team_attitude` between `Entity1` and `Entity2`.
-    # Fails if:
-    #  * `Entity1` is not on a team in this `fort_team_collection`.
-    #  * `Entity2` is not on a team in this `fort_team_collection`.
-    GetTeamAttitude<epic_internal>(Entity1: entity, Entity2: entity)<transacts><decides>: team_attitude
 
     # Returns the `team_attitude` between `Agent1` and `Agent2`.
     # Fails if:
@@ -14812,8 +15092,27 @@ Teams<public> := module {
     GetTeamAttitude<public>(Team1: team, Team2: team)<transacts><decides>: team_attitude
 
     @experimental
+    # Returns the `team_attitude` between `Agent` and `Entity`.
+    # Fails if:
+    #  * `Agent` is not on a team in this `fort_team_collection`.
+    #  * `Entity` is not on a team in this `fort_team_collection`.
+    GetTeamAttitudeAgentEntity<epic_internal>(Agent: agent, Entity: entity)<transacts><decides>: team_attitude
+
+    @experimental
+    # Returns the `team_attitude` between `Entity1` and `Entity2`.
+    # Fails if:
+    #  * `Entity1` is not on a team in this `fort_team_collection`.
+    #  * `Entity2` is not on a team in this `fort_team_collection`.
+    GetTeamAttitudeEntity<epic_internal>(Entity1: entity, Entity2: entity)<transacts><decides>: team_attitude
+
+    @experimental
     # Get the team associated with the tag `InTag`. Fails if no such team is associated with `InTag`
     GetTeamByTag<epic_internal>(InTeamTag: team_tag)<transacts><decides>: team
+
+    @experimental
+    # Get the `team` that `InEntity` is on.
+    # Fails if `InEntity` is not on a team in this `fort_team_collection`.
+    GetTeamEntity<epic_internal>(InEntity: entity)<transacts><decides>: team
 
     # Get all of the tags associated with the team `InTeam`. Fails if `InTeam` is not a valid team within the team collection
     GetTeamTags<epic_internal>(InTeam: team)<transacts><decides>: tag_container
@@ -14821,18 +15120,18 @@ Teams<public> := module {
     # Returns an array of all the `team`s known to this `fort_team_collection`
     GetTeams<public>()<transacts>: []team
 
-    @experimental
-    # Succeeds if `InEntity` is on `InTeam`.
-    # Fails if:
-    #  * `InEntity` is not on `InTeam`.
-    #  * `InTeam` is not part of the `fort_team_collection`.
-    IsOnTeam<epic_internal>(InEntity: entity, InTeam: team)<transacts><decides>: void
-
     # Succeeds if `InAgent` is on `InTeam`.
     # Fails if:
     #  * `InAgent` is not on `InTeam`.
     #  * `InTeam` is not part of the `fort_team_collection`.
     IsOnTeam<public>(InAgent: agent, InTeam: team)<transacts><decides>: void
+
+    @experimental
+    # Succeeds if `InEntity` is on `InTeam`.
+    # Fails if:
+    #  * `InEntity` is not on `InTeam`.
+    #  * `InTeam` is not part of the `fort_team_collection`.
+    IsOnTeamEntity<epic_internal>(InEntity: entity, InTeam: team)<transacts><decides>: void
 
     @experimental
     # Register a team component with the team collection, so that its team can automatically be changed as teams are associated with its tag.
@@ -14851,6 +15150,9 @@ Teams<public> := module {
     UnregisterTeamComponent<native_callable><epic_internal>(InTeamComponent: team_component)<transacts><decides>: void
   }
 
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/Simulation/Tags }
   # A generic set of team attitudes. Use this enum to model relationship behavior between your experience's agents/teams.
   team_attitude<native><public> := enum {
     # Agents/teams are friends. In Fortnite games two `agent`s on the same `team` are `friendly`.
@@ -15435,6 +15737,10 @@ UI<public> := module {
     SetShadowOpacity<native><public>(InOpacity: type { _X: float where 0.000000 <= _X, _X <= 1.000000 }): void
   }
 
+  using { /Fortnite.com/Devices }
+  using { /Fortnite.com/Playspaces }
+  using { /Verse.org/Colors }
+  using { /Verse.org/Native }
   # Button with text message common base class. Displays a button with a custom message string.
   text_button_base<native><public> := class<abstract><epic_internal>(widget) {
     # The text to display to the user. Used only during initialization of the widget and not modified by SetText.
@@ -15448,6 +15754,9 @@ UI<public> := module {
 
     # Sets the text displayed in the widget.
     SetText<native><public>(InText: message): void
+
+    # The UI input action that will trigger the Click event of this button.
+    var TriggeringInputAction<epic_internal>: ?input_action(logic) = external {}
   }
 
   ui_tab_info<native><epic_internal> := class<epic_internal> {
@@ -15464,6 +15773,11 @@ UI<public> := module {
 
 # Module import path: /Fortnite.com/Vehicles
 Vehicles<public> := module {
+  using { /Fortnite.com/Characters }
+  using { /Fortnite.com/Game }
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   # Returns the `fort_vehicle` for `InCharacter`.
   # Fails if `InCharacter` is not associated with a `fort_vehicle`.
   (InCharacter: fort_character).GetVehicle<native><public>()<transacts><decides>: fort_vehicle
@@ -15544,10 +15858,11 @@ Vehicles<public> := module {
   }
 }
 
-using { /Fortnite.com/Game }
-using { /Verse.org/SceneGraph }
 # Module import path: /Fortnite.com/VerseFortniteTestSuite
 VerseFortniteTestSuite<public> := module {
+  using { /Fortnite.com/Game }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   @hide_in_editor
   @experimental
   fort_game_events_testing_component<native><epic_internal> := class<final_super>(component) {
@@ -15600,16 +15915,6 @@ VerseFortniteTestSuite<public> := module {
 }
 
 VerseInternalTesting<public> := module {
-  using { /Fortnite.com/Characters }
-  using { /Fortnite.com/Devices }
-  using { /Fortnite.com/Game }
-  using { /Fortnite.com/Vehicles }
-  using { /UnrealEngine.com/Temporary/Diagnostics }
-  using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /UnrealEngine.com/Temporary/Testing }
-  using { /Verse.org/Colors }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
   NexusFramework<public> := module {
     example_nexus_device<epic_internal> := class(nexus_test_device) {
@@ -15637,6 +15942,9 @@ VerseInternalTesting<public> := module {
       var TestRunner<public>: nexus_test_runner = external {}
     }
 
+    using { /Fortnite.com/Devices }
+    using { /UnrealEngine.com/Temporary/Testing }
+    using { /Verse.org/Simulation }
     nexus_test_reporter<epic_internal> := class {
       AddResult<epic_internal>(
         TestName: string,
@@ -15653,6 +15961,20 @@ VerseInternalTesting<public> := module {
 
   # Module import path: /Fortnite.com/VerseInternalTesting/VerseFramework
   VerseFramework<public> := module {
+    dependency_tree<epic_internal> := class {
+      AddDependency<public>(NodeName: string, PreReqName: string): void = external {}
+
+      AddNode<public>(InNode: node): void = external {}
+
+      GetAvailableNodes<public>(): []node = external {}
+
+      GetNode<public>(Name: string)<transacts><decides>: node = external {}
+
+      SetNodeStatus<epic_internal>(Node: node, Status: node_status): void = external {}
+
+      SetNodeStatusByName<epic_internal>(Name: string, Status: node_status): void = external {}
+    }
+
     device_event_agent_float_handler_mock<public> := class(test_device_event_handler_mock) {
       Subscribe<public>(Event: listenable(tuple(agent, float))): void = external {}
 
@@ -15749,8 +16071,26 @@ VerseInternalTesting<public> := module {
       Subscribe<public>(Event: listenable(tuple())): void = external {}
     }
 
+    node<epic_internal> := class {}
+
+    node_status<epic_internal> := enum<open> {
+      Available
+
+      Blocked
+
+      Failed
+
+      Passed
+
+      Pending
+
+      Skipped
+    }
+
     test_case<public> := struct {
       Category<public>: []string
+
+      Dependencies<public>: []string = external {}
 
       Func<public>: type { _()<suspends>: void }
 
@@ -15759,6 +16099,28 @@ VerseInternalTesting<public> := module {
       TimeoutOverride<public>: ?float = external {}
     }
 
+    test_case_node<epic_internal> := class(node) {
+      TestCase<epic_internal>: test_case
+    }
+
+    test_case_plan<epic_internal> := class {
+      Dependencies<epic_internal>: []string
+
+      TestCase<epic_internal>: test_case
+
+      var Status<epic_internal>: node_status = external {}
+    }
+
+    using { /Fortnite.com/Characters }
+    using { /Fortnite.com/Devices }
+    using { /Fortnite.com/Game }
+    using { /Fortnite.com/Vehicles }
+    using { /UnrealEngine.com/Temporary/Diagnostics }
+    using { /UnrealEngine.com/Temporary/SpatialMath }
+    using { /UnrealEngine.com/Temporary/Testing }
+    using { /Verse.org/Colors }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
     test_device<epic_internal> := class(creative_device) {
       AfterAll<public>()<suspends>: void = external {}
 
@@ -15831,10 +16193,16 @@ VerseInternalTesting<public> := module {
       var ArgTuple<public>: ?tuple(int, logic) = external {}
     }
 
+    test_plan<epic_internal> := class {}
+
     test_runner<epic_internal> := class {
       AddExcludeFilter<public>(Filter: string)<transacts>: void = external {}
 
       AddIncludeFilter<public>(Filter: string)<transacts>: void = external {}
+
+      BuildRunPlan<public>(): void = external {}
+
+      BuildSuiteRunPlan<public>(TestSuite: test_suite): []test_case_plan = external {}
 
       CheckArrayContains<public>(ActualArray: []string, Expected: string, Message: string): void = external {}
 
@@ -15952,6 +16320,8 @@ VerseInternalTesting<public> := module {
 
       RaiseFunctionFailure<public>(FuncName: string)<transacts>: void = external {}
 
+      RaiseTestFailure<public>(Error: string)<transacts>: void = external {}
+
       RecordFlakinessTestResult<public>(TestName: string, Succeeded: logic)<transacts>: void = external {}
 
       RegisterTests<public>(TestSuite: test_suite)<transacts>: void = external {}
@@ -16029,7 +16399,23 @@ VerseInternalTesting<public> := module {
 
       Cases<public>: []test_case
 
+      Dependencies<public>: []string = external {}
+
       Name<public>: string
+    }
+
+    test_suite_node<epic_internal> := class(node) {
+      TestSuite<epic_internal>: test_suite
+    }
+
+    test_suite_plan<epic_internal> := class {
+      Dependencies<epic_internal>: []string
+
+      TestCasePlan<epic_internal>: []test_case_plan = external {}
+
+      TestSuite<epic_internal>: test_suite
+
+      var Status<epic_internal>: node_status = external {}
     }
 
     verse_internal_testing_utils<native><final><epic_internal> := class {

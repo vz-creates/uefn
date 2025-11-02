@@ -2,12 +2,12 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-37.51-CL-46968237
+# Generated from build: ++Fortnite+Release-38.00-CL-47291259
 #################################################
 
-using { /Verse.org/Simulation }
 # Module import path: /Verse.org/Assets
 Assets<public> := module {
+  using { /Verse.org/Simulation }
   animation_sequence<native><public> := class<computes><final><epic_internal> {}
 
   # Interface that provides an icon.
@@ -16,7 +16,9 @@ Assets<public> := module {
     var<protected> Icon<public>: texture
   }
 
-  input_action<native><public>(t: type) := class<computes><epic_internal> {}
+  input_action<native><public>(t: type) := class<computes><epic_internal> {
+    (/Verse.org/Assets/input_action:)Assets_input_action_Variance<private>: ?type { _(): tuple(t) } = external {}
+  }
 
   input_mapping<native><public> := class<computes><epic_internal> {}
 
@@ -33,6 +35,10 @@ Assets<public> := module {
 
 # Module import path: /Verse.org/Colors
 Colors<public> := module {
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Makes a new `color_alpha` from individual `R`, `G`, `B`, `A` component values.
+  MakeColorAlpha<public>(R: float, G: float, B: float, ?A: float = external {})<computes>: color_alpha = external {}
+
   # Makes an ACES 2065-1 `color` from `Hue`, `Saturation`, and `Value` components.
   # Components use the HSV color model in the sRGB color space. Expected ranges:
   #  * `0.0 <= Hue <= 360.0`
@@ -367,6 +373,13 @@ Colors<public> := module {
     YellowGreen<public>: color = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Blend colors `CA1` and `CA2` with `CA1` over `CA2` using two non-premultiplied `color_alpha` values.
+  # Alpha components are clamped between `0.0` and `1.0`. Fails if the value of both clamped Alpha components are `0.0`.
+  Over<public>(CA1: color_alpha, CA2: color_alpha)<reads><decides>: color_alpha = external {}
+
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
   # Represents colors as RGB triples in the ACES 2065-1 color space.
   # Component values are linear (i.e. `*gamma* = 1.0`).
   color<native><public> := struct<concrete><computes><persistable> {
@@ -381,6 +394,22 @@ Colors<public> := module {
     @editable
     # Red component of this `color`.
     R<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Represents colors as RGB triples in the ACES 2065-1 color space with an additional alpha channel A.
+  # This reasons about the `Color` and alpha (`A`) as separate concepts instead of as a single concept.
+  # All values are stored strictly as unopinionated floats but, when interpreted as a color with alpha,
+  # ranges for `A` are `0.0` (transparent) to `1.0` (opaque). Color values are not premultiplied.
+  # Component values are linear (i.e. `*gamma* = 1.0`).
+  color_alpha<native><public> := struct<concrete><computes><persistable> {
+    @editable
+    # Alpha component of this `color_alpha`.
+    A<native><public>: float = external {}
+
+    @editable
+    # `Color` component of this `color_alpha`.
+    Color<native><public>: color = external {}
   }
 
   # Makes an ACES 2065-1 `color` from the component-wise product of `c0` and `c1`.
@@ -419,10 +448,14 @@ Concurrency<public> := module {
   awaitable<public>(payload: type) := interface {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`. Returns the event `payload`.
     Await<public>()<suspends>: payload
+
+    (/Verse.org/Concurrency/awaitable:)Concurrency_awaitable_Variance<private>: ?type { _(): tuple(payload) } = external {}
   }
 
   task<native><public>(t: type) := class<abstract><final>(awaitable(t)) {
     Await<native><override>()<suspends>: t
+
+    (/Verse.org/Concurrency/task:)Concurrency_task_Variance<private>: ?type { _(): tuple(t) } = external {}
   }
 }
 
@@ -438,7 +471,6 @@ Native<public> := module {
   import_as_attribute<epic_internal> := class<computes><internal>(attribute) {}
 }
 
-using { /Verse.org/Concurrency }
 # Module import path: /Verse.org/Random
 Random<public> := module {
   # Returns a random `float` between `Low` and `High`, inclusive.
@@ -486,6 +518,14 @@ SceneGraph<public> := module {
     Volume: collision_volume
   )<transacts>: generator(sweep_hit) = external {}
 
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Get the players that this entity is currently be presented to. False = presentable to everyone, array = presentable to no one.
+  (Entity: entity).GetPresentableToPlayers<native><public>()<transacts>: ?[]player
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Assign the players that this entity will be presented to. False = presentable to everyone, array = presentable to no one.
+  (Entity: entity).SetPresentableToPlayers<native><public>(Players: ?[]player): void
+
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all components attached to ancestor entities to `InEntity` of type `component_type`.
   # The order of the returned components is unspecified and subject to change.
@@ -512,7 +552,6 @@ SceneGraph<public> := module {
   # The order of the returned components is unspecified and subject to change.
   (InEntity: entity).FindDescendantComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
 
-  using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` of type `entity_type`.
   # The order of the returned entities is unspecified and subject to change.
@@ -660,6 +699,8 @@ SceneGraph<public> := module {
       Y1<override>: float = external {}
     }
 
+    using { /Verse.org/Simulation }
+    using { /Verse.org/SpatialMath }
     # Base class for an animation easing function.
     easing_function<native><public> := class<abstract><computes><epic_internal> {
       Evaluate<native><public>(Input: float): float
@@ -750,6 +791,15 @@ SceneGraph<public> := module {
 
     # Play continuously reversing direction at each end.
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
+  }
+
+  using { /Verse.org/Native }
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Module import path: /Verse.org/SceneGraph/UI
+  (/Verse.org/SceneGraph:)UI<public> := module {
+    using { /Verse.org/Native }
+    @import_as("/Script/LocalizableMessage.FLocalizableMessage")
+    localizable_message_internal<native><epic_internal> := struct<concrete> {}
   }
 
   using { /Verse.org/Simulation }
@@ -1136,7 +1186,7 @@ SceneGraph<public> := module {
     # Attempt to start an interaction. Fails if the agent does not pass the CanInteract function.
     Start<native><final><public>(Agent: agent)<transacts><decides>: void
 
-    # Event fires when an a successful interaction starts. Sends the interacting agent. InteractDuration at or below 0 makes this event identical to InteractSucceededEvent.
+    # Event fires when a successful interaction starts. Sends the interacting agent. InteractDuration at or below 0 makes this event identical to InteractSucceededEvent.
     StartedEvent<native><public>: listenable(agent) = external {}
 
     # Event fires when an interaction has completed successfully. Sends the formerly interacting agent. InteractDuration at or below 0 makes this event identical to InteractStartedEvent.
@@ -1489,18 +1539,13 @@ SceneGraph<public> := module {
 
     # alternate origin than the default parent entity
     var Origin<public>: ?origin = external {}
-
-    var<private> GlobalTransformInternal<native><private>: (/Verse.org/SpatialMath:)transform = external {}
-
-    @editable {}
-    var<private> LocalTransformInternal<native><private>: (/Verse.org/SpatialMath:)transform = external {}
-
-    @editable {}
-    var<private> OriginInternal<native><private>: ?origin = external {}
   }
 }
 
 Simulation<public> := module {
+  @available { MinUploadedAtFNVersion := 3800 }
+  (Session: session).Environment<native><public>()<transacts>: session_environment
+
   # Returns the `session` corresponding to the current round.  The result can be used with `weak_map` to implement global variables.
   # Note: may be changed in a future release to return a single instance per game. Round-local behavior should not be relied upon.
   GetSession<native><public>()<reads>: session
@@ -1555,7 +1600,8 @@ Simulation<public> := module {
     }
   }
 
-  agent<native><public> := class<unique><epic_internal> {}
+  using { /Verse.org/SceneGraph }
+  agent<native><public> := class<unique><epic_internal>(entity) {}
 
   @attribscope_class
   @attribscope_struct
@@ -1589,6 +1635,8 @@ Simulation<public> := module {
     # The minimum value the editor allows.
     MinValue<public>: ?t = external {}
 
+    (/Verse.org/Simulation/editable_number:)Simulation_editable_number_Variance<private>: ?type { _(): tuple(t) } = external {}
+
     # Snap the spinbox to the nearest delta.
     SpinBoxDelta<public>: ?t = external {}
   }
@@ -1608,6 +1656,8 @@ Simulation<public> := module {
     MouseLinearDeltaSensitivity<public>: float = external {}
 
     MouseShiftMovePixelPerDelta<public>: float = external {}
+
+    (/Verse.org/Simulation/editable_slider:)Simulation_editable_slider_Variance<private>: ?type { _(): tuple(t) } = external {}
 
     # The amount the slider moves for each step.
     SliderDelta<public>: ?t = external {}
@@ -1645,6 +1695,8 @@ Simulation<public> := module {
     # Show the button that allows locking the vector aspect ratio.
     ShowPreserveRatio<public>: logic = external {}
 
+    (/Verse.org/Simulation/editable_vector_number:)Simulation_editable_vector_number_Variance<private>: ?type { _(): tuple(t) } = external {}
+
     # Snap the spinbox to the nearest delta.
     SpinBoxDelta<public>: ?t = external {}
   }
@@ -1671,6 +1723,8 @@ Simulation<public> := module {
     # Show the button that allows locking the vector aspect ratio.
     ShowPreserveRatio<public>: logic = external {}
 
+    (/Verse.org/Simulation/editable_vector_slider:)Simulation_editable_vector_slider_Variance<private>: ?type { _(): tuple(t) } = external {}
+
     # The amount the slider moves for each step.
     SliderDelta<public>: ?t = external {}
 
@@ -1685,14 +1739,26 @@ Simulation<public> := module {
     IsActive<native><public>()<reads><decides>: void
   }
 
+  using { /Verse.org/Native }
   # Type for which there is a single instance per round.  Use `GetSession` to get the current round's `session` instance. May be used with `weak_map` to implement global variables.
   # Note: may be changed in a future release to a single instance per game. Round-local behavior should not be relied upon.
   session<native><public> := class<unique><module_scoped_var_weak_map_key><epic_internal> {}
 
+  # Specifies what type of environment the current session is in.
+  session_environment<native><public> := enum {
+    # The current session is in an Edit environment for an experience, such as a session started within UEFN.
+    Edit
+
+    # The current session is in a Live environment for an experience.
+    Live
+
+    # The current session is in a Private environment for an experience, such as a playtest.
+    Private
+  }
+
   team<native><public> := class<unique><epic_internal> {}
 }
 
-using { /Verse.org/Native }
 # Module import path: /Verse.org/SpatialMath
 SpatialMath<public> := module {
   # Returns `Rotation` if it does not contain `NaN`, `Inf` or `-Inf`.
@@ -1703,9 +1769,11 @@ SpatialMath<public> := module {
   (Rotation: rotation).GetAngleDegrees<public>()<reads>: float = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Returns the radians of right-handed `rotation` around the axis of `rotation`. See also `GetAxis`.
   (Rotation: rotation).GetAngleRadians<native><public>()<reads><converges>: float
 
+  @vm_no_effect_token
   # Makes a `vector3` from the axis of `rotation` for an right-handed angle.
   # If `rotation` is nearly identity, this will return the +Forward axis. See also `GetAngleRadians`.
   (Rotation: rotation).GetAxis<native><public>()<reads><converges>: vector3
@@ -1715,6 +1783,7 @@ SpatialMath<public> := module {
   (Rotation: rotation).GetEulerDegrees<public>()<reads>: tuple(float, float, float) = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Makes a `tuple(float, float, float)` with three elements:
   #  * *left axis* `rotation` in radians
   #  * *up axis* of `rotation` in radians
@@ -1735,6 +1804,7 @@ SpatialMath<public> := module {
   (Rotation: rotation).GetUpAxis<public>()<reads>: vector3 = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Degrees version of `GetYawPitchRollRadians`.
   (Rotation: rotation).GetYawPitchRollDegrees<native><public>()<reads><converges>: tuple(float, float, float)
 
@@ -1746,6 +1816,7 @@ SpatialMath<public> := module {
   # using the conventions of `MakeRotationFromYawPitchRollRadians`.
   (Rotation: rotation).GetYawPitchRollRadians<public>()<reads>: tuple(float, float, float) = external {}
 
+  @vm_no_effect_token
   # Makes a `rotation` by inverting `Rotation` such that `ApplyRotation(Rotation, Rotation.Invert())) = IdentityRotation`.
   (Rotation: rotation).Invert<native><public>()<reads><converges>: rotation
 
@@ -1776,6 +1847,7 @@ SpatialMath<public> := module {
   AngularDistanceDegrees<public>(Rotation1: rotation, Rotation2: rotation)<reads>: float = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Returns the smallest angular distance between `Rotation1` and `Rotation2` in radians.
   AngularDistanceRadians<native><public>(Rotation1: rotation, Rotation2: rotation)<reads><converges>: float
 
@@ -1789,6 +1861,7 @@ SpatialMath<public> := module {
   # Returns radians from `Degrees`.
   DegreesToRadians<public>(Degrees: float)<reads>: float = external {}
 
+  @vm_no_effect_token
   # Returns the distance between `Rotation1` and `Rotation2`. The result will be between:
   #  * `0.0`, representing equivalent rotations and
   #  * `1.0` representing rotations which are 180 degrees apart (i.e., the shortest rotation between them is 180 degrees around some axis).
@@ -1832,6 +1905,7 @@ SpatialMath<public> := module {
   )<reads>: rotation = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Makes a `rotation` by applying a post-rotation of `LeftAxisAngle` followed by `UpAxisAngle` and then `ForwardAxisAngle `in that order. Right-handed convention (e.g. a positive rotation around Up takes +Forward to Left).
   MakeRotationFromEulerRadians<native><public>(
     LeftAxisAngle: float,
@@ -1839,6 +1913,7 @@ SpatialMath<public> := module {
     ForwardAxisAngle: float
   )<reads><converges>: rotation
 
+  @vm_no_effect_token
   # Degrees version of `MakeRotationFromYawPitchRollRadians`
   MakeRotationFromYawPitchRollDegrees<native><public>(
     YawAngle: float,
@@ -1858,9 +1933,11 @@ SpatialMath<public> := module {
   )<reads>: rotation = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Makes a `rotation` from `Axis` and `Angle` in radians using a right-handed sign convention (e.g. a positive rotation around Up takes Forward to Left).
   MakeRotationRadians<native><public>(Axis: vector3, Angle: float)<reads><converges>: rotation
 
+  @vm_no_effect_token
   # Makes the smallest angular `rotation` from `InitialVector` to `FinalVector` two vectors of arbitrary length such that:
   # `InitialVector * MakeShortestRotationBetween(InitialVector, FinalVector) = FinalVector` and
   # `MakeShortestRotationBetween(InitialVector, FinalVector)?.GetAngleRadians()` is as small as possible.
@@ -1872,6 +1949,7 @@ SpatialMath<public> := module {
   # Makes a `vector3` by inverting the `SurfaceNormal` component of `Direction`.
   ReflectVector<public>(Direction: vector3, SurfaceNormal: vector3)<reads>: vector3 = external {}
 
+  @vm_no_effect_token
   # Used to perform spherical linear interpolation between `From` (when `Ratio = 0.0`) and `To` (when `Ratio = 1.0`). Expects `0.0 <= Ratio <= 1.0`.
   Slerp<native><public>(InitialRotation: rotation, FinalRotation: rotation, Ratio: float)<reads><converges>: rotation
 
@@ -1887,9 +1965,11 @@ SpatialMath<public> := module {
   (/Verse.org/SpatialMath:)ToString<public>(V: vector3)<reads>: string = external {}
 
   @available { MinUploadedAtFNVersion := 3600 }
+  @vm_no_effect_token
   # Apply a `PreRotation` to `PostRotation` as `v * PreRotation * PostRotation`.
   (/Verse.org/SpatialMath:)operator'*'<native><public>(PreRotation: rotation, PostRotation: rotation)<reads><converges>: rotation
 
+  @vm_no_effect_token
   # Makes a `vector3` by applying `Rotation` to `Vector`.
   (/Verse.org/SpatialMath:)operator'*'<native><public>(Vector: vector3, Rotation: rotation)<reads><converges>: vector3
 
@@ -1920,6 +2000,8 @@ SpatialMath<public> := module {
   # Makes a `vector3` by inverting the signs of `Operand`.
   (/Verse.org/SpatialMath:)prefix'-'<public>(Operand: vector3)<computes>: vector3 = external {}
 
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
   @import_as("/*.FVRotation")
   rotation<native><public> := struct<concrete> {}
 
@@ -1957,6 +2039,38 @@ SpatialMath<public> := module {
 }
 
 Verse<public> := module {
+  @experimental
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Succeeds if `element_type` is present in `InSet`.
+  (
+    InSet: classifiable_subset(t) where t: castable_subtype(k),
+    k: type
+  ).Contains<public>(element_type: castable_subtype(k))<reads><decides>: void = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Succeeds if all the `element_types` are present in `InSet`.
+  (
+    InSet: classifiable_subset(t) where t: castable_subtype(k),
+    k: type
+  ).ContainsAll<public>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Succeeds if any of the `element_types` are present in `InSet`.
+  (
+    InSet: classifiable_subset(t) where t: castable_subtype(k),
+    k: type
+  ).ContainsAny<public>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
+
+  @experimental
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Returns a new set that contains all the elements in `InSet` that are of type `element_type`.
+  (
+    InSet: classifiable_subset(t) where t: castable_subtype(k),
+    k: type
+  ).FilterByType<native><public>(element_type: castable_subtype(k))<transacts>: classifiable_subset(t)
+
   # Returns the first index whose element in `Input` equals `ElementToFind`.
   # Fails if ElementToFind does not exist in the array.
   (Input: []t where t: subtype(comparable)).Find<public>(ElementToFind: t)<computes><decides>: int = external {}
@@ -2027,30 +2141,37 @@ Verse<public> := module {
   #  * `NaN`
   (X: float).IsFinite<public>()<computes><decides>: float = external {}
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the inverse hyperbolic cosine of `X` if `1.0 <= X`.
   ArCosh<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the inverse hyperbolic sine of `X` if `IsFinite(X)`.
   ArSinh<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the inverse hyperbolic tangent of `X` if `IsFinite(X)`.
   ArTanh<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the inverse cosine (arccosine) of `X` if `-1.0 <= X <= 1.0`.
   ArcCos<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the inverse sine (arcsine) of `X` if `-1.0 <= X <= 1.0`.
   ArcSin<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the inverse tangent (arctangent) of `X` such that:`-PiFloat/2.0 <= ArcTan(x) <= PiFloat/2.0`.
   ArcTan<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the angle in radians at the origin between a ray pointing to `(X, Y)` and the positive `X` axis such that `-PiFloat < ArcTan(Y, X) <= PiFloat`.
   # Returns 0.0 if `X=0.0 and Y=0.0`.
@@ -2069,14 +2190,18 @@ Verse<public> := module {
   # Returns the median of `Val`, `A`, and `B`, such that comparisons with `NaN` operate as if `NaN > +Inf`.
   Clamp<public>(Val: float, A: float, B: float)<computes>: float = external {}
 
+  using { /Verse.org/Concurrency }
+  using { /Verse.org/Native }
   # Makes a flattened `array` by concatenating the elements of `Arrays`.
   Concatenate<public>(Arrays: [][]t where t: type)<computes>: []t = external {}
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the cosine of `X` if `IsFinite(X)`.
   # Returns `NaN` if `not IsFinite(X)
   Cos<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the hyperbolic cosine of `X`.
   Cosh<native><public>(X: float)<reads>: float
@@ -2084,6 +2209,7 @@ Verse<public> := module {
   # Halts the Verse runtime with error `Message`.
   Err<native><public>(Message: string)<computes>: false
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the natural exponent of `X`.
   Exp<native><public>(X: float)<reads>: float
@@ -2105,11 +2231,13 @@ Verse<public> := module {
   # Makes a `string` by concatenating `Separator` between the elements of `Strings`.
   Join<native><public>(Strings: []string, Separator: string)<computes>: string
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Used to linearly interpolate/extrapolate between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all arguments are finite.
   # Returns `From*(1 - Parameter) + To*Parameter`.
   Lerp<native><public>(From: float, To: float, Parameter: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the natural logarithm of `X`.
   Ln<native><public>(X: float)<reads>: float
@@ -2120,6 +2248,13 @@ Verse<public> := module {
   # Returns the base `B` logarithm of `X`.
   Log<public>(B: float, X: float)<reads>: float = external {}
 
+  @experimental
+  # Constructs a `classifiable_subset` containing the `InElements`.
+  MakeClassifiableSubset<native><public>(InElements: []t where t: type)<reads><converges>: classifiable_subset(t)
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakeError<public>(Result: error_type where error_type: type): result(false, error_type) = external {}
+
   MakeLocalizableValue<epic_internal>(V: float): localizable_float = external {}
 
   MakeLocalizableValue<epic_internal>(V: int): localizable_int = external {}
@@ -2129,6 +2264,9 @@ Verse<public> := module {
   MakeLocalizableValue<epic_internal>(V: string): localizable_string = external {}
 
   MakeMessageInternal<native><epic_internal>(K: string, D: string, S: [string]localizable_value)<converges>: message
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakeSuccess<public>(Result: success_type where success_type: type): result(success_type, false) = external {}
 
   # Returns the maximum of `X` and `Y` unless either are `NaN`.
   # Returns `NaN` if either `X` or `Y` are `NaN`.
@@ -2154,6 +2292,7 @@ Verse<public> := module {
   # Pi, the ratio of the circumference of a circle to its diameter.
   PiFloat<public>: float = external {}
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns `A` to the power of `B`.
   Pow<native><public>(A: float, B: float)<reads>: float
@@ -2197,25 +2336,30 @@ Verse<public> := module {
   #  * `-1` if `Val < 0`
   Sgn<public>(Val: int)<computes>: int = external {}
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the sine of `X` if `IsFinite(X)`.
   # Returns `NaN` if `not IsFinite(X)
   Sin<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the hyperbolic sine of `X`.
   Sinh<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the square root of `X` if `X >= 0.0`.
   # Returns `NaN` if `X < 0.0`.
   Sqrt<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the tangent of `X` if `IsFinite(X)`.
   # Returns `NaN` if `not IsFinite(X).
   Tan<native><public>(X: float)<reads>: float
 
+  @vm_no_effect_token
   @rtfm_always_open
   # Returns the hyperbolic tangent of `X`.
   Tanh<native><public>(X: float)<reads>: float
@@ -2239,6 +2383,15 @@ Verse<public> := module {
   cancelable<native><public> := interface {
     # Prevents any current or future work from completing.
     Cancel<native_callable><public>()<transacts>: void
+  }
+
+  @experimental
+  # A `classifiable_subset` is a container that holds a set of elements. A classifiable_subset can hold multiple elements of the same type.
+  classifiable_subset<native><public>(element_type: type) := class<final><reads><internal> {
+    # Temporary function for constraining variance correctly.
+    CovarianceConstraint<protected>(): ?element_type = external {}
+
+    (/Verse.org/Verse/classifiable_subset:)Verse_classifiable_subset_Variance<private>: ?type { _(): tuple(element_type) } = external {}
   }
 
   # An opaque diagnostic message that only shows up in diagnostic logs. The format of the diagnostic may change at any time without warning and may not be inspected by Verse code.
@@ -2272,6 +2425,8 @@ Verse<public> := module {
     #
     # Tasks are resumed in the order they were suspended. Each task will perform as much work as it can until it encounters a blocking call, whereupon it will transfer control to the next suspended task.
     Signal<native><override>(Val: t): void
+
+    (/Verse.org/Verse/event:)Verse_event_Variance<private>: ?type { _(: t): tuple(t) } = external {}
   }
 
   # A *recurring*, successively signaled event allowing a simple mechanism to coordinate between concurrent tasks.
@@ -2287,7 +2442,9 @@ Verse<public> := module {
   listenable<public>() := listenable(tuple())
 
   # A parametric interface combining `awaitable` and `subscribable`.
-  listenable<public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {}
+  listenable<public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {
+    (/Verse.org/Verse/listenable:)Verse_listenable_Variance<private>: ?type { _(): tuple() } = external {}
+  }
 
   # Used for message localization.
   locale<native><public> := struct<epic_internal> {}
@@ -2305,6 +2462,13 @@ Verse<public> := module {
   # A localizable text message.
   message<native><public> := class<epic_internal> {}
 
+  @experimental
+  # Returns a new set that is the union of all elements in `InSetL` set and `InSetR`.
+  operator'+'<native><public>((
+    InSetL: classifiable_subset(t),
+    InSetR: classifiable_subset(t)
+  ) where t: type)<transacts>: classifiable_subset(t)
+
   # Concatenates two diagnostic messages.
   operator'+'<public>(Lhs: diagnostic, Rhs: diagnostic)<computes>: diagnostic = external {}
 
@@ -2314,11 +2478,32 @@ Verse<public> := module {
   # Concatenates a normal string with a diagnostic message, yielding a diagnostic message.
   operator'+'<public>(Lhs: string, Rhs: diagnostic)<computes>: diagnostic = external {}
 
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Implemented by classes that provide a result for an operation, which can fail or be successful
+  result<public>(success_type: type, error_type: type) := interface<internal> {
+    # Returns the error data of the specified type.
+    GetError<native_callable><public>()<computes><decides>: error_type
+
+    # Returns the success data of the specified type.
+    GetSuccess<native_callable><public>()<computes><decides>: success_type
+
+    (/Verse.org/Verse/result:)Verse_result_Variance<private>: ?type { _(): tuple(success_type, error_type) } = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Implemented by classes whose instances can change visibility to be shown or hidden.
+  showable<native><public> := interface {
+    # Set this value to hide or show the class.
+    var Show<public>: logic
+  }
+
   # A parametric interface implemented by events with a `payload` that can be signaled.
   # Can be used with `awaitable`, `subscribable`, or both (see: `listenable`).
   signalable<public>(payload: type) := interface {
     # Concurrently resumes the tasks waiting for this event in `awaitable.Await` and synchronously invokes any callbacks added to this event by `subscribable.Subscribe`.
     Signal<native_callable><public>(Val: payload): void
+
+    (/Verse.org/Verse/signalable:)Verse_signalable_Variance<private>: ?type { _(: payload): tuple() } = external {}
   }
 
   # A parameterless interface implemented by events that can be subscribed to.
@@ -2330,9 +2515,12 @@ Verse<public> := module {
     # Registers `Callback` to be invoked on matching calls to `signable.Signal`.
     # Returns an unsubscriber object. Call `cancelable.Cancel` on the unsubscriber to unregister `Callback`.
     Subscribe<public>(Callback: type { _(: t): void })<transacts>: cancelable
+
+    (/Verse.org/Verse/subscribable:)Verse_subscribable_Variance<private>: ?type { _(): tuple(t) } = external {}
   }
 }
 
+using { /Verse.org/Simulation }
 @experimental
 # Interface that provides descriptive names or text.
 has_description<public> := interface {

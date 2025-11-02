@@ -11,7 +11,8 @@
 		"bShowingExtendedProjectDetails": true,
 		"bShowingContentVersePath": true,
 		"bWorkspaceAllowed": true,
-		"bProjectRenameAllowed": true
+		"bProjectRenameAllowed": true,
+		"TeamMembershipInvitationPermission": "IndividualAndEmailDomains"
 	},
 	"ValkyrieBlueprintsSettings": {
 		"bEnableBlueprintGraph": true,
@@ -786,9 +787,17 @@
 		},
 		"AllowedMVVMConversionClass": {
 			"+": [
-				"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftInputAction"
+				"/Itemization/UI/ItemizationUIConversionFunctionLibrary.ItemizationUIConversionFunctionLibrary_C",
+				"/Itemization/UI/ItemizationUIConversionFunctionLibrary.SKEL_ItemizationUIConversionFunctionLibrary_C",
+				"/Script/ItemizationUI.ItemizationUIAllowedConversionFunctions",
+				"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftInputAction",
+				"/Script/ModelViewViewModel.MVVMFontConversionLibrary"
 			]
 		}
+	},
+
+	"ValkyrieSequencerSettings": {
+		"bAllowBindingToSceneGraph" : true
 	},
 	"ValkyrieEditorSettings": {
 		"AllowedAssetTypes": {
@@ -849,10 +858,12 @@
 			"/Script/ItemizationRuntime.InventorySetupDataNativeFort":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationRuntime.ItemDefinition":					{ "Rules": ["View", "Create" ] },
 			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh":	{ "Rules": ["View","Create","ModuleAPI"] },
+			"/Script/PhysicsCore.PhysicalMaterial":	            { "Rules": ["View","Create"] },
 			"/Script/VerseAssets.PropertyInterfaceGeneratedClass":			{ "Rules": ["View","Create"] },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":	{ "Rules": ["View","Create"] }
 		},
 		"AllowedClasses": {
+			"/Itemization/UI/ItemizationUIConversionFunctionLibrary.ItemizationUIConversionFunctionLibrary_C":			{ "Visible": true },
 			"/Script/MusicEnvironment.FrameBasedMusicMap": { },
 			"/Script/MusicalMode.MovieSceneMusicalClock": { },
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Visible": true },
@@ -1248,7 +1259,9 @@
 			"+": [
 			]
 		},
+		"bShowContentServiceLinks": true,
 		"bShowGameProjectCollections": true,
+		"bShowAssetAccessSpecifierFilters": true,
 		"VerseScopesToShowAssetsFor": { "+": ["InternalAPI"] }
 	},
 	"PropertyEditorClassPermissionList": {
@@ -1306,6 +1319,10 @@
 					"bEnableSubmixSends",
 					"SoundSubmixSends"
 					]
+			},
+			{
+				"Type": "/Script/MetasoundEngine.MetaSoundSource",
+				"AllowList": [ "ConcurrencySet"]
 			},
 			{
 				"Type": "/Script/Engine.SoundAttenuationSettings",
@@ -1498,6 +1515,10 @@
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
 				"AllowList": [ "bEnableWorkspaceSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
+			},
+			{
+				"Type": "/Script/PhysicsCore.PhysicalMaterial",
+				"AllowList": [ "Friction", "StaticFriction", "Restitution", "Density" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.FortGameUserSettings",

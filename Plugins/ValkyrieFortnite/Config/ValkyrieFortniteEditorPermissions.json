@@ -42,6 +42,7 @@
 			"/Script/UMG.UserWidget:QueueStopAnimation",
 			"/Script/CommonUI.CommonActionWidget:SetEnhancedInputAction",
 			"/Script/FortniteUI.FortItemDurabilityVM:ShouldShowDurability",
+			"/Script/FortniteUI.FortItemCooldownVM:GetCooldownPercentage",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel:GetPlayerName",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel:IsDBNO",
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel:IsBeingRevivedFromDBNO",
@@ -56,11 +57,14 @@
 			"/Script/FortniteUI.HUDEquippedItemViewModel:IsMagazineType",
 			"/Script/FortniteUI.HUDEquippedItemViewModel:GetAmmoCountText",
 			"/Script/FortniteUI.HUDEquippedItemViewModel:GetAmmoSurplusText",
+			"/Script/FortniteUI.HUDEquippedItemViewModel:GetRarityColor",
+			"/Script/FortniteUI.HUDEquippedItemViewModel:GetRaritySecondaryColor",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetItemName",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetPreviewImage",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetAmmoTypeIcon",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetNumInStack",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetRemainingAmmo",
+			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetRemainingAmmoText",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetTotalAmmo",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetRarityColor",
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel:GetRaritySecondaryColor",
@@ -100,6 +104,12 @@
 			"/Script/Engine.StringAnimationAttribute",
 			"/Script/Engine.TransformAnimationAttribute",
 			"/Script/Engine.FloatAnimationAttribute",
+			"/Script/Engine.AngularDriveConstraint",
+			"/Script/Engine.ConeConstraint",
+			"/Script/Engine.ConstraintDrive",
+			"/Script/Engine.LinearConstraint",
+			"/Script/Engine.LinearDriveConstraint",
+			"/Script/Engine.TwistConstraint",
 			"/Script/CoreUObject.Box",
 			"/Script/CoreUObject.Box2D",
 			"/Script/CoreUObject.BoxSphereBounds",
@@ -122,6 +132,7 @@
 			"/Script/CoreUObject.Vector2D",
 			"/Script/CoreUObject.Vector4",
 			"/Script/RigVM.RigVMInstructionSetExecuteState",
+			"/Script/RigVM.RigVMSimPoint",
 			"/Script/ControlRig.RigElementKey",
 			"/Script/ControlRig.RigElementKeyCollection",
 			"/Script/ControlRig.RigControlLimitEnabled",
@@ -173,6 +184,24 @@
 			"/Script/ControlRig.RegionScaleFactors",
 			"/Script/ControlRig.SphericalPoseReaderDebugSettings",
 			"/Script/ControlRig.RigUnit_RotationConstraint_AdvancedSettings",
+			"/Script/ControlRig.CRSimLinearSpring",
+			"/Script/ControlRig.CRSimPointConstraint",
+			"/Script/ControlRig.CRSimPointContainer",
+			"/Script/ControlRig.CRSimPointForce",
+			"/Script/ControlRig.CRSimSoftCollision",
+			"/Script/ControlRig.RigUnit_SpringIK_DebugSettings",
+			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings",
+			"/Script/ControlRigPhysics.RigPhysicsCollision",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionBox",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionCapsule",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionSphere",
+			"/Script/ControlRigPhysics.RigPhysicsDriveData",
+			"/Script/ControlRigPhysics.RigPhysicsDynamics",
+			"/Script/ControlRigPhysics.RigPhysicsJointData",
+			"/Script/ControlRigPhysics.RigPhysicsMaterial",
+			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceSettings",
+			"/Script/ControlRigPhysics.RigPhysicsSolverSettings",
+			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings",
 			"/Script/ControlRigSpline.ControlRigSpline",
 			"/Script/FortniteAI.NPCCustomEffect",
 			"/Script/IKRig.IKRigInputSkeleton",
@@ -191,6 +220,8 @@
 			"/Script/IKRig.PinBoneData",
 			"/Script/IKRig.IKRigGoal",
 			"/Script/IKRig.IKRigGoalContainer",
+			"/Script/IKRig.IKRigGoalInput",
+			"/Script/IKRig.IKRigWorkData",
 			"/Script/IKRig.BoneChain",
 			"/Script/IKRig.RetargetDefinition",
 			"/Script/IKRig.GoalBone",
@@ -200,12 +231,16 @@
 			"/Script/IKRig.IKRigBodyMoverSolver",
 			"/Script/IKRig.IKRigFullBodyIKSolver",
 			"/Script/IKRig.IKRigLimbSolver",
+			"/Script/IKRig.IKRigStretchLimbSolver",
 			"/Script/IKRig.IKRigPoleSolver",
 			"/Script/IKRig.IKRigSetTransform",
+			"/Script/IKRig.IKRetargetAdditivePoseOp",
 			"/Script/IKRig.IKRetargetAlignPoleVectorOp",
 			"/Script/IKRig.IKRetargetCopyBasePoseOp",
 			"/Script/IKRig.IKRetargetCurveRemapOp",
+			"/Script/IKRig.IKRetargetFilterBoneOp",
 			"/Script/IKRig.IKRetargetFKChainsOp",
+			"/Script/IKRig.IKRetargetFloorConstraintOp",
 			"/Script/IKRig.IKRetargetIKChainsOp",
 			"/Script/IKRig.IKRetargetPelvisMotionOp",
 			"/Script/IKRig.IKRetargetPinBoneOp",
@@ -213,6 +248,7 @@
 			"/Script/IKRig.IKRetargetRunIKRigOp",
 			"/Script/IKRig.IKRetargetScaleSourceOp",
 			"/Script/IKRig.IKRetargetSpeedPlantingOp",
+			"/Script/IKRig.IKRetargetStretchChainOp",
 			"/Script/IKRig.IKRetargetStrideWarpingOp",
 			"/Script/LocalizableMessage.LocalizableMessage",
 			"/Script/LocalizableMessage.LocalizableMessageParameterEntry",
@@ -221,6 +257,11 @@
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkGetParameterValueByName",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluteFrameTransform",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluateInputDeviceValue",
+			"/Script/PhysicsControl.PhysicsControlData",
+			"/Script/PhysicsControl.PhysicsControlModifierData",
+			"/Script/PhysicsControl.PhysicsControlModifierSparseData",
+			"/Script/PhysicsControl.PhysicsControlMultiplier",
+			"/Script/PhysicsControl.PhysicsControlTarget",
 			"/Script/UMG.WidgetTransform"
 		],
 		"AllowedPinCategories": [
@@ -305,7 +346,6 @@
 		],
 		"AllowedMVVMConversionClass": [
 			"/Script/CRD_ModalDialogUI.CreativeModalDialogAllowedConversionFunction",
-			"/Script/ItemizationUI.ItemizationUIAllowedConversionFunctions",
 			"/Script/ModelViewViewModel.MVVMSlateBrushConversionLibrary",
 			"/Script/VerseFortniteUI.VerseFortniteUIAllowedConversionLibrary",
 			"/Script/ModelViewViewModelBlueprint.MVVMK2Node_LoadSoftTexture",
@@ -315,6 +355,10 @@
 			"/Script/ModelViewViewModelBlueprint.MVVMK2Node_SetSoftTextureParameter"
 		],
 		"DeniedMVVMConversionClass": []
+	},
+	"_comment_ValkyrieSequencerSettings": "Properties related to Sequencer",
+	"ValkyrieSequencerSettings": {
+		"bAllowBindingToSceneGraph" : false
 	},
 	"_comment_ValkyrieEditorUtilitySettings": "Properties related to EditorUtility, affecting top level Utilities menu (TODO) & scripted actions. Widgets must also be added to LevelEditor tab allowlist.",
 	"ValkyrieEditorUtilitySettings": {
@@ -523,7 +567,7 @@
 			"/Script/Engine.Texture2D":							{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
 			"/Script/Engine.Texture2DArray":					{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.TextureCube":						{ "Rules": ["View","Create","Import","Export"] },
-			"/Script/Engine.TextureLightProfile": 				{ "Rules": ["View","Create","Import","Export"] },
+			"/Script/Engine.TextureLightProfile": 				{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
 			"/Script/Engine.VolumeTexture":						{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.World":								{ "Rules": ["View","Create","Import"] },
 			"/Script/Foliage.FoliageType_InstancedStaticMesh":	{ "Rules": ["View","Create"], "Subclasses": "All" },
@@ -828,6 +872,7 @@
 			"/Script/AnimationBudgetAllocator.SkeletalMeshComponentBudgeted":	{  },
 			"/Script/AnimationCore.CCDIKChainLink":								{  },
 			"/Script/AnimationCore.EulerTransform":								{  },
+			"/Script/AnimationCore.FABRIKChainLink":							{  },
 			"/Script/AnimationCore.FilterOptionPerAxis":						{  },
 			"/Script/AnimationCore.TransformFilter":							{  },
 			"/Script/AnimationData.AnimationSequencerDataModel":				{  },
@@ -846,6 +891,7 @@
 			"/Script/CRD_ModalDialogUI.CreativeModalDialogViewmodel":			{ "Visible": true },
 			"/Script/CreativeCommunicationUI.CreativeBubbleChatViewModel":		{ "Visible": true },
 			"/Script/FortniteUI.FortItemDurabilityVM":							{ "Visible": true },
+			"/Script/FortniteUI.FortItemCooldownVM":							{ "Visible": true },
 			"/Script/FortniteUI.HUDPlayerInfoListViewmodel":					{ "Visible": true },
 			"/Script/FortniteUI.HUDPlayerInfoViewmodel":						{ "Visible": true },
 			"/Script/FortniteUI.HUDQuickbarSlotViewModel":						{ "Visible": true },
@@ -875,6 +921,11 @@
 			"/Script/ControlRig.ControlRigComponentMappedElement":				{  },
 			"/Script/ControlRig.ControlRigExecuteContext":						{  },
 			"/Script/ControlRig.ControlRigValidator":							{  },
+			"/Script/ControlRig.CRSimLinearSpring":								{  },
+			"/Script/ControlRig.CRSimPointConstraint":							{  },
+			"/Script/ControlRig.CRSimPointContainer":							{  },
+			"/Script/ControlRig.CRSimPointForce":								{  },
+			"/Script/ControlRig.CRSimSoftCollision":							{  },
 			"/Script/ControlRig.FKControlRig":									{ "Visible": true },
 			"/Script/ControlRig.MovieSceneControlRigParameterSection":			{  },
 			"/Script/ControlRig.MovieSceneControlRigParameterTrack":			{ "Visible": true },
@@ -882,6 +933,7 @@
 			"/Script/ControlRig.RigElementKey":									{  },
 			"/Script/ControlRig.RigElementKeyCollection":						{  },
 			"/Script/ControlRig.RigControlLimitEnabled":						{  },
+			"/Script/ControlRig.RigComponentKey":								{  },
 			"/Script/ControlRig.RigHierarchy":									{  },
 			"/Script/ControlRig.RigPose":										{  },
 			"/Script/ControlRig.RigUnit_AimBone_DebugSettings":					{  },
@@ -905,6 +957,7 @@
 			"/Script/ControlRig.RigUnit_ModifyTransforms_WorkData":				{  },
 			"/Script/ControlRig.RigUnit_MultiFABRIK_WorkData":					{  },
 			"/Script/ControlRig.RigUnit_SlideChain_WorkData":					{  },
+			"/Script/ControlRig.RigUnit_SpringIK_DebugSettings":				{  },
 			"/Script/ControlRig.RigUnit_SpringIK_WorkData":						{  },
 			"/Script/ControlRigSpline.RigUnit_SplineConstraint_WorkData":		{  },
 			"/Script/ControlRig.RigUnit_Harmonics_TargetItem":					{  },
@@ -936,11 +989,24 @@
 			"/Script/ControlRig.RigUnit_TwoBoneIKSimple_DebugSettings":			{  },
 			"/Script/ControlRig.SphericalPoseReaderDebugSettings":				{  },
 			"/Script/ControlRig.TransformableControlHandle":					{  },
+			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings":			{  },
+			"/Script/ControlRigPhysics.RigPhysicsCollision":					{  },
+			"/Script/ControlRigPhysics.RigPhysicsCollisionBox":					{  },
+			"/Script/ControlRigPhysics.RigPhysicsCollisionCapsule":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsCollisionSphere":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsDriveData":					{  },
+			"/Script/ControlRigPhysics.RigPhysicsDynamics":						{  },
+			"/Script/ControlRigPhysics.RigPhysicsJointData":					{  },
+			"/Script/ControlRigPhysics.RigPhysicsMaterial":						{  },
+			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceSettings":		{  },
+			"/Script/ControlRigPhysics.RigPhysicsSolverSettings":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings":		{  },
 			"/Script/ControlRigDeveloper.ControlRigBlueprint":					{ "Visible": true },
 			"/Script/ControlRigDeveloper.ControlRigGraph":						{  },
 			"/Script/ControlRigDeveloper.ControlRigGraphNode":					{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/ControlRigSpline.ControlRigSpline":						{  },
 			"/Script/ControlRigEditor.AnimLayers":								{  },
+			"/Script/ControlRigEditor.AIESelectionSets":						{  },
 			"/Script/OptimusCore.OptimusDeformer":                              { "Visible": true },
 			"/Script/OptimusCore.OptimusDeformerInstanceSettings":				{  },
 			"/Script/IKRig.IKRigSolver":										{  },
@@ -971,12 +1037,16 @@
 			"/Script/IKRig.IKRigBodyMoverSolver":								{  },
 			"/Script/IKRig.IKRigFullBodyIKSolver":								{  },
 			"/Script/IKRig.IKRigLimbSolver":									{  },
+			"/Script/IKRig.IKRigStretchLimbSolver":								{  },
 			"/Script/IKRig.IKRigPoleSolver":									{  },
 			"/Script/IKRig.IKRigSetTransform":									{  },
+			"/Script/IKRig.IKRetargetAdditivePoseOp":							{  },
 			"/Script/IKRig.IKRetargetAlignPoleVectorOp":						{  },
 			"/Script/IKRig.IKRetargetCopyBasePoseOp":							{  },
 			"/Script/IKRig.IKRetargetCurveRemapOp":								{  },
+			"/Script/IKRig.IKRetargetFilterBoneOp":								{  },
 			"/Script/IKRig.IKRetargetFKChainsOp":								{  },
+			"/Script/IKRig.IKRetargetFloorConstraintOp":						{  },
 			"/Script/IKRig.IKRetargetIKChainsOp":								{  },
 			"/Script/IKRig.IKRetargetPelvisMotionOp":							{  },
 			"/Script/IKRig.IKRetargetPinBoneOp":								{  },
@@ -984,7 +1054,10 @@
 			"/Script/IKRig.IKRetargetRunIKRigOp":								{  },
 			"/Script/IKRig.IKRetargetScaleSourceOp":							{  },
 			"/Script/IKRig.IKRetargetSpeedPlantingOp":							{  },
+			"/Script/IKRig.IKRetargetStretchChainOp":							{  },
 			"/Script/IKRig.IKRetargetStrideWarpingOp":							{  },
+			"/Script/IKRig.IKRigGoalInput":										{  },
+			"/Script/IKRig.IKRigWorkData":										{  },
 			"/Script/PBIK.PBIKEffector":										{  },
 			"/Script/PBIK.PBIKBoneSetting":										{  },
 			"/Script/PBIK.PBIKDebug":											{  },
@@ -1341,6 +1414,7 @@
 			"/Script/InterchangeImport.MaterialExpressionMaterialXUnpremult":					{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXSwizzle":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXTextureSampleParameterBlur":	{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/InterchangeImport.InterchangeFbxTranslatorSettings":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeGrassOutput":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeLayerBlend":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeLayerCoords":							{ "Visible": true,	"Subclasses": "NativeOnly" },
@@ -1351,6 +1425,11 @@
 			"/Script/Landscape.MaterialExpressionLandscapeVisibilityMask":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/RenderTrace.MaterialExpressionPhysicalMaterialOutput":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/VirtualHeightfieldMesh.MaterialExpressionHeightfieldMinMaxTexture":		{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/Engine.AngularDriveConstraint":							{  },
+			"/Script/Engine.ConeConstraint":									{  },
+			"/Script/Engine.ConstraintDrive":									{  },
+			"/Script/Engine.LinearConstraint":									{  },
+			"/Script/Engine.LinearDriveConstraint":								{  },
 			"/Script/Engine.MaterialFunctionEditorOnlyData":					{  },
 			"/Script/Engine.MaterialInstanceDynamic":							{  },
 			"/Script/Engine.MaterialInstanceEditorOnlyData":					{  },
@@ -1414,6 +1493,7 @@
 			"/Script/Engine.Texture2D":											{  },
 			"/Script/Engine.TimelineComponent":									{  },
 			"/Script/Engine.TransformAnimationAttribute":						{  },
+			"/Script/Engine.TwistConstraint":									{  },
 			"/Script/Engine.VectorSpringState":									{  },
 			"/Script/Engine.VolumetricCloudComponent":							{  },
 			"/Script/Engine.WindDirectionalSource":								{ "Visible":  true },
@@ -1421,7 +1501,7 @@
 			"/Script/Engine.World":												{  },
 			"/Script/Engine.WorldDataLayers":									{  },
 			"/Script/Engine.WorldPartition":									{ "Visible": true },
-			"/Script/Engine.WorldPartitionDestructibleHLODMeshComponent":		{  },
+			"/Script/Engine.WorldPartitionDestructibleHLODComponent":			{  },
 			"/Script/Engine.WorldPartitionEditorSpatialHash":					{  },
 			"/Script/Engine.WorldPartitionHLOD":								{  },
 			"/Script/Engine.WorldPartitionHLODSourceActorsFromCell":			{  },
@@ -1591,6 +1671,7 @@
 			"/Script/FortniteGame.FortSplineWaterAudioComponent":				{  },
 			"/Script/FortniteGame.FortSpotLightComponent":						{  },
 			"/Script/FortniteGame.FortStaticMeshActor":							{ "Visible": true },
+			"/Script/FortniteGame.FortStaticMeshComponent":						{ "Visible": true },
 			"/Script/FortniteGame.FortStaticMeshUserData":						{  },
 			"/Script/FortniteGame.FortUndergroundVolume":						{ "Visible": true },
 			"/Script/FortniteGame.FortUserDefinedBehaviorSetNode":				{  },
@@ -1695,7 +1776,6 @@
 			"/Script/Landscape.LandscapeHeightfieldCollisionComponent":			{  },
 			"/Script/Landscape.LandscapeLayerInfoObject":						{  },
 			"/Script/Landscape.LandscapeMaterialInstanceConstant":				{  },
-			"/Script/Landscape.LandscapeMeshCollisionComponent":				{  },
 			"/Script/Landscape.LandscapeMeshProxyComponent":					{  },
 			"/Script/Landscape.LandscapeNaniteComponent":						{  },
 			"/Script/Landscape.LandscapeSplineActor":							{  },
@@ -1887,6 +1967,7 @@
 			"/Script/Niagara.NiagaraDataInterfaceLandscape":					{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceMeshRendererInfo":				{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceParticleRead":					{ "Visible": true },
+			"/Script/Niagara.NiagaraDataInterfaceSimpleCounter":				{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceSocketReader":					{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceSkeletalMesh":					{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceSpriteRendererInfo":			{ "Visible": true },
@@ -2006,6 +2087,7 @@
 			"/Script/DataHierarchyEditor.HierarchySection":						{  },
 			"/Script/DataHierarchyEditor.HierarchyCategory":					{  },
 			"/Script/DataHierarchyEditor.HierarchyItem":						{  },
+			"/Script/DataHierarchyEditor.DataHierarchyElementMetaData_SectionAssociation":	{  },
 			"/Script/Paper2D.PaperSprite":										{  },
 			"/Script/PerformanceCaptureCore.PerformerComponent":				{ "Visible": true },
 			"/Script/PerformanceCaptureCore.RetargetComponent":					{ "Visible": true },
@@ -2016,6 +2098,11 @@
 			"/Script/Persona.PersonaPreviewSceneRefPoseController":				{ "Visible": true },
 			"/Script/Persona.AnimAssetFindReplaceCurves":						{ "Visible": true },
 			"/Script/Persona.AnimAssetFindReplaceSyncMarkers":					{ "Visible": true },
+			"/Script/PhysicsControl.PhysicsControlData":						{  },
+			"/Script/PhysicsControl.PhysicsControlModifierData":				{  },
+			"/Script/PhysicsControl.PhysicsControlModifierSparseData":			{  },
+			"/Script/PhysicsControl.PhysicsControlMultiplier":					{  },
+			"/Script/PhysicsControl.PhysicsControlTarget":						{  },
 			"/Script/PlayspaceSystem.OverlapComponent":							{  },
 			"/Script/PointLight.PointLightNativeComponent":						{  },
 			"/Script/PropManipulation.PropManipulationNativeComponent":			{  },
@@ -2025,6 +2112,7 @@
 			"/Script/RigVM.RigVMMemoryStorage":									{  },
 			"/Script/RigVM.RigVMUnknownType":									{  },
 			"/Script/RigVM.RigVMInstructionSetExecuteState":					{  },
+			"/Script/RigVM.RigVMSimPoint":										{  },
 			"/Script/RigVMDeveloper.RigVMFunctionLibrary":						{  },
 			"/Script/RigVMDeveloper.RigVMGraph":								{  },
 			"/Script/RigVMDeveloper.RigVMInjectionInfo":						{  },
@@ -2104,6 +2192,8 @@
 			"/Script/VerseFortniteAI.NPCCharacterType":							{  },
 			"/Script/VerseFortniteUI.VerseFortniteUIAllowedConversionLibrary":	{  },
 			"/Script/VerseGameplayTags.VerseTagMarkupComponent":				{ "Visible": true },
+			"/Script/VerseTypeEditor.VerseTypeEditorWidgetExtension":			{  },
+			"/Script/VerseTypeEditorRuntime.VerseTypeEditorClassSettings":		{  },
 			"/Script/VolumetricRegion.VolumetricRegionNativeComponent":			{  },
 			"/Script/Water.BuoyancyManager":									{  },
 			"/Script/Water.GerstnerWaterWaveGeneratorSimple":					{  },
@@ -2320,6 +2410,7 @@
 					"PivotSubMenu",
 					"PilotSelectedActor",
 					"GroupMenu",
+					"RegroupActors",
 					"meshPerfEntry",
 					"DeviceScriptsCopyReference",
 					"OpenUVEditor",
@@ -2388,7 +2479,7 @@
 				"AllowList": [ "BlockingVolume", "FortUndergroundVolume", "FortWaterBodyExclusionVolume", "PostProcessVolume" ]
 			},
 			"LevelEditor.LevelEditorToolBar.AssetsToolBar": {
-				"AllowList": [ "SaveAllLevels", "Create", "Content", "AddContent", "OpenVsCodeButton", "ValkyrieProjectMenu", "ToggleFeatureLevelPreview", "ValkyriePlay", "LaunchCombo", "ValkyrieStartGame", "PlayCombo", "ValkyrieStopGame", "StopCombo", "UploadSpinner", "ValkyrieRefresh", "ValkyrieRefreshVerse", "ValkyrieOpenGameView" ]
+				"AllowList": [ "SaveAllLevels", "Create", "Content", "AddContent", "OpenInVerseButton", "BuildScriptsButton", "ValkyrieProjectMenu", "ToggleFeatureLevelPreview", "ValkyriePlay", "LaunchCombo", "ValkyrieStartGame", "PlayCombo", "ValkyrieStopGame", "StopCombo", "UploadSpinner", "ValkyrieRefresh", "ValkyrieRefreshVerse", "ValkyrieOpenGameView" ]
 			},
 			"LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": {
 				"AllowList": [ "AllowTranslucentSelection", "AllowGroupSelection", "StrictBoxSelect", "TransparentBoxSelect", "ShowTransformWidget", "Scalability", "ToggleHideViewportUI", "FeatureLevelPreview" ]
@@ -2433,13 +2524,13 @@
 				"AllowList": [ "SelectAll", "SelectNone", "InvertSelection", "Hierarchy", "Advanced", "SelectAllActorsOfSameClass", "ByTypeSection", "Lights", "Material", "SkeletalMeshes", "StaticMeshes" ]
 			},
 			"LevelEditor.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler" ]
+				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler" ]
 			},
 			"LevelEditor.MainMenu.Verse": {
 				"AllowList": [ "VisualVerseTab", "VerseLog", "OpenVSCode", "BuildVerse" ]
 			},
 			"LevelEditor.MainMenu.Window": {
-				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "EnableMenuEditing", "ToggleValkyrieMode", "ToggleValkyrieRestrictiveMode" ]
+				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "EnableMenuEditing", "ToggleValkyrieMode", "ToggleValkyrieRestrictiveMode", "OpenAIAssistantTab" ]
 			},
 			"LevelEditor.StatusBar.ToolBar": {
 				"AllowList": [ "SourceControl", "ActivityTrackerStatus", "LiveLinkHubStatusBar"]
@@ -2460,7 +2551,7 @@
 				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl" ]
 			},
 			"MainFrame.MainMenu.Window": {
-				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen" ]
+				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "OpenAIAssistantTab" ]
 			},
 			"Persona.AnimViewportCharacterMenu": {
 				"DenyList": [ "ToggleMassProperties", "ConstraintConstraintModeSubMenu" ],
@@ -2563,6 +2654,7 @@
 			},
 			"Global": {
 				"AllowList": [
+					"AIAssistant",
 					"ContentBrowserTab1",
 					"ContentBrowserTab2",
 					"ContentBrowserTab3",
@@ -2586,6 +2678,7 @@
 					"ValkyrieProjectSize",
 					"VkContentResolutionViewer",
 					"MemoryProfiler",
+					"TimingProfiler",
 					"VerseExplorerTab",
 					"NiagaraDebugger",
 					"LoosePropertyFixup"
@@ -2593,6 +2686,7 @@
 			},
 			"LevelEditor": {
 				"AllowList": [
+					"AIAssistant",
 					"ContentBrowserTab1",
 					"ContentBrowserTab2",
 					"ContentBrowserTab3",
@@ -2630,6 +2724,7 @@
 					"BottomRightModeTab",
 					"ValkyrieProjectSize",
 					"MemoryProfiler",
+					"TimingProfiler",
 					"VerseExplorerTab",
 					"WorldBrowserPartitionEditor",
 					"WorldBrowserComposition",
@@ -2638,6 +2733,8 @@
 					"LevelEditorDataLayerBrowser",
 					"PoseTab",
 					"MotionTrailTab",
+					"SelectionSets",
+					"ConstrainingTab",
 					"SnapperTab",
 					"ControlRigOutlinerTab",
 					"ControlRigDetailsTab",
@@ -2742,7 +2839,9 @@
 					"WidgetTemplates",
 					"CompilerResults",
 					"MVVMTab",
-					"ViewModelPanel"
+					"ViewModelPanel",
+					"UMGEditor_VerseClassSettingsTab",
+					"UMGEditor_VerseClassDetailsTab"
 				]
 			}
 		},
@@ -2946,6 +3045,7 @@
 			"Lucky_AssemblyDevice",
 			"Technodrome_Starter_Island",
 			"Gunfight",
+			"AlphaTycoon",
 			"Minigame_Mastery",
 			"Social_Deduction",
 			"GreasyGames",
@@ -3052,7 +3152,7 @@
 			},
 			{
 				"Type": "/Script/Engine.StaticMesh",
-				"AllowList": [ "MaterialSlots", "MaterialList", "Material", "Mesh", "Transform", "Miscellaneous", "File Path", "MeshReductionSettings", "PercentTriangles", "SelectLOD", "BodySetup", "ScreenSize", "MinLOD", "QualityLevelMinLOD", "LODForCollision", "StaticMeshSectionListNameLOD_0", "StaticMeshSectionListNameLOD_1", "StaticMeshSectionListNameLOD_2", "StaticMeshSectionListNameLOD_3", "StaticMeshSectionListNameLOD_4", "StaticMeshSectionListNameLOD_5", "StaticMeshSectionListNameLOD_6", "StaticMeshSectionListNameLOD_7", "LODGroup", "LODImport", "QualityLevelMinLOD", "AutoComputeLOD", "NumberOfLODs", "ApplyChanges", "MeshBuildSettings", "RecomputeNormals", "RecomputeTangents", "UseMikkTSpace", "ComputeWeightedNormals", "RemoveDegenerates", "BuildReversedIndexBuffer", "UseHighPrecisionTangentBasis", "UseFullPrecisionUVs", "UseBackwardsCompatibleF16TruncUVs", "GenerateLightmapUVs", "MinLightmapResolution", "SourceLightmapIndex", "DestinationLightmapIndex", "BuildScale", "DistanceFieldResolutionScale", "GenerateDistanceFieldAsIfTwoSided", "DistanceFieldReplacementMesh", "MaxLumenMeshCards", "PreserveArea", "PositionPrecision", "MinimumResidency", "KeepTrianglePercent", "TrimRelativeError", "FallbackTrianglePercent", "FallbackRelativeError", "NANITE_SourceImportFilename", "NaniteHiResButtons" ]
+				"AllowList": [ "MaterialSlots", "MaterialList", "Material", "Mesh", "Transform", "Miscellaneous", "File Path", "MeshReductionSettings", "PercentTriangles", "SelectLOD", "BodySetup", "ScreenSize", "MinLOD", "QualityLevelMinLOD", "LODForCollision", "StaticMeshSectionListNameLOD_0", "StaticMeshSectionListNameLOD_1", "StaticMeshSectionListNameLOD_2", "StaticMeshSectionListNameLOD_3", "StaticMeshSectionListNameLOD_4", "StaticMeshSectionListNameLOD_5", "StaticMeshSectionListNameLOD_6", "StaticMeshSectionListNameLOD_7", "LODGroup", "LODImport", "QualityLevelMinLOD", "AutoComputeLOD", "NumberOfLODs", "ApplyChanges", "MeshBuildSettings", "RecomputeNormals", "RecomputeTangents", "UseMikkTSpace", "ComputeWeightedNormals", "RemoveDegenerates", "BuildReversedIndexBuffer", "UseHighPrecisionTangentBasis", "UseFullPrecisionUVs", "UseBackwardsCompatibleF16TruncUVs", "GenerateLightmapUVs", "MinLightmapResolution", "SourceLightmapIndex", "DestinationLightmapIndex", "BuildScale", "DistanceFieldResolutionScale", "GenerateDistanceFieldAsIfTwoSided", "DistanceFieldReplacementMesh", "MaxLumenMeshCards", "PreserveArea", "PositionPrecision", "MinimumResidency", "KeepTrianglePercent", "TrimRelativeError", "FallbackTrianglePercent", "FallbackRelativeError", "NANITE_SourceImportFilename", "NaniteHiResButtons", "PositiveBoundsExtension", "NegativeBoundsExtension" ]
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMesh",
@@ -3634,6 +3734,10 @@
 				"AllowList": [ "bUseAutoNavmeshFlags", "bEnabledForPhoneTool" ]
 			},
 			{
+				"Type": "/Script/FortniteGame.FortStaticMeshComponent",
+				"AllowList": [ "StaticMesh", "OverrideMaterials", "bForceNaniteForMasked", "ParentSocket", "bEvaluateWorldPositionOffset", "WorldPositionOffsetDisableDistance", "CustomPrimitiveData", "bDisallowNanite" ]
+			},
+			{
 				"Type": "/Script/HairStrandsCore.GroomComponent",
 				"AllowList": [ "GroomAsset", "BindingAsset", "bUseCards", "SimulationSettings" ]
 			},
@@ -3809,6 +3913,8 @@
 					"bEnabled",
 					"bUnbound",
 					"Lens|Bloom",
+					"Lens|Bloom|Gaussian",
+					"Lens|Bloom|Convolution",
 					"Lens|Chromatic Aberration",
 					"Lens|Lens Flares",
 					"Lens|Image Effects",
@@ -3841,6 +3947,8 @@
 					"bEnabled",
 					"bUnbound",
 					"Lens|Bloom",
+					"Lens|Bloom|Gaussian",
+					"Lens|Bloom|Convolution",
 					"Lens|Chromatic Aberration",
 					"Lens|Lens Flares",
 					"Lens|Image Effects",
@@ -3886,7 +3994,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",
-				"AllowList": [ "Title", "Description", "DocsUrl", "VersePath", "VerseVersion", "UGCLocDescriptor", "AutoLocalizationSettings", "ExperimentalAccessWarning" ]
+				"AllowList": [ "Title", "Description", "DocsUrl", "VersePaths", "VerseVersion", "UGCLocDescriptor", "AutoLocalizationSettings", "ExperimentalAccessWarning" ]
 			},
 			{
 				"Type": "/Script/Engine.CameraShakeBase",
@@ -3935,6 +4043,10 @@
 			{
 				"Type": "/Script/FortniteGame.FortLinkToActorComponent",
 				"AllowList": [ "OnLinkedActorDestroyed" ]
+			},
+			{
+				"Type": "/Script/FortniteUI.FortItemCooldownVM",
+				"DenyList": [ "CooldownTypesSupported", "CurrentCooldownType", "bShouldShowChargingImage", "bAmmoRegenAvailableState" ]
 			},
 			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterDefinition",
@@ -4004,8 +4116,8 @@
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
-				"DenyList": [ "CharacterCosmeticAssetId" ],
-				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook" ]
+				"DenyList": [ "CharacterCosmeticAssetId", "CompanionCosmeticAssetId", "AICompanionProxyToApply" ],
+				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook", "SidekickCosmetic" ]
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C",
@@ -4223,7 +4335,7 @@
 			},
 			{
 				"Type": "/Script/Engine.PostProcessSettings",
-				"AllowList": ["BloomIntensity", "BloomThreshold", "DynamicGlobalIlluminationMethod", "SceneFringeIntensity", "ChromaticAberrationStartOffset", "LensFlareIntensity", "VignetteIntensity", "ColorSaturation", "ColorContrast", "ColorGamma", "WeightedBlendables", "FilmGrainIntensity", "FilmGrainTexelSize", "TemperatureType", "WhiteTemp", "WhiteTint", "AutoExposureMethod", "AutoExposureBias", "AutoExposureApplyPhysicalCameraExposure", "AutoExposureBiasCurve", "AutoExposureMeterMask", "AutoExposureMinBrightness", "AutoExposureMaxBrightness", "AutoExposureSpeedUp", "AutoExposureSpeedDown", "SceneColorTint",
+				"AllowList": ["BloomMethod", "BloomIntensity", "BloomGaussianIntensity", "BloomConvolutionIntensity", "BloomThreshold", "DynamicGlobalIlluminationMethod", "SceneFringeIntensity", "ChromaticAberrationStartOffset", "LensFlareIntensity", "VignetteIntensity", "ColorSaturation", "ColorContrast", "ColorGamma", "WeightedBlendables", "FilmGrainIntensity", "FilmGrainTexelSize", "TemperatureType", "WhiteTemp", "WhiteTint", "AutoExposureMethod", "AutoExposureBias", "AutoExposureApplyPhysicalCameraExposure", "AutoExposureBiasCurve", "AutoExposureMeterMask", "AutoExposureMinBrightness", "AutoExposureMaxBrightness", "AutoExposureSpeedUp", "AutoExposureSpeedDown", "SceneColorTint",
 					"LumenSkylightLeaking","LumenFullSkylightLeakingDistance", "LumenDiffuseColorBoost", "AutoExposureMethod","AutoExposureBias","AutoExposureApplyPhysicalCameraExposure","AutoExposureBiasCurve","AutoExposureMeterMask","AutoExposureMinBrightness","AutoExposureMaxBrightness","AutoExposureSpeedUp","AutoExposureSpeedDown","AutoExposureLowPercent","AutoExposureHighPercent","HistogramLogMin","HistogramLogMax","LocalExposureHighlightContrastScale","LocalExposureShadowContrastScale","LocalExposureDetailStrength","LocalExposureBlurredLuminanceBlend","LocalExposureBlurredLuminanceKernelSizePercent","LocalExposureMiddleGreyBias",
 					"CameraShutterSpeed", "CameraISO", "DepthOfFieldFstop", "DepthOfFieldMinFstop", "DepthOfFieldBladeCount", "DepthOfFieldUseHairDepth", "MotionBlurAmount", "MotionBlurMax", "MotionBlurTargetFPS", "MotionBlurPerObjectSize", "Lens", "Color Grading", "Global Illumination", "Rendering Features", "Film Grain", "Highlights", "Midtones", "Shadows", "ColorSaturationHighlights", "ColorContrastHighlights", "ColorGammaHighlights", "ColorGainHighlights", "ColorOffsetHighlights", "ColorCorrectionHighlightsMin", "ColorCorrectionHighlightsMax", "ColorSaturationMidtones", "ColorContrastMidtones", "ColorGammaMidtones", "ColorGainMidtones", "ColorOffsetMidtones", "ColorSaturationShadows",
 					"ColorContrastShadows", "ColorGammaShadows", "ColorGainShadows", "ColorOffsetShadows", "ColorCorrectionShadowsMax", "LensFlareTint", "LensFlareBokehSize", "LensFlareThreshold", "LensFlareBokehShape", "BloomDirtMask", "BloomDirtMaskIntensity", "BloomDirtMaskTint"
@@ -4239,7 +4351,7 @@
 			},
 			{
 				"Type": "/Script/FortniteAI.NPCCustomEffect",
-				"AllowList": [ "VisualEffect", "VisualEffectSocket", "SoundEffect", "SoundEffectSocket" ],
+				"AllowList": [ "bEnableEffect", "VisualEffect", "VisualEffectSocket", "SoundEffect", "SoundEffectSocket" ],
 				"DenyList": [ "EffectTag" ]
 			},
 			{
@@ -4445,7 +4557,7 @@
 			},
 			{
 				"Type": "/Script/DaySequence.DaySequenceModifierComponent",
-				"AllowList": [ "Bias", "DayNightCycleTime", "DayNightCycle", "BlendAmount", "Mode", "bIgnoreBias", "BlendPolicy", "UserDaySequence" ],
+				"AllowList": [ "Bias", "DayNightCycleTime", "DayNightCycle", "BlendAmount", "BlendTime", "Mode", "bIgnoreBias", "BlendPolicy", "UserDaySequence" ],
 				"DenyList": []
 			},
 			{

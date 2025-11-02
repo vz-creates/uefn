@@ -72,6 +72,11 @@
 					"=": [ "ExportLevelSequence" ]
 				}
 			},
+			"AssetEditor.MetaHumanIdentityAssetEditorToolkit.ToolBar": {
+				"DenyList": {
+					"=": [ "AuthenticationMenuButton" ]
+				}
+			},
 			"ContentBrowser.AddNewContextMenu": {
 				"AllowList": {
 					"+": [ "OpenMetaHumanImportTab" ]
@@ -96,12 +101,12 @@
 		"AllowedTabs": {
 			"Global": {
 				"AllowList": {
-					"+": [ "MetaHumanImportTab", "CaptureManager" ]
+					"+": [ "MetaHumanImportTab", "CaptureManager", "MetaHumanCalibration" ]
 				}
 			},
 			"LevelEditor": {
 				"AllowList": {
-					"+": [ "MetaHumanImportTab", "CaptureManager" ]
+					"+": [ "MetaHumanImportTab", "CaptureManager", "MetaHumanCalibration" ]
 				}
 			}			
 		},

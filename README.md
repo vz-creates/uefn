@@ -31,6 +31,9 @@ A basic repository to track multiple UEFN related diffs.
 
 ***
 
+> [!NOTE]  
+> In case the link to the latest diffs is missing, please check active [branches](https://github.com/vz-creates/uefn/branches) for potentially a pending diffing process.
+
 > [!IMPORTANT]  
 > DISCLAIMER:
 > The maintainer of this repository is not affiliated with Epic Games, the content on this repository is not official or endorsed by Epic Games in any way.

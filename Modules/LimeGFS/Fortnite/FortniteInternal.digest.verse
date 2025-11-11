@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.00-CL-47291259
+# Generated from build: ++Fortnite+Release-38.10-CL-47888945
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -121,9 +121,9 @@ AI<public> := module {
       RunDefaultBehavior<native><epic_internal>()<suspends>: ai_action_result
     }
 
+    @available { MinUploadedAtFNVersion := 3200 }
     @hide_in_editor
     @experimental
-    @available { MinUploadedAtFNVersion := 3200 }
     hired_guard_commands<epic_internal> := class<concrete>(npc_behavior) {
       OnBegin<override>()<suspends>: void = external {}
     }
@@ -1038,7 +1038,7 @@ AI<public> := module {
 
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
-    var MoodOverride<public>: ?sidekick_mood
+    var MoodOverride<public>: ?sidekick_mood = external {}
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
@@ -1648,20 +1648,6 @@ Devices<public> := module {
 
   (MovableObject: creative_movable_object_base).TeleportToInternalImpl<native><epic_internal>(Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<transacts>: teleport_to_result
 
-  @experimental
-  # Removes any persona assignment for a participant.
-  (Participant: agent).ClearConversationTarget<native><public>()<transacts>: void
-
-  @experimental
-  # Returns the persona a participant is assigned to, fails if unassigned.
-  (Participant: agent).GetConversationTarget<native><public>()<reads><decides>: conversation_target
-
-  @experimental
-  # A participant can only speak to one conversation target at a time.
-  #  A conversation target can be spoken to by many participants at a time.
-  #  Fails if the conversation target refuses the addition, or if the participant is assigned to a different conversation target.
-  (Participant: agent).SetConversationTarget<native><public>(ConversationTarget: conversation_target)<transacts><decides>: void
-
   using { /Fortnite.com/AI }
   using { /Fortnite.com/Playspaces }
   using { /UnrealEngine.com/Temporary/Diagnostics }
@@ -1925,18 +1911,6 @@ Devices<public> := module {
   GetCreativeObjectsWithTags<native><public>(SearchCriteria: tag_search_criteria)<transacts>: []creative_object_interface
 
   HandleMoveToInternalResult<epic_internal>(Result: move_to_internal_result): move_to_result = external {}
-
-  @available { MinUploadedAtFNVersion := 3800 }
-  MakePersonaErrorResult<native_callable><epic_internal>(Result: error_type where error_type: type): result(
-    false,
-    error_type
-  ) = external {}
-
-  @available { MinUploadedAtFNVersion := 3800 }
-  MakePersonaSuccessResult<native_callable><epic_internal>(Result: success_type where success_type: type): result(
-    success_type,
-    false
-  ) = external {}
 
   Patchwork<public> := module {
     cable_splitter_device<public> := class<concrete><final>(patchwork_device) {}
@@ -2252,8 +2226,6 @@ Devices<public> := module {
     # Signaled when a guard stops moving on the patrol path.
     PatrolPathStoppedEvent<public>: listenable(agent) = external {}
   }
-
-  ai_prompt_device<epic_internal> := class {}
 
   # Used to boost `agent`s, vehicles, and other objects upwards into the air.
   air_vent_device<public> := class<concrete><final>(creative_device_base) {
@@ -3021,6 +2993,7 @@ Devices<public> := module {
   }
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Assets }
   # Used to spawn a carryable object into the experience.
   carryable_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
     # Signaled when the carryable collides with an agent.
@@ -3580,48 +3553,6 @@ Devices<public> := module {
     # The Speaker Name of the device. When the value is changed, active conversations are not updated.
     # The value of SpeakerName is the default value used when initiating a conversation.
     var SpeakerName<public>: message = external {}
-  }
-
-  @experimental
-  conversation_target<native><public> := interface<unique><epic_internal> {
-    # When agent targets Self for conversation.
-    AddConversationTargeterEvent<final><public>: listenable(agent) = external {}
-
-    # Allow player to to talk to this persona.
-    AddPlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
-
-    # Succeeds if the agent can target Self for conversation.
-    CanConversationTargeterBeAdded<native_callable><epic_internal>(ConversationTargeter: agent)<reads><decides>: void = external {}
-
-    # When agent untargets Self for conversation.
-    RemoveConversationTargeterEvent<final><public>: listenable(agent) = external {}
-
-    # Stop player from being able to talk to this persona.
-    RemovePlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
-
-    # Signals the AddConversationTargeterEvent.
-    SignalAddConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
-
-    # Signals the RemoveConversationTargeterEvent.
-    SignalRemoveConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
-
-    # Listenable which is signaled when the player starts prompting the persona.
-    StartHearEvent<public>: listenable(agent)
-
-    # Listenable which is signaled when the persona starts talking.
-    #  1/ The agent (if involved) which prompted the response.
-    #  2/ The message being said.
-    #  3/ Cancelable to stop the target from talking.
-    StartSayEvent<public>: listenable(tuple(?agent, message, cancelable))
-
-    # Listenable which is signaled when the player finishes prompting the persona.
-    StopHearEvent<public>: listenable(agent)
-
-    # Listenable which is signaled when the target stops talking.
-    StopSayEvent<public>: listenable(tuple())
-
-    # All the agents currently targeting Self for conversation.
-    var<private> ConversationTargeters<public>: []agent
   }
 
   # Used to place a crash pad that can bounce players and protect them from fall damage.
@@ -4460,11 +4391,6 @@ Devices<public> := module {
 
     # Enables this device.
     Enable<public>(): void = external {}
-  }
-
-  @experimental
-  error_message<native><public> := class {
-    Message<native><public>: message
   }
 
   # Used to customize high level properties of the game mode.
@@ -5714,8 +5640,6 @@ Devices<public> := module {
     VehicleTriggeredEvent<public>: listenable(?agent) = external {}
   }
 
-  non_parametric_agent_subscribable_persona_event<epic_internal> := class(subscribable_event_intrnl(agent)) {}
-
   using { /Verse.org/SpatialMath }
   # Used to spawn NPCs made with Character Definition asset.
   npc_spawner_device<public> := class<concrete><final>(creative_device_base) {
@@ -6092,141 +6016,6 @@ Devices<public> := module {
 
     # Succeeds when `Agent` is registered to this checkpoint.
     IsPerceived<public>(Agent: agent)<transacts><decides>: void = external {}
-  }
-
-  using { /Verse.org/Assets }
-  @experimental
-  # NPC Persona component
-  persona_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    var<epic_internal> Description<native><public>: []string = external {}
-
-    var<epic_internal> Icon<native><public>: texture_base = external {}
-
-    var<epic_internal> Name<native><public>: string
-
-    var<epic_internal> Personality<native><public>: []string = external {}
-
-    var<epic_internal> Voice<native><public>: string
-  }
-
-  @experimental
-  persona_conversation_target<native><public> := class(conversation_target) {
-    # Adds a fact which is assessed at when a persona is prompted. The fact is generated by calling the FactFunc.
-    AddDynamicFact<native><public>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
-
-    # Add information about, or known by, the persona. Cancelable is used to remove the fact.
-    # # The persona knows these facts, and device facts.
-    AddFact<native><public>(Fact: string)<transacts>: cancelable
-
-    # Allow player to to talk to this persona.
-    AddPlayer<native><override>(Player: agent)<transacts><decides>: void
-
-    # Fails if the participant is not in the list of participants
-    CanConversationTargeterBeAdded<override><native>(ConversationTargeter: agent)<reads><decides>: void
-
-    # Returns a diagnostic of the Persona facts, both static and dynamic.
-    DiagnoseFacts<native><epic_internal>()<reads>: diagnostic
-
-    # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
-    PromptFailureEvent<native><public>: listenable(persona_prompt_error) = external {}
-
-    # Requests the Persona to talk on the topic provided.
-    PromptToTalk<native><public>(Topic: string): void
-
-    # Stop player from being able to talk to this persona.
-    RemovePlayer<native><override>(Player: agent)<transacts><decides>: void
-
-    # Listenable which is signaled when the player starts prompting the persona.
-    StartHearEvent<native><override>: listenable(agent) = external {}
-
-    # Listenable which is signaled when the persona starts talking.
-    #  1/ The agent (if involved) which prompted the response.
-    #  2/ The message being said.
-    #  3/ Cancelable to stop the target from talking.
-    StartSayEvent<native><override>: listenable(tuple(?agent, message, cancelable)) = external {}
-
-    # Listenable which is signaled when the player finishes prompting the persona.
-    StopHearEvent<native><override>: listenable(agent) = external {}
-
-    # Listenable which is signaled when the target stops talking.
-    StopSayEvent<native><override>: listenable(tuple()) = external {}
-
-    SubscribeToResponseType<native><public>(response_type: type, Callback: type { _(: ?agent, : response_type): void })<transacts>: cancelable
-
-    # All the agents currently targeting Self for conversation.
-    var ConversationTargeters<override>: []agent = external {}
-  }
-
-  @experimental
-  # A persona device manages conversations involving one or multiple persona objects
-  # that are either standalone (announcer) or in the future attachable to NPCs,
-  # behind the scenes using a single LLM session.
-  # The persona device sees all conversations by all personas and participants.
-  # The persona device only sees facts added to the device.
-  # A persona also sees all conversations among all of its device's personas and participants.
-  # A persona sees all facts added to its device and itself.
-  persona_device<native><public> := class<concrete><final>(creative_device_base) {
-    # Adds a fact which is assessed at when the device, or a persona is prompted. The fact is generated by calling the FactFunc.
-    AddDynamicFact<native><epic_internal>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
-
-    # Add general information to the device. Cancelable is used to remove the fact.
-    # The persona knows these facts, and their persona facts.
-    AddFact<native><epic_internal>(Fact: string)<transacts>: cancelable
-
-    # Attempts to add a player to the list of participants on this device.
-    # Does nothing if the agent does not meet the criteria of participation configured on the device.
-    AddParticipant<public>(Agent: agent): void = external {}
-
-    # Attempts to add a persona on this device.
-    AddPersona<native><public>((local:)Persona: agent)<transacts><decides>: persona_conversation_target
-
-    # Removes all conversation history from the device.
-    ClearHistory<native><public>()<transacts>: void
-
-    @available { MinUploadedAtFNVersion := 3800 }
-    # The result will conform to the result type. The result type must be a struct which can contain
-    # numeric types, messages, bools and enums, as well as structs or arrays which only contain those types, anything else results in an error.
-    # Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
-    Prompt<native><epic_internal>(
-      UserPrompt: string,
-      response_type: type)<suspends>: result(response_type,
-      persona_prompt_error
-    )
-
-    # Removes an agent from the participants.
-    RemoveParticipant<public>(Agent: agent): void = external {}
-
-    # Attempts to remove a persona on this device.
-    RemovePersona<native><public>((local:)Persona: agent)<transacts>: void
-
-    # All the players in the channel with the personas managed by this device.
-    var<private> Participants<public>: []agent = external {}
-
-    # Direct access to all personas configured on this device.
-    var<private> Personas<public>: []persona_conversation_target = external {}
-  }
-
-  @experimental
-  persona_prompt_character_limit_error<native><public> := class(persona_prompt_error) {}
-
-  @experimental
-  persona_prompt_error<native><public> := class(error_message) {}
-
-  @experimental
-  persona_prompt_moderated_error<native><public> := class(persona_prompt_error) {}
-
-  @experimental
-  persona_prompt_throttled_error<native><public> := class(persona_prompt_error) {}
-
-  @experimental
-  persona_prompt_timeout_error<native><public> := class(persona_prompt_error) {}
-
-  persona_type_subscription<native><epic_internal> := class(cancelable) {
-    Cancel<native><override>()<transacts>: void
-  }
-
-  persona_utterance<native><epic_internal> := class(cancelable) {
-    Cancel<native><override>()<transacts>: void
   }
 
   # Physics boulder that can be dislodged and damage `agent`s, vehicles, creatures, and structures.
@@ -14883,20 +14672,22 @@ Itemization<public> := module {
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   inventory_item_action_property_interface_asset<epic_internal>: property_interface_UE5_definition = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3200 }
+  @experimental
   inventory_item_view_model_component<native><epic_internal> := class<final><final_super>(component) {
     GetCategoryDisplayName<native><public>(ItemComponent: item_component)<reads>: message
 
     InitializeViewModel<native_callable><public>(Item: entity): void = external {}
 
-    OnEquippedChanged<protected>(ItemEquippedChange: item_equipped_change): void = external {}
+    OnDetailsChanged<protected>(): void = external {}
+
+    OnEquippedChanged<protected>(ItemEquippedChange: change_equipped_result): void = external {}
 
     OnReloadTimeChanged<protected>(NewTime: float): void = external {}
 
     OnSimulate<override>()<suspends>: void = external {}
 
-    OnStackSizeChanged<protected>(ItemStackSizeChange: item_stack_size_change): void = external {}
+    OnStackSizeChanged<protected>(ItemStackSizeChange: change_stack_size_result): void = external {}
 
     PropertyInterface<public>: InventoryItemPropertyInterface = external {}
 
@@ -14907,12 +14698,12 @@ Itemization<public> := module {
     var StartingReloadTime<protected>: float = external {}
   }
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3200 }
+  @experimental
   inventory_ui_action_component<native><epic_internal> := class<final><final_super>(component) {
-    HandleItemsAdded<protected>(AddItemsResult: add_items_result): void = external {}
+    HandleItemsAdded<protected>(AddItemResult: add_item_result): void = external {}
 
-    HandleItemsRemoved<protected>(RemoveItemsResult: remove_items_result): void = external {}
+    HandleItemsRemoved<protected>(RemoveItemResult: remove_item_result): void = external {}
 
     HandleRequestDropHalfSelectedItem<protected>(): void = external {}
 
@@ -14925,8 +14716,8 @@ Itemization<public> := module {
     UninitializeViewModel<native_callable><epic_internal>(): void = external {}
   }
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3200 }
+  @experimental
   inventory_view_model_component<native><epic_internal> := class<final><final_super>(component) {
     HandleInventoryAdded<protected>(AddInventoryResult: add_inventory_result): void = external {}
 
@@ -14936,9 +14727,9 @@ Itemization<public> := module {
 
     HandleItemSlotsChanged<public>(ItemSlotsChangedResult: change_items_slot_result): void = external {}
 
-    HandleItemsAdded<public>(AddItemsResult: add_items_result): void = external {}
+    HandleItemsAdded<public>(AddItemResult: add_item_result): void = external {}
 
-    HandleItemsRemoved<public>(RemoveItemsResult: remove_items_result): void = external {}
+    HandleItemsRemoved<public>(RemoveItemResult: remove_item_result): void = external {}
 
     InitializeViewModel<native_callable><public>(InventoryComponent: inventory_component): void = external {}
 
@@ -14976,32 +14767,154 @@ Itemization<public> := module {
   }
 }
 
-Mimic<public> := module {
-  MakeLLMString<native_callable><epic_internal>(String: string): llm_string = external {}
+Marketplace<public> := module {
+  @experimental
+  # Epic provides a function telling developers whether their platform, territory & age allows purchase exhortations.
+  AllowDirectPromptsToPurchase<native><public>(Player: player)<reads><decides>: void
 
-  MakeLLMStringMessage<localizes><native_callable><epic_internal>(LLMString: llm_string): message = external {}
+  @experimental
+  # Informs if the player allows use of paid random items.
+  AllowPaidRandomItems<native><public>(Player: player)<reads><decides>: void
 
-  (/Fortnite.com/Mimic:)MakeLocalizableValue<epic_internal>(V: llm_string): localizable_llm_string = external {}
+  @experimental
+  # Displays the Epic purchase UI to the player to purchase the `Offer`.
+  # Returns true if an offer was purchased.
+  BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
 
-  llm_fact<native><epic_internal> := class(cancelable) {
-    Cancel<native><override>()<transacts>: void
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  # Consumes a consumable `product`.
+  # Fails if:
+  #  * The `product` is not consumable.
+  #  * The `Player` does not own requested `Count` of `product`.
+  ConsumeProduct<native><public>(
+    Player: player,
+    product_type: concrete_subtype(product),
+    ?Count: int = external {}
+  )<suspends>: logic
+
+  @experimental
+  GetPriceVBucks<native><public>(P: price_vbucks): float
+
+  @experimental
+  # Used to listen for purchase change events during a game session.
+  # Runtime error if `product` is used directly.
+  GetProductsChangedEvent<native><public>(
+    Player: player,
+    product_type: subtype(product)): listenable(tuple(player,
+    []product_change(product_type)
+  ))
+
+  @experimental
+  # Get all available `product`s for `Player`, along with the number of those `product`s.
+  # This includes finding `product`s of derived types.
+  # Calling GetPurchasedProducts(Player:player, product) will suspend forever.
+  GetPurchasedProducts<native><public>(
+    Player: player,
+    product_type: subtype(product))<suspends>: []tuple(product_type,
+    int
+  )
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  # Grant an item directly to `Player`.
+  # This function does not gate granting items based on ProductDisclosures.
+  # Items are always granted assuming they match the MaxCount requirement.
+  GrantProduct<native><public>(
+    Player: player,
+    product_type: concrete_subtype(product),
+    ?Count: int = external {}
+  )<suspends>: logic
+
+  @experimental
+  MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+
+  @experimental
+  # Shows the Epic provided store front contain the specified `Offers`.
+  ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
+
+  @experimental
+  # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
+  bundle_offer<native><public> := class<castable>(offer) {
+    Offers<native><public>: []tuple(offer, int) = external {}
   }
 
   @experimental
-  llm_session<native><epic_internal> := class<concrete><final> {
-    # Adds a fact which is assessed at when the device, or a persona is prompted. The fact is generated by calling the FactFunc.
-    AddDynamicFact<native><public>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+  # Offers are used to sell products to players. See `product_offer` and `bundle_offer` classes for more information.
+  offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
+    # Override this method to restrict availability of an offer in certain regions and minimum ages.
+    #
+    # Parameters:
+    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent territories, or special
+    #                  area of geographical interest
+    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for the subdivision
+    #                  within a country, dependent territory, or special area of geographical interest.
+    #                  If subdivision information is unavailable for players in a region SubdivisionCode
+    #                  will be an empty string.
+    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows, Xbox, Luna, GeForceNow
+    #
+    # Returns:
+    #     Fails if sale of this offer should not be allowed in this (CountryCode, SubdivisionCode)
+    #     Minimum age of purchase in this (CountryCode, SubdivisionCode).
+    #     If minimum age is higher than the highest available age by region the offer will not be made
+    GetMinPurchaseAge<native_callable><public>(
+      CountryCode: string,
+      SubdivisionCode: string,
+      PlatformFamily: string
+    )<computes><decides>: int = external {}
 
-    # Adds a fact to the llm, returns a cancelable which revokes the fact.
-    AddFact<native><public>(Fact: string): cancelable
+    @editable
+    Price<native><public>: price_dimension
   }
 
-  llm_string<native><epic_internal> := class {
-    Value<native><epic_internal>: string
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/Presentation }
+  using { /Verse.org/Simulation }
+  @experimental
+  price_dimension<native><public> := class<computes><abstract><epic_internal> {}
+
+  @experimental
+  price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+
+  @experimental
+  # A product that is tracked by the commerce system.
+  #
+  #  * A player may only have one `product` if the product is not consumable.
+  #  * A player may have `MaxCount` of a consumable product.
+  #  * Your derived type must be <concrete> to be used by the purchase system.
+  product<native><public> := class<castable>(has_icon, has_description) {
+    Consumable<native><public>: logic = external {}
+
+    MaxCount<native><public>: int = external {}
+
+    PaidArea<native><public>: logic = external {}
+
+    PaidRandomItem<native><public>: logic = external {}
   }
 
-  localizable_llm_string<native><epic_internal> := class(localizable_value) {
-    Value<native><epic_internal>: string
+  @experimental
+  # Products that have changed in quantity.
+  # This will also include product changes triggered by moderation, refunds and other commerce operations.
+  product_change<native><public>(t: subtype(product)) := class<internal> {
+    # Change to the original quantity of product.
+    Change<native><public>: int
+
+    (/Fortnite.com/Marketplace/product_change:)Marketplace_product_change_Variance<private>: ?type { _(): tuple(t) } = external {}
+
+    # Product that has changed in quantity.
+    Product<native><public>: t
+
+    # Total quantity of the product now owned.
+    Quantity<native><public>: int
+  }
+
+  @experimental
+  # A `product_offer` allows an individual product to be purchased.
+  product_offer<native><public> := class<castable>(offer) {
+    @available { MinUploadedAtFNVersion := 3800 }
+    @editable
+    ProductType<native><public>: concrete_subtype(product)
   }
 }
 
@@ -16336,7 +16249,7 @@ VerseInternalTesting<public> := module {
 
       RunTestSuites<public>()<suspends>: void = external {}
 
-      var CurrentFunctionName<public>: string = external {}
+      var CurrentTestCasePlan<public>: ?test_case_plan = external {}
 
       var CurrentTestSuite<public>: string = external {}
 

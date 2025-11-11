@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.00-CL-47291259
+# Generated from build: ++Fortnite+Release-38.10-CL-47888945
 #################################################
 
 AINavigation<public> := module {
@@ -375,6 +375,9 @@ EntityTestSuite<public> := module {
     var AutoComponent<native><epic_internal>: ?component = external {}
   }
 
+  @hide_in_editor
+  test_component_replication_settings<native><epic_internal> := class<final_super>(component) {}
+
   using { /Verse.org/Assets }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
@@ -433,17 +436,26 @@ Itemization<public> := module {
   }
 
   @experimental
-  add_item_event<native><public> := class<epic_internal>(scene_event) {
-    ItemComponent<native><public>: item_component
+  add_item_error<native><public> := class<computes> {}
 
-    var EligibleInventories<native><public>: []inventory_with_priority
+  @experimental
+  # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
+  # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
+  add_item_query_event<native><public> := class<epic_internal>(scene_event) {
+    Inventory<native><public>: inventory_component
+
+    Item<native><public>: item_component
+
+    var Errors<native><public>: []add_item_error = external {}
   }
 
   @experimental
-  add_items_result<native><public> := class<epic_internal> {
+  add_item_result<native><public> := class<epic_internal> {
+    # Items that were newly added to this inventory as a result of the transaction.
     AddedItems<native><public>: []entity
 
-    Inventory<native><public>: inventory_component
+    # Items whose stack size changed as a result of the transaction.
+    ModifiedItems<native><public>: []tuple(entity, int)
   }
 
   @editor_type
@@ -466,17 +478,51 @@ Itemization<public> := module {
   }
 
   @experimental
+  change_equipped_result<native><public> := class<epic_internal> {
+    IsItemEquipped<native><public>: logic
+
+    ItemComponent<native><public>: item_component
+  }
+
+  @experimental
+  change_inventory_result<native><public> := class<epic_internal> {
+    CurrentInventory<native><public>: ?inventory_component
+
+    ItemComponent<native><public>: item_component
+
+    PreviousInventory<native><public>: ?inventory_component
+  }
+
+  @experimental
   change_items_slot_result<native><epic_internal> := struct<epic_internal> {
     Inventory<native><public>: inventory_component
 
     SlotChangedItems<native><public>: []item_slot_change
   }
 
+  @experimental
+  change_max_stack_size_result<native><public> := class<epic_internal> {
+    CurrentMaxStackSize<native><public>: ?int
+
+    ItemComponent<native><public>: item_component
+
+    PreviousMaxStackSize<native><public>: ?int
+  }
+
+  @experimental
+  change_stack_size_result<native><public> := class<epic_internal> {
+    CurrentStackSize<native><public>: int
+
+    ItemComponent<native><public>: item_component
+
+    PreviousStackSize<native><public>: int
+  }
+
   using { /UnrealEngine.com/Abilities }
-  using { /Verse.org }
   using { /Verse.org/Assets }
   using { /Verse.org/Colors }
   using { /Verse.org/Native }
+  using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
@@ -486,7 +532,7 @@ Itemization<public> := module {
   }
 
   @experimental
-  equip_item_error<native><public> := class {}
+  equip_item_error<native><public> := class<computes> {}
 
   @experimental
   equip_item_query_event<native><public> := class(scene_event) {
@@ -508,6 +554,15 @@ Itemization<public> := module {
 
   @experimental
   failure_reason<native><public> := class<castable><concrete><reads> {}
+
+  @experimental
+  # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
+  # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
+  find_inventory_event<native><public> := class<epic_internal>(scene_event) {
+    ItemComponent<native><public>: item_component
+
+    var EligibleInventories<native><public>: []inventory_with_priority
+  }
 
   @experimental
   # Item Merge Rules Interface. Implemented by components that want to participate in item mergeability checks.
@@ -534,7 +589,7 @@ Itemization<public> := module {
       ?AllowPartialItemMove: logic = external {}
     )<transacts><decides>: void
 
-    AddItemsEvent<native><final><public>: listenable(add_items_result) = external {}
+    AddItemEvent<native><final><public>: listenable(add_item_result) = external {}
 
     # Adds the provided inventory_rule_interface instance to this inventory's rule list if not already present.
     # NOTE: this part of the API is likely to change during Experimental.
@@ -603,7 +658,7 @@ Itemization<public> := module {
     # Removes items from the inventory. Fails if no items could be removed.
     RemoveItem<native><final><public>(Item: entity)<transacts><decides>: void
 
-    RemoveItemsEvent<native><final><public>: listenable(remove_items_result) = external {}
+    RemoveItemEvent<native><final><public>: listenable(remove_item_result) = external {}
 
     ShowSlotBindings<native><epic_internal>: logic = external {}
 
@@ -811,10 +866,14 @@ Itemization<public> := module {
     Categories<native><public>: []item_category = external {}
 
     # Broadcast when this item is equipped or unequipped.
-    ChangeEquippedEvent<native><final><public>: listenable(item_equipped_change) = external {}
+    ChangeEquippedEvent<native><final><public>: listenable(change_equipped_result) = external {}
 
     # Broadcast when this item changes inventory.
-    ChangeInventoryEvent<native><final><public>: listenable(item_inventory_change) = external {}
+    ChangeInventoryEvent<native><final><public>: listenable(change_inventory_result) = external {}
+
+    ChangeMaxStackSizeEvent<native><final><public>: listenable(change_max_stack_size_result) = external {}
+
+    ChangeStackSizeEvent<native><final><public>: listenable(change_stack_size_result) = external {}
 
     CloneItem<final><native><epic_internal>()<transacts>: entity
 
@@ -844,8 +903,6 @@ Itemization<public> := module {
       []unequip_item_error
     ) = external {}
 
-    MaxStackSizeChangedEvent<native><final><public>: listenable(item_max_stack_size_change) = external {}
-
     # Attempts to merge this item into the specified item. Fails if items cannot be merged or no items are moved.
     #  If TargetAmount is specified, only that amount will try to be merged into this item.
     MergeInto<final><native_callable><public>(
@@ -869,8 +926,6 @@ Itemization<public> := module {
 
     # Sets the stack size of this item.
     SetStackSize<final><native><public>(NewStackSize: int)<transacts>: void
-
-    StackSizeChangedEvent<native><final><public>: listenable(item_stack_size_change) = external {}
 
     # Takes the specified amount of this item's stack, reducing this item's stack size in the process.
     #  If amount is greater than the amount in the stack, the stack amount will be used instead.
@@ -898,27 +953,21 @@ Itemization<public> := module {
 
   @experimental
   # Component that holds the details of an item.
-  item_details_component<native><public> := class<final_super>(component, has_description) {}
+  item_details_component<native><public> := class<final_super>(component, has_description) {
+    ChangeItemDetailsEvent<native><final><epic_internal>: listenable(tuple()) = external {}
 
-  @experimental
-  item_equipped_change<native><public> := class<epic_internal> {
-    IsItemEquipped<native><public>: logic
+    OnItemDetailsChanged<native><epic_internal>()<transacts>: void
 
-    ItemComponent<native><public>: item_component
+    var Description<override>: message = external {}
+
+    var Name<override>: message = external {}
+
+    var ShortDescription<override>: message = external {}
   }
 
   @experimental
   # Component that holds the icon for an item.
   item_icon_component<native><public> := class<final_super>(component, has_icon) {}
-
-  @experimental
-  item_inventory_change<native><public> := class<epic_internal> {
-    CurrentInventory<native><public>: ?inventory_component
-
-    ItemComponent<native><public>: item_component
-
-    PreviousInventory<native><public>: ?inventory_component
-  }
 
   @experimental
   item_limit_inventory_rule<native><epic_internal> := class(inventory_rule_interface) {
@@ -931,15 +980,6 @@ Itemization<public> := module {
 
     @editable
     ItemLimit<native><public>: int = external {}
-  }
-
-  @experimental
-  item_max_stack_size_change<native><public> := class<epic_internal> {
-    CurrentMaxStackSize<native><public>: ?int
-
-    ItemComponent<native><public>: item_component
-
-    PreviousMaxStackSize<native><public>: ?int
   }
 
   @experimental
@@ -995,15 +1035,6 @@ Itemization<public> := module {
   item_slot_size_component<native><epic_internal> := class<final_super>(component) {
     @editable
     SlotSize<native><public>: int = external {}
-  }
-
-  @experimental
-  item_stack_size_change<native><public> := class<epic_internal> {
-    CurrentStackSize<native><public>: int
-
-    ItemComponent<native><public>: item_component
-
-    PreviousStackSize<native><public>: int
   }
 
   @experimental
@@ -1141,14 +1172,31 @@ Itemization<public> := module {
   }
 
   @experimental
-  remove_items_result<native><public> := class<epic_internal> {
+  remove_item_error<native><public> := class<computes> {}
+
+  @experimental
+  remove_item_query_event<native><public> := class<epic_internal>(scene_event) {
     Inventory<native><public>: inventory_component
 
+    Item<native><public>: item_component
+
+    var Errors<native><public>: []remove_item_error = external {}
+  }
+
+  @experimental
+  remove_item_result<native><public> := class<epic_internal> {
+    # Item whose stack size changed as a result of the transaction.
+    ModifiedItem<native><public>: ?entity
+
+    # Total stack count of items removed as a result of this transaction.
+    RemovedAmount<native><public>: int
+
+    # Items that were removed from this inventory as a result of the transaction.
     RemovedItems<native><public>: []entity
   }
 
   @experimental
-  unequip_item_error<native><public> := class {}
+  unequip_item_error<native><public> := class<computes> {}
 
   @experimental
   unequip_item_query_event<native><public> := class(scene_event) {
@@ -1435,7 +1483,7 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a 3D text at the named location, and using the provided draw parameters.
+      # Draws a 3D text using the provided draw parameters.
       DrawText<epic_internal>(
         Text: string,
         Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
@@ -1443,10 +1491,10 @@ Temporary<public> := module {
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
         ?Duration: float = external {},
         ?FontScale: float = external {},
-        ?DrawShadow: logic = external {}
+        ?DrawDropShadow: logic = external {}
       )<transacts>: void = external {}
 
-      # Draws a 3D text at the named location, and using the provided draw parameters.
+      # Draws a 3D text using the provided draw parameters.
       DrawText<native><epic_internal>(
         Text: string,
         Position: (/Verse.org/SpatialMath:)vector3,
@@ -1454,7 +1502,7 @@ Temporary<public> := module {
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
         ?Duration: float = external {},
         ?FontScale: float = external {},
-        ?DrawShadow: logic = external {}
+        ?DrawDropShadow: logic = external {}
       )<transacts>: void
 
       # Hide Debug Draw for the channel for all users.
@@ -2866,10 +2914,18 @@ Tests<public> := module {
   # Module import path: /UnrealEngine.com/Tests/NexusUtils
   NexusUtils<public> := module {
     nexus_utils<native><epic_internal> := class {
+      GetSavedDir<native><epic_internal>(): string
+
       PrintEpicAPIFunctionLog<native><public>(): void
+
+      # Reads a file at a given path, returns a string array. Optionally prepends path to executables 'Saved' directory
+      ReadFile<native><epic_internal>(FilePath: []string)<transacts><decides>: []string
 
       # Takes a screenshot on clients that are connected to the server this is called onPasses in the file name of the screenshot that gets saved to a fixed directory
       ScreenshotAllClients<native><epic_internal>(ScreenshotFileName: string): void
+
+      # Writes a string array of lines to a file at a given path. Optionally prepends path to executables 'Saved' directory
+      WriteFile<native><epic_internal>(FilePath: []string, Lines: []string)<transacts><decides>: void
     }
   }
 }

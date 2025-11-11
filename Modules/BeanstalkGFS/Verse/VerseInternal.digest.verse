@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.00-CL-47291259
+# Generated from build: ++Fortnite+Release-38.10-CL-47888945
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -659,6 +659,25 @@ Predicts<public> := module {
   PredictsServerRegisterObject<native><epic_internal>(__dupe___unnamed_parameter_16: any)<transacts>: any
 }
 
+Presentation<public> := module {
+  using { /Verse.org/Simulation }
+  @experimental
+  # Interface that provides descriptive names or text.
+  has_description<public> := interface {
+    @editable
+    # Full description.
+    var<protected> Description<public>: message
+
+    @editable
+    # Name.
+    var<protected> Name<public>: message
+
+    @editable
+    # Short description with only the essential information.
+    var<protected> ShortDescription<public>: message
+  }
+}
+
 # Module import path: /Verse.org/Random
 Random<public> := module {
   # Returns a random `float` between `Low` and `High`, inclusive.
@@ -746,8 +765,8 @@ SceneGraph<public> := module {
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindAncestorEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
 
-  @experimental
   @available { MinUploadedAtFNVersion := 2930 }
+  @experimental
   # Finds all ancestor entities to `InEntity` with `Tag` present in their `tag_component`.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindAncestorEntitiesWithTag<native><public>(Tag: tag)<transacts>: generator(entity)
@@ -767,8 +786,8 @@ SceneGraph<public> := module {
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindDescendantEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
 
-  @experimental
   @available { MinUploadedAtFNVersion := 2930 }
+  @experimental
   # Finds all descendant entities including `InEntity` with `Tag` present in their `tag_component`.
   # When querying from the simulation entity, the simulation entity itself is not included in the results.
   # The order of the returned entities is unspecified and subject to change.
@@ -2420,10 +2439,18 @@ SceneGraph<public> := module {
   # class to provide alternative origin to the 'transform_component' as an entity
   entity_origin<native><public> := class<final>(origin) {
     @editable
-    @replicated("")
+    @replicated("RepNotify")
     Entity<native><public>: entity
 
     GetTransform<override>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
+
+    OnRep_Entity<native><epic_internal>(): void
+
+    OnRep_EntityOriginTransform<native><epic_internal>(): void
+
+    @replicated("RepNotify")
+    @transient
+    var EntityOriginTransform<native><epic_internal>: (/Verse.org/SpatialMath:)transform = external {}
   }
 
   # Reference type to editor defined prefab. Only generated digest code should reference this type.
@@ -4461,64 +4488,64 @@ Temporary<public> := module {
 }
 
 Verse<public> := module {
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # Succeeds if `element_type` is present in `InSet`.
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
   ).Contains<public>(element_type: castable_subtype(k))<reads><decides>: void = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # Succeeds if all the `element_types` are present in `InSet`.
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
   ).ContainsAll<public>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # Succeeds if any of the `element_types` are present in `InSet`.
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
   ).ContainsAny<public>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # Returns a new set that contains all the elements in `InSet` that are of type `element_type`.
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
   ).FilterByType<native><public>(element_type: castable_subtype(k))<transacts>: classifiable_subset(t)
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # TEMPORARY. Succeeds if `element_type` is present in `InSet`.
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
     k: type
   ).Contains<epic_internal>(element_type: castable_subtype(k))<reads><decides>: void = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # TEMPORARY. Succeeds if all the `element_types` are present in `InSet`.
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
     k: type
   ).ContainsAll<epic_internal>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # TEMPORARY. Succeeds if any of the `element_types` are present in `InSet`.
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
     k: type
   ).ContainsAny<epic_internal>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
 
-  @experimental
   @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
   # TEMPORARY. Returns a new set that contains all the elements in `InSet` that are of type `element_type`.
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
@@ -4862,7 +4889,7 @@ Verse<public> := module {
   # Returns `String` without modification.
   ToString<public>(String: string)<computes>: string = external {}
 
-  accessor<epic_internal> := enum {
+  accessor<native><epic_internal> := enum {
     Dummy
   }
 
@@ -5068,23 +5095,6 @@ Verse<public> := module {
 
     (/Verse.org/Verse/subscribable_event_intrnl:)Verse_subscribable_event_intrnl_Variance<private>: ?type { _(: t): tuple(t) } = external {}
   }
-}
-
-using { /Verse.org/Simulation }
-@experimental
-# Interface that provides descriptive names or text.
-has_description<public> := interface {
-  @editable
-  # Full description.
-  var<protected> Description<public>: message = external {}
-
-  @editable
-  # Name.
-  var<protected> Name<public>: message = external {}
-
-  @editable
-  # Short description with only the essential information.
-  var<protected> ShortDescription<public>: message = external {}
 }
 
 subscribable_event<epic_internal>(t: type) := class(subscribable_event_intrnl(t)) {

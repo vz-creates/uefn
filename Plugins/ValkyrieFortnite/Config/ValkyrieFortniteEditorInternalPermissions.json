@@ -6,7 +6,7 @@
 		"bCollectionsEnabled": true,
 		"bMultiProjectAllowed": true,
 		"bModuleIdNamedPlugins": true,
-		"bModuleWithPluginFriendlyNameAllowed": true,
+		"bOnlinePluginFriendlyNameAllowed": true,
 		"bSelectProjectByIdAllowed": true,
 		"bShowingExtendedProjectDetails": true,
 		"bShowingContentVersePath": true,
@@ -1550,10 +1550,6 @@
 			{
 				"Type": "/Script/Engine.BodyInstance",
 				"AllowList": [ "WalkableSlopeOverride", "bOverrideWalkableSlopeOnInstance" ]
-			},
-			{
-				"Type": "/Script/ValkyrieEditor.ValkyrieAutoLocalizationSettings",
-				"AllowList": [ "bAutoBuildLocalization" ]
 			}
 		],
 		"-": [

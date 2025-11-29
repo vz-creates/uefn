@@ -4,5 +4,13 @@
 			"/Script/MetasoundEngine.MetaSoundSource":			{ "Rules": ["View", "Create", "Edit", "Import", "ModuleAPI"] },
 			"/Script/MetasoundEngine.MetaSoundPatch":			{ "Rules": ["View", "Create", "Edit", "Import", "ModuleAPI"] }
 		}
+	},
+	"PropertyEditorClassPermissionList": {
+		"+": [
+			{
+				"Type": "/Script/MetasoundEngine.MetaSoundSource",
+				"AllowList": [ "OutputFormat" ]
+			}
+		]
 	}
 }

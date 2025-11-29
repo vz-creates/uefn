@@ -1,0 +1,128 @@
+{
+  "_comment_ValkyrieAudioSettings": "Properties related to Audio including SoundWaves, SoundCues, Metasounds, etc.",
+  "ValkyrieAudioSettings": {
+    "MaxSoundWaveImportLengthSeconds": 900,
+    "bEnableLoadingBehaviorForceInline": false,
+    "AllowedCompressionTypes" : {
+      "+": [
+        "BinkAudio",
+        "PCM"
+      ]
+    }
+  },
+  "_comment_ValkyrieEditorSettings": "Properties related to core editor functionality, restricting editor views/controls, allow lists for assets and classes, etc.",
+  "ValkyrieEditorSettings": {
+    "AllowedAssetTypes": {
+      "/Script/AudioModulation.SoundControlBus":			{ "Rules": ["View","Create", "ModuleAPI"] },
+      "/Script/AudioModulation.SoundControlBusMix":		{ "Rules": ["View","Create", "ModuleAPI"] },
+      "/Script/AudioModulation.SoundModulationParameter":	{ "Rules": ["View", "ModuleAPI"], "Subclasses": "All" },
+      "/Script/Engine.AmbientSound":						{ "Rules": ["View"] },
+      "/Script/Engine.SoundAttenuation":					{ "Rules": ["View","Create","Import","ModuleAPI"] },
+      "/Script/Engine.SoundCue":							{ "Rules": ["View","Create","Import","ModuleAPI"] },
+      "/Script/Engine.SoundWave":							{ "Rules": ["View","Create","Import","ModuleAPI"] },
+      "/Script/MetasoundEngine.MetaSoundSource":			{ "Rules": ["View", "ModuleAPI"] },
+      "/Script/MetasoundEngine.MetaSoundPatch":			{ "Rules": ["View", "ModuleAPI"] }
+    },
+    "AllowedClasses": {
+      "/Game/Creative/Devices/Jukebox/Creative_Radio_AudioToMPC.Creative_Radio_AudioToMPC_C":		{  },
+      "/Script/AudioEditor.SoundCueGraph":														{  },
+      "/Script/AudioEditor.SoundCueGraphNode":													{  },
+      "/Script/AudioEditor.SoundCueGraphNode_Root":												{  },
+      "/Script/Engine.AmbientSound":										{  },
+      "/Script/Engine.SoundNodeConcatenator":				{ "Visible": true },
+      "/Script/Engine.SoundNodeDelay":					{ "Visible": true },
+      "/Script/Engine.SoundNodeDistanceCrossFade":		{ "Visible": true },
+      "/Script/Engine.SoundNodeDoppler":					{ "Visible": true },
+      "/Script/Engine.SoundNodeEnveloper":				{ "Visible": true },
+      "/Script/Engine.SoundNodeLooping":					{ "Visible": true },
+      "/Script/Engine.SoundNodeMixer":					{ "Visible": true },
+      "/Script/Engine.SoundNodeModulator":				{ "Visible": true },
+      "/Script/Engine.SoundNodeOscillator":				{ "Visible": true },
+      "/Script/Engine.SoundNodeRandom":					{ "Visible": true },
+      "/Script/Engine.SoundNodeWavePlayer":				{ "Visible": true },
+      "/Script/Engine.SoundSourceBus":					{  },
+      "/Script/AudioGameplay.AudioAssetUserData":													{ "Visible": true },
+      "/Script/CRD_AudioPlayerRuntime.CreativeAudioComponent":									{  },
+      "/Script/CRD_AudioMixerRuntime.CreativeAudioMixerDevice":									{  },
+      "/Script/Engine.AudioBus":																	{  },
+      "/Script/Engine.AudioComponent":															{  },
+      "/Script/FabricEngineSequencer.FabricAudioSyncSection":										{  },
+      "/Script/FabricEngineSequencer.FabricAudioSyncTrack":										{ "Visible": true },
+      "/Script/MetasoundEngine.MetaSoundSource":													{ "Visible": true },
+      "/Script/MetasoundEngine.MetaSoundPatch":													{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultBool":							{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultBoolArray":						{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultInt":								{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultIntArray":    					{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultFloat":							{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultFloatArray":						{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultString":							{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultStringArray":						{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObject":							{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObjectArray":						{ "Visible": true },
+      "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultLiteral":							{ "Visible": true },
+      "/Script/SoundLibrary.SoundLibraryComponent":												{  }
+    },
+    "AllowedMenus": {
+      "ContentBrowser.AssetContextMenu.SoundWave": {
+        "DenyList": {
+          "+": [ "SoundWave_CreateImpulseResponse", "SoundWave_CreateTimeSynthClip", "SoundWave_CreateTimeSynthClipSet", "TimeSynthSoundWaveAsset", "SoundWave_CreateMotoSynthSource", "SoundWave_CreateSoundCueTemplate", "SoundWave_CreateWaveformEditor", "SoundWave_CreateDialogue" ]
+        }
+      }
+    }
+  },
+  "PropertyEditorClassPermissionList": {
+    "+": [
+      {
+        "Type": "/Script/Engine.AudioComponent",
+        "DenyList": [ "bCanEverAffectNavigation" ]
+      },
+      {
+        "Type": "/Script/Engine.SoundBase",
+        "AllowList": [ "AssetUserData" ]
+      },
+      {
+        "Type": "/Script/Engine.SoundWave",
+        "AllowList": [ "NumChannels", "SampleRate", "ImportedSampleRate", "Duration", "TotalSamples", "ModulationSettings", "LoadingBehavior" ]
+      },
+      {
+        "Type": "/Script/Engine.SoundAttenuationSettings",
+        "AllowList": [ "bAttenuate", "DistanceAlgorithm", "AttenuationShapeExtents", "FalloffDistance", "bSpatialize" ]
+      },
+      {
+        "Type": "/Script/Engine.SoundBase",
+        "AllowList": [ "SoundCueGraph", "VirtualizationMode", "AttenuationSettings" ]
+      },
+      {
+        "Type": "/Script/MetasoundEngine.MetaSoundSource",
+        "AllowList": [ "ModulationSettings" ]
+      },
+      {
+        "Type": "/Script/AudioModulation.SoundControlBus",
+        "AllowList": [ "Parameter" ]
+      },
+      {
+        "Type": "/Script/AudioModulation.SoundControlBusMix",
+        "AllowList": [ "MixStages" ]
+      }
+    ]
+  },
+  "PropertyEditorStructPermissionList": {
+    "+": [
+      {
+        "Type": "/Script/Engine.SoundModulationDefaultRoutingSettings",
+        "AllowList": [ "VolumeRouting", "VolumeModulationDestination" ]
+      }
+    ]
+  },
+  "HiddenPropertyClassPermissionList" : {
+    "+": [
+      {
+        "Type": "/Script/Engine.AudioComponent",
+        "AllowList": [ "bAllowSpatialization", "bOverrideAttenuation", "AttenuationOverrides", "Sound", "VolumeMultiplier", "PitchMultiplier" ],
+        "DenyList": [],
+        "bAllowListAllSubclassProperties": true
+      }
+    ]
+  }
+}

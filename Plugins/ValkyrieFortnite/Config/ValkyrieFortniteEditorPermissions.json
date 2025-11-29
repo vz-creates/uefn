@@ -8,11 +8,13 @@
 	"_comment_AdditionalFeatures": "Additional configs to load at end",
 	"AdditionalFeatures": [
 		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-FAB.json",
-		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-MetaHuman.json"
+		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-MetaHuman.json",
+		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioLive.json"
 	],
 
 	"_comment_ValkyrieProjectSettings": "General settings to apply to user-created projects",
 	"ValkyrieProjectSettings": {
+		"bCollectionsEnabled": true,
 		"bPublishingEnabled": true,
 		"bLocalizationEnabled": true,
 		"bAutoLocalizationEnabled": true,
@@ -299,17 +301,6 @@
 		],
 		"AnimationBlueprintBaseFunctionOverridesAllowList": []
 	},
-	"_comment_ValkyrieAudioSettings": "Properties related to Audio including SoundWaves, SoundCues, Metasounds, etc.",
-	"ValkyrieAudioSettings": {
-		"MaxSoundWaveImportLengthSeconds": 900,
-		"bEnableLoadingBehaviorForceInline": false,
-		"AllowedCompressionTypes" : {
-			"+": [
-				"BinkAudio",
-				"PCM"
-			]
-		}
-	},
 	"_comment_ValkyrieUMGSettings": "Properties related to UMG, including the UMG editor and MVVM framework",
 	"ValkyrieUMGSettings": {
 		"AllowedPaletteCategories": [
@@ -513,9 +504,6 @@
 		"_comment_AllowedAssetTypes2": "Avoid exposing Import/Export controls for types that don't support them or only support T3D. Do not set Subclasses=True unless you're sure there are subclasses to expose.",
 		"_comment_AllowedAssetTypes3": "Note: Which Data Assets are creatable must go in AllowedClasses, but in order to be viewable in the Content Browser they must also be marked Visible in AllowedAssetTypes",
 		"AllowedAssetTypes": {
-			"/Script/AudioModulation.SoundControlBus":			{ "Rules": ["View","Create"] },
-			"/Script/AudioModulation.SoundControlBusMix":		{ "Rules": ["View","Create"] },
-			"/Script/AudioModulation.SoundModulationParameter":	{ "Rules": ["View"], "Subclasses": "All" },
 			"/Script/CameraCalibrationCore.LensFile":			{ "Rules": ["View","Create"] },
 			"/Script/ControlRig.ControlRigBlueprintGeneratedClass": { "Rules": ["View"] },
 			"/Script/ControlRig.ControlRigPoseAsset":			{ "Rules": ["View","Create"] },
@@ -526,7 +514,6 @@
 			"/Script/CoreUObject.ObjectRedirector":				{ "Rules": ["View","Create"] },
 			"/Script/IKRig.IKRigDefinition":					{ "Rules": ["View","Create"] },
 			"/Script/IKRig.IKRetargeter":						{ "Rules": ["View","Create"] },
-			"/Script/Engine.AmbientSound":						{ "Rules": ["View"] },
 			"/Script/Engine.AnimationAsset":					{ "Rules": ["View"] },
 			"/Script/Engine.AnimSequence":						{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.Blueprint":							{ "Rules": ["View","Create"] },
@@ -559,9 +546,6 @@
 			"/Script/Engine.SkeletalMesh":						{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.SkeletalMeshLODSettings":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.Skeleton":							{ "Rules": ["View","Create","Import","Export"] },
-			"/Script/Engine.SoundAttenuation":					{ "Rules": ["View","Create","Import","ModuleAPI"] },
-			"/Script/Engine.SoundCue":							{ "Rules": ["View","Create","Import","ModuleAPI"] },
-			"/Script/Engine.SoundWave":							{ "Rules": ["View","Create","Import","ModuleAPI"] },
 			"/Script/Engine.StaticMesh":						{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
 			"/Script/Engine.SubsurfaceProfile":					{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.Texture2D":							{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
@@ -605,8 +589,6 @@
 			"/Script/Landscape.LandscapeLayerInfoObject":		{ "Rules": ["View","Create"] },
 			"/Script/Landscape.LandscapeGrassType":				{ "Rules": ["View","Create"] },
 			"/Script/LevelSequence.LevelSequence":				{ "Rules": ["View","Create","Import","Export"], "Subclasses": "NativeOnly" },
-			"/Script/MetasoundEngine.MetaSoundSource":			{ "Rules": ["View", "ModuleAPI"] },
-			"/Script/MetasoundEngine.MetaSoundPatch":			{ "Rules": ["View", "ModuleAPI"] },
 			"/Script/Niagara.NiagaraEffectType":				{ "Rules": ["View", "Create"] },
 			"/Script/Niagara.NiagaraEmitter":					{ "Rules": ["View","Create"] },
 			"/Script/Niagara.NiagaraScript":					{ "Rules": ["View","Create"] },
@@ -743,7 +725,6 @@
 			"/Game/Creative/Devices/Common/Creative_Device_Prop_Spawner_V2.Creative_Device_Prop_Spawner_V2_C":			{  },
 			"/Game/Creative/Devices/Common/UI/Creative_GenericText_Widget.Creative_GenericText_Widget_C":				{  },
 			"/Game/Creative/Devices/ItemSpawnerProp/Device_ItemSpawner_Parent.Device_ItemSpawner_Parent_C":				{  },
-			"/Game/Creative/Devices/Jukebox/Creative_Radio_AudioToMPC.Creative_Radio_AudioToMPC_C":						{  },
 			"/Game/Creative/Devices/LockDevice/BP_InteractVisualizationComponent.BP_InteractVisualizationComponent_C":	{  },
 			"/Game/Creative/Devices/LockDevice/BP_KeyLockComponent.BP_KeyLockComponent_C":								{  },
 			"/Game/Creative/Devices/MapMarker/CreativeMapMarkerComponent.CreativeMapMarkerComponent_C":					{  },
@@ -875,13 +856,7 @@
 			"/Script/AnimationCore.TransformFilter":							{  },
 			"/Script/AnimationData.AnimationSequencerDataModel":				{  },
 			"/Script/AnimationModifiers.AnimationModifiersAssetUserData":		{  },
-			"/Script/AudioEditor.SoundCueGraph":								{  },
-			"/Script/AudioEditor.SoundCueGraphNode":							{  },
-			"/Script/AudioEditor.SoundCueGraphNode_Root":						{  },
-			"/Script/AudioGameplay.AudioAssetUserData":							{ "Visible": true },
 			"/Script/CRDLevelInstanceRuntime.LevelInstanceItemListComponent":	{  },
-			"/Script/CRD_AudioPlayerRuntime.CreativeAudioComponent":			{  },
-			"/Script/CRD_AudioMixerRuntime.CreativeAudioMixerDevice":			{  },
 			"/Script/CRD_GameStreamRuntime.CreativeGameStreamDeviceComponent":	{  },
 			"/Script/CRD_ModalDialogRuntime.ModalDialogVariant":				{ "Visible": true },
 			"/Script/CRD_ModalDialogUI.CreativeModalDialogAllowedConversionFunction":{  },
@@ -1100,15 +1075,12 @@
 			"/Script/Engine.ActorDescContainer":								{  },
 			"/Script/Engine.ActorFolder":										{  },
 			"/Script/Engine.ActorTextureStreamingBuildDataComponent":			{  },
-			"/Script/Engine.AmbientSound":										{  },
 			"/Script/Engine.AnimCurveMetaData":									{  },
 			"/Script/Engine.AnimDataModel":										{  },
 			"/Script/Engine.AnimSequence":										{ "Visible": true },
 			"/Script/Engine.AnimSyncMarker":									{ "Visible": true },
 			"/Script/Engine.ArrowComponent":									{ "Visible": true },
 			"/Script/Engine.AssetImportData":									{  },
-			"/Script/Engine.AudioBus":																					{  },
-			"/Script/Engine.AudioComponent":									{  },
 			"/Script/Engine.BillboardComponent":								{  },
 			"/Script/Engine.BlockingVolume":									{ "Visible": true },
 			"/Script/Engine.BodySetup":											{  },
@@ -1431,7 +1403,6 @@
 			"/Script/Landscape.MaterialExpressionLandscapePhysicalMaterialOutput":				{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeVisibilityMask":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/RenderTrace.MaterialExpressionPhysicalMaterialOutput":						{ "Visible": true,	"Subclasses": "NativeOnly" },
-			"/Script/VirtualHeightfieldMesh.MaterialExpressionHeightfieldMinMaxTexture":		{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.AngularDriveConstraint":							{  },
 			"/Script/Engine.ConeConstraint":									{  },
 			"/Script/Engine.ConstraintDrive":									{  },
@@ -1472,18 +1443,6 @@
 			"/Script/Engine.SkyAtmosphereComponent":							{ "Visible": true },
 			"/Script/Engine.SkyLight":											{ "Visible": true },
 			"/Script/Engine.SkyLightComponent":									{ "Visible": true },
-			"/Script/Engine.SoundNodeConcatenator":								{ "Visible": true },
-			"/Script/Engine.SoundNodeDelay":									{ "Visible": true },
-			"/Script/Engine.SoundNodeDistanceCrossFade":						{ "Visible": true },
-			"/Script/Engine.SoundNodeDoppler":									{ "Visible": true },
-			"/Script/Engine.SoundNodeEnveloper":								{ "Visible": true },
-			"/Script/Engine.SoundNodeLooping":									{ "Visible": true },
-			"/Script/Engine.SoundNodeMixer":									{ "Visible": true },
-			"/Script/Engine.SoundNodeModulator":								{ "Visible": true },
-			"/Script/Engine.SoundNodeOscillator":								{ "Visible": true },
-			"/Script/Engine.SoundNodeRandom":									{ "Visible": true },
-			"/Script/Engine.SoundNodeWavePlayer":								{ "Visible": true },
-			"/Script/Engine.SoundSourceBus":																			{  },
 			"/Script/Engine.SpatialHashRuntimeGridInfo":						{  },
 			"/Script/Engine.SphereComponent":									{  },
 			"/Script/Engine.SplineComponent":									{  },
@@ -1522,8 +1481,6 @@
 			"/Script/EntityActor.SimObject":									{ "Visible": true },
 			"/Script/EntityRegistry.EntityContainer": {},
 			"/Script/FabricDevices.FabricDeviceComponent":						{  },
-			"/Script/FabricEngineSequencer.FabricAudioSyncSection":				{  },
-			"/Script/FabricEngineSequencer.FabricAudioSyncTrack":				{ "Visible": true },
 			"/Script/FabricRuntime.FabricButtonComponentBase":					{  },
 			"/Script/FabricRuntime.FabricSequencerPreviewFXComponent":			{  },
 			"/Script/FabricRuntime.FabricSequencerSustainComponent":			{  },
@@ -1806,19 +1763,6 @@
 			"/Script/MannequinRuntime.MannequinAnalyticsComponent":				{  },
 			"/Script/MediaAssets.MediaSoundComponent":							{  },
 			"/Script/MediaAssets.MediaTexture":     							{  },
-			"/Script/MetasoundEngine.MetaSoundSource":							{ "Visible": true },
-			"/Script/MetasoundEngine.MetaSoundPatch":							{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultBool":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultBoolArray":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultInt":		{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultIntArray":    { "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultFloat":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultFloatArray":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultString":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultStringArray":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObject":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObjectArray":	{ "Visible": true },
-			"/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultLiteral":	{ "Visible": true },			
 			"/Script/ModelViewViewModel.MVVMPanelWidgetViewExtension":			{ "Visible": true },
 			"/Script/ModelViewViewModel.MVVMSlateBrushConversionLibrary":		{  },
 			"/Script/ModelViewViewModel.MVVMViewClass":							{  },
@@ -1931,6 +1875,9 @@
 			"/Script/MediaCompositing.MovieSceneMediaTrack": 					{ "Visible": true },
 			"/Script/NavigationSystem.NavArea_Default":							{  },
 			"/Script/NavigationSystem.NavCollision":							{  },
+			"/Script/FortniteAI.UEFNNavMeshBoundsVolume":						{  },
+			"/Script/FortniteAI.UEFNNavMesh_Medium":							{  },
+			"/Script/FortniteAI.UEFNNavSystemConfigOverride":					{  },
 			"/Script/NavigationSystem.NavLinkCustomComponent":					{  },
 			"/Script/NavigationSystem.NavLinkRenderingComponent":				{  },
 			"/Script/NavigationSystem.NavigationSystemModuleConfig":			{  },
@@ -2005,6 +1952,7 @@
 			"/Script/Niagara.NiagaraRibbonRendererProperties":					{ "Visible": true },
 			"/Script/Niagara.NiagaraScratchPadContainer":						{  },
 			"/Script/Niagara.NiagaraScript":									{ "Visible": true },
+			"/Script/Niagara.NiagaraScriptRuntimeCompiledDataEditorReference":		{  },
 			"/Script/Niagara.NiagaraStatelessEmitter":							{ "Visible": true },
 			"/Script/Niagara.NiagaraStatelessEmitterDefault":					{  },
 			"/Script/Niagara.NiagaraStatelessModule_AccelerationForce":			{ "Visible" : true },
@@ -2978,7 +2926,6 @@
 			"/Script/SlateCore.SlateBrush":										{  },
 			"/Script/SmartObjectsModule.SmartObjectCollection":					{  },
 			"/Script/SmartObjectsModule.SmartObjectPersistentCollection":		{  },
-			"/Script/SoundLibrary.SoundLibraryComponent":						{  },
 			"/Script/TakeMovieScene.MovieSceneTakeSection":						{  },
 			"/Script/TakeMovieScene.MovieSceneTakeTrack":						{ "Visible": true },
 			"/Script/TakesCore.ActorRecorderPropertyMap":                       {  },
@@ -3117,7 +3064,7 @@
 				"AllowList": [ "ExportAsset", "AddLoopingInterpolation", "RemoveBoneTracks" ]
 			},
 			"AssetEditor.AnimationEditor.ToolBar": {
-				"AllowList": [ "SaveAsset", "FindInContentBrowser", "PreviewMesh", "CreateAsset", "ReimportAnimation", "ExportAsset", "MakeStaticMesh"],
+				"AllowList": [ "SaveAsset", "FindInContentBrowser", "PreviewMesh", "CreateAsset", "ReimportAnimation", "ExportAsset", "MakeStaticMesh" ],
 				"AllowExtenders": true
 			},
 			"AssetEditor.BlueprintEditor.MainMenu": {
@@ -3225,9 +3172,6 @@
 			"ContentBrowser.AssetContextMenu.Skeleton": {
 				"DenyList": [ "Skeleton_Retarget" ]
 			},
-			"ContentBrowser.AssetContextMenu.SoundWave": {
-				"DenyList": [ "SoundWave_CreateImpulseResponse", "SoundWave_CreateTimeSynthClip", "SoundWave_CreateTimeSynthClipSet", "TimeSynthSoundWaveAsset", "SoundWave_CreateMotoSynthSource", "SoundWave_CreateSoundCueTemplate", "SoundWave_CreateWaveformEditor", "SoundWave_CreateDialogue" ]
-			},
 			"ContentBrowser.AssetContextMenu.StaticMesh": {
 				"DenyList": [ "StaticMesh_NaniteMenu" ]
 			},
@@ -3241,7 +3185,7 @@
 				"AllowList": [ "DaySequencePreviewTime" ]
 			},
 			"LevelEditor.ActorContextMenu": {
-				"AllowList": [ 
+				"AllowList": [
 					"FindInContentBrowser",
 					"OpenSelectionInPropertyMatrix",
 					"BulkEditComponentsSubmenu",
@@ -3274,14 +3218,14 @@
 					"ScriptedActorActions",
 					"AddAnchoredNote",
 					"AddCameraNote",
-					"AddEntityMenu", 
-					"SaveAsPrefab", 
+					"AddEntityMenu",
+					"SaveAsPrefab",
 					"GroupEntities",
-					"EditPrefab", 
+					"EditPrefab",
 					"EditPrefabInplace_Start",
 					"EditPrefabInplace_StepOut",
 					"EditPrefabInplace_Exit",
-					"BrowseToPrefab", 
+					"BrowseToPrefab",
 					"PushPrefabOverrides"
 				]
 			},
@@ -3378,7 +3322,7 @@
 				"AllowList": [ "SelectAll", "SelectNone", "InvertSelection", "Hierarchy", "Advanced", "SelectAllActorsOfSameClass", "ByTypeSection", "Lights", "Material", "SkeletalMeshes", "StaticMeshes" ]
 			},
 			"LevelEditor.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectProductCatalog", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler" ]
+				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectProductCatalog", "ValkyrieProjectOfferLog", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler" ]
 			},
 			"LevelEditor.MainMenu.Verse": {
 				"AllowList": [ "VisualVerseTab", "VerseLog", "OpenVSCode", "BuildVerse" ]
@@ -3387,7 +3331,7 @@
 				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "EnableMenuEditing", "ToggleValkyrieMode", "ToggleValkyrieRestrictiveMode", "OpenAIAssistantTab" ]
 			},
 			"LevelEditor.StatusBar.ToolBar": {
-				"AllowList": [ "SourceControl", "ActivityTrackerStatus", "LiveLinkHubStatusBar"]
+				"AllowList": [ "SourceControl", "ActivityTrackerStatus", "LiveLinkHubStatusBar" ]
 			},
 			"MainFrame.MainMenu.Asset": {
 				"AllowList": [ "FindInContentBrowser", "ViewReferences", "Reimport", "Reimport_0", "Reimport_1", "Reimport_2", "Reimport_3" ]
@@ -3402,7 +3346,7 @@
 				"AllowList": [ "OpenDocumentation", "VisitEpicGamesDotCom", "CreditsUnrealEd", "AboutUnrealEd" ]
 			},
 			"MainFrame.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl" ]
+				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl" ]
 			},
 			"MainFrame.MainMenu.Window": {
 				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "OpenAIAssistantTab" ]
@@ -3420,7 +3364,7 @@
 				"AllowExtenders": true
 			},
 			"Persona.AnimNotifyTrackContextMenu": {
-				"AllowList": [ "AnimNotifyContextMenuFrameWidget", "AnimNotifyContextMenuTimeWidget", "AddSyncMarker", "CopyNotifies", "PasteNotifies", "DeleteNotify", "PasteAtOriginalTime", "PasteMultipleRelative"],
+				"AllowList": [ "AnimNotifyContextMenuFrameWidget", "AnimNotifyContextMenuTimeWidget", "AddSyncMarker", "CopyNotifies", "PasteNotifies", "DeleteNotify", "PasteAtOriginalTime", "PasteMultipleRelative" ],
 				"AllowExtenders": false
 			},
 			"Sequencer.MainToolBar": {
@@ -3451,13 +3395,19 @@
 				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
 			},
 			"SpatialProfiler.MainToolBar": {
-				"DenyList": ["HeatmapsPresetCombo", "GenerateHeatmap" ]
+				"DenyList": [ "HeatmapsPresetCombo", "GenerateHeatmap" ]
 			},
 			"SpatialMetricsToolBar.ShowMenu": {
 				"DenyList": [ "ShowStreamingRadius" ]
-			}, 
+			},
 			"SpatialMetricsToolBar.OptionsMenu": {
 				"DenyList": [ "StreamingRadius" ]
+			},
+			"ChaosVD.SolverTracks.MenuToolbar": {
+				"DenyList": [ "SyncModeButton" ]
+			},
+			"ChaosVD.MainMenuBar.File": {
+				"DenyList": [ "BrowseLiveSessions", "DisconnectFromLiveSession" ]
 			}
 		},
 		"AllowedTabs": {
@@ -3526,7 +3476,7 @@
 					"RigDependencyGraphView",
 					"ModularRigModel",
 					"RigModuleAssetBrowser",
-					"Event Queue",
+					"Event Queue"
 				]
 			},
 			"Global": {
@@ -3538,6 +3488,7 @@
 					"ContentBrowserTab4",
 					"CoopNotesSidePanelTab",
 					"EditorSettings",
+					"HomeScreen",
 					"LevelEditor",
 					"MessageLog",
 					"OutputLog",
@@ -3555,11 +3506,15 @@
 					"ValkyrieProjectSize",
 					"VkContentResolutionViewer",
 					"ValkyrieProjectProductCatalog",
+					"ValkyrieProjectOfferLog",
 					"MemoryProfiler",
 					"TimingProfiler",
+					"InsightsQuickFind",
+					"InsightsFilterConfigurator",
 					"VerseExplorerTab",
 					"NiagaraDebugger",
-					"LoosePropertyFixup"
+					"LoosePropertyFixup",
+					"ChaosVisualDebuggerTab"
 				]
 			},
 			"LevelEditor": {
@@ -3602,8 +3557,11 @@
 					"BottomRightModeTab",
 					"ValkyrieProjectSize",
 					"ValkyrieProjectProductCatalog",
+					"ValkyrieProjectOfferLog",
 					"MemoryProfiler",
 					"TimingProfiler",
+					"InsightsQuickFind",
+					"InsightsFilterConfigurator",
 					"VerseExplorerTab",
 					"WorldBrowserPartitionEditor",
 					"WorldBrowserComposition",
@@ -3621,7 +3579,9 @@
 					"AnimLayerTab",
 					"SkeinSourceControlConflictResolution",
 					"SkeinSourceControlSnapshotHistory",
-					"NiagaraDebugger"
+					"SkeinSourceControlBranchExplorer",
+					"NiagaraDebugger",
+					"ChaosVisualDebuggerTab"
 				]
 			},
 			"MaterialInstanceEditor": {
@@ -3722,6 +3682,27 @@
 					"UMGEditor_VerseClassSettingsTab",
 					"UMGEditor_VerseClassDetailsTab"
 				]
+			},
+			"ChaosVisualDebuggerTab": {
+				"AllowList": {
+					"+": [
+						"ChaosVisualDebuggerTab",
+						"PlaybackViewport",
+						"WorldOutliner",
+						"DetailsPanel",
+						"IndependentDetailsPanel1",
+						"IndependentDetailsPanel2",
+						"IndependentDetailsPanel3",
+						"IndependentDetailsPanel4",
+						"ChaosVDOutputLog",
+						"SolversTrack",
+						"CollisionDataDetails",
+						"SceneQueryDataDetails",
+						"ConstraintsDetails",
+						"SceneQueryBrowser",
+						"Mover Info"
+					]
+				}
 			}
 		},
 		"AllowedInputCommands": {
@@ -4023,10 +4004,6 @@
 			{
 				"Type": "/Script/Engine.ActorComponent",
 				"AllowList": [ "bCanEverAffectNavigation" ]
-			},
-			{
-				"Type": "/Script/Engine.AudioComponent",
-				"DenyList": [ "bCanEverAffectNavigation" ]
 			},
 			{
 				"Type": "/Script/Engine.ChildActorComponent",
@@ -4342,7 +4319,7 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingTextureData",
-				"DenyList": [ "Displacement", "Magnitude", "Center" ]
+				"DenyList": [ "Displacement", "Magnitude", "Center", "UVChannel", "MaskUVChannel" ]
 			},
 			{
 				"Type": "/Script/CommonConversationRuntime.ConversationDatabase",
@@ -4883,34 +4860,6 @@
 				"AllowList": [ "bSingleInstance", "ShakeScale", "RootShakePattern" ]
 			},
 			{
-				"Type": "/Script/Engine.SoundBase",
-				"AllowList": [ "AssetUserData" ]
-			},
-			{
-				"Type": "/Script/Engine.SoundWave",
-				"AllowList": [ "NumChannels", "SampleRate", "ImportedSampleRate", "Duration", "TotalSamples", "ModulationSettings", "LoadingBehavior" ]
-			},
-			{
-				"Type": "/Script/AudioModulation.SoundControlBus",
-				"AllowList": [ "Parameter" ]
-			},
-			{
-				"Type": "/Script/AudioModulation.SoundControlBusMix",
-				"AllowList": [ "MixStages" ]
-			},
-			{
-				"Type": "/Script/Engine.SoundAttenuationSettings",
-				"AllowList": [ "bAttenuate", "DistanceAlgorithm", "AttenuationShapeExtents", "FalloffDistance", "bSpatialize" ]
-			},
-			{
-				"Type": "/Script/Engine.SoundBase",
-				"AllowList": [ "SoundCueGraph", "VirtualizationMode", "AttenuationSettings" ]
-			},
-			{
-				"Type": "/Script/MetasoundEngine.MetaSoundSource",
-				"AllowList": [ "ModulationSettings" ]
-			},
-			{
 				"Type": "/Script/Niagara.NiagaraDataInterfaceAudioPlayer",
 				"AllowList": [ "SoundToPlay" ]
 			},
@@ -5170,6 +5119,18 @@
 			{
 				"Type": "/CRD_SpireSpike/Device_SpireSpike.Device_SpireSpike_C",
 				"DenyList": [ "PerceptionListenerHandle", "HF_SlagHealth", "SearchingSoundCueLoop", "LootRepeatSoundCue", "OnDamageSoundCue", "OnDeathSoundCue" , "SearchedMesh", "SearchedMaterialOverrides", "SearchBounceRadiusOverride", "bDestroyContainerOnSearch", "bStartAlreadySearched_Athena", "bRegenerateLoot", "SearchSpeed", "SearchText", "TimeUntilLootRegenerates"  ]
+			},
+			{
+				"Type": "/Script/ChaosVD.ChaosVDGeneralSettings",
+				"AllowList": [
+					"bStreamingSystemEnabled",
+					"StreamingBoxExtentSize",
+					"bUpdateSceneOutlinerDuringPlayback",
+					"MaxConnectionRetries",
+					"bSaveRecordingsToDisk",
+					"DefaultSavePathOverride",
+					"bAutoStartLiveSessionsPlayback"
+				]
 			}
 		]
 	},
@@ -5228,15 +5189,6 @@
 				"DenyList": [ "GridName", "Origin", "bBlockOnSlowStreaming", "Priority", "DebugColor", "bClientOnlyVisible", "HLODLayer" ]
 			},
 			{
-				"Type": "/Script/Engine.SoundModulationDefaultRoutingSettings",
-				"AllowList": [ "VolumeRouting", "VolumeModulationDestination" ]
-			},
-			{
-				"Type": "/Script/FortniteAI.NPCCustomEffect",
-				"AllowList": [ "bEnableEffect", "VisualEffect", "VisualEffectSocket", "SoundEffect", "SoundEffectSocket" ],
-				"DenyList": [ "EffectTag" ]
-			},
-			{
 				"Type": "/Script/PhysicsUtilities.PhysAssetCreateParams",
 				"AllowList": [ "MinBoneSize", "MinWeldSize", "GeomType", "VertWeight", "bAutoOrientToBone", "bWalkPastSmall", "bBodyForAll", "bDisableCollisionsByDefault", "HullCount", "MaxHullVerts", "LevelSetResolution" ]
 			},
@@ -5247,6 +5199,11 @@
 			{
 				"Type": "/Script/VerseFortniteAI.CharacterModifierInventoryItem",
 				"AllowList": [ "ItemDefinition", "ItemQuantity" ]
+			},
+			{
+				"Type": "/Script/FortniteAI.NPCCustomEffect",
+				"AllowList": [ "bEnableEffect", "VisualEffect", "VisualEffectSocket", "SoundEffect", "SoundEffectSocket" ],
+				"DenyList": [ "EffectTag" ]
 			},
 			{
 				"Type": "/Script/HairStrandsCore.HairSimulationSetup",
@@ -5348,12 +5305,6 @@
 			{
 				"Type": "/Script/Engine.AIPerceptionComponent",
 				"AllowList": [ "OnPerceptionUpdated", "OnTargetPerceptionUpdated", "OnTargetPerceptionInfoUpdated", "SensesConfig" ],
-				"DenyList": [],
-				"bAllowListAllSubclassProperties": true
-			},
-			{
-				"Type": "/Script/Engine.AudioComponent",
-				"AllowList": [ "bAllowSpatialization", "bOverrideAttenuation", "AttenuationOverrides", "Sound", "VolumeMultiplier", "PitchMultiplier" ],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
 			},

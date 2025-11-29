@@ -21,6 +21,11 @@
 			"FriendlyName": "CommonUIVer",
 			"Version": 1
 		},
+		"0D03FD52BF174EAE89C8DE2A98BF53FE":
+		{
+			"FriendlyName": "MaterialValidationGroup",
+			"Version": 1
+		},
 		"0DF73D61A23F47EAB72789E90C41499A":
 		{
 			"FriendlyName": "Dev-Automation",
@@ -54,7 +59,7 @@
 		"134A157ED5E249A38D4E843C98FE9E31":
 		{
 			"FriendlyName": "PropertyBagCustomVersion",
-			"Version": 3
+			"Version": 5
 		},
 		"174F1F0BB4C645A5B13F2EE8D0FB917D":
 		{
@@ -234,7 +239,7 @@
 		"601D1886AC644F84AA16D3DE0DEAC7D6":
 		{
 			"FriendlyName": "FortniteMain",
-			"Version": 225
+			"Version": 228
 		},
 		"60C4F0DE8B264C34AA9372015DFF09CC":
 		{
@@ -459,7 +464,7 @@
 		"A7820CFB20A743598C542C149623CF50":
 		{
 			"FriendlyName": "Dev-ControlRig",
-			"Version": 40
+			"Version": 41
 		},
 		"AAFE32BD53954C14B66A5E251032D1DD":
 		{
@@ -529,7 +534,7 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 94
+			"Version": 96
 		},
 		"C1270362AB230A1FCB1EC73671275FAB":
 		{
@@ -629,7 +634,7 @@
 		"E70863686B234C5884391B7016265E91":
 		{
 			"FriendlyName": "FortniteRelease",
-			"Version": 17
+			"Version": 18
 		},
 		"EF0A537D90DA4CD2BCA16D6AE21E3589":
 		{
@@ -1363,6 +1368,9 @@
 			"/Script/FortniteAI.FortJumpDownLink",
 			"/Script/FortniteAI.FortNavModifierComponent",
 			"/Script/FortniteAI.FortNavSystem",
+			"/Script/FortniteAI.UEFNNavMesh_Medium",
+			"/Script/FortniteAI.UEFNNavMeshBoundsVolume",
+			"/Script/FortniteAI.UEFNNavSystemConfigOverride",
 			"/Script/FortniteGame.BaseBuildingStaticMeshComponent",
 			"/Script/FortniteGame.BuildingActor",
 			"/Script/FortniteGame.BuildingAutoNav",
@@ -1866,6 +1874,7 @@
 			"/Script/Niagara.NiagaraRibbonRendererProperties",
 			"/Script/Niagara.NiagaraScratchPadContainer",
 			"/Script/Niagara.NiagaraScript",
+			"/Script/Niagara.NiagaraScriptRuntimeCompiledDataEditorReference",
 			"/Script/Niagara.NiagaraSignificanceHandler",
 			"/Script/Niagara.NiagaraSignificanceHandlerAge",
 			"/Script/Niagara.NiagaraSignificanceHandlerDistance",
@@ -2063,7 +2072,6 @@
 			"/Script/VerseGameplayTags.VerseTagMarkupComponent",
 			"/Script/VerseTypeEditor.VerseTypeEditorWidgetExtension",
 			"/Script/VerseTypeEditorRuntime.VerseTypeEditorClassSettings",
-			"/Script/VirtualHeightfieldMesh.MaterialExpressionHeightfieldMinMaxTexture",
 			"/Script/VolumetricRegion.VolumetricRegionNativeComponent",
 			"/Script/Water.BuoyancyManager",
 			"/Script/Water.GerstnerWaterWaveGeneratorSimple",
@@ -2294,17 +2302,29 @@
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance",
 			"/Script/GameplayCameras.ArrayCameraNode",
 			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode",
+			"/Script/GameplayCameras.AutoFocusCameraNode",
 			"/Script/GameplayCameras.BaseFramingCameraNode",
+			"/Script/GameplayCameras.BodyParametersCameraNode",
 			"/Script/GameplayCameras.BoomArmCameraNode",
 			"/Script/GameplayCameras.CameraRigAsset",
 			"/Script/GameplayCameras.CameraVariableAsset",
+			"/Script/GameplayCameras.ClippingPlanesCameraNode",
+			"/Script/GameplayCameras.CollisionPushCameraNode",
 			"/Script/GameplayCameras.DampenPositionCameraNode",
+			"/Script/GameplayCameras.DampenRotationCameraNode",
 			"/Script/GameplayCameras.DollyFramingCameraNode",
 			"/Script/GameplayCameras.FieldOfViewCameraNode",
+			"/Script/GameplayCameras.FilmbackCameraNode",
 			"/Script/GameplayCameras.LensParametersCameraNode",
 			"/Script/GameplayCameras.OcclusionMaterialCameraNode",
 			"/Script/GameplayCameras.OffsetCameraNode",
+			"/Script/GameplayCameras.OrthographicCameraNode",
 			"/Script/GameplayCameras.PanningFramingCameraNode",
+			"/Script/GameplayCameras.PostProcessCameraNode",
+			"/Script/GameplayCameras.SetLocationCameraNode",
+			"/Script/GameplayCameras.SetRotationCameraNode",
+			"/Script/GameplayCameras.SplineFieldOfViewCameraNode",
+			"/Script/GameplayCameras.SplineOffsetCameraNode",
 			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset",
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset",
 			"/Script/HarmonixMetasound.MusicClockComponent",
@@ -2331,12 +2351,15 @@
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint"
 		],
 		"VKCreateUGCPartner": [
+			"/Game/TimeOfDay/DaySequence/DaySequenceActors/BR_Ch7/DSA_BR_Ch7S1.DSA_BR_Ch7S1_C",
 			"/Script/FortniteGame.BuildingEditModeMetadata"
 		]
 	},
 	"ClassPublicLists":
 	{
 		"VKCreateUGC": [
+			"/Script/AudioModulation.SoundControlBus",
+			"/Script/AudioModulation.SoundControlBusMix",
 			"/Script/Engine.Material",
 			"/Script/Engine.MaterialInstanceConstant",
 			"/Script/Engine.SoundAttenuation",
@@ -2353,7 +2376,9 @@
 		"VKCreateUGCEarlyAccess": [],
 		"VKCreateUGCEpicDeveloper": [
 			"/Script/Engine.BlueprintGeneratedClass",
+			"/Script/Engine.SoundConcurrency",
 			"/Script/Entity.EntityPrefab",
+			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset",
 			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh"
 		],
 		"VKCreateUGCPartner": []
@@ -6020,6 +6045,8 @@
 			"/FortniteBaseMaterials/Functions/MF_QualitySwitch_Vector.MF_QualitySwitch_Vector",
 			"/FortniteFoliage/Meshes/CP_CH4_Flowers_Classic_Heather_01.CP_CH4_Flowers_Classic_Heather_01",
 			"/FortniteFoliage/Meshes/CP_CH4_Grass_Standard_01.CP_CH4_Grass_Standard_01",
+			"/FortniteFoliage/Meshes/CP_CH4_GrassPlants_01.CP_CH4_GrassPlants_01",
+			"/FortniteFoliage/Meshes/CP_CH4_GrassPlants_02.CP_CH4_GrassPlants_02",
 			"/FortniteFoliage/Meshes/CP_CH4_GravelRocksSmall_01.CP_CH4_GravelRocksSmall_01",
 			"/FortniteFoliage/Meshes/CP_CH4_OakLarge23_Bake_01.CP_CH4_OakLarge23_Bake_01",
 			"/FortniteFoliage/Meshes/CP_CH4_Pine1_Bake_01.CP_CH4_Pine1_Bake_01",
@@ -8252,6 +8279,7 @@
 			"/Game/Environments/Apollo/Rocks/Natural_Rocks/Materials/Rock_Pile_01_Inst_NoRTV.Rock_Pile_01_Inst_NoRTV",
 			"/Game/Environments/Apollo/Rocks/Natural_Rocks/Materials/Rock_Pile_02_2_Inst_NoRTV.Rock_Pile_02_2_Inst_NoRTV",
 			"/Game/Environments/Apollo/Rocks/Natural_Rocks/Materials/Rock_Pile_02_Inst_NoRTV.Rock_Pile_02_Inst_NoRTV",
+			"/Game/Environments/Apollo/Rocks/Natural_Rocks/Textures/T_RockDetails_02D.T_RockDetails_02D",
 			"/Game/Environments/Apollo/Sets/Agency/Materials/Agency_BrickWall.Agency_BrickWall",
 			"/Game/Environments/Apollo/Sets/Agency/Materials/Agency_BrickWall_Vent.Agency_BrickWall_Vent",
 			"/Game/Environments/Apollo/Sets/Agency/Materials/Agency_RetainingWall.Agency_RetainingWall",
@@ -9032,6 +9060,7 @@
 			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Cliff_S_02.T_Apollo_Cliff_S_02",
 			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Dirt_D_01.T_Apollo_Dirt_D_01",
 			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Dirt_N_01.T_Apollo_Dirt_N_01",
+			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Dirt_N_02b.T_Apollo_Dirt_N_02b",
 			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Dirt_S_01.T_Apollo_Dirt_S_01",
 			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Forest_Floor_D_01.T_Apollo_Forest_Floor_D_01",
 			"/Game/Environments/Apollo/Sets/Terrain/Textures/T_Apollo_Forest_Floor_N_01.T_Apollo_Forest_Floor_N_01",
@@ -9778,6 +9807,9 @@
 			"/Game/Environments/Artemis/Sets/Terrain/Textures/T_Artemis_Lava_Rock_02_D.T_Artemis_Lava_Rock_02_D",
 			"/Game/Environments/Artemis/Sets/Terrain/Textures/T_Artemis_Lava_Rock_02_N.T_Artemis_Lava_Rock_02_N",
 			"/Game/Environments/Artemis/Sets/Terrain/Textures/T_Artemis_Lava_Rock_02_S.T_Artemis_Lava_Rock_02_S",
+			"/Game/Environments/Artemis/Sets/Terrain/Textures/T_Artemis_Snow_D_02.T_Artemis_Snow_D_02",
+			"/Game/Environments/Artemis/Sets/Terrain/Textures/T_Artemis_Snow_N_01.T_Artemis_Snow_N_01",
+			"/Game/Environments/Artemis/Sets/Terrain/Textures/T_Artemis_Snow_N_03.T_Artemis_Snow_N_03",
 			"/Game/Environments/Artemis/Sets/Waterwall/Meshes/SM_Artemis_WaterWall_1x1_A.SM_Artemis_WaterWall_1x1_A",
 			"/Game/Environments/Artemis/Sets/Waterwall/Meshes/SM_Artemis_WaterWall_1x2_A.SM_Artemis_WaterWall_1x2_A",
 			"/Game/Environments/Artemis/Sets/Waterwall/Meshes/SM_Artemis_WaterWall_1x5_A.SM_Artemis_WaterWall_1x5_A",
@@ -10285,6 +10317,10 @@
 			"/Game/Environments/Asteria/Sets/IndustrialTown/TextureData/TD_IndustrialTown_OldBrick_D.TD_IndustrialTown_OldBrick_D",
 			"/Game/Environments/Asteria/Sets/IndustrialTown/TextureData/TD_IndustrialTown_Painted_Brick_White_A.TD_IndustrialTown_Painted_Brick_White_A",
 			"/Game/Environments/Asteria/Sets/IndustrialTown/TextureData/TD_IndustrialTown_SlapsBillboard.TD_IndustrialTown_SlapsBillboard",
+			"/Game/Environments/Asteria/Sets/IndustrialTown/Textures/Decals/T_IndustrialTown_Graffiti_1x2_A.T_IndustrialTown_Graffiti_1x2_A",
+			"/Game/Environments/Asteria/Sets/IndustrialTown/Textures/Decals/T_IndustrialTown_Graffiti_1x2_D.T_IndustrialTown_Graffiti_1x2_D",
+			"/Game/Environments/Asteria/Sets/IndustrialTown/Textures/Decals/T_IndustrialTown_Graffiti_4x4_C.T_IndustrialTown_Graffiti_4x4_C",
+			"/Game/Environments/Asteria/Sets/IndustrialTown/Textures/Decals/T_IndustrialTown_Graffiti_C_2.T_IndustrialTown_Graffiti_C_2",
 			"/Game/Environments/Asteria/Sets/Lair/TextureData/TD_Asteria_HarvestHomes_BrushedConcrete_LightStrip.TD_Asteria_HarvestHomes_BrushedConcrete_LightStrip",
 			"/Game/Environments/Asteria/Sets/Lair/TextureData/TD_Asteria_Lair_Roof_A_A.TD_Asteria_Lair_Roof_A_A",
 			"/Game/Environments/Asteria/Sets/Lair/TextureData/TD_Asteria_Lair_Window_A_A.TD_Asteria_Lair_Window_A_A",
@@ -10592,9 +10628,15 @@
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_FrozenRockCliff_02_D.T_Asteria_FrozenRockCliff_02_D",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_FrozenRockCliff_02_N.T_Asteria_FrozenRockCliff_02_N",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_FrozenRockCliff_02_S.T_Asteria_FrozenRockCliff_02_S",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_LargeRockDirt_01_D.T_Asteria_LargeRockDirt_01_D",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_LargeRockDirt_01_N.T_Asteria_LargeRockDirt_01_N",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_LargeRockDirt_01_S.T_Asteria_LargeRockDirt_01_S",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_Mud_01_D.T_Asteria_Mud_01_D",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_Mud_01_N.T_Asteria_Mud_01_N",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_Mud_01_S.T_Asteria_Mud_01_S",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_PlainSnow_01_D.T_Asteria_PlainSnow_01_D",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_PlainSnow_01_N.T_Asteria_PlainSnow_01_N",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_PlainSnow_01_S.T_Asteria_PlainSnow_01_S",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_QuarryCliff_02_D.T_Asteria_QuarryCliff_02_D",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_QuarryCliff_02_N.T_Asteria_QuarryCliff_02_N",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_QuarryCliff_02_S.T_Asteria_QuarryCliff_02_S",
@@ -10604,9 +10646,17 @@
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_RockCliff_03_D.T_Asteria_RockCliff_03_D",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_RockCliff_03_N.T_Asteria_RockCliff_03_N",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_RockCliff_03_S.T_Asteria_RockCliff_03_S",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_RockCliff_04_D.T_Asteria_RockCliff_04_D",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_RockCliff_04_N.T_Asteria_RockCliff_04_N",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_RockCliff_04_S.T_Asteria_RockCliff_04_S",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_Scree_01_D.T_Asteria_Scree_01_D",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_Scree_01_N.T_Asteria_Scree_01_N",
 			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_Scree_01_S.T_Asteria_Scree_01_S",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_WindBlownSnow_01_D.T_Asteria_WindBlownSnow_01_D",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_WindBlownSnow_01_N.T_Asteria_WindBlownSnow_01_N",
+			"/Game/Environments/Asteria/Terrain/Textures/T_Asteria_WindBlownSnow_01_S.T_Asteria_WindBlownSnow_01_S",
+			"/Game/Environments/Asteria/Terrain/Textures/T_SnowSparkleCircles_M.T_SnowSparkleCircles_M",
+			"/Game/Environments/Asteria/Terrain/Textures/T_SnowSparkleCircles_N.T_SnowSparkleCircles_N",
 			"/Game/Environments/Asteria/TextureData/Proto/TD_Asteria_Proto_Base.TD_Asteria_Proto_Base",
 			"/Game/Environments/Asteria/TextureData/Proto/TD_Asteria_Proto_White.TD_Asteria_Proto_White",
 			"/Game/Environments/AutumnDecay/Building/Data/AD_Carpet_Dirty01.AD_Carpet_Dirty01",
@@ -10617,6 +10667,9 @@
 			"/Game/Environments/FrontEnd/Materials/M_Monitor_Frame.M_Monitor_Frame",
 			"/Game/Environments/FrontEnd/Materials/M_Monitor_Screen_Broken.M_Monitor_Screen_Broken",
 			"/Game/Environments/FrontEnd/Materials/M_Monitor_Screen_V_l0.M_Monitor_Screen_V_l0",
+			"/Game/Environments/GlobalTextures/T_Hermes_MossyGround_01_D.T_Hermes_MossyGround_01_D",
+			"/Game/Environments/GlobalTextures/T_Hermes_MossyGround_01_N.T_Hermes_MossyGround_01_N",
+			"/Game/Environments/GlobalTextures/T_Hermes_MossyGround_01_S.T_Hermes_MossyGround_01_S",
 			"/Game/Environments/Helios/Props/Appliance/Appliance_LoginScreen_A/TextureData/TD_Appliance_LoginScreen_A_A.TD_Appliance_LoginScreen_A_A",
 			"/Game/Environments/Helios/Props/Brimstone/Brimstone_Brazier_A/Materials/BP_Brimstone_Brazier_A.BP_Brimstone_Brazier_A",
 			"/Game/Environments/Helios/Props/Brimstone/Brimstone_Brazier_B/Materials/BP_Brimstone_Brazier_B.BP_Brimstone_Brazier_B",
@@ -10682,6 +10735,35 @@
 			"/Game/Environments/Helios/Sets/Underground/TextureData/TD_Underground_Target_C.TD_Underground_Target_C",
 			"/Game/Environments/Helios/Sets/Underground/TextureData/TD_Underground_Trim_A.TD_Underground_Trim_A",
 			"/Game/Environments/Helios/Sets/Underground/TextureData/TD_Underground_Wall_A_2Layer.TD_Underground_Wall_A_2Layer",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Bor_ForestFloor_01_D.T_Helios_Bor_ForestFloor_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Bor_ForestFloor_01_N.T_Helios_Bor_ForestFloor_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Bor_ForestFloor_01_S.T_Helios_Bor_ForestFloor_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Brim_RockGround_01_D.T_Helios_Brim_RockGround_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Brim_RockGround_01_N.T_Helios_Brim_RockGround_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Brim_RockGround_01_S.T_Helios_Brim_RockGround_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Chap_CoastGround_01_D.T_Helios_Chap_CoastGround_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Chap_CoastGround_01_N.T_Helios_Chap_CoastGround_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Chap_CoastGround_01_S.T_Helios_Chap_CoastGround_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_DesertWaves_N.T_Helios_DesertWaves_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Gravel_01_D.T_Helios_Gravel_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Gravel_01_N.T_Helios_Gravel_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Gravel_01_S.T_Helios_Gravel_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Landscape_Noise.T_Helios_Landscape_Noise",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Leaves_01_D.T_Helios_Leaves_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Leaves_01_N.T_Helios_Leaves_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_Leaves_01_S.T_Helios_Leaves_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_Cliff_01_D.T_Helios_RustBucket_Cliff_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_Cliff_01_N.T_Helios_RustBucket_Cliff_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_Cliff_01_S.T_Helios_RustBucket_Cliff_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_Cliff_Strata_01_D.T_Helios_RustBucket_Cliff_Strata_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_Cliff_Strata_01_N.T_Helios_RustBucket_Cliff_Strata_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_Cliff_Strata_01_S.T_Helios_RustBucket_Cliff_Strata_01_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_SaltFlats_D.T_Helios_RustBucket_SaltFlats_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_SaltFlats_N.T_Helios_RustBucket_SaltFlats_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_RustBucket_SaltFlats_S.T_Helios_RustBucket_SaltFlats_S",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_WavySand_01_D.T_Helios_WavySand_01_D",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_WavySand_01_N.T_Helios_WavySand_01_N",
+			"/Game/Environments/Helios/Terrain/Textures/T_Helios_WavySand_01_S.T_Helios_WavySand_01_S",
 			"/Game/Environments/MoonLanding/BlackWall_Moon.BlackWall_Moon",
 			"/Game/Environments/Papaya/Texture_Data/Papaya_PlywoodSingle.Papaya_PlywoodSingle",
 			"/Game/Environments/Papaya/Texture_Data/Papaya_Swatch_Blue.Papaya_Swatch_Blue",
@@ -11734,6 +11816,7 @@
 			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Tawny.Cube_Tawny",
 			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Tiger.Cube_Tiger",
 			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Water_DarkBlue.Cube_Water_DarkBlue",
+			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Water_Dirty.Cube_Water_Dirty",
 			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Water_Kevin_Pool.Cube_Water_Kevin_Pool",
 			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Water_LightBlue.Cube_Water_LightBlue",
 			"/Game/Playgrounds/Items/Cubes/TextureData/Cube_Water_TRV_Swamp.Cube_Water_TRV_Swamp",
@@ -25929,11 +26012,11 @@
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairBalcony_A.Asteria_Quarry_ScaffoldingStairBalcony_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairF_A.Asteria_Quarry_ScaffoldingStairF_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingWall_B.Asteria_Quarry_ScaffoldingWall_B_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_A.Asteria_SlurpRoom_StringLights_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_B.Asteria_SlurpRoom_StringLights_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Wall_A.Asteria_SlurpRoom_Wall_A_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_B.Asteria_SlurpRoom_Window_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_StringLights_02.Asteria_StringLights_02_C",
 			"/Game/Environments/Asteria/Sets/TattooShop/BluePrints/Asteria_TattooShop_Wall_A.Asteria_TattooShop_Wall_A_C",
@@ -26693,7 +26776,8 @@
 			"/Itemization/UI/PropertyInterfaces/InventoryPropertyInterface.InventoryPropertyInterface_C"
 		],
 		"VKCreateUGCPartner": [
-			"/CRD_VFX_Spawner/Device_PointOfLight.Device_PointOfLight_C"
+			"/CRD_VFX_Spawner/Device_PointOfLight.Device_PointOfLight_C",
+			"/Game/TimeOfDay/DaySequence/DaySequenceActors/BR_Ch7/DSA_BR_Ch7S1.DSA_BR_Ch7S1_C"
 		]
 	},
 	"ClassTypesList": [

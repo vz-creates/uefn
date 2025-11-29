@@ -2,6 +2,13 @@
 	"bEnableAccessToLegacyContent": true,
 	"bEnableAccessToUnreleasedContent": true,
 
+	"_comment_AdditionalFeatures": "Additional configs to load at end",
+	"AdditionalFeatures": {
+		"+": [
+			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioEpicDev.json"
+		]
+	},
+
 	"ValkyrieProjectSettings": {
 		"bCollectionsEnabled": true,
 		"bMultiProjectAllowed": true,
@@ -774,9 +781,6 @@
 	"ValkyrieExperimentalSettings": {
 		"bAllowAccessToExperimentalScriptedTools": true
 	},
-	"ValkyrieAudioSettings": {
-		"bEnableLoadingBehaviorForceInline": true
-	},
 	"ValkyrieUMGSettings": {
 		"AllowedPaletteWidgets": {
 			"+": [
@@ -801,14 +805,6 @@
 	},
 	"ValkyrieEditorSettings": {
 		"AllowedAssetTypes": {
-			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Rules": ["View","Create"] },
-			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Rules": ["View","Create"] },
-			"/Script/AmbientAudio.AmbientAudioComponent": 		{ "Rules": ["View"] },
-			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View","Create"] },
-			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent": 		{ "Rules": ["View","Create"] },
-			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create" ] },
-			"/Script/Engine.SoundEffectSubmixPreset":		{ "Rules": [ "View", "Create" ] },
-			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Rules": [ "View", "Create" ] },
 			"/Script/AnimNext.AnimNextSchedule":				{ "Rules": ["View","Create"] },
 			"/Script/AnimNext.AnimNextGraph":					{ "Rules": ["View","Create"] },
 			"/Script/AnimNext.AnimNextParameterBlock":			{ "Rules": ["View","Create"] },
@@ -826,16 +822,12 @@
 			"/Script/Engine.EulerAnalysisProperties":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.LinearAnalysisProperties":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.PoseAsset":							{ "Rules": ["View","Create"] },
-			"/Script/Engine.SoundConcurrency":					{ "Rules": ["View","Create"] },
-			"/Script/Engine.SoundSubmix":						{ "Rules": ["View"] },
-			"/Script/Engine.SoundBase":							{ "Rules": ["View","Create","Import"] },
 			"/Script/Engine.UserDefinedEnum":					{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/Engine.UserDefinedStruct":					{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/EnhancedInput.InputAction":                { "Rules": ["View","Create"] },
             "/Script/EnhancedInput.InputMappingContext":        { "Rules": ["View","Create"] },
 			"/Script/EnhancedInput.InputTrigger": 				{ "Rules": ["View", "Create"], "Subclasses" : "All" },
 			"/Script/EnhancedInput.InputTriggerPressed":        { "Rules": ["View","Create"] },
-			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortInputMappingContext":     { "Rules": ["View","Create"] },
 			"/Script/FortniteGame.FortItemComponent_Pickup":	{ "Rules": ["View"] },
 			"/Script/FortniteGame.FortItemComponentData_Pickup":{ "Rules": ["View","Create"] },
@@ -852,7 +844,7 @@
 			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":	{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":	{ "Rules": [ "View" ] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Tags":		{ "Rules": [ "View" ] },
-			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset":	{ "Rules": ["View","Create"] },
+			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset": { "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/ItemizationCoreRuntime.InventoryConfigurationAsset":	{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemOwnerPoseAsset":			{ "Rules": ["View"] },
 			"/Script/ItemizationRuntime.InventorySetupDataNativeFort":		{ "Rules": ["View","Create"] },
@@ -866,14 +858,7 @@
 			"/Itemization/UI/ItemizationUIConversionFunctionLibrary.ItemizationUIConversionFunctionLibrary_C":			{ "Visible": true },
 			"/Script/MusicEnvironment.FrameBasedMusicMap": { },
 			"/Script/MusicalMode.MovieSceneMusicalClock": { },
-			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Visible": true },
-			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent":{ "Visible": true },
-			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Visible": true },
-			"/Script/Engine.SoundEffectSubmixPreset":		{ "Visible": true },
-			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Visible": true },
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C":	{ "Visible": true },
-			"/Script/AmbientAudio.AmbientAudioComponent": 				{ "Visible": true },
-			"/Script/AmbientAudio.AmbientAudioDataAsset": 				{ "Visible": true },
 			"/Script/AnimGraph.AnimBlueprintExtension_Attributes":		{  },
 			"/Script/AnimGraph.AnimBlueprintExtension_Base":			{  },
 			"/Script/AnimGraph.AnimBlueprintExtension_CachedPose":		{  },
@@ -1087,17 +1072,29 @@
 			"/Script/FortCreativeStreamingComponent.FortCreativeStreamingMusicalReactivityComponent":	{ "Visible": true },
 			"/Script/FortniteGame.BaseUEFNAnimInstance":				{ "Visible": true },
 			"/Script/FortniteGame.UEFNCustomAgentAnimInstance":			{ "Visible": true },
-			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
 			"/Script/FortniteGame.FortGameUserSettings":				{ "Visible": true },
 			"/Script/FortniteGame.FortItemComponentData_Pickup":		{ "Visible": true },
-			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode":		{  },
-			"/Script/GameplayCameras.OcclusionMaterialCameraNode":		{  },
+			"/Script/GameplayCameras.CameraRigAsset":					{  },
 			"/Script/GameplayCameras.ArrayCameraNode":					{  },
+			"/Script/GameplayCameras.AttachToPlayerPawnCameraNode":		{  },
+			"/Script/GameplayCameras.AutoFocusCameraNode":				{  },
+			"/Script/GameplayCameras.BodyParametersCameraNode":			{  },
 			"/Script/GameplayCameras.BoomArmCameraNode":				{  },
+			"/Script/GameplayCameras.ClippingPlanesCameraNode":			{  },
+			"/Script/GameplayCameras.CollisionPushCameraNode":			{  },
 			"/Script/GameplayCameras.DampenPositionCameraNode":			{  },
+			"/Script/GameplayCameras.DampenRotationCameraNode":			{  },
 			"/Script/GameplayCameras.FieldOfViewCameraNode":			{  },
+			"/Script/GameplayCameras.FilmBackCameraNode":				{  },
 			"/Script/GameplayCameras.LensParametersCameraNode":			{  },
+			"/Script/GameplayCameras.OcclusionMaterialCameraNode":		{  },
 			"/Script/GameplayCameras.OffsetCameraNode":					{  },
+			"/Script/GameplayCameras.OrthographicCameraNode":			{  },
+			"/Script/GameplayCameras.PostProcessCameraNode":			{  },
+			"/Script/GameplayCameras.SetLocationCameraNode":			{  },
+			"/Script/GameplayCameras.SetRotationCameraNode":			{  },
+			"/Script/GameplayCameras.SplineFieldOfViewCameraNode":		{  },
+			"/Script/GameplayCameras.SplineOffsetCameraNode":		    {  },
 			"/Script/GameplayCameras.BaseFramingCameraNode":			{  },
 			"/Script/GameplayCameras.DollyFramingCameraNode":			{  },
 			"/Script/GameplayCameras.PanningFramingCameraNode":			{  },
@@ -1129,9 +1126,6 @@
 			"/Script/VerseAssets.PropertyInterface":					{ "Visible": true },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":		{ "Visible": true },
 			"/Script/MovieScene.MovieSceneBindingOverrides":			{  },
-			"/Script/MusicEnvironment.FrameBasedMusicMap":              {  },
-			"/Script/MusicalMode.MovieSceneMusicalClock":               {  },
-			"/Script/HarmonixMetasound.MusicClockComponent":            {  },
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C": { "Visible": true },
 			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C": { }
 		},
@@ -1195,7 +1189,7 @@
 			},
 			"LevelEditor.MainMenu.Tools": {
 				"AllowList": {
-					"+": ["TestAutomation"]
+					"+": ["TestAutomation", "ValkyrieSessionInspector"]
 				}
 			},
 			"SpatialProfiler.SettingsToolBar.SettingsMenu": {
@@ -1228,6 +1222,11 @@
 			},
 			"DaySequence.ViewportToolbar": {
 				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence", "SelectDaySequenceActor", "RefreshDaySequenceActor", "OpenDaySequenceActor", "RespawnDaySequenceActor" ]
+			},
+			"ChaosVD.SolverTracks.MenuToolbar": {
+				"DenyList":  {
+					"=": []
+				}
 			}
 		},
 		"AllowedTabs": {
@@ -1239,7 +1238,12 @@
 			},
 			"Global": {
 				"AllowList": {
-					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab" ]
+					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "ValkyrieSessionInspector" ]
+				}
+			},
+			"ChaosVisualDebuggerTab": {
+				"AllowList": {
+					"+": [ "RecordedOutputLog" ]
 				}
 			}
 		},
@@ -1275,35 +1279,6 @@
 				]
 			},
 			{
-				"Type": "/Script/AudioModulation.SoundModulationPatch",
-				"AllowList": [
-					"Bus",
-					"OutputParameter",
-					"Inputs",
-					"bSampleAndHold",
-					"PatchSettings",
-					"bBypass"
-				]
-			},
-			{
-				"Type": "/Script/Engine.SoundModulationDefaultRoutingSettings",
-				"AllowList": [
-					"PitchRouting",
-					"PitchModulationDestination",
-					"HighpassRouting",
-					"HighpassModulationDestination",
-					"LowpassRouting",
-					"LowpassModulationDestination"
-				]
-			},
-			{
-				"Type": "/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent",
-				"AllowList": [
-					"SubmixOverrideSettings",
-					"Priority"
-				]
-			},
-			{
 				"Type": "/Script/UMG.SafeZoneSlot",
 				"DenyList": [
 					"Padding",
@@ -1311,38 +1286,6 @@
 					"VAlign",
 					"bIsTitleSafe",
 					"SafeAreaScale"
-				]
-			},
-			{
-				"Type": "/Script/Engine.SoundBase",
-				"AllowList": [ 
-					"bEnableSubmixSends",
-					"SoundSubmixSends"
-					]
-			},
-			{
-				"Type": "/Script/MetasoundEngine.MetaSoundSource",
-				"AllowList": [ "ConcurrencySet"]
-			},
-			{
-				"Type": "/Script/Engine.SoundAttenuationSettings",
-				"AllowList": [ 
-					"bEnableListenerFocus",
-					"FocusAzimuth",
-					"NonFocusAzimuth",
-					"FocusVolumeAttenuation",
-					"NonFocusVolumeAttenuation",
-					"bEnableFocusInterpolation",
-					"FocusAttackInterpSpeed",
-					"FocusReleaseInterpSpeed"
-					]
-			},
-			{
-				"Type": "/Script/AmbientAudio.AmbientAudioComponent",
-				"AllowList": [
-					"AmbientAsset",
-					"Priority",
-					"CrossfadeTime"
 				]
 			},
 			{
@@ -1466,14 +1409,6 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
-				"Type": "/Script/Engine.SoundCue",
-				"AllowList": [ "ConcurrencySet" ]
-			},
-			{
-				"Type": "/Script/Engine.SoundWave",
-				"AllowList": [ "NumChannels", "SampleRate", "ImportedSampleRate", "Duration", "TotalSamples", "ModulationSettings", "LoadingBehavior", "bMature", "bManualWordWrap", "bSingleLine", "SubtitlePriority", "Subtitles", "Comment" ]
-			},
-			{
 				"Type": "/Script/DaySequence.DaySequenceModifierComponent",
 				"AllowList": [ "bUseCollection", "DaySequenceCollections", "Mode", "BlendPolicy", "BlendAmount", "BlendTime", "Bias", "VolumeShapeComponents", "DayNightCycle", "DayNightCycleTime", "UserBlendWeight" ]
 			},
@@ -1517,6 +1452,10 @@
 				"AllowList": [ "bEnableWorkspaceSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
 			},
 			{
+				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",
+				"AllowList": [ "DefaultAssetAccessSpecifier" ]
+			},
+			{
 				"Type": "/Script/PhysicsCore.PhysicalMaterial",
 				"AllowList": [ "Friction", "StaticFriction", "Restitution", "Density" ]
 			},
@@ -1532,12 +1471,21 @@
 			{
 				"Type": "/Script/FortniteGame.BuildingSMActor",
 				"AllowList": [ "DisplacedMesh" ]
+			},
+			{
+				"Type": "/Script/ChaosVD.ChaosVDGeneralSettings",
+				"AllowList": [
+					"bTrimEmptyFrames",
+					"MaxGameThreadFramesToQueueNum",
+					"bProcessPendingOperationsQueueInWorkerThread",
+					"DataTransportModeOverride"
+				]
 			}
 		],
 		"-": [
 			{
 				"Type": "/Script/FortniteGame.BuildingTextureData",
-				"DenyList": [ "Displacement", "Magnitude", "Center" ]
+				"DenyList": [ "Displacement", "Magnitude", "Center", "UVChannel", "MaskUVChannel" ]
 			},
 			{
 				"Type": "/Script/FeralCorgiGameplayRuntime.FortUserOptionComponent_TickRate",

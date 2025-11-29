@@ -2,10 +2,9 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.11-CL-48390828
+# Generated from build: ++Fortnite+Release-39.00-CL-48444883
 #################################################
 
-# Module import path: /Fortnite.com/AI
 AI<public> := module {
   @experimental
   (Agent: agent).AddInjectedBehavior<native><epic_internal>(BehaviorTreeInjection: behavior_tree_injection)<transacts>: void
@@ -17,33 +16,13 @@ AI<public> := module {
   (InAgent: agent).GetNPCBehavior<native><public>()<transacts><decides>: npc_behavior
 
   # Get the focus_interface interface for the specified character.
-  (InCharacter: fort_character).GetFocusInterface<native><public>()<transacts><decides>: focus_interface
-
-  @experimental
-  # Get the current fort_guard_actions interface for the specified character.
-  (InCharacter: fort_character).GetFortGuardActions<native><public>()<transacts><decides>: fort_guard_actions
-
-  @experimental
-  # Get the current fort_guard_perception interface for the specified character.
-  (InCharacter: fort_character).GetFortGuardPerception<native><public>()<transacts><decides>: fort_guard_perception
+  (InCharacter: fort_character).GetFocusInterface<public>()<transacts><decides>: focus_interface = external {}
 
   # Get the current fort_leashable interface for the specified character.
-  (InCharacter: fort_character).GetFortLeashable<native><public>()<transacts><decides>: fort_leashable
-
-  @experimental
-  # Get the current fort_npc_actions interface for the specified character.
-  (InCharacter: fort_character).GetFortNPCActions<native><public>()<transacts><decides>: fort_npc_actions
-
-  @experimental
-  # Get the current fort_npc_perception interface for the specified character.
-  (InCharacter: fort_character).GetFortNPCPerception<native><public>()<transacts><decides>: fort_npc_perception
+  (InCharacter: fort_character).GetFortLeashable<public>()<transacts><decides>: fort_leashable = external {}
 
   # Get the navigatable interface for the specified character
-  (InCharacter: fort_character).GetNavigatable<native><public>()<transacts><decides>: navigatable
-
-  @experimental
-  # Returns the `entity` for `InNPCBehavior`.
-  (InNPCBehavior: npc_behavior).GetEntity<native><public>()<reads><decides>: entity
+  (InCharacter: fort_character).GetNavigatable<public>()<transacts><decides>: navigatable = external {}
 
   # Module import path: /Fortnite.com/AI/HiredGuardCommands
   HiredGuardCommands<public> := module {
@@ -51,7 +30,7 @@ AI<public> := module {
     (Agent: agent).GetTeamMembers<native><epic_internal>()<transacts>: []agent
 
     @experimental
-    (Character: fort_character).GetNPCLeashRadius<native><epic_internal>()<transacts>: tuple(float, float)
+    (Character: fort_character).GetNPCTetherRadius<native><epic_internal>()<transacts>: float
 
     @experimental
     (Character: fort_character).IsBeingDBNOCarried<native><epic_internal>()<transacts><decides>: void
@@ -102,23 +81,24 @@ AI<public> := module {
 
     using { /Fortnite.com/AI/HiredGuardCommands/PingCommand }
     using { /Fortnite.com/Characters }
-    using { /UnrealEngine.com/Temporary/SpatialMath }
     using { /Verse.org/Native }
     using { /Verse.org/SceneGraph }
     using { /Verse.org/Simulation }
+    using { /Verse.org/SpatialMath }
     @hide_in_editor
     @experimental
     default_npc_behavior<epic_internal> := class(npc_behavior) {}
 
+    @available { MinUploadedAtFNVersion := 3900 }
     @experimental
     # Fortnite NPC AI Management
-    follower_actions_component<native><epic_internal> := class(fort_guard_actions_component) {
+    follower_actions_component<native><epic_internal> := class(guard_actions_component) {
       @experimental
       IsFollowingBehaviorEnabled<native><epic_internal>()<transacts>: logic
 
       @experimental
       # Run the NPC default behavior
-      RunDefaultBehavior<native><epic_internal>()<suspends>: ai_action_result
+      RunDefaultBehavior<native><epic_internal>()<suspends>: result(void, ai_action_error_type)
     }
 
     @available { MinUploadedAtFNVersion := 3200 }
@@ -174,7 +154,7 @@ AI<public> := module {
       EntityType<native><public>: entity_type
 
       @experimental
-      Location<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+      Location<native><public>: (/Verse.org/SpatialMath:)vector3
 
       @experimental
       LocationOnHorizontalSurface<native><public>: logic
@@ -187,32 +167,51 @@ AI<public> := module {
     }
   }
 
-  # Generate a navigation_target from any position
-  MakeNavigationTarget<native><epic_internal>(Position: (/Verse.org/SpatialMath:)vector3): navigation_target
+  @available { MinUploadedAtFNVersion := 3900 }
+  MakeAIActionErrorResult<native_callable><epic_internal>(ErrorType: error_type where error_type: type): result(
+    false,
+    error_type
+  ) = external {}
 
-  # Generate a navigation_target from an agent
-  MakeNavigationTarget<native><public>(Target: agent): navigation_target
+  @available { MinUploadedAtFNVersion := 3900 }
+  MakeAIActionSuccessResult<native_callable><epic_internal>(SuccessType: success_type where success_type: type): result(
+    success_type,
+    false
+  ) = external {}
 
-  @experimental
-  # Create a `navigation_target` from a `fort_target_info`.
-  MakeNavigationTarget<native><public>(TargetInfo: fort_target_info): navigation_target
+  # Generate a navigation_target from an agent.
+  MakeNavigationTarget<native><public>(Agent: agent): navigation_target
 
-  # Generate a navigation_target from any position
+  # Generate a navigation_target from any position.
+  MakeNavigationTarget<native><public>(Position: (/Verse.org/SpatialMath:)vector3): navigation_target
+
+  # Generate a navigation_target from any position.
   MakeNavigationTarget<public>(Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): navigation_target = external {}
 
-  @experimental
-  # Generate a navigation_target from an entity
-  MakeNavigationTargetEntity<native><public>(Entity: entity): navigation_target
+  @available { MinUploadedAtFNVersion := 3900 }
+  # Result of a failed AI action
+  ai_action_error_type<native><public> := enum<open> {
+    # The action has been canceled before completion.
+    Canceled
+
+    # The action was not allowed to start.
+    Disallowed
+
+    # The action has failed during its execution.
+    Failure
+  }
 
   using { /Fortnite.com/Assets }
   using { /Fortnite.com/Characters }
   using { /Fortnite.com/Playspaces }
   using { /Fortnite.com/Teams }
   using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   using { /Verse.org/SpatialMath }
-  @experimental
   # Result of an AI action
-  ai_action_result<native><public> := enum<open> {
+  ai_action_result<native><epic_internal> := enum<open> {
     # The action has been canceled before completion
     Canceled
 
@@ -267,9 +266,6 @@ AI<public> := module {
     var<private> DecisionSystem<native><public>: decision_system
   }
 
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 3800 }
   # Component to manage functionality specifically for an agent's equipped Sidekick.
   equipped_sidekick_component<native><public> := class<final_super><epic_internal>(sidekick_component, showable) {
@@ -307,7 +303,7 @@ AI<public> := module {
     var Show<override>: logic = external {}
   }
 
-  focus_interface<native><public> := interface<epic_internal> {
+  focus_interface<public> := interface<epic_internal> {
     # Look At specified location. Will never complete unless interrupted.
     MaintainFocus<epic_internal>(Location: (/Verse.org/SpatialMath:)vector3)<suspends>: void
 
@@ -318,241 +314,18 @@ AI<public> := module {
     MaintainFocus<public>(Location: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<suspends>: void
   }
 
+  @available { MinUploadedAtFNVersion := 3900 }
   @experimental
   # Fortnite Bots AI actions management
-  fort_bot_actions_component<native><epic_internal> := class<epic_internal>(fort_guard_actions_component) {}
+  fort_bot_actions_component<native><epic_internal> := class<epic_internal>(guard_actions_component) {}
 
-  @experimental
-  # Perception settings for damage.
-  fort_damage_perception_settings<native><epic_internal> := class<final><concrete> {
-    @experimental
-    @editable
-    # Specifies duration in seconds after damage stimuli generated by this sense become forgotten. 0 means never.
-    MaxStimulusDuration<native><public>: float = external {}
+  @available { MinUploadedAtFNVersion := 3900 }
+  fort_guard_actions_component<epic_internal> := class(guard_actions_component) {}
 
-    @experimental
-    @editable
-    # Specifies if damage perception is enabled.
-    SenseEnabled<native><public>: logic = external {}
-  }
+  @available { MinUploadedAtFNVersion := 3900 }
+  fort_guard_perception_component<epic_internal> := class(guard_awareness_component) {}
 
-  @experimental
-  # Fortnite Guards AI actions management
-  fort_guard_actions<native><public> := interface<epic_internal>(fort_npc_actions, fort_leashable) {
-    # Attack the navigation obstacle
-    Attack<epic_internal>(Target: fort_obstacle_info)<suspends>: ai_action_result
-
-    # Attack the target
-    Attack<public>(Target: fort_target_info)<suspends>: ai_action_result
-
-    # Change stance to crouch
-    Crouch<epic_internal>()<suspends>: ai_action_result
-
-    # Start jumping
-    Jump<epic_internal>(): ai_action_result
-
-    # Move in range to attack the current target
-    MoveInRangeToAttack<public>()<suspends>: ai_action_result
-
-    # Play an emote
-    PlayEmote<epic_internal>(Emote: emote)<suspends>: ai_action_result
-
-    # Play a random emote from the character emotes bank
-    PlayRandomEmote<public>()<suspends>: ai_action_result
-
-    # Revive the specified target
-    Revive<public>(Target: agent)<suspends>: ai_action_result
-
-    # Roam around the current position. Use the fort_leashable_component to specify the radius, else will roam anywhere.
-    RoamAround<public>(?MovementType: movement_type = external {})<suspends>: navigation_result
-
-    # Go back to standing
-    StandUp<epic_internal>(): ai_action_result
-
-    # Change movement speed to sprint and switch to tactical sprint when energy is full.
-    TacticalSprint<epic_internal>()<suspends>: ai_action_result
-  }
-
-  @experimental
-  # Fortnite Guards AI actions management
-  fort_guard_actions_component<native><epic_internal> := class<epic_internal>(
-    fort_npc_actions_component,
-    fort_guard_actions
-  ) {
-    # Attack the navigation obstacle
-    Attack<native><override>(Target: fort_obstacle_info)<suspends>: ai_action_result
-
-    # Attack the target
-    Attack<native><override>(Target: fort_target_info)<suspends>: ai_action_result
-
-    # Removes the current leash.
-    ClearLeash<native><override>(): void
-
-    # Change stance to crouch
-    Crouch<native><override>()<suspends>: ai_action_result
-
-    # Start jumping
-    Jump<native><override>(): ai_action_result
-
-    # Move in range to attack the current target
-    MoveInRangeToAttack<native><override>()<suspends>: ai_action_result
-
-    OnInitialized<native><override>(): void
-
-    # Play an emote
-    PlayEmote<native><override>(Emote: emote)<suspends>: ai_action_result
-
-    # Play a random emote from the character emotes bank
-    PlayRandomEmote<native><override>()<suspends>: ai_action_result
-
-    # Revive the specified target
-    Revive<native><override>(Target: agent)<suspends>: ai_action_result
-
-    # Roam around the current position. Use the fort_leashable_component to specify the radius, else will roam anywhere.
-    RoamAround<native><override>(?MovementType: movement_type = external {})<suspends>: navigation_result
-
-    # Set the agent to be the new center of the leash.
-    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
-    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
-    SetLeashAgent<native><override>(Agent: agent, InnerRadius: float, OuterRadius: float): void
-
-    # Set custom leash position.
-    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
-    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
-    SetLeashPosition<native><override>(
-      Location: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-      InnerRadius: float,
-      OuterRadius: float
-    ): void
-
-    # Set custom leash position.
-    #  'InnerRadius' ranges from 0.0 to 20000.0 (in centimeters).
-    #  'OuterRadius' ranges from 0.0 to 20000.0 (in centimeters) and no less than 'InnerRadius'.
-    SetLeashPosition<native><override>(
-      Location: (/Verse.org/SpatialMath:)vector3,
-      InnerRadius: float,
-      OuterRadius: float
-    ): void
-
-    # Go back to standing
-    StandUp<native><override>(): ai_action_result
-
-    # Change movement speed to sprint and switch to tactical sprint when energy is full.
-    TacticalSprint<native><override>()<suspends>: ai_action_result
-  }
-
-  @experimental
-  # The different alert levels of a guard.
-  fort_guard_alert_level<native><public> := enum {
-    # The guard has identified a hostile target.
-    Alerted
-
-    # The guard has identified a hostile target but can't see it any more.
-    LostTarget
-
-    # The guard has seen a hostile target but hasn't identified it yet.
-    Suspicious
-
-    # The guard has not detected any hostile target.
-    Unaware
-  }
-
-  @experimental
-  # Fortnite NPC perception management
-  fort_guard_perception<native><public> := interface<epic_internal>(fort_npc_perception) {
-    @experimental
-    # Event when the alert level of the guard has changed.
-    AlertLevelChangedEvent<public>: listenable(fort_guard_alert_level)
-
-    @experimental
-    # Event when the current target has changed.
-    CurrentTargetChangedEvent<public>: listenable(fort_target_info)
-
-    @experimental
-    # Get the current alert level of the guard.
-    GetAlertLevel<public>()<reads>: fort_guard_alert_level
-
-    @experimental
-    # Get the current alert level of a target for the guard.
-    GetAlertLevel<public>(Target: entity)<reads><decides>: fort_guard_alert_level
-
-    @experimental
-    # Get information about the current target.
-    GetCurrentTargetInfo<public>()<reads><decides>: fort_target_info
-
-    @experimental
-    # Get information about the potential current obstacle
-    GetObstacleInfo<epic_internal>()<reads><decides>: fort_obstacle_info
-
-    @experimental
-    # Event when a new best obstacle is detected
-    ObstacleChangedEvent<epic_internal>: listenable(fort_obstacle_info)
-  }
-
-  @experimental
-  # Fortnite guard perception management
-  fort_guard_perception_component<native><epic_internal> := class<epic_internal>(
-    fort_npc_perception_component,
-    fort_guard_perception
-  ) {
-    AlertLevelChangedEvent<override><native>: subscribable_event_intrnl(fort_guard_alert_level) = external {}
-
-    CurrentTargetChangedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
-
-    # Get the current alert level of the guard.
-    GetAlertLevel<native><override>()<reads>: fort_guard_alert_level
-
-    # Get the current alert level of a target for the guard.
-    GetAlertLevel<native><override>(Target: entity)<reads><decides>: fort_guard_alert_level
-
-    # Get information about the current target.
-    GetCurrentTargetInfo<native><override>()<reads><decides>: fort_target_info
-
-    # Get information about the potential current obstacle
-    GetObstacleInfo<native><override>()<reads><decides>: fort_obstacle_info
-
-    ObstacleChangedEvent<override><native>: subscribable_event_intrnl(fort_obstacle_info) = external {}
-
-    OnInitialized<native><override>(): void
-
-    OnUninitializing<native><override>(): void
-  }
-
-  @experimental
-  # Perception settings for hearing.
-  fort_hearing_perception_settings<native><epic_internal> := class<final><concrete> {
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect enemies.
-    EnemiesDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect friendlies.
-    FriendliesDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Maximum hearing distance in meters to notice a target.
-    HearingRange<native><public>: float = external {}
-
-    @experimental
-    @editable
-    # Specifies duration in seconds after audio stimuli generated by this sense become forgotten. 0 means never.
-    MaxStimulusDuration<native><public>: float = external {}
-
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect neutral targets.
-    NeutralsDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Specifies if hearing is enabled.
-    SenseEnabled<native><public>: logic = external {}
-  }
-
-  fort_leashable<native><public> := interface<epic_internal> {
+  fort_leashable<public> := interface<epic_internal> {
     # Removes the current leash.
     ClearLeash<public>(): void
 
@@ -580,77 +353,8 @@ AI<public> := module {
     ): void
   }
 
-  @experimental
-  # Fortnite NPC AI actions management
-  fort_npc_actions<native><public> := interface<epic_internal>(navigatable, focus_interface) {
-    @experimental
-    # Equip the best weapon.
-    EquipBestWeapon<epic_internal>(): void
-
-    @experimental
-    # Fires the currently equipped weapon.
-    FireCurrentWeapon<epic_internal>()<suspends>: void
-
-    @experimental
-    # Add spare ammo for the currently equipped weapon.
-    GiveAmmoForCurrentWeapon<epic_internal>(AmmoQuantity: int)<suspends>: void
-
-    @experimental
-    # Try to reload the currently equipped weapon.
-    ReloadCurrentWeapon<epic_internal>()<suspends>: logic
-  }
-
-  @experimental
-  # Fortnite NPC AI actions management
-  fort_npc_actions_component<native><epic_internal> := class<final_super><epic_internal>(component, fort_npc_actions) {
-    # Equip the best weapon.
-    EquipBestWeapon<native><override>(): void
-
-    # Fires the currently equipped weapon.
-    FireCurrentWeapon<native><override>()<suspends>: void
-
-    # Return the current destination of the character
-    GetCurrentDestination<native><override>()<transacts><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
-
-    # Add spare ammo for the currently equipped weapon.
-    GiveAmmoForCurrentWeapon<native><override>(AmmoQuantity: int)<suspends>: void
-
-    # Look At specified Agent. Will never complete unless interrupted.
-    MaintainFocus<native><override>(Agent: agent)<suspends>: void
-
-    # Look At specified location. Will never complete unless interrupted.
-    MaintainFocus<native><override>(Location: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<suspends>: void
-
-    # Look At specified location. Will never complete unless interrupted.
-    MaintainFocus<native><override>(Location: (/Verse.org/SpatialMath:)vector3)<suspends>: void
-
-    # Navigate toward the specified target
-    NavigateTo<native><override>(
-      Target: navigation_target,
-      ?MovementType: movement_type = external {},
-      ?ReachRadius: float = external {},
-      ?AllowPartialPath: logic = external {}
-    )<suspends>: navigation_result
-
-    OnInitialized<native><override>(): void
-
-    OnUninitializing<native><override>(): void
-
-    # Try to reload the currently equipped weapon.
-    ReloadCurrentWeapon<native><override>()<suspends>: logic
-
-    # Apply a multiplier on the movement speed (Multiplier is clamped between 0.5 and 2)
-    SetMovementSpeedMultiplier<native><override>(Multiplier: float): void
-
-    # Stop navigation
-    StopNavigation<native><override>(): void
-
-    # Simulate the Use button.
-    Use<native><epic_internal>(Duration: float)<suspends>: void
-
-    # Wait for a specific duration
-    Wait<native><override>(?Duration: float = external {})<suspends>: void
-  }
+  @available { MinUploadedAtFNVersion := 3900 }
+  fort_npc_actions_component<epic_internal> := class(npc_actions_component) {}
 
   @experimental
   # NPC Component
@@ -666,188 +370,109 @@ AI<public> := module {
   @import_as("/Script/VerseFortniteAI.UNPCComponentSettings")
   fort_npc_component_settings<native><epic_internal> := class {}
 
+  @available { MinUploadedAtFNVersion := 3900 }
+  fort_npc_perception_component<epic_internal> := class(npc_awareness_component) {}
+
+  @available { MinUploadedAtFNVersion := 3900 }
   @experimental
-  # Fortnite NPC perception management
-  fort_npc_perception<native><public> := interface<epic_internal> {
-    @experimental
-    # Get the last known position of a target.
-    GetLastKnownPosition<public>(Target: entity)<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
-
-    @experimental
-    # Event when a target is added.
-    TargetAddedEvent<public>: listenable(fort_target_info)
-
-    @experimental
-    # Event when a target is heard. Hearing sense must be active.
-    TargetHeardEvent<public>: listenable(fort_target_info)
-
-    @experimental
-    # Event when the info about a target has been updated.
-    TargetInfoUpdatedEvent<public>: listenable(fort_target_info)
-
-    @experimental
-    # Event when a target was removed.
-    TargetRemovedEvent<public>: listenable(entity)
-
-    @experimental
-    # Event when a target is seen. Sight sense must be active.
-    TargetSeenEvent<public>: listenable(fort_target_info)
-
-    @experimental
-    # Event when a target is touched. Touch sense must be active.
-    TargetTouchedEvent<public>: listenable(fort_target_info)
-
-    @experimental
-    # Information about all detected targets.
-    var<epic_internal> DetectedTargets<public>: []fort_target_info
+  # Fortnite Wildlife AI actions management
+  fort_wildlife_actions_component<native><epic_internal> := class<epic_internal>(npc_actions_component) {
+    OnInitialized<native><override>(): void
   }
 
-  @experimental
-  # Fortnite NPC perception management
-  fort_npc_perception_component<native><epic_internal> := class<final_super><epic_internal>(
-    component,
-    fort_npc_perception
-  ) {
-    # Get the last known position of a target.
-    GetLastKnownPosition<native><override>(Target: entity)<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+  @available { MinUploadedAtFNVersion := 3900 }
+  # Fortnite Guards AI actions management
+  guard_actions_component<native><public> := class<epic_internal>(npc_actions_component) {
+    # Attack the target. The target must have been detected.
+    Attack<native><public>(Target: entity)<suspends>: result(void, ai_action_error_type)
+
+    # Change stance to crouch. Will never complete unless interrupted.
+    Crouch<native><public>()<suspends>: result(void, ai_action_error_type)
+
+    # Trigger a jump.
+    Jump<native><public>()<suspends>: result(void, ai_action_error_type)
+
+    # Move in range to attack the current target.
+    MoveInRangeToAttack<native><public>()<suspends>: result(void, ai_action_error_type)
+
+    OnInitialized<native><override>(): void
+
+    # Play an emote.
+    PlayEmote<native><epic_internal>(Emote: emote)<suspends>: result(void, ai_action_error_type)
+
+    # Play a random emote from the character emotes bank.
+    PlayRandomEmote<native><public>()<suspends>: result(void, ai_action_error_type)
+
+    # Revive the specified target.
+    Revive<native><public>(Target: entity)<suspends>: result(void, ai_action_error_type)
+
+    # Roam around the current position. Use 'Tether' to specify the radius; otherwise, the Fortnite guard will roam anywhere.
+    RoamAround<native><public>(?MovementType: movement_type = external {})<suspends>: result(void, ai_action_error_type)
+
+    # Go back to standing.
+    StandUp<native><public>()<suspends>: result(void, ai_action_error_type)
+
+    # Change movement speed to sprint and switch to tactical sprint when energy is full.
+    TacticalSprint<native><epic_internal>()<suspends>: result(void, ai_action_error_type)
+
+    # Tether the NPC to a position.
+    #  'Radius' is in centimeters.
+    Tether<native><public>(Location: (/Verse.org/SpatialMath:)vector3, Radius: float): void
+
+    # Tether the NPC to an entity.
+    #  'Radius' is in centimeters.
+    Tether<native><public>(Target: entity, Radius: float): void
+
+    # Untether the NPC.
+    Untether<native><public>(): void
+  }
+
+  @available { MinUploadedAtFNVersion := 3900 }
+  # The different alert levels of a Fortnite Guard.
+  guard_alert_level<native><public> := enum {
+    # The guard has identified a hostile target.
+    Alerted
+
+    # The guard has identified a hostile target but can't see it any more.
+    LostTarget
+
+    # The guard has seen a hostile target but hasn't identified it yet.
+    Suspicious
+
+    # The guard has not detected any hostile target.
+    Unaware
+  }
+
+  @available { MinUploadedAtFNVersion := 3900 }
+  # Fortnite Guard perception management
+  guard_awareness_component<native><public> := class<epic_internal>(npc_awareness_component) {
+    # Event when the alert level has changed.
+    AlertLevelChangeEvent<native><public>: listenable(guard_alert_level) = external {}
+
+    # Event when a new obstacle is detected.
+    DetectObstacleEvent<native><public>: listenable(entity) = external {}
+
+    # Event when the current obstacle was forgotten.
+    ForgetObstacleEvent<native><public>: listenable(entity) = external {}
+
+    # Get the current alert level for a specific target.
+    GetAlertLevel<native><public>(Target: entity)<reads>: guard_alert_level
 
     OnInitialized<native><override>(): void
 
     OnUninitializing<native><override>(): void
 
-    TargetAddedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
+    # Event when the primary threat has changed.
+    PrimaryThreatChangeEvent<native><public>: listenable(npc_target_info) = external {}
 
-    TargetHeardEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
+    # Current alert level.
+    var<private> AlertLevel<native><public>: guard_alert_level = external {}
 
-    TargetInfoUpdatedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
+    # Potentially detected obstacle.
+    var<private> DetectedObstacle<native><public>: ?entity = external {}
 
-    TargetRemovedEvent<override><native>: subscribable_event_intrnl(entity) = external {}
-
-    TargetSeenEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
-
-    TargetTouchedEvent<override><native>: subscribable_event_intrnl(fort_target_info) = external {}
-
-    var DetectedTargets<override><native>: []fort_target_info = external {}
-  }
-
-  @experimental
-  # Information about a perceived obstacle.
-  fort_obstacle_info<native><epic_internal> := class<epic_internal> {
-    @experimental
-    Location<native><public>: (/Verse.org/SpatialMath:)vector3
-
-    @experimental
-    Obstacle<native><public>: entity
-
-    @experimental
-    Status<native><public>: fort_obstacle_status
-  }
-
-  @experimental
-  fort_obstacle_status<native><epic_internal> := enum {
-    blocked_by_obstacle
-
-    incoming_obstacle
-
-    trap_obstacle
-  }
-
-  @experimental
-  # Perception settings for sight.
-  fort_sight_perception_settings<native><epic_internal> := class<final><concrete> {
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect enemies.
-    EnemiesDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect friendlies.
-    FriendliesDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Maximum sight distance in meters to keep on seeing a target.
-    # This value will be clamped between 'SightRadius' and 300 meters.
-    LoseSightRadius<native><public>: float = external {}
-
-    @experimental
-    @editable
-    # Specifies duration in seconds after sight stimuli generated by this sense become forgotten. 0 means never.
-    MaxStimulusDuration<native><public>: float = external {}
-
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect neutral targets.
-    NeutralsDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # How far to the side AI can see, in radians.
-    # The value represents the angle measured in relation to the forward vector, not the whole range.
-    PeripheralVisionAngle<native><public>: float = external {}
-
-    @experimental
-    @editable
-    # Specifies if sight is enabled.
-    SenseEnabled<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Maximum sight distance in meters to notice a target.
-    # This value will be clamped between 0 and 300 meters.
-    SightRadius<native><public>: float = external {}
-  }
-
-  @experimental
-  # Information about a perceived target.
-  fort_target_info<native><public> := class<epic_internal> {
-    @experimental
-    # Attitude toward this target.
-    Attitude<native><public>: team_attitude
-
-    @experimental
-    # True if the target can be seen.
-    HasLineOfSight<native><public>: logic
-
-    @experimental
-    # The source of the detection stimuli.
-    Target<native><public>: entity
-  }
-
-  @experimental
-  # Perception settings for touch.
-  fort_touch_perception_settings<native><epic_internal> := class<final><concrete> {
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect enemies.
-    EnemiesDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect friendlies.
-    FriendliesDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Specifies duration in seconds after touch stimuli generated by this sense become forgotten. 0 means never.
-    MaxStimulusDuration<native><public>: float = external {}
-
-    @experimental
-    @editable
-    # Specifies if this sense is able to detect neutral targets.
-    NeutralsDetected<native><public>: logic = external {}
-
-    @experimental
-    @editable
-    # Specifies if touch perception is enabled.
-    SenseEnabled<native><public>: logic = external {}
-  }
-
-  @experimental
-  # Fortnite Wildlife AI actions management
-  fort_wildlife_actions_component<native><epic_internal> := class<epic_internal>(fort_npc_actions_component) {
-    OnInitialized<native><override>(): void
+    # Information about the primary threat.
+    var<private> PrimaryThreat<native><public>: ?npc_target_info = external {}
   }
 
   @experimental
@@ -898,14 +523,10 @@ AI<public> := module {
   @import_as("/Script/VerseFortniteAI.UInjectedConditionScript")
   injected_condition_native_base<native><epic_internal> := class<abstract> {}
 
-  movement_style<native><epic_internal> := enum {
-    (/Fortnite.com/AI/movement_style:)Running
+  movement_type<native><public> := enum<open> {
+    (/Fortnite.com/AI/movement_type:)Running
 
-    (/Fortnite.com/AI/movement_style:)Walking
-  }
-
-  movement_type<native><public> := class<concrete><final><computes><epic_internal> {
-    MovementStyle<native><epic_internal>: movement_style = external {}
+    (/Fortnite.com/AI/movement_type:)Walking
   }
 
   # Module import path: /Fortnite.com/AI/movement_types
@@ -915,7 +536,7 @@ AI<public> := module {
     Walking<public>: movement_type = external {}
   }
 
-  navigatable<native><public> := interface<epic_internal> {
+  navigatable<public> := interface<epic_internal> {
     # Return the current destination of the character
     GetCurrentDestination<public>()<transacts><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
@@ -935,6 +556,30 @@ AI<public> := module {
 
     # Wait for a specific duration
     Wait<public>(?Duration: float = external {})<suspends>: void
+  }
+
+  @available { MinUploadedAtFNVersion := 3900 }
+  navigation_action_error_type<native><public> := enum<open> {
+    # The navigating agent is blocked.
+    Blocked
+
+    # Navigation has been interrupted before completion.
+    Interrupted
+
+    # The navigation request is invalid.
+    Invalid
+
+    # The destination cannot be reached.
+    Unreachable
+  }
+
+  @available { MinUploadedAtFNVersion := 3900 }
+  navigation_action_success_type<native><public> := enum<open> {
+    # The destination was partially reached (the destination is currently not reachable).
+    PartiallyReached
+
+    # The destination has been reached.
+    Reached
   }
 
   # Result of a navigation request
@@ -957,14 +602,94 @@ AI<public> := module {
 
   navigation_target<native><public> := class<epic_internal> {}
 
+  @available { MinUploadedAtFNVersion := 3900 }
+  # Fortnite NPC AI actions management
+  npc_actions_component<native><public> := class<final_super><epic_internal>(component) {
+    # Equip the best weapon.
+    EquipBestWeapon<native><epic_internal>(): void
+
+    # Fires the currently equipped weapon.
+    FireCurrentWeapon<native><epic_internal>()<suspends>: void
+
+    # Look at the specified location. If LockFocus is false, the action stops once the NPC is facing the position.
+    Focus<native><public>(Location: (/Verse.org/SpatialMath:)vector3, ?LockFocus: logic = external {})<suspends>: void
+
+    # Look at the specified Entity. If LockFocus is false, the action stops once the NPC is facing the entity.
+    Focus<native><public>(Target: entity, ?LockFocus: logic = external {})<suspends>: void
+
+    # Return the current destination of the character.
+    GetCurrentDestination<native><public>()<transacts><decides>: (/Verse.org/SpatialMath:)vector3
+
+    # Add spare ammo for the currently equipped weapon.
+    GiveAmmoForCurrentWeapon<native><epic_internal>(AmmoQuantity: int)<suspends>: void
+
+    # Stay idle for a specific duration.
+    Idle<native><public>(?Duration: float = external {})<suspends>: void
+
+    # Navigate toward the specified navigation target.
+    NavigateTo<native><public>(
+      Target: navigation_target,
+      ?MovementType: movement_type = external {},
+      ?ReachRadius: float = external {},
+      ?AllowPartialPath: logic = external {})<suspends>: result(navigation_action_success_type,
+      navigation_action_error_type
+    )
+
+    OnInitialized<native><override>(): void
+
+    OnUninitializing<native><override>(): void
+
+    # Try to reload the currently equipped weapon.
+    ReloadCurrentWeapon<native><epic_internal>()<suspends>: logic
+
+    # Stop navigation.
+    StopNavigation<native><public>(): void
+
+    # Simulate the Use button.
+    Use<native><epic_internal>(Duration: float)<suspends>: void
+
+    # Multiplier on the movement speed (value is clamped between 0.5 and 2).
+    var MovementSpeedMultiplier<public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 3900 }
+  # Fortnite NPC perception management
+  npc_awareness_component<native><public> := class<final_super><epic_internal>(component) {
+    # Event when a target was detected.
+    DetectTargetEvent<native><public>: listenable(npc_target_info) = external {}
+
+    # Event when a target was forgotten.
+    ForgetTargetEvent<native><public>: listenable(entity) = external {}
+
+    # Event when a target is heard. Hearing sense must be active.
+    HearTargetEvent<native><public>: listenable(npc_target_info) = external {}
+
+    OnInitialized<native><override>(): void
+
+    OnUninitializing<native><override>(): void
+
+    # Event when a target is seen. Sight sense must be active.
+    SeeTargetEvent<native><public>: listenable(npc_target_info) = external {}
+
+    # Event when a target is touched. Touch sense must be active.
+    TouchTargetEvent<native><public>: listenable(npc_target_info) = external {}
+
+    # Information about all detected targets.
+    var<private> DetectedTargets<native><public>: []npc_target_info = external {}
+  }
+
   # Inherit from this to create a custom NPC behavior.
   # The npc_behavior can be defined for a character in a CharacterDefinition asset, or in a npc_spawner_device.
   npc_behavior<native><public> := class<abstract> {
     # Returns the agent associated with this behavior.
     GetAgent<native><public>()<transacts><decides>: agent
 
+    # Returns the entity associated with this behavior.
+    GetEntity<native><public>()<transacts><decides>: entity
+
+    @deprecated
     # Returns the `fort_playspace` associated with this behavior.
-    GetPlayspace<native><epic_internal>()<transacts><decides>: fort_playspace
+    GetPlayspace<epic_internal>()<transacts><decides>: fort_playspace = external {}
 
     # This function is called when the NPC is added to the simulation.
     OnBegin<native_callable><public>()<suspends>: void = external {}
@@ -973,7 +698,6 @@ AI<public> := module {
     OnEnd<native_callable><public>(): void = external {}
   }
 
-  @experimental
   npc_behavior_component<native><epic_internal> := class<final_super>(component) {
     OnBeginSimulation<native><override>(): void
 
@@ -1014,6 +738,24 @@ AI<public> := module {
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
     var MoodOverride<override>: ?sidekick_mood = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 3900 }
+  # Information about a perceived target.
+  npc_target_info<native><public> := class<epic_internal> {
+    OnUpdateEvent<native><public>: listenable(tuple()) = external {}
+
+    # The entity that was detected.
+    Target<native><public>: entity
+
+    # Attitude toward this target.
+    var<private> Attitude<native><public>: team_attitude
+
+    # True if the target can be seen.
+    var<private> HasLineOfSight<native><public>: logic
+
+    # Last known position of this target.
+    var<private> LastKnownPosition<public>: (/Verse.org/SpatialMath:)vector3 = external {}
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
@@ -1329,6 +1071,9 @@ Building<public> := module {
 
 # Module import path: /Fortnite.com/Characters
 Characters<public> := module {
+  # Puts the player in the skydiving movement mode.
+  (Character: fort_character).BeginSkydiving<native><epic_internal>(FromBus: logic)<transacts>: void
+
   # Returns the `fort_character` for `InAgent`. Fails if `InAgent` is not a `fort_character`.
   (InAgent: agent).GetFortCharacter<native><public>()<transacts><decides>: fort_character
 
@@ -1342,6 +1087,7 @@ Characters<public> := module {
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
   # Main API implemented by Fortnite characters.
   fort_character<native><public> := interface<unique><epic_internal>(
     positional,
@@ -1352,6 +1098,12 @@ Characters<public> := module {
     game_action_instigator,
     game_action_causer
   ) {
+    # Apply a force to a ‘fort_character’ with units in Newtons. Will not do anything if physics is disabled.
+    ApplyForce<public>(Force: (/Verse.org/SpatialMath:)vector3): void
+
+    # Apply a linear impulse to a ‘fort_character’ with units in Newton*seconds. Will not do anything if physics is disabled.
+    ApplyLinearImpulse<public>(LinearImpulse: (/Verse.org/SpatialMath:)vector3): void
+
     # Signaled when this `fort_character` changes crouch state.
     # Sends `tuple` payload:
     #  - 0: the `fort_character` that changed crouch states.
@@ -1373,6 +1125,12 @@ Characters<public> := module {
 
     # Returns the entity associated with this `fort_character`. Use this when interacting with APIs that require an `entity` reference.
     GetEntity<public>()<transacts><decides>: entity
+
+    # Returns a ‘fort_character’s linear velocity in meters/second.
+    GetLinearVelocity<public>()<reads>: (/Verse.org/SpatialMath:)vector3
+
+    # Returns a ‘fort_character’s mass in kilograms.
+    GetMass<public>()<reads>: float
 
     # Returns the location where this `fort_character` is looking or aiming from.
     GetViewLocation<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
@@ -1434,6 +1192,9 @@ Characters<public> := module {
     # Release this `fort_character` from stasis.
     ReleaseFromStasis<public>()<transacts>: void
 
+    # Set a ‘fort_character’s linear velocity in meters/second. Will not do anything if physics is disabled.
+    SetLinearVelocity<public>(LinearVelocity: (/Verse.org/SpatialMath:)vector3): void
+
     # Control if this `fort_character` can be damaged.
     SetVulnerability<public>(Vulnerable: logic)<transacts>: void
 
@@ -1455,7 +1216,12 @@ Characters<public> := module {
 
   @hide_in_editor
   @experimental
+  @deprecated
   fort_character_component<native><epic_internal> := class<final><final_super>(component, fort_character) {
+    ApplyForce<override>(Force: (/Verse.org/SpatialMath:)vector3): void = external {}
+
+    ApplyLinearImpulse<override>(LinearImpulse: (/Verse.org/SpatialMath:)vector3): void = external {}
+
     CrouchedEvent<override>(): listenable(tuple(fort_character, logic)) = external {}
 
     Damage<override>(Amount: float): void = external {}
@@ -1480,6 +1246,10 @@ Characters<public> := module {
     GetEntity<override>()<transacts><decides>: entity = external {}
 
     GetHealth<override>()<transacts>: float = external {}
+
+    GetLinearVelocity<override>()<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    GetMass<override>()<reads>: float = external {}
 
     GetMaxHealth<override>()<transacts>: float = external {}
 
@@ -1543,6 +1313,8 @@ Characters<public> := module {
 
     SetHealth<override>(Health: float)<transacts>: void = external {}
 
+    SetLinearVelocity<override>(LinearVelocity: (/Verse.org/SpatialMath:)vector3): void = external {}
+
     SetMaxHealth<override>(MaxHealth: float)<transacts>: void = external {}
 
     SetMaxOvershield<override>(MaxOvershield: float)<transacts>: void = external {}
@@ -1591,7 +1363,7 @@ Devices<public> := module {
 
   @experimental
   # Returns the `entity` associated to that `CreativeObject.
-  (CreativeObject: creative_object_interface).(/Fortnite.com/Devices:)GetEntity<native><epic_internal>()<transacts><decides>: entity
+  (CreativeObject: creative_object_interface).GetEntity<native><epic_internal>()<transacts><decides>: entity
 
   # Returns the `fort_playspace` that `CreativeObject` belongs to.
   (CreativeObject: creative_object_interface).GetPlayspace<native><public>()<transacts>: fort_playspace
@@ -2118,7 +1890,7 @@ Devices<public> := module {
     value_setter_device<public> := class<concrete><final>(patchwork_device) {}
   }
 
-  # Spawns a `creative_prop` at the specified `Position` and `Rotation`. `Position` and `Rotation` units are in cm.
+  # Spawns a `creative_prop` at the specified `Position` and `Rotation`. `Position` and `Rotation` units are in cm. The relative scale defined in the `creative_prop_asset` will be applied upon spawn.
   # Returns tuple:
   #  0: Instance of a `creative_prop`. False if no `creative_prop` could be created. See `spawn_prop_result` for failure cases.
   #  1: Success or failure results.
@@ -3274,7 +3046,7 @@ Devices<public> := module {
     TeamSwitchedEvent<public>: listenable(agent) = external {}
   }
 
-  # Used together with `class_selector_device` to create class based gameplay. Defines custom class attributes and inventory loadouts.
+  # Used together with `class_and_team_selector_device` to create class based gameplay. Defines custom class attributes and inventory loadouts.
   class_designer_device<public> := class<concrete><final>(creative_device_base) {
     # Returns an array of agents that are currently of *Class* defined by this device.
     GetClassMembers<public>()<reads>: []agent = external {}
@@ -3613,8 +3385,32 @@ Devices<public> := module {
 
   # A Fortnite prop that has been placed or spawned in the island.
   creative_prop<native><public> := class<concrete><final>(creative_object, invalidatable) {
+    # Apply an angular impulse to a ‘creative_prop’ with units in Newton*meter*seconds. Will not do anything if physics is disabled.
+    ApplyAngularImpulse<native><public>(AngularImpulse: (/Verse.org/SpatialMath:)vector3): void
+
+    # Apply a force to a ‘creative_prop’ with units in Newtons. Will not do anything if physics is disabled.
+    ApplyForce<native><public>(Force: (/Verse.org/SpatialMath:)vector3): void
+
+    # Apply a linear impulse to a ‘creative_prop’ with units in Newton*seconds. Will not do anything if physics is disabled.
+    ApplyLinearImpulse<native><public>(LinearImpulse: (/Verse.org/SpatialMath:)vector3): void
+
+    # Apply a torque to a ‘creative_prop’ with units in Newton*meters. Will not do anything if physics is disabled.
+    ApplyTorque<native><public>(Torque: (/Verse.org/SpatialMath:)vector3): void
+
     # Destroys the `creative_prop` and remove it from the island.
     Dispose<native><override>(): void
+
+    # Returns a ‘creative_prop’s angular velocity in radians/second.
+    GetAngularVelocity<native><public>()<reads>: (/Verse.org/SpatialMath:)vector3
+
+    # Get whether a ‘creative_prop’ is dynamic (affected by physics functions).
+    GetDynamic<native><public>()<reads>: logic
+
+    # Returns a ‘creative_prop’s linear velocity in meters/second.
+    GetLinearVelocity<native><public>()<reads>: (/Verse.org/SpatialMath:)vector3
+
+    # Returns a ‘creative_prop’s mass in kilograms.
+    GetMass<native><public>()<reads>: float
 
     # Hides the `creative_prop` in the world and disable collisions.
     Hide<native><public>()<transacts>: void
@@ -3627,6 +3423,15 @@ Devices<public> := module {
 
     # Succeeds if this object has not been disposed of either via `Dispose()` or through an external system.
     IsValid<native><override>()<transacts><decides>: void
+
+    # Set a ‘creative_prop’s angular velocity in radians/seconds. Will not do anything if physics is disabled.
+    SetAngularVelocity<native><public>(AngularVelocity: (/Verse.org/SpatialMath:)vector3): void
+
+    # Set whether a ‘creative_prop’ is dynamic (affected by physics functions). Will not do anything if physics is disabled OR the prop does not have a FortPhysicsComponent.
+    SetDynamic<native><public>(Dynamic: logic): void
+
+    # Set a ‘creative_prop’s linear velocity in meters/second. Will not do anything if physics is disabled.
+    SetLinearVelocity<native><public>(LinearVelocity: (/Verse.org/SpatialMath:)vector3): void
 
     # Changes the Material of the Mesh used by this instance. Optionally can specify which Mesh element index to apply the material to, otherwise defaults to the 0 (default) Mesh element
     SetMaterial<native><public>(Material: material, ?Index: int = external {})<transacts>: void
@@ -3646,6 +3451,7 @@ Devices<public> := module {
 
   creative_prop_debug_log<epic_internal> := class(log_channel) {}
 
+  using { /Verse.org/SpatialMath }
   # Used to customize one creature type at a time. Place multiple `creature_manager_device`s for each type of creature on your island.
   # Changing properties will respect the `Affected Creatures` property of the
   # device. If `Affected Creatures` is set to `New Pawns Only`, only new spawns will
@@ -3730,6 +3536,14 @@ Devices<public> := module {
 
     # Returns the spawn limit of the device.
     GetSpawnLimit<public>()<transacts>: int = external {}
+
+    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device’s rotation.
+    # Returns the agent spawned or false if the device has reached its maximum spawn count.
+    # This function is ‘<suspends>’ because it takes time to load the creature before it can be returned.
+    SpawnAt<public>(
+      Position: (/Verse.org/SpatialMath:)vector3,
+      ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
+    )<suspends>: ?agent = external {}
 
     # Signaled when a creature is spawned.
     # Sends the `agent` creature who was spawned.
@@ -4596,7 +4410,23 @@ Devices<public> := module {
     StartedGrindingEvent<public>: listenable(agent) = external {}
   }
 
+  # Used with `guard_spawner_device.Accuracy` to define how accurate the NPC is when it fires at targets.
+  guard_spawner_accuracy<public> := enum<open> {
+    # Fairly accurate, hitting targets consistently.
+    High
+
+    # Not accurate, missing most shots fired.
+    Low
+
+    # Somewhat accurate, hitting targets occasionally.
+    Moderate
+
+    # Very accurate, hitting most shots fired.
+    VeryHigh
+  }
+
   # Used to spawn guards that can patrol and attack other `agent`s.
+  # Changing properties will only affect newly spawned guards.
   guard_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Signaled when a guard has identified an opponent.
     # `Source` is the guard who is aware.
@@ -4651,7 +4481,10 @@ Devices<public> := module {
     ): void = external {}
 
     # Get all agents created by this device.
-    GetAgents<epic_internal>()<transacts>: []agent = external {}
+    GetAgents<public>()<transacts>: []agent = external {}
+
+    # Gets the name of the guard in the hire the guard conversation and elimination feed.
+    GetName<public>(): string = external {}
 
     # Returns the spawn limit of the device.
     GetSpawnLimit<public>()<transacts>: int = external {}
@@ -4673,11 +4506,22 @@ Devices<public> := module {
     # Prevents guards from being hired.
     SetGuardsNotHireable<public>(): void = external {}
 
+    # Sets the name of the guard in the hire the guard conversation and elimination feed.
+    SetName<public>(InText: message): void = external {}
+
     # Tries to spawn a guard.
     Spawn<public>(): void = external {}
 
     # Tries to spawn a guard. If *Auto Hire When Spawned* is set to *Triggering Player* the guard will be hired by `Instigator`.
     Spawn<public>(Instigator: agent): void = external {}
+
+    # Spawn a guard at the given position. When Rotation is not provided, it will default to the Device`s rotation.
+    # Returns the agent spawned or false if the device has reached its maximum spawn count.
+    # This function is `<suspends>` because it takes time to load the NPC before it can be returned.
+    SpawnAt<public>(
+      Position: (/Verse.org/SpatialMath:)vector3,
+      ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
+    )<suspends>: ?agent = external {}
 
     # Signaled when a guard is spawned.
     # Sends the `agent` guard who was spawned.
@@ -4695,6 +4539,66 @@ Devices<public> := module {
     # Signaled when a guard becomes unaware.
     # Sends the `agent` guard who is unaware.
     UnawareEvent<public>: listenable(agent) = external {}
+
+    # Determines how the guard uses its `VisibilityRange` as defined by `guard_spawner_visibility_range_restriction`.
+    var Accuracy<public>: guard_spawner_accuracy = external {}
+
+    # If true, agents can hire the guard.
+    var CanBeHired<public>: logic = external {}
+
+    # Determines if the guard despawns when it is dismissed.
+    var DespawnOnDismissal<public>: logic = external {}
+
+    # Determines if the guard displays its alertness level over its head.
+    var DisplayAlertness<public>: logic = external {}
+
+    # Determines the starting health of the guard.
+    # This value is clamped between 1 and 10000.
+    var InitialHealth<public>: float = external {}
+
+    # Determines the starting shield of the guard.
+    # This value is clamped between 1 and 10000.
+    var InitialShield<public>: float = external {}
+
+    # Whether the guard can receive damage.
+    var Invincible<public>: logic = external {}
+
+    # The health value of the guard.
+    # This value is clamped between 1 and 10000.
+    var MaxHealth<public>: float = external {}
+
+    # Determines the maximum shield value of the guard.
+    # This value is clamped between 1 and 10000.
+    var MaxShield<public>: float = external {}
+
+    # Determines if the guard obeys ping commands from its hired player.
+    var ObeyCommands<public>: logic = external {}
+
+    # Distance in centimeters from its spawn position from which the guard will peacefully roam.
+    # This value is clamped between 200.0 and 25000.0.
+    var PatrolRange<public>: float = external {}
+
+    # Determines if the guard is healed when it is hired.
+    var RestoreHealthAndShieldOnHire<public>: logic = external {}
+
+    # If true, displays the guard’s health to players.
+    var ShowHealthBar<public>: logic = external {}
+
+    # Determines the range, in centimeters, from which the guard will respond.
+    # This value is clamped between 0.0 and 25000.0.
+    var VisibilityRange<public>: float = external {}
+
+    # Determines how the guard uses its `VisibilityRange` as defined by `guard_spawner_visibility_range_restriction`.
+    var VisibilityRangeRestriction<public>: guard_spawner_visibility_range_restriction = external {}
+  }
+
+  # Used with `guard_spawner_device.VisibilityRangeRestriction` to define how the guard uses `guard_spawner_device.VisibilityRange`
+  guard_spawner_visibility_range_restriction<public> := enum<open> {
+    # The NPC uses its `VisibilityRange` both when it is unaware and when it has a target.
+    Always
+
+    # The NPC only uses its `VisibilityRange` when it does not have a target. Otherwise, the guard has an infinite range.
+    OnlyWhenUnaware
   }
 
   # An interface for shared functionality between different spire devices
@@ -5595,7 +5499,6 @@ Devices<public> := module {
     VehicleTriggeredEvent<public>: listenable(?agent) = external {}
   }
 
-  using { /Verse.org/SpatialMath }
   # Used to spawn NPCs made with Character Definition asset.
   npc_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Despawns all characters. If set, `Instigator` will be considered as the eliminator of those characters.
@@ -5624,9 +5527,9 @@ Devices<public> := module {
     # Spawn a NPC at the given position. When Rotation is not provided, it will default to the Device`s rotation.
     # Returns the agent spawned or false if the device has reached its maximum spawn count.
     # This function is `<suspends>` because it takes time to load the NPC before it can be returned.
-    SpawnAt<epic_internal>(
+    SpawnAt<public>(
       Position: (/Verse.org/SpatialMath:)vector3,
-      ?Rotation: (/Verse.org/SpatialMath:)rotation = external {}
+      ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
     )<suspends>: ?agent = external {}
 
     # Signaled when a character is spawned.
@@ -6291,9 +6194,22 @@ Devices<public> := module {
     # Enables this device.
     Enable<public>(): void = external {}
 
+    # Respawn `Agent` from the best available Player Spawner Device in this device’s *Spawn Group*.
+    # Best available spawner is determined by the settings on each spawner device, such as *Priority Group* and *Enemy Range Check*.
+    # Force respawns if the player is already spawned.
+    RespawnPlayerFromPlayerSpawnerGroup<epic_internal>(Agent: agent): void = external {}
+
+    # Spawn `Agent` from this device.
+    # Force respawns if the agent is already spawned.
+    SpawnPlayer<epic_internal>(Agent: agent): void = external {}
+
     # Signaled when an `agent` is spawned from this device.
     # Sends the `agent` that spawned.
     SpawnedEvent<public>: listenable(agent) = external {}
+
+    # Maps to the device option for *Spawner Group*
+    # The Spawn Group value can be used to spawn a player at a specific subset of spawner devices.
+    var SpawnerGroup<epic_internal>: int = external {}
   }
 
   # Used to create HUD text boxes that give players information, and allows responses to be customized to player choices.
@@ -6639,8 +6555,15 @@ Devices<public> := module {
     # Returns whether a player is currently hiding or not.
     IsPlayerProp<public>(Agent: agent)<transacts><decides>: void = external {}
 
+    # Signaled when all player props have been pinged.
+    PingAllPlayerPropsEvent<public>: listenable(tuple()) = external {}
+
     # Manually ping a specific player if they are currently a prop.
     PingPlayerProp<public>(Agent: agent): void = external {}
+
+    # Signaled when a player prop has been pinged.
+    # Sends the `agent` that was pinged.
+    PingPlayerPropEvent<public>: listenable(agent) = external {}
 
     # Manually ping all players that are currently hiding as props.
     PingPlayerProps<public>(): void = external {}
@@ -6820,6 +6743,123 @@ Devices<public> := module {
 
     # Signaled when the target time is reached.
     TimeReachedEvent<public>: listenable(tuple()) = external {}
+  }
+
+  reboot_card_purchase_options<public> := class<concrete><final> {
+    # Determines if players can purchase a reboot card when the timer has expired.
+    var CanPurchaseExpiredRebootCard<public>: logic = external {}
+
+    # Determines how much of the set currency it costs to purchase an eliminated player's reboot card. Clamped between `0` and `99999`.
+    var CostToPurchaseRebootCard<public>: int = external {}
+
+    # Determines if the item's rarity is displayed to the player if they are missing resources.
+    var ShowItemRarityOnInteractPrompt<public>: logic = external {}
+  }
+
+  reboot_progress_decay_behavior<public> := enum<open> {
+    # Use Battle Royale's decay rate.
+    BattleRoyale
+
+    # Set a custom multiplier on the decay rate.
+    CustomDecay
+
+    # Instantly reset progress to zero.
+    InstantReset
+  }
+
+  # Allow players to bring eliminated teammates back into the game.
+  reboot_van_device<public> := class<concrete><final>(creative_device_base, reboot_van_interface) {
+    # Disable the device.
+    DisableReboot<override>(): void = external {}
+
+    # Enable the device.
+    EnableReboot<override>(): void = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabledReboot<override>()<transacts><decides>: void = external {}
+
+    # Triggers when a player purchases a Reboot Card.
+    #  * `agent` is the player that purchased the Reboot Card.
+    RebootCardPurchaseEvent<override>: listenable(agent) = external {}
+
+    # Triggers when Reboot Van has finished rebooting a set of players.
+    #  * `agent`is the player that started the reboot.
+    RebootEvent<override>: listenable(agent) = external {}
+
+    # Triggers when Reboot Van has finished recharging.
+    #  * `agent` is the last interacting player.
+    RechargeCompleteEvent<override>: listenable(?agent) = external {}
+
+    # Determines if players can purchase an eliminated player's reboot card.
+    var CanPurchaseRebootCard<override>: logic = external {}
+
+    # Multiplier on the decay rate of reboot progress. Clamped between `0.1` and `2.0`.
+    #  * Only used if `RebootProgressDecay` is set to `Custom Decay`.
+    var DecayRateMultiplier<override>: ?float = external {}
+
+    var InternalPurchaseRebootCardOptions<override>: reboot_card_purchase_options = external {}
+
+    # Purchase reboot card options.
+    #  * Only used if `CanPurchaseRebootCard` is `true`.
+    var PurchaseRebootCardOptions<override>: ?reboot_card_purchase_options = external {}
+
+    # How quickly reboot progress decays when nobody is interacting with the Reboot Van. Custom Decay - Set a custom multiplier on the decay rate. Instant Reset - Instantly reset progress to zero. Battle Royale - Use Battle Royale's decay rate.
+    var RebootProgressDecay<override>: reboot_progress_decay_behavior = external {}
+
+    # The remaining time (in seconds) on the recharge timer. Clamped between `0.0` and `3600.0`.
+    #  * If there is no active timer, getting returns `0.0`.
+    #  * If there is no active timer, setting does nothing.
+    var RechargeTimer<override>: float = external {}
+
+    # The length of the recharge timer in seconds, regardless of the timer's current state. Clamped between `0.0` and `3600.0`.
+    var RechargeTimerLength<override>: float = external {}
+  }
+
+  reboot_van_interface<public> := interface<epic_internal> {
+    # Disable the device.
+    DisableReboot<public>(): void
+
+    # Enable the device.
+    EnableReboot<public>(): void
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabledReboot<public>()<transacts><decides>: void
+
+    # Triggers when a player purchases a Reboot Card.
+    #  * `agent` is the player that purchased the Reboot Card.
+    RebootCardPurchaseEvent<public>: listenable(agent)
+
+    # Triggers when Reboot Van has finished rebooting a set of players.
+    #  * `agent`is the player that started the reboot.
+    RebootEvent<public>: listenable(agent)
+
+    # Triggers when Reboot Van has finished recharging.
+    #  * `agent` is the last interacting player.
+    RechargeCompleteEvent<public>: listenable(?agent)
+
+    # Determines if players can purchase an eliminated player's reboot card.
+    var CanPurchaseRebootCard<public>: logic
+
+    # Multiplier on the decay rate of reboot progress. Clamped between `0.1` and `2.0`.
+    #  * Only used if `RebootProgressDecay` is set to `Custom Decay`.
+    var DecayRateMultiplier<public>: ?float
+
+    var InternalPurchaseRebootCardOptions<protected>: reboot_card_purchase_options
+
+    # Purchase reboot card options.
+    #  * Only used if `CanPurchaseRebootCard` is `true`.
+    var PurchaseRebootCardOptions<public>: ?reboot_card_purchase_options
+
+    # How quickly reboot progress decays when nobody is interacting with the Reboot Van. Custom Decay - Set a custom multiplier on the decay rate. Instant Reset - Instantly reset progress to zero. Battle Royale - Use Battle Royale's decay rate.
+    var RebootProgressDecay<public>: reboot_progress_decay_behavior
+
+    # The remaining time (in seconds) on the recharge timer. Clamped between `0.0` and `3600.0`.
+    #  * If there is no active timer, getting returns `0.0`.
+    #  * If there is no active timer, setting does nothing.
+    var RechargeTimer<public>: float
+
+    # The length of the recharge timer in seconds, regardless of the timer's current state. Clamped between `0.0` and `3600.0`.
+    var RechargeTimerLength<public>: float
   }
 
   # The Rift Point volume is used to interface with and manage the Rift Point item,
@@ -8255,6 +8295,11 @@ Devices<public> := module {
     # If the device is configured to All, then this function will remove all Temporary Team members from any Temporary Team they are on, returning them to their original team.
     RemoveTemporaryMembersFromTeam<public>(): void = external {}
 
+    # Spawn `Agent` from the most appropriate Player Spawner Device.
+    # Force respawns if the player is already spawned.
+    # If no valid spawner is found, no respawn will occur.
+    RespawnPlayerAtPlayerSpawner<epic_internal>(Agent: agent): void = external {}
+
     # Signaled when a member of *Team* is eliminated.
     # Sends the `agent` that was eliminated.
     TeamMemberEliminatedEvent<public>: listenable(agent) = external {}
@@ -9118,6 +9163,60 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a Driftboard to be configured and spawned.
   vehicle_spawner_driftboard_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  vehicle_spawner_drivable_reboot_van_device<public> := class<concrete><final>(
+    vehicle_spawner_device,
+    reboot_van_interface
+  ) {
+    # Disable the device.
+    DisableReboot<override>(): void = external {}
+
+    # Enable the device.
+    EnableReboot<override>(): void = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabledReboot<override>()<transacts><decides>: void = external {}
+
+    # Triggers when a player purchases a Reboot Card.
+    #  * `agent` is the player that purchased the Reboot Card.
+    RebootCardPurchaseEvent<override>: listenable(agent) = external {}
+
+    # Triggers when Reboot Van has finished rebooting a set of players.
+    #  * `agent`is the player that started the reboot.
+    RebootEvent<override>: listenable(agent) = external {}
+
+    # Triggers when Reboot Van has finished recharging.
+    #  * `agent` is the last interacting player.
+    RechargeCompleteEvent<override>: listenable(?agent) = external {}
+
+    # Triggers when Reboot Van has finished reviving a player from DBNO.
+    #  * `agent` is the player that was just revived.
+    ReviveCompleteEvent<public>: listenable(agent) = external {}
+
+    # Determines if players can purchase an eliminated player's reboot card.
+    var CanPurchaseRebootCard<override>: logic = external {}
+
+    # Multiplier on the decay rate of reboot progress. Clamped between `0.1` and `2.0`.
+    #  * Only used if `RebootProgressDecay` is set to `Custom Decay`.
+    var DecayRateMultiplier<override>: ?float = external {}
+
+    var InternalPurchaseRebootCardOptions<override>: reboot_card_purchase_options = external {}
+
+    # Purchase reboot card options.
+    #  * Only used if `CanPurchaseRebootCard` is `true`.
+    var PurchaseRebootCardOptions<override>: ?reboot_card_purchase_options = external {}
+
+    # How quickly reboot progress decays when nobody is interacting with the Reboot Van. Custom Decay - Set a custom multiplier on the decay rate. Instant Reset - Instantly reset progress to zero. Battle Royale - Use Battle Royale's decay rate.
+    var RebootProgressDecay<override>: reboot_progress_decay_behavior = external {}
+
+    # The remaining time (in seconds) on the recharge timer. Clamped between `0.0` and `3600.0`.
+    #  * If there is no active timer, getting returns `0.0`.
+    #  * If there is no active timer, setting does nothing.
+    var RechargeTimer<override>: float = external {}
+
+    # The length of the recharge timer in seconds, regardless of the timer's current state. Clamped between `0.0` and `3600.0`.
+    var RechargeTimerLength<override>: float = external {}
+  }
+
   # Specialized `vehicle_spawner_device` that allows a GetAway Car to be configured and spawned.
   vehicle_spawner_getaway_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -9574,9 +9673,9 @@ Devices<public> := module {
     # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device`s rotation.
     # Returns the agent spawned or false if the device has reached its maximum spawn count.
     # This function is `<suspends>` because it takes time to load the NPC before it can be returned.
-    SpawnAt<epic_internal>(
+    SpawnAt<public>(
       Position: (/Verse.org/SpatialMath:)vector3,
-      ?Rotation: (/Verse.org/SpatialMath:)rotation = external {}
+      ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
     )<suspends>: ?agent = external {}
 
     # Signaled when this device spawns wildlife.
@@ -10458,910 +10557,1721 @@ Itemization<public> := module {
   AbsoluteDoomItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_chainsaw<public> := class<final>(entity) {}
+    item_chainsaw<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_micro_smgs_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/AbsoluteDoomItems:)item_dual_micro_smgs_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_micro_smgs_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/AbsoluteDoomItems:)item_dual_micro_smgs_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_micro_smgs_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/AbsoluteDoomItems:)item_dual_micro_smgs_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_micro_smgs_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/AbsoluteDoomItems:)item_dual_micro_smgs_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_micro_smgs_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/AbsoluteDoomItems:)item_dual_micro_smgs_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_monarch_pistol_common<public> := class<final>(entity) {}
+    item_modular_monarch_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_monarch_pistol_epic<public> := class<final>(entity) {}
+    item_modular_monarch_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_monarch_pistol_legendary<public> := class<final>(entity) {}
+    item_modular_monarch_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_monarch_pistol_rare<public> := class<final>(entity) {}
+    item_modular_monarch_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_monarch_pistol_uncommon<public> := class<final>(entity) {}
+    item_modular_monarch_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_sovereign_shotgun_common<public> := class<final>(entity) {}
+    item_modular_sovereign_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_sovereign_shotgun_epic<public> := class<final>(entity) {}
+    item_modular_sovereign_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_sovereign_shotgun_legendary<public> := class<final>(entity) {}
+    item_modular_sovereign_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_sovereign_shotgun_rare<public> := class<final>(entity) {}
+    item_modular_sovereign_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_sovereign_shotgun_uncommon<public> := class<final>(entity) {}
+    item_modular_sovereign_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_burst_rifle_common<public> := class<final>(entity) {}
+    item_modular_striker_burst_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_burst_rifle_epic<public> := class<final>(entity) {}
+    item_modular_striker_burst_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_burst_rifle_legendary<public> := class<final>(entity) {}
+    item_modular_striker_burst_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_burst_rifle_rare<public> := class<final>(entity) {}
+    item_modular_striker_burst_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_burst_rifle_uncommon<public> := class<final>(entity) {}
+    item_modular_striker_burst_rifle_uncommon<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/BallisticItems
   BallisticItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_bubble_shield<public> := class<final>(entity) {}
+    item_bubble_shield<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_burst_ar_common<public> := class<final>(entity) {}
+    item_burst_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_drum_gun_common<public> := class<final>(entity) {}
+    item_drum_gun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enforcer_ar_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/BallisticItems:)item_enforcer_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fire_grenade<public> := class<final>(entity) {}
+    item_fire_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flashbang<public> := class<final>(entity) {}
+    item_flashbang<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_frag_grenade<public> := class<final>(entity) {}
+    item_frag_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_frenzy_auto_shotgun_common<public> := class<final>(entity) {}
+    item_frenzy_auto_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_pump_shotgun_common<public> := class<final>(entity) {}
+    item_hammer_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hand_cannon_common<public> := class<final>(entity) {}
+    item_hand_cannon_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hyper_smg_common<public> := class<final>(entity) {}
+    item_hyper_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/BallisticItems:)fort_item_impulse_grenade<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/BallisticItems:)item_impulse_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_machine_pistol_common<public> := class<final>(entity) {}
+    item_machine_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_nemesis_ar_common<public> := class<final>(entity) {}
+    item_nemesis_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_overdrive<public> := class<final>(entity) {}
+    item_overdrive<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/BallisticItems:)fort_item_proximity_mine<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/BallisticItems:)item_proximity_mine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_pistol_common<public> := class<final>(entity) {}
+    item_ranger_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_reaper_sniper_rifle_common<public> := class<final>(entity) {}
+    item_reaper_sniper_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_recon_grenade<public> := class<final>(entity) {}
+    item_recon_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rift_point_device<public> := class<final>(entity) {}
+    item_rift_point_device<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/BallisticItems:)fort_item_smoke_grenade<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/BallisticItems:)item_smoke_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sovereign_sniper_common<public> := class<final>(entity) {}
+    item_sovereign_sniper_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_ar_common<public> := class<final>(entity) {}
+    item_striker_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunder_burst_smg_common<public> := class<final>(entity) {}
+    item_thunder_burst_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/BallisticItems:)fort_item_veiled_precision_smg_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/BallisticItems:)item_veiled_precision_smg_common<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S1Items
+  CH1S1Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_bush<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S1Items:)item_pumpkin_launcher_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S1Items:)item_pumpkin_launcher_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S1Items:)item_pumpkin_launcher_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S1Items:)item_slurp_juice<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S1Items:)item_smoke_grenade<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S2Items
+  CH1S2Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_boogie_bomb<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_cozy_campfire<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_crossbow_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_crossbow_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S2Items:)item_impulse_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_chug_jug<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_small_shield_potion<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_minigun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_minigun_legendary<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S3Items
+  CH1S3Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_clinger<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_egg_launcher_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_egg_launcher_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_egg_launcher_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hand_cannon_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hand_cannon_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S3Items:)item_hunting_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S3Items:)item_hunting_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_light_machine_gun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_light_machine_gun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_port_a_fort<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_remote_explosives<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S4Items
+  CH1S4Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_apple<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S4Items:)item_burst_assault_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S4Items:)item_burst_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_drum_gun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_drum_gun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_dual_pistols_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_dual_pistols_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_jetpack<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shield_mushroom<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_stink_bomb<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_thermal_scoped_assault_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_thermal_scoped_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S5Items
+  CH1S5Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_compact_smg_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_compact_smg_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_double_barrel_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_double_barrel_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_grappler<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_port_a_fortress<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rift_to_go<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shockwave_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S5Items:)item_submachine_gun_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S5Items:)item_submachine_gun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S5Items:)item_submachine_gun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_suppressed_assault_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_suppressed_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S6Items
+  CH1S6Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_balloons<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_dynamite<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_fiend_hunter_crossbow_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_assault_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_assault_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S6Items:)item_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S6Items:)item_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_quad_launcher_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_quad_launcher_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_six_shooter_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_six_shooter_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_six_shooter_uncommon<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S7Items
+  CH1S7Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_boom_box<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_bottle_rockets<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_chiller_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_cupids_crossbow_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_gliders<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_infantry_rifle_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_infantry_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_infantry_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_infinity_blade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_presents<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_scoped_revolver_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_scoped_revolver_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_sneaky_snowman<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_suppressed_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_suppressed_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S8Items
+  CH1S8Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_banana<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_boom_bow_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_coconut<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flint_knock_pistol_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flint_knock_pistol_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_assault_rifle_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_heavy_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_infantry_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_infantry_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_jewel<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_pepper<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_poison_dart_trap<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shadow_bomb<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1S9Items
+  CH1S9Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_air_strike<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_burst_smg_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_burst_smg_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_burst_smg_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_chug_splash<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_combat_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_combat_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_combat_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_drum_shotgun_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_drum_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_drum_shotgun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flag<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_proximity_grenade_launcher_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_proximity_grenade_launcher_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S9Items:)item_revolver_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1S9Items:)item_revolver_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_storm_flip<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_storm_scout_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_storm_scout_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_tactical_assault_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_tactical_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_tactical_assault_rifle_rare<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH1SXItems
+  CH1SXItems<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_automatic_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_automatic_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_automatic_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_automatic_sniper_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flashlight<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flashlight_pistol_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_junk_rift<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH1SXItems:)item_pump_shotgun_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_semi_auto_pistol_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_semi_auto_pistol_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shield_bubble<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_torch<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH2S1Items
+  CH2S1Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_bandage_bazooka<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flopper<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_gold<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_harpoon_gun<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lump_of_coal<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_mythic_goldfish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_pumpkin_launcher_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rusty_can<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_slurp_mushroom<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_slurpfish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_small_fry<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH2S2Items
+  CH2S2Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_authority_keycard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_brutus_minigun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_crash_pad<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_creepin_cardboard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_decoy<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_grotto_keycard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hand_cannon_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_meowscles_peow_peow_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_midas_drum_gun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_orange_paint_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_orange_paint_launcher_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH2S2Items:)item_proximity_mine<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_purple_paint_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_purple_paint_launcher_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rapid_fire_smg_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rapid_fire_smg_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rapid_fire_smg_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rapid_fire_smg_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rapid_fire_smg_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rig_keycard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shark_keycard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_skyes_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_skyes_grappler<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_suppressed_assault_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_suppressed_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH2S3Items
+  CH2S3Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_cabbage<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_catty_corner_keycard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_charge_shotgun_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_charge_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_charge_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_charge_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_charge_shotgun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_corn<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_firefly_jar<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_flare_gun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_fortilla_keycard<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_gas_can<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hunting_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hunting_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_jules_drum_gun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_jules_glider_gun<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_kits_charge_shotgun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_kits_shockwave_launcher_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_oceans_bottomless_chug_jug<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_oceans_burst_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH2S4Items
+  CH2S4Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_candy_corn<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_fire_trap<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hop_drop<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hop_flopper<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_jelly_bean<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_jellyfish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_midas_flopper<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_pepper_mint<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shadow_midas_drum_gun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shield_fish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_spicy_fish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_thermal_fish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_thermal_taffy<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vendetta_flopper<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH2S5Items
+  CH2S5Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_boom_sniper_rifle_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_burst_quad_launcher_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_chug_cannon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_dragons_breath_sniper_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_holiday_presents<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hop_rock_dualies_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_dragons_breath_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_dragons_breath_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_shotgun_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_lever_action_shotgun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_night_hawk_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rift_fish<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_shadow_tracker_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_snowy_flopper<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_storm_scout_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_the_big_chill_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_the_dub_exotic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_zero_point_fish<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/CH4S1Items
   CH4S1Items<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_big_bush_bomb<public> := class<final>(entity) {}
+    item_big_bush_bomb<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ex_caliber_rifle_common<public> := class<final>(entity) {}
+    item_ex_caliber_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ex_caliber_rifle_epic<public> := class<final>(entity) {}
+    item_ex_caliber_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ex_caliber_rifle_legendary<public> := class<final>(entity) {}
+    item_ex_caliber_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ex_caliber_rifle_rare<public> := class<final>(entity) {}
+    item_ex_caliber_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ex_caliber_rifle_uncommon<public> := class<final>(entity) {}
+    item_ex_caliber_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_falcon_scout<public> := class<final>(entity) {}
+    item_falcon_scout<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_guardian_shield<public> := class<final>(entity) {}
+    item_guardian_shield<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heisted_accelerant_shotgun_exotic<public> := class<final>(entity) {}
+    item_heisted_accelerant_shotgun_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heisted_blink_mag_smg_exotic<public> := class<final>(entity) {}
+    item_heisted_blink_mag_smg_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heisted_breacher_shotgun_exotic<public> := class<final>(entity) {}
+    item_heisted_breacher_shotgun_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heisted_explosive_assault_rifle_exotic<public> := class<final>(entity) {}
+    item_heisted_explosive_assault_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heisted_run_n_gun_smg_exotic<public> := class<final>(entity) {}
+    item_heisted_run_n_gun_smg_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_maven_auto_shotgun_common<public> := class<final>(entity) {}
+    item_maven_auto_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_maven_auto_shotgun_epic<public> := class<final>(entity) {}
+    item_maven_auto_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_maven_auto_shotgun_legendary<public> := class<final>(entity) {}
+    item_maven_auto_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_maven_auto_shotgun_rare<public> := class<final>(entity) {}
+    item_maven_auto_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_maven_auto_shotgun_uncommon<public> := class<final>(entity) {}
+    item_maven_auto_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_eye_assault_rifle_common<public> := class<final>(entity) {}
+    item_red_eye_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_eye_assault_rifle_epic<public> := class<final>(entity) {}
+    item_red_eye_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_eye_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_red_eye_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_eye_assault_rifle_rare<public> := class<final>(entity) {}
+    item_red_eye_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_eye_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_red_eye_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shockwave_hammer_epic<public> := class<final>(entity) {}
+    item_shockwave_hammer_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_slap_berry<public> := class<final>(entity) {}
+    item_slap_berry<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_slap_juice<public> := class<final>(entity) {}
+    item_slap_juice<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_pistol_common<public> := class<final>(entity) {}
+    item_tactical_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_pistol_epic<public> := class<final>(entity) {}
+    item_tactical_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_pistol_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH4S1Items:)item_tactical_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_pistol_mythic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH4S1Items:)item_tactical_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_pistol_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH4S1Items:)item_tactical_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_pistol_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH4S1Items:)item_tactical_pistol_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_the_ageless_champions_ex_caliber_rifle_mythic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH4S1Items:)item_tactical_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_the_ageless_champions_shockwave_hammer_mythic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH4S1Items:)item_tactical_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunder_shotgun_common<public> := class<final>(entity) {}
+    item_the_ageless_champions_ex_caliber_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunder_shotgun_epic<public> := class<final>(entity) {}
+    item_the_ageless_champions_shockwave_hammer_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunder_shotgun_legendary<public> := class<final>(entity) {}
+    item_thunder_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunder_shotgun_rare<public> := class<final>(entity) {}
+    item_thunder_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunder_shotgun_uncommon<public> := class<final>(entity) {}
+    item_thunder_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_smg_common<public> := class<final>(entity) {}
+    item_thunder_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_smg_epic<public> := class<final>(entity) {}
+    item_thunder_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_smg_legendary<public> := class<final>(entity) {}
+    item_twin_mag_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_smg_rare<public> := class<final>(entity) {}
+    item_twin_mag_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_smg_uncommon<public> := class<final>(entity) {}
+    item_twin_mag_smg_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_mag_smg_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_mag_smg_uncommon<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/CH6MS2Items
   CH6MS2Items<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_compact_smg_rare<public> := class<final>(entity) {}
+    item_compact_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_compact_smg_uncommon<public> := class<final>(entity) {}
+    item_compact_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_compact_smg_mythic<public> := class<final>(entity) {}
+    item_enhanced_compact_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_assault_rifle_common<public> := class<final>(entity) {}
+    item_suppressed_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_suppressed_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/CH6MS2Items:)fort_item_tactical_shotgun_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH6MS2Items:)item_tactical_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/CH6MS2Items:)fort_item_tactical_shotgun_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/CH6MS2Items:)item_tactical_shotgun_legendary<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/CH7S1Items
+  CH7S1Items<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_dual_micro_smgs_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_dual_micro_smgs_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_dual_micro_smgs_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_dual_micro_smgs_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_dual_micro_smgs_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_enforcer_ar_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_enforcer_ar_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_enforcer_ar_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_enforcer_ar_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_enforcer_ar_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_uncommon<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/CreativeItems
   CreativeItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_acorn<public> := class<final>(entity) {}
+    item_acorn<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_active_powercell<public> := class<final>(entity) {}
+    item_active_powercell<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_adhesive_resin<public> := class<final>(entity) {}
+    item_adhesive_resin<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bacon<public> := class<final>(entity) {}
+    item_bacon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_basic_hammer_common<public> := class<final>(entity) {}
+    item_basic_hammer_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_basic_sword_common<public> := class<final>(entity) {}
+    item_basic_sword_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_batteries<public> := class<final>(entity) {}
+    item_batteries<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_blast_powder<public> := class<final>(entity) {}
+    item_blast_powder<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_blue_flecked_dino_egg<public> := class<final>(entity) {}
+    item_blue_flecked_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_blue_mushroom<public> := class<final>(entity) {}
+    item_blue_mushroom<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_blue_shimmering_dino_egg<public> := class<final>(entity) {}
+    item_blue_shimmering_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_blue_speckled_dino_egg<public> := class<final>(entity) {}
+    item_blue_speckled_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_boar_hair<public> := class<final>(entity) {}
+    item_boar_hair<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bouncer<public> := class<final>(entity) {}
+    item_bouncer<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_brightcore_ore<public> := class<final>(entity) {}
+    item_brightcore_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_brown_dino_egg<public> := class<final>(entity) {}
+    item_brown_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_brown_speckled_dino_egg<public> := class<final>(entity) {}
+    item_brown_speckled_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_butter<public> := class<final>(entity) {}
+    item_butter<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_carved_twine<public> := class<final>(entity) {}
+    item_carved_twine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_char_black_mineral_powder<public> := class<final>(entity) {}
+    item_char_black_mineral_powder<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_chiller<public> := class<final>(entity) {}
+    item_chiller<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_coal<public> := class<final>(entity) {}
+    item_coal<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_copper_ore<public> := class<final>(entity) {}
+    item_copper_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_creative_fishing_rod<public> := class<final>(entity) {}
+    item_creative_fishing_rod<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_creative_pro_fishing_rod<public> := class<final>(entity) {}
+    item_creative_pro_fishing_rod<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_damage_trap<public> := class<final>(entity) {}
+    item_damage_trap<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_diamond<public> := class<final>(entity) {}
+    item_diamond<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_duct_tape<public> := class<final>(entity) {}
+    item_duct_tape<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_efficient_mechanical_parts<public> := class<final>(entity) {}
+    item_efficient_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fibrous_herbs<public> := class<final>(entity) {}
+    item_fibrous_herbs<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fine_grain_mineral_powder<public> := class<final>(entity) {}
+    item_fine_grain_mineral_powder<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flower_petals<public> := class<final>(entity) {}
+    item_flower_petals<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_gray_eruption_dino_egg<public> := class<final>(entity) {}
+    item_gray_eruption_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_green_dino_egg<public> := class<final>(entity) {}
+    item_green_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_green_flecked_dino_egg<public> := class<final>(entity) {}
+    item_green_flecked_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_green_marbled_dino_egg<public> := class<final>(entity) {}
+    item_green_marbled_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grub<public> := class<final>(entity) {}
+    item_grub<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_herb<public> := class<final>(entity) {}
+    item_herb<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_honey<public> := class<final>(entity) {}
+    item_honey<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lemon_lime<public> := class<final>(entity) {}
+    item_lemon_lime<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_malachite_ore<public> := class<final>(entity) {}
+    item_malachite_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_maple_syrup<public> := class<final>(entity) {}
+    item_maple_syrup<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_milk<public> := class<final>(entity) {}
+    item_milk<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_obsidian_ore<public> := class<final>(entity) {}
+    item_obsidian_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxidized_mineral_powder<public> := class<final>(entity) {}
+    item_oxidized_mineral_powder<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_patchwork_tool<public> := class<final>(entity) {}
+    item_patchwork_tool<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_peaky_twine<public> := class<final>(entity) {}
+    item_peaky_twine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pink_marbled_dino_egg<public> := class<final>(entity) {}
+    item_pink_marbled_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pink_mushroom<public> := class<final>(entity) {}
+    item_pink_mushroom<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_planks<public> := class<final>(entity) {}
+    item_planks<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prop_o_matic<public> := class<final>(entity) {}
+    item_prop_o_matic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pumpkin<public> := class<final>(entity) {}
+    item_pumpkin<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_quartz_crystal<public> := class<final>(entity) {}
+    item_quartz_crystal<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rainbow_crystal<public> := class<final>(entity) {}
+    item_rainbow_crystal<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_raptor_eye<public> := class<final>(entity) {}
+    item_raptor_eye<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_eruption_dino_egg<public> := class<final>(entity) {}
+    item_red_eruption_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_flecked_dino_egg<public> := class<final>(entity) {}
+    item_red_flecked_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_mushroom<public> := class<final>(entity) {}
+    item_red_mushroom<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_red_shimmering_dino_egg<public> := class<final>(entity) {}
+    item_red_shimmering_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_roasted_chicken<public> := class<final>(entity) {}
+    item_roasted_chicken<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rotating_gizmo<public> := class<final>(entity) {}
+    item_rotating_gizmo<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rough_mineral_powder<public> := class<final>(entity) {}
+    item_rough_mineral_powder<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rough_ore<public> := class<final>(entity) {}
+    item_rough_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rusty_mechanical_parts<public> := class<final>(entity) {}
+    item_rusty_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shadowshard_crystal<public> := class<final>(entity) {}
+    item_shadowshard_crystal<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shark_tooth<public> := class<final>(entity) {}
+    item_shark_tooth<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shove<public> := class<final>(entity) {}
+    item_shove<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_signal_remote<public> := class<final>(entity) {}
+    item_signal_remote<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_signal_remote_a<public> := class<final>(entity) {}
+    item_signal_remote_a<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_signal_remote_b<public> := class<final>(entity) {}
+    item_signal_remote_b<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_signal_remote_c<public> := class<final>(entity) {}
+    item_signal_remote_c<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_signal_remote_d<public> := class<final>(entity) {}
+    item_signal_remote_d<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_silver_ore<public> := class<final>(entity) {}
+    item_silver_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_simple_mechanical_parts<public> := class<final>(entity) {}
+    item_simple_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_simple_mineral_powder<public> := class<final>(entity) {}
+    item_simple_mineral_powder<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_simple_twine<public> := class<final>(entity) {}
+    item_simple_twine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sleek_mechanical_parts<public> := class<final>(entity) {}
+    item_sleek_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spectral_twine<public> := class<final>(entity) {}
+    item_spectral_twine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spectrolite_ore<public> := class<final>(entity) {}
+    item_spectrolite_ore<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_speed_boost<public> := class<final>(entity) {}
+    item_speed_boost<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_speed_boost_high<public> := class<final>(entity) {}
+    item_speed_boost_high<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_speed_boost_low<public> := class<final>(entity) {}
+    item_speed_boost_low<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stringy_twine<public> := class<final>(entity) {}
+    item_stringy_twine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sturdy_mechanical_parts<public> := class<final>(entity) {}
+    item_sturdy_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sturdy_twine<public> := class<final>(entity) {}
+    item_sturdy_twine<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sunbeam_crystal<public> := class<final>(entity) {}
+    item_sunbeam_crystal<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_vindertech_mechanical_parts<public> := class<final>(entity) {}
+    item_vindertech_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wheat<public> := class<final>(entity) {}
+    item_wheat<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_white_dino_egg<public> := class<final>(entity) {}
+    item_white_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_white_marbled_dino_egg<public> := class<final>(entity) {}
+    item_white_marbled_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_white_mushroom<public> := class<final>(entity) {}
+    item_white_mushroom<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_white_shimmering_dino_egg<public> := class<final>(entity) {}
+    item_white_shimmering_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_white_speckled_dino_egg<public> := class<final>(entity) {}
+    item_white_speckled_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wolf_tooth<public> := class<final>(entity) {}
+    item_wolf_tooth<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_yellow_eruption_dino_egg<public> := class<final>(entity) {}
+    item_yellow_eruption_dino_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_yellow_mushroom<public> := class<final>(entity) {}
+    item_yellow_mushroom<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/CubedItems
   CubedItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_armored_wall<public> := class<final>(entity) {}
+    item_armored_wall<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_chili_chug_splash<public> := class<final>(entity) {}
+    item_chili_chug_splash<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_assault_rifle_common<public> := class<final>(entity) {}
+    item_combat_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_assault_rifle_epic<public> := class<final>(entity) {}
+    item_combat_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_combat_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_assault_rifle_rare<public> := class<final>(entity) {}
+    item_combat_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_combat_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_pistol_common<public> := class<final>(entity) {}
+    item_combat_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_pistol_epic<public> := class<final>(entity) {}
+    item_combat_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_pistol_legendary<public> := class<final>(entity) {}
+    item_combat_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_pistol_rare<public> := class<final>(entity) {}
+    item_combat_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_pistol_uncommon<public> := class<final>(entity) {}
+    item_combat_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_fiend_hunters_common<public> := class<final>(entity) {}
+    item_combat_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_fiend_hunters_epic<public> := class<final>(entity) {}
+    item_dual_fiend_hunters_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_fiend_hunters_legendary<public> := class<final>(entity) {}
+    item_dual_fiend_hunters_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_fiend_hunters_rare<public> := class<final>(entity) {}
+    item_dual_fiend_hunters_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_fiend_hunters_uncommon<public> := class<final>(entity) {}
+    item_dual_fiend_hunters_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_icy_grappler<public> := class<final>(entity) {}
+    item_dual_fiend_hunters_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_monster_parts<public> := class<final>(entity) {}
+    item_icy_grappler<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shadow_flopper<public> := class<final>(entity) {}
+    item_monster_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shockwave_launcher_legendary<public> := class<final>(entity) {}
+    item_shadow_flopper<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_minigun_common<public> := class<final>(entity) {}
+    item_shockwave_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_minigun_epic<public> := class<final>(entity) {}
+    item_sideways_minigun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_minigun_legendary<public> := class<final>(entity) {}
+    item_sideways_minigun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_minigun_mythic<public> := class<final>(entity) {}
+    item_sideways_minigun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_minigun_rare<public> := class<final>(entity) {}
+    item_sideways_minigun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_minigun_uncommon<public> := class<final>(entity) {}
+    item_sideways_minigun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_rifle_common<public> := class<final>(entity) {}
+    item_sideways_minigun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_rifle_epic<public> := class<final>(entity) {}
+    item_sideways_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_rifle_legendary<public> := class<final>(entity) {}
+    item_sideways_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_rifle_mythic<public> := class<final>(entity) {}
+    item_sideways_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_rifle_rare<public> := class<final>(entity) {}
+    item_sideways_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_rifle_uncommon<public> := class<final>(entity) {}
+    item_sideways_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_scythe_common<public> := class<final>(entity) {}
+    item_sideways_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_scythe_epic<public> := class<final>(entity) {}
+    item_sideways_scythe_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_scythe_legendary<public> := class<final>(entity) {}
+    item_sideways_scythe_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_scythe_mythic<public> := class<final>(entity) {}
+    item_sideways_scythe_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_scythe_rare<public> := class<final>(entity) {}
+    item_sideways_scythe_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sideways_scythe_uncommon<public> := class<final>(entity) {}
+    item_sideways_scythe_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_zero_point_pretzel<public> := class<final>(entity) {}
+    item_sideways_scythe_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_slones_burst_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_zero_point_pretzel<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/FlippedItems
   FlippedItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_auto_shotgun_common<public> := class<final>(entity) {}
+    item_auto_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_auto_shotgun_epic<public> := class<final>(entity) {}
+    item_auto_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_auto_shotgun_legendary<public> := class<final>(entity) {}
+    item_auto_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_auto_shotgun_mythic<public> := class<final>(entity) {}
+    item_auto_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_auto_shotgun_rare<public> := class<final>(entity) {}
+    item_auto_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_auto_shotgun_uncommon<public> := class<final>(entity) {}
+    item_auto_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_suppressed_pistols_epic<public> := class<final>(entity) {}
+    item_dual_suppressed_pistols_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_suppressed_pistols_legendary<public> := class<final>(entity) {}
+    item_dual_suppressed_pistols_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_suppressed_pistols_rare<public> := class<final>(entity) {}
+    item_dual_suppressed_pistols_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_suppressed_pistols_uncommon<public> := class<final>(entity) {}
+    item_dual_suppressed_pistols_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_gunnars_stinger_smg_mythic<public> := class<final>(entity) {}
+    item_gunnars_stinger_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_guzzle_juice<public> := class<final>(entity) {}
+    item_guzzle_juice<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hunter_bolt_action_sniper_common<public> := class<final>(entity) {}
+    item_heavy_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hunter_bolt_action_sniper_epic<public> := class<final>(entity) {}
+    item_heavy_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hunter_bolt_action_sniper_legendary<public> := class<final>(entity) {}
+    item_heavy_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hunter_bolt_action_sniper_rare<public> := class<final>(entity) {}
+    item_heavy_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hunter_bolt_action_sniper_uncommon<public> := class<final>(entity) {}
+    item_heavy_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_machine_smg_common<public> := class<final>(entity) {}
+    item_hunter_bolt_action_sniper_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_machine_smg_epic<public> := class<final>(entity) {}
+    item_hunter_bolt_action_sniper_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_machine_smg_legendary<public> := class<final>(entity) {}
+    item_hunter_bolt_action_sniper_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_machine_smg_rare<public> := class<final>(entity) {}
+    item_hunter_bolt_action_sniper_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_machine_smg_uncommon<public> := class<final>(entity) {}
+    item_hunter_bolt_action_sniper_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_med_mist<public> := class<final>(entity) {}
+    item_machine_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_seven_assault_rifle_common<public> := class<final>(entity) {}
+    item_machine_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_seven_assault_rifle_epic<public> := class<final>(entity) {}
+    item_machine_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_seven_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_machine_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_seven_assault_rifle_rare<public> := class<final>(entity) {}
+    item_machine_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_seven_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_med_mist<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pizza_party<public> := class<final>(entity) {}
+    item_mk_seven_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pizza_slice<public> := class<final>(entity) {}
+    item_mk_seven_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_assault_rifle_common<public> := class<final>(entity) {}
+    item_mk_seven_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_assault_rifle_epic<public> := class<final>(entity) {}
+    item_mk_seven_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_mk_seven_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_pizza_party<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_assault_rifle_rare<public> := class<final>(entity) {}
+    item_pizza_slice<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_ranger_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_pistol_common<public> := class<final>(entity) {}
+    item_ranger_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_pistol_rare<public> := class<final>(entity) {}
+    item_ranger_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_pistol_uncommon<public> := class<final>(entity) {}
+    item_ranger_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_suppressed_pistol_epic<public> := class<final>(entity) {}
+    item_ranger_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_suppressed_pistol_legendary<public> := class<final>(entity) {}
+    item_ranger_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_suppressed_pistol_rare<public> := class<final>(entity) {}
+    item_semi_auto_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_suppressed_pistol_uncommon<public> := class<final>(entity) {}
+    item_semi_auto_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shield_keg<public> := class<final>(entity) {}
+    item_semi_auto_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sidearm_pistol_common<public> := class<final>(entity) {}
+    item_semi_auto_suppressed_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sidearm_pistol_epic<public> := class<final>(entity) {}
+    item_semi_auto_suppressed_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sidearm_pistol_legendary<public> := class<final>(entity) {}
+    item_semi_auto_suppressed_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sidearm_pistol_rare<public> := class<final>(entity) {}
+    item_semi_auto_suppressed_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sidearm_pistol_uncommon<public> := class<final>(entity) {}
+    item_shield_keg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stinger_smg_common<public> := class<final>(entity) {}
+    item_sidearm_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stinger_smg_epic<public> := class<final>(entity) {}
+    item_sidearm_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stinger_smg_legendary<public> := class<final>(entity) {}
+    item_sidearm_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stinger_smg_rare<public> := class<final>(entity) {}
+    item_sidearm_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stinger_smg_uncommon<public> := class<final>(entity) {}
+    item_sidearm_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_pump_shotgun_common<public> := class<final>(entity) {}
+    item_stinger_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_pump_shotgun_epic<public> := class<final>(entity) {}
+    item_stinger_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_pump_shotgun_legendary<public> := class<final>(entity) {}
+    item_stinger_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_pump_shotgun_mythic<public> := class<final>(entity) {}
+    item_stinger_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_pump_shotgun_rare<public> := class<final>(entity) {}
+    item_stinger_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_pump_shotgun_uncommon<public> := class<final>(entity) {}
+    item_striker_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_the_foundations_mk_seven_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_striker_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_pump_shotgun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_the_foundations_mk_seven_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/FortniteItemCategories
@@ -11459,1262 +12369,454 @@ Itemization<public> := module {
 
   FortniteItemRarityUncommonName<localizes><epic_internal>: message = external {}
 
-  # Module import path: /Fortnite.com/Itemization/FortniteItems
-  FortniteItems<public> := module {
-    using { /Verse.org/SceneGraph }
-    @experimental
-    fort_item_air_strike<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_ammo_heavy_bullets<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_ammo_light_bullets<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_ammo_medium_bullets<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_ammo_rockets<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_ammo_shells<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_apple<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_authority_keycard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_automatic_sniper_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_automatic_sniper_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_automatic_sniper_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_automatic_sniper_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_balloons<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_banana<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_bandage_bazooka<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_boogie_bomb<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_boom_bow_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_boom_box<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_boom_sniper_rifle_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_bottle_rockets<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_brutus_minigun_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_burst_assault_rifle_common<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_burst_assault_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_burst_assault_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_burst_assault_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_burst_assault_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_burst_quad_launcher_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_burst_smg_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_burst_smg_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_burst_smg_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_bush<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_cabbage<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_candy_corn<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_catty_corner_keycard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_charge_shotgun_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_charge_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_charge_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_charge_shotgun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_charge_shotgun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_chiller_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_chug_cannon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_chug_splash<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_clinger<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_coconut<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_combat_shotgun_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_combat_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_combat_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_combat_shotgun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_combat_shotgun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_compact_smg_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_compact_smg_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_corn<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_cozy_campfire<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_crash_pad<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_creepin_cardboard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_crossbow_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_crossbow_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_cupids_crossbow_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_decoy<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_double_barrel_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_double_barrel_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_dragons_breath_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_dragons_breath_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_dragons_breath_sniper_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_gun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_gun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_shotgun_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_shotgun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_drum_shotgun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_dual_pistols_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_dual_pistols_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_dynamite<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_egg_launcher_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_egg_launcher_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_egg_launcher_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_egg_launcher_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_fiend_hunter_crossbow_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_fire_trap<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_firefly_jar<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flag<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flare_gun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flashlight<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flashlight_pistol_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flint_knock_pistol_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flint_knock_pistol_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_flopper<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_fortilla_keycard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_gas_can<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_gliders<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_gold<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_grappler<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_grotto_keycard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hand_cannon_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hand_cannon_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hand_cannon_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_harpoon_gun<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_assault_rifle_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_assault_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_assault_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_assault_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_assault_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_shotgun_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_shotgun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_shotgun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_sniper_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_sniper_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_heavy_sniper_rifle_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_holiday_presents<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hop_drop<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hop_flopper<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hop_rock_dualies_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hunting_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_hunting_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_hunting_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_hunting_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_impulse_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_infantry_rifle_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_infantry_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_infantry_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_infantry_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_infantry_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_infinity_blade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_jelly_bean<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_jellyfish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_jetpack<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_jewel<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_jules_drum_gun_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_jules_glider_gun<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_junk_rift<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_kits_charge_shotgun_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_kits_shockwave_launcher_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_bandage<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_chug_jug<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_dragons_breath_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_dragons_breath_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_med_kit<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_shield_potion<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_legacy_small_shield_potion<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_shotgun_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_shotgun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lever_action_shotgun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_light_machine_gun_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_light_machine_gun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_light_machine_gun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_light_machine_gun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_light_machine_gun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_lump_of_coal<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_meowscles_peow_peow_rifle_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_metal<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_midas_drum_gun_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_midas_flopper<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_minigun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_minigun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_minigun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_mythic_goldfish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_night_hawk_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_oceans_bottomless_chug_jug<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_oceans_burst_assault_rifle_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_orange_paint_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_orange_paint_launcher_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_pepper<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_pepper_mint<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_poison_dart_trap<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_port_a_fort<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_port_a_fortress<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_presents<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_proximity_grenade_launcher_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_proximity_grenade_launcher_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_proximity_mine<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pump_shotgun_common<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pump_shotgun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pump_shotgun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pump_shotgun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pump_shotgun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pumpkin_launcher_epic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pumpkin_launcher_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_pumpkin_launcher_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_pumpkin_launcher_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_purple_paint_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_purple_paint_launcher_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_quad_launcher_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_quad_launcher_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rapid_fire_smg_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rapid_fire_smg_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rapid_fire_smg_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rapid_fire_smg_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rapid_fire_smg_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rapid_fire_smg_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_remote_explosives<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_revolver_common<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_revolver_epic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_revolver_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_revolver_rare<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_revolver_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rift_fish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rift_to_go<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rig_keycard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_rusty_can<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_scoped_revolver_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_scoped_revolver_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_semi_auto_pistol_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_semi_auto_pistol_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shadow_bomb<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shadow_midas_drum_gun_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shadow_tracker_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shark_keycard<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shield_bubble<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shield_fish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shield_mushroom<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_shockwave_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_six_shooter_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_six_shooter_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_six_shooter_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_skyes_assault_rifle_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_skyes_grappler<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_slones_burst_assault_rifle_mythic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_slurp_juice<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_slurp_mushroom<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_slurpfish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_small_fry<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_smoke_grenade<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_sneaky_snowman<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_snowy_flopper<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_spicy_fish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_stink_bomb<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_stink_fish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_stone<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_storm_flip<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_storm_scout_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_storm_scout_sniper_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_storm_scout_sniper_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_submachine_gun_common<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_submachine_gun_epic<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_submachine_gun_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_submachine_gun_rare<public> := class<final>(entity) {}
-
-    @experimental
-    (/Fortnite.com/Itemization/FortniteItems:)fort_item_submachine_gun_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_suppressed_assault_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_suppressed_assault_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_suppressed_assault_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_suppressed_sniper_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_suppressed_sniper_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_suppressed_sniper_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_tactical_assault_rifle_common<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_tactical_assault_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_tactical_assault_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_tactical_assault_rifle_rare<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_tactical_assault_rifle_uncommon<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_the_big_chill_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_the_dub_exotic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_thermal_fish<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_thermal_scoped_assault_rifle_epic<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_thermal_scoped_assault_rifle_legendary<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_thermal_taffy<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_torch<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_vendetta_flopper<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_wood<public> := class<final>(entity) {}
-
-    @experimental
-    fort_item_zero_point_fish<public> := class<final>(entity) {}
-  }
-
   # Module import path: /Fortnite.com/Itemization/FortniteOGItems
   FortniteOGItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_assault_rifle_common_1<public> := class<final>(entity) {}
+    item_assault_rifle_common_1<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_common_2<public> := class<final>(entity) {}
+    item_assault_rifle_common_2<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_epic_1<public> := class<final>(entity) {}
+    item_assault_rifle_epic_1<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_epic_2<public> := class<final>(entity) {}
+    item_assault_rifle_epic_2<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_legendary_1<public> := class<final>(entity) {}
+    item_assault_rifle_legendary_1<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_legendary_2<public> := class<final>(entity) {}
+    item_assault_rifle_legendary_2<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_rare_1<public> := class<final>(entity) {}
+    item_assault_rifle_rare_1<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_rare_2<public> := class<final>(entity) {}
+    item_assault_rifle_rare_2<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_uncommon_1<public> := class<final>(entity) {}
+    item_assault_rifle_uncommon_1<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_assault_rifle_uncommon_2<public> := class<final>(entity) {}
+    item_assault_rifle_uncommon_2<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bolt_action_sniper_rifle_common<public> := class<final>(entity) {}
+    item_bolt_action_sniper_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bolt_action_sniper_rifle_epic<public> := class<final>(entity) {}
+    item_bolt_action_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bolt_action_sniper_rifle_legendary<public> := class<final>(entity) {}
+    item_bolt_action_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bolt_action_sniper_rifle_rare<public> := class<final>(entity) {}
+    item_bolt_action_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bolt_action_sniper_rifle_uncommon<public> := class<final>(entity) {}
+    item_bolt_action_sniper_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_burst_assault_rifle_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_burst_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_burst_assault_rifle_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_burst_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_burst_assault_rifle_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_burst_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_burst_assault_rifle_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_burst_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_burst_assault_rifle_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_burst_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ceiling_zapper<public> := class<final>(entity) {}
+    item_ceiling_zapper<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_grenade<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grenade_launcher_epic<public> := class<final>(entity) {}
+    item_grenade_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grenade_launcher_legendary<public> := class<final>(entity) {}
+    item_grenade_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grenade_launcher_rare<public> := class<final>(entity) {}
+    item_grenade_launcher_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_guided_missile_epic<public> := class<final>(entity) {}
+    item_guided_missile_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_guided_missile_legendary<public> := class<final>(entity) {}
+    item_guided_missile_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pistol_common<public> := class<final>(entity) {}
+    item_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pistol_rare<public> := class<final>(entity) {}
+    item_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pistol_uncommon<public> := class<final>(entity) {}
+    item_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_pump_shotgun_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_pump_shotgun_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_pump_shotgun_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_pump_shotgun_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_pump_shotgun_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_revolver_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_revolver_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_revolver_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_revolver_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_revolver_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_revolver_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_revolver_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_revolver_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_revolver_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_revolver_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_launcher_common<public> := class<final>(entity) {}
+    item_rocket_launcher_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_launcher_epic<public> := class<final>(entity) {}
+    item_rocket_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_launcher_legendary<public> := class<final>(entity) {}
+    item_rocket_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_launcher_rare<public> := class<final>(entity) {}
+    item_rocket_launcher_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_launcher_uncommon<public> := class<final>(entity) {}
+    item_rocket_launcher_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_assault_rifle_epic<public> := class<final>(entity) {}
+    item_scoped_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_scoped_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_assault_rifle_rare<public> := class<final>(entity) {}
+    item_scoped_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_scoped_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_sniper_rifle_epic<public> := class<final>(entity) {}
+    item_semi_auto_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_sniper_rifle_legendary<public> := class<final>(entity) {}
+    item_semi_auto_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_sniper_rifle_rare<public> := class<final>(entity) {}
+    item_semi_auto_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_semi_auto_sniper_rifle_uncommon<public> := class<final>(entity) {}
+    item_semi_auto_sniper_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_snowball_launcher_epic<public> := class<final>(entity) {}
+    item_snowball_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_snowball_launcher_legendary<public> := class<final>(entity) {}
+    item_snowball_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_snowball_launcher_rare<public> := class<final>(entity) {}
+    item_snowball_launcher_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_snowball_launcher_uncommon<public> := class<final>(entity) {}
+    item_snowball_launcher_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_submachine_gun_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_submachine_gun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_submachine_gun_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_submachine_gun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_submachine_gun_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_submachine_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_submachine_gun_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_submachine_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_submachine_gun_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_submachine_gun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_submachine_gun_common<public> := class<final>(entity) {}
+    item_suppressed_submachine_gun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_submachine_gun_epic<public> := class<final>(entity) {}
+    item_suppressed_submachine_gun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_submachine_gun_legendary<public> := class<final>(entity) {}
+    item_suppressed_submachine_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_submachine_gun_rare<public> := class<final>(entity) {}
+    item_suppressed_submachine_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_submachine_gun_uncommon<public> := class<final>(entity) {}
+    item_suppressed_submachine_gun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_shotgun_common<public> := class<final>(entity) {}
+    item_tactical_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_tactical_shotgun_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_tactical_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/FortniteOGItems:)fort_item_tactical_shotgun_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/FortniteOGItems:)item_tactical_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_shotgun_rare<public> := class<final>(entity) {}
+    item_tactical_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_shotgun_uncommon<public> := class<final>(entity) {}
+    item_tactical_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_submachine_gun_epic<public> := class<final>(entity) {}
+    item_tactical_submachine_gun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_submachine_gun_legendary<public> := class<final>(entity) {}
+    item_tactical_submachine_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_submachine_gun_rare<public> := class<final>(entity) {}
+    item_tactical_submachine_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_submachine_gun_uncommon<public> := class<final>(entity) {}
+    item_tactical_submachine_gun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wall_dynamo<public> := class<final>(entity) {}
+    item_wall_dynamo<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_zapotron_legendary<public> := class<final>(entity) {}
+    item_zapotron_legendary<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/HuntersItems
   HuntersItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_blizzard_grenade<public> := class<final>(entity) {}
+    item_blizzard_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_fury_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_enhanced_fury_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_holo_twister_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_enhanced_holo_twister_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_oni_shotgun_mythic<public> := class<final>(entity) {}
+    item_enhanced_oni_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_sentinel_pump_shotgun_mythic<public> := class<final>(entity) {}
+    item_enhanced_sentinel_pump_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_surgefire_smg_mythic<public> := class<final>(entity) {}
+    item_enhanced_surgefire_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_twinfire_auto_shotgun_mythic<public> := class<final>(entity) {}
+    item_enhanced_twinfire_auto_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fire_oni_mask_epic<public> := class<final>(entity) {}
+    item_fire_oni_mask_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fury_assault_rifle_common<public> := class<final>(entity) {}
+    item_fury_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fury_assault_rifle_epic<public> := class<final>(entity) {}
+    item_fury_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fury_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_fury_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fury_assault_rifle_rare<public> := class<final>(entity) {}
+    item_fury_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_fury_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_fury_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_holo_twister_assault_rifle_common<public> := class<final>(entity) {}
+    item_holo_twister_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_holo_twister_assault_rifle_epic<public> := class<final>(entity) {}
+    item_holo_twister_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_holo_twister_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_holo_twister_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_holo_twister_assault_rifle_rare<public> := class<final>(entity) {}
+    item_holo_twister_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_holo_twister_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_holo_twister_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hunting_rifle_mythic<public> := class<final>(entity) {}
+    item_hunting_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/HuntersItems:)fort_item_hunting_rifle_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/HuntersItems:)item_hunting_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/HuntersItems:)fort_item_hunting_rifle_uncommon<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/HuntersItems:)item_hunting_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_night_rose_veiled_precision_smg_mythic<public> := class<final>(entity) {}
+    item_night_rose_veiled_precision_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_night_roses_void_oni_mask<public> := class<final>(entity) {}
+    item_night_roses_void_oni_mask<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oni_shotgun_common<public> := class<final>(entity) {}
+    item_oni_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oni_shotgun_epic<public> := class<final>(entity) {}
+    item_oni_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oni_shotgun_legendary<public> := class<final>(entity) {}
+    item_oni_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oni_shotgun_rare<public> := class<final>(entity) {}
+    item_oni_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oni_shotgun_uncommon<public> := class<final>(entity) {}
+    item_oni_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sentinel_pump_shotgun_common<public> := class<final>(entity) {}
+    item_sentinel_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sentinel_pump_shotgun_epic<public> := class<final>(entity) {}
+    item_sentinel_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sentinel_pump_shotgun_legendary<public> := class<final>(entity) {}
+    item_sentinel_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sentinel_pump_shotgun_rare<public> := class<final>(entity) {}
+    item_sentinel_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sentinel_pump_shotgun_uncommon<public> := class<final>(entity) {}
+    item_sentinel_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shogun_xs_fire_oni_mask_mythic<public> := class<final>(entity) {}
+    item_shogun_xs_fire_oni_mask_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_surgefire_smg_common<public> := class<final>(entity) {}
+    item_surgefire_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_surgefire_smg_epic<public> := class<final>(entity) {}
+    item_surgefire_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_surgefire_smg_legendary<public> := class<final>(entity) {}
+    item_surgefire_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_surgefire_smg_rare<public> := class<final>(entity) {}
+    item_surgefire_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_surgefire_smg_uncommon<public> := class<final>(entity) {}
+    item_surgefire_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twinfire_auto_shotgun_common<public> := class<final>(entity) {}
+    item_twinfire_auto_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twinfire_auto_shotgun_epic<public> := class<final>(entity) {}
+    item_twinfire_auto_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twinfire_auto_shotgun_legendary<public> := class<final>(entity) {}
+    item_twinfire_auto_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twinfire_auto_shotgun_rare<public> := class<final>(entity) {}
+    item_twinfire_auto_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twinfire_auto_shotgun_uncommon<public> := class<final>(entity) {}
+    item_twinfire_auto_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_typhoon_blade_epic<public> := class<final>(entity) {}
+    item_typhoon_blade_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_typhoon_blade_mythic<public> := class<final>(entity) {}
+    item_typhoon_blade_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/HuntersItems:)fort_item_veiled_precision_smg_common<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/HuntersItems:)item_veiled_precision_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_veiled_precision_smg_epic<public> := class<final>(entity) {}
+    item_veiled_precision_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_veiled_precision_smg_legendary<public> := class<final>(entity) {}
+    item_veiled_precision_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_veiled_precision_smg_rare<public> := class<final>(entity) {}
+    item_veiled_precision_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_veiled_precision_smg_uncommon<public> := class<final>(entity) {}
+    item_veiled_precision_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_void_oni_mask<public> := class<final>(entity) {}
+    item_void_oni_mask<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/InvasionItems
   InvasionItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_alien_nanites<public> := class<final>(entity) {}
+    item_alien_nanites<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_burst_pulse_rifle_exotic<public> := class<final>(entity) {}
+    item_burst_pulse_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_inflate_a_bull<public> := class<final>(entity) {}
+    item_inflate_a_bull<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kymera_ray_gun_epic<public> := class<final>(entity) {}
+    item_kymera_ray_gun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kymera_ray_gun_legendary<public> := class<final>(entity) {}
+    item_kymera_ray_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kymera_ray_gun_rare<public> := class<final>(entity) {}
+    item_kymera_ray_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_plasma_cannon_legendary<public> := class<final>(entity) {}
+    item_plasma_cannon_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pulse_rifle_epic<public> := class<final>(entity) {}
+    item_pulse_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pulse_rifle_legendary<public> := class<final>(entity) {}
+    item_pulse_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pulse_rifle_rare<public> := class<final>(entity) {}
+    item_pulse_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rail_gun_epic<public> := class<final>(entity) {}
+    item_rail_gun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rail_gun_legendary<public> := class<final>(entity) {}
+    item_rail_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rail_gun_rare<public> := class<final>(entity) {}
+    item_rail_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_recon_scanner_rare<public> := class<final>(entity) {}
+    item_recon_scanner_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_slones_pulse_rifle_mythic<public> := class<final>(entity) {}
+    item_slones_pulse_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_zyg_and_choppys_ray_gun_mythic<public> := class<final>(entity) {}
+    item_zyg_and_choppys_ray_gun_mythic<public> := class<final><concrete>(entity) {}
   }
 
   InventoryActionPropertyInterface<epic_internal> := class<public>(parameterized_property_interface) {
@@ -12765,13 +12867,15 @@ Itemization<public> := module {
 
     ___PropertyInterface_On_Amount_Changed<epic_internal>(): void = external {}
 
-    ___PropertyInterface_On_Charge_Changed<epic_internal>(): void = external {}
+    ___PropertyInterface_On_Charges_Changed<epic_internal>(): void = external {}
 
     ___PropertyInterface_On_CycleNextInputAction_Changed<epic_internal>(): void = external {}
 
     ___PropertyInterface_On_CyclePreviousInputAction_Changed<epic_internal>(): void = external {}
 
     ___PropertyInterface_On_Durability_Changed<epic_internal>(): void = external {}
+
+    ___PropertyInterface_On_Energy_Changed<epic_internal>(): void = external {}
 
     ___PropertyInterface_On_InputAction_Changed<epic_internal>(): void = external {}
 
@@ -12808,8 +12912,8 @@ Itemization<public> := module {
     @replicated("RepNotify=___PropertyInterface_On_Amount_Changed")
     var Amount<public>: int = external {}
 
-    @replicated("RepNotify=___PropertyInterface_On_Charge_Changed")
-    var Charge<public>: float = external {}
+    @replicated("RepNotify=___PropertyInterface_On_Charges_Changed")
+    var Charges<public>: int = external {}
 
     @replicated("RepNotify=___PropertyInterface_On_CycleNextInputAction_Changed")
     var CycleNextInputAction<public>: input_action(type) = external {}
@@ -12819,6 +12923,9 @@ Itemization<public> := module {
 
     @replicated("RepNotify=___PropertyInterface_On_Durability_Changed")
     var Durability<public>: float = external {}
+
+    @replicated("RepNotify=___PropertyInterface_On_Energy_Changed")
+    var Energy<public>: float = external {}
 
     @replicated("RepNotify=___PropertyInterface_On_InputAction_Changed")
     var InputAction<public>: input_action(type) = external {}
@@ -12875,7 +12982,22 @@ Itemization<public> := module {
 
     ___PropertyInterface_On_ItemPropertyInterfaces_Changed<epic_internal>(): void = external {}
 
+    ___PropertyInterface_On_MagazineAmmo_Changed<epic_internal>(): void = external {}
+
+    ___PropertyInterface_On_ReserveAmmo_Changed<epic_internal>(): void = external {}
+
+    ___PropertyInterface_On_ShowMagazineAsPercentage_Changed<epic_internal>(): void = external {}
+
     ___PropertyInterface_On_TotalSlots_Changed<epic_internal>(): void = external {}
+
+    @replicated("RepNotify=___PropertyInterface_On_MagazineAmmo_Changed")
+    var MagazineAmmo<public>: int = external {}
+
+    @replicated("RepNotify=___PropertyInterface_On_ReserveAmmo_Changed")
+    var ReserveAmmo<public>: int = external {}
+
+    @replicated("RepNotify=___PropertyInterface_On_ShowMagazineAsPercentage_Changed")
+    var ShowMagazineAsPercentage<public>: logic = external {}
   }
 
   InventoryPropertyInterface_asset<epic_internal>: property_interface_UE5_definition = external {}
@@ -12884,1552 +13006,1661 @@ Itemization<public> := module {
   LastResortItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_business_turret<public> := class<final>(entity) {}
+    item_business_turret<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_crash_pad_jr<public> := class<final>(entity) {}
+    item_crash_pad_jr<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_diamonds_thermal_dmr_mythic<public> := class<final>(entity) {}
+    item_diamonds_thermal_dmr_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_infiltrator_pump_shotgun_mythic<public> := class<final>(entity) {}
+    item_enhanced_infiltrator_pump_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_estate_vault_keycard<public> := class<final>(entity) {}
+    item_estate_vault_keycard<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hearts_havoc_suppressed_rifle_mythic<public> := class<final>(entity) {}
+    item_hearts_havoc_suppressed_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_high_stakes_shotgun_mythic<public> := class<final>(entity) {}
+    item_high_stakes_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_infiltrator_pump_shotgun_common<public> := class<final>(entity) {}
+    item_infiltrator_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_infiltrator_pump_shotgun_epic<public> := class<final>(entity) {}
+    item_infiltrator_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_infiltrator_pump_shotgun_legendary<public> := class<final>(entity) {}
+    item_infiltrator_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_infiltrator_pump_shotgun_rare<public> := class<final>(entity) {}
+    item_infiltrator_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_infiltrator_pump_shotgun_uncommon<public> := class<final>(entity) {}
+    item_infiltrator_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_ram_rare<public> := class<final>(entity) {}
+    item_rocket_ram_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_burst_smg_common<public> := class<final>(entity) {}
+    item_scoped_burst_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_burst_smg_epic<public> := class<final>(entity) {}
+    item_scoped_burst_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_burst_smg_legendary<public> := class<final>(entity) {}
+    item_scoped_burst_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_burst_smg_rare<public> := class<final>(entity) {}
+    item_scoped_burst_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_scoped_burst_smg_uncommon<public> := class<final>(entity) {}
+    item_scoped_burst_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shield_breaker_emp<public> := class<final>(entity) {}
+    item_shield_breaker_emp<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sticky_grenade_launcher_epic<public> := class<final>(entity) {}
+    item_sticky_grenade_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sticky_grenade_launcher_legendary<public> := class<final>(entity) {}
+    item_sticky_grenade_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_pistol_common<public> := class<final>(entity) {}
+    item_suppressed_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_pistol_epic<public> := class<final>(entity) {}
+    item_suppressed_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_pistol_legendary<public> := class<final>(entity) {}
+    item_suppressed_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_pistol_rare<public> := class<final>(entity) {}
+    item_suppressed_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_pistol_uncommon<public> := class<final>(entity) {}
+    item_suppressed_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_dmr_common<public> := class<final>(entity) {}
+    item_tactical_dmr_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_dmr_epic<public> := class<final>(entity) {}
+    item_tactical_dmr_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_dmr_legendary<public> := class<final>(entity) {}
+    item_tactical_dmr_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_dmr_rare<public> := class<final>(entity) {}
+    item_tactical_dmr_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tactical_dmr_uncommon<public> := class<final>(entity) {}
+    item_tactical_dmr_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thornes_scoped_burst_smg_mythic<public> := class<final>(entity) {}
+    item_thornes_scoped_burst_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thornes_vampiric_blade_mythic<public> := class<final>(entity) {}
+    item_thornes_vampiric_blade_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_assault_rifle_common<public> := class<final>(entity) {}
+    item_twin_mag_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_assault_rifle_epic<public> := class<final>(entity) {}
+    item_twin_mag_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_twin_mag_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_assault_rifle_rare<public> := class<final>(entity) {}
+    item_twin_mag_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_twin_mag_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_twin_mag_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_witch_broom<public> := class<final>(entity) {}
+    item_witch_broom<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wood_stake_shotgun_epic<public> := class<final>(entity) {}
+    item_wood_stake_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wood_stake_shotgun_legendary<public> := class<final>(entity) {}
+    item_wood_stake_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wood_stake_shotgun_rare<public> := class<final>(entity) {}
+    item_wood_stake_shotgun_rare<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/LawlessItems
   LawlessItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_barons_double_down_pistol_mythic<public> := class<final>(entity) {}
+    item_barons_double_down_pistol_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_chug_jug<public> := class<final>(entity) {}
+    item_chug_jug<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_collateral_damage_assault_rifle_common<public> := class<final>(entity) {}
+    item_collateral_damage_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_collateral_damage_assault_rifle_epic<public> := class<final>(entity) {}
+    item_collateral_damage_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_collateral_damage_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_collateral_damage_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_collateral_damage_assault_rifle_rare<public> := class<final>(entity) {}
+    item_collateral_damage_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_collateral_damage_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_collateral_damage_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_collateral_damage_ar_mythic<public> := class<final>(entity) {}
+    item_dragons_breath_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_falcon_eye_sniper_mythic<public> := class<final>(entity) {}
+    item_dragons_breath_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_outlaw_shotgun_mythic<public> := class<final>(entity) {}
+    item_enhanced_collateral_damage_ar_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_falcon_eye_sniper_common<public> := class<final>(entity) {}
+    item_enhanced_falcon_eye_sniper_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_falcon_eye_sniper_epic<public> := class<final>(entity) {}
+    item_enhanced_outlaw_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_falcon_eye_sniper_legendary<public> := class<final>(entity) {}
+    item_falcon_eye_sniper_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_falcon_eye_sniper_rare<public> := class<final>(entity) {}
+    item_falcon_eye_sniper_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_falcon_eye_sniper_uncommon<public> := class<final>(entity) {}
+    item_falcon_eye_sniper_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_gold_splash<public> := class<final>(entity) {}
+    item_falcon_eye_sniper_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_accelerant_holo_twister_ar_exotic<public> := class<final>(entity) {}
+    item_falcon_eye_sniper_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_blink_pump__dump_exotic<public> := class<final>(entity) {}
+    item_gold_splash<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_explosive_mammoth_pistol_exotic<public> := class<final>(entity) {}
+    item_lawless_accelerant_holo_twister_ar_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_final_mark_rifle_exotic<public> := class<final>(entity) {}
+    item_lawless_blink_pump__dump_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_heavy_impact_tracking_rifle_exotic<public> := class<final>(entity) {}
+    item_lawless_explosive_mammoth_pistol_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_rift_launcher<public> := class<final>(entity) {}
+    item_lawless_final_mark_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_shockwave_rocket_launcher_exotic<public> := class<final>(entity) {}
+    item_lawless_heavy_impact_tracking_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_slap_cannon<public> := class<final>(entity) {}
+    item_lawless_rift_launcher<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_slap_jug<public> := class<final>(entity) {}
+    item_lawless_shockwave_rocket_launcher_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_stink_rifle_exotic<public> := class<final>(entity) {}
+    item_lawless_slap_cannon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_trinity_assault_rifle_exotic<public> := class<final>(entity) {}
+    item_lawless_slap_jug<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lawless_twinfire_slap_shotgun_exotic<public> := class<final>(entity) {}
+    item_lawless_stink_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_med_mist_smoke_grenade<public> := class<final>(entity) {}
+    item_lawless_trinity_assault_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_midas_gilded_eye_drum_gun_mythic<public> := class<final>(entity) {}
+    item_lawless_twinfire_slap_shotgun_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_outlaw_shotgun_common<public> := class<final>(entity) {}
+    item_med_mist_smoke_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_outlaw_shotgun_epic<public> := class<final>(entity) {}
+    item_midas_gilded_eye_drum_gun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_outlaw_shotgun_legendary<public> := class<final>(entity) {}
+    item_outlaw_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_outlaw_shotgun_rare<public> := class<final>(entity) {}
+    item_outlaw_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_outlaw_shotgun_uncommon<public> := class<final>(entity) {}
+    item_outlaw_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_plasma_burst_laser_epic<public> := class<final>(entity) {}
+    item_outlaw_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_port_a_cover<public> := class<final>(entity) {}
+    item_outlaw_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pulse_scanner<public> := class<final>(entity) {}
+    item_plasma_burst_laser_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pump__dump_common<public> := class<final>(entity) {}
+    item_port_a_cover<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pump__dump_epic<public> := class<final>(entity) {}
+    item_pulse_scanner<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pump__dump_legendary<public> := class<final>(entity) {}
+    item_pump__dump_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pump__dump_mythic<public> := class<final>(entity) {}
+    item_pump__dump_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pump__dump_rare<public> := class<final>(entity) {}
+    item_pump__dump_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_pump__dump_uncommon<public> := class<final>(entity) {}
+    item_pump__dump_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_rocket_drill<public> := class<final>(entity) {}
+    item_pump__dump_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_suppressed_pistol_mythic<public> := class<final>(entity) {}
+    item_pump__dump_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_the_kneecapper_epic<public> := class<final>(entity) {}
+    item_rocket_drill<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermite<public> := class<final>(entity) {}
+    item_suppressed_pistol_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_the_kneecapper_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_thermite<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/MEGAItems
   MEGAItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_enhanced_havoc_shotgun_mythic<public> := class<final>(entity) {}
+    item_combat_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_pump_shotgun_common<public> := class<final>(entity) {}
+    item_enhanced_havoc_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_pump_shotgun_epic<public> := class<final>(entity) {}
+    item_havoc_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_pump_shotgun_legendary<public> := class<final>(entity) {}
+    item_havoc_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_pump_shotgun_rare<public> := class<final>(entity) {}
+    item_havoc_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_pump_shotgun_uncommon<public> := class<final>(entity) {}
+    item_havoc_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_suppressed_assault_rifle_common<public> := class<final>(entity) {}
+    item_havoc_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_suppressed_assault_rifle_epic<public> := class<final>(entity) {}
+    item_havoc_suppressed_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_suppressed_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_havoc_suppressed_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_suppressed_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_havoc_suppressed_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_suppressed_assault_rifle_rare<public> := class<final>(entity) {}
+    item_havoc_suppressed_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_havoc_suppressed_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_havoc_suppressed_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heal_egg<public> := class<final>(entity) {}
+    item_havoc_suppressed_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_highcards_havoc_suppressed_rifle_mythic<public> := class<final>(entity) {}
+    item_heal_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hop_egg<public> := class<final>(entity) {}
+    item_highcards_havoc_suppressed_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kinetic_blade_epic<public> := class<final>(entity) {}
+    item_hop_egg<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kinetic_blade_rare<public> := class<final>(entity) {}
+    item_kinetic_blade_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lock_on_pistol_rare<public> := class<final>(entity) {}
+    item_kinetic_blade_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_alpha_assault_rifle_common<public> := class<final>(entity) {}
+    item_lock_on_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_alpha_assault_rifle_epic<public> := class<final>(entity) {}
+    item_mk_alpha_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_alpha_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_mk_alpha_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_alpha_assault_rifle_rare<public> := class<final>(entity) {}
+    item_mk_alpha_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mk_alpha_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_mk_alpha_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_overclocked_pulse_rifle_mythic<public> := class<final>(entity) {}
+    item_mk_alpha_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_reliks_mk_alpha_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_overclocked_pulse_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_reliks_mk_alpha_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/MEGAItems:)item_submachine_gun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/MEGAItems:)item_submachine_gun_legendary<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/MythsAndMortalsItems
   MythsAndMortalsItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_ares_modular_warforged_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_ares_modular_warforged_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_banana_of_the_gods<public> := class<final>(entity) {}
+    item_banana_of_the_gods<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cerberus_modular_gatekeeper_shotgun_mythic<public> := class<final>(entity) {}
+    item_cerberus_modular_gatekeeper_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_chains_of_hades_epic<public> := class<final>(entity) {}
+    item_chains_of_hades_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hades_modular_harbinger_smg_mythic<public> := class<final>(entity) {}
+    item_hades_modular_harbinger_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_midas_modular_drum_gun_mythic<public> := class<final>(entity) {}
+    item_midas_modular_drum_gun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_drum_gun_epic<public> := class<final>(entity) {}
+    item_modular_drum_gun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_drum_gun_legendary<public> := class<final>(entity) {}
+    item_modular_drum_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_drum_gun_rare<public> := class<final>(entity) {}
+    item_modular_drum_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_gatekeeper_shotgun_common<public> := class<final>(entity) {}
+    item_modular_gatekeeper_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_gatekeeper_shotgun_epic<public> := class<final>(entity) {}
+    item_modular_gatekeeper_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_gatekeeper_shotgun_legendary<public> := class<final>(entity) {}
+    item_modular_gatekeeper_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_gatekeeper_shotgun_rare<public> := class<final>(entity) {}
+    item_modular_gatekeeper_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_gatekeeper_shotgun_uncommon<public> := class<final>(entity) {}
+    item_modular_gatekeeper_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hand_cannon_epic<public> := class<final>(entity) {}
+    item_modular_hand_cannon_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hand_cannon_legendary<public> := class<final>(entity) {}
+    item_modular_hand_cannon_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hand_cannon_rare<public> := class<final>(entity) {}
+    item_modular_hand_cannon_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_harbinger_smg_common<public> := class<final>(entity) {}
+    item_modular_harbinger_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_harbinger_smg_epic<public> := class<final>(entity) {}
+    item_modular_harbinger_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_harbinger_smg_legendary<public> := class<final>(entity) {}
+    item_modular_harbinger_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_harbinger_smg_rare<public> := class<final>(entity) {}
+    item_modular_harbinger_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_harbinger_smg_uncommon<public> := class<final>(entity) {}
+    item_modular_harbinger_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_huntress_dmr_epic<public> := class<final>(entity) {}
+    item_modular_huntress_dmr_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_huntress_dmr_legendary<public> := class<final>(entity) {}
+    item_modular_huntress_dmr_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_huntress_dmr_rare<public> := class<final>(entity) {}
+    item_modular_huntress_dmr_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_huntress_dmr_uncommon<public> := class<final>(entity) {}
+    item_modular_huntress_dmr_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_tactical_assault_rifle_common<public> := class<final>(entity) {}
+    item_modular_tactical_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_tactical_assault_rifle_epic<public> := class<final>(entity) {}
+    item_modular_tactical_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_tactical_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_modular_tactical_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_tactical_assault_rifle_rare<public> := class<final>(entity) {}
+    item_modular_tactical_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_tactical_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_modular_tactical_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_warforged_assault_rifle_common<public> := class<final>(entity) {}
+    item_modular_warforged_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_warforged_assault_rifle_epic<public> := class<final>(entity) {}
+    item_modular_warforged_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_warforged_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_modular_warforged_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_warforged_assault_rifle_rare<public> := class<final>(entity) {}
+    item_modular_warforged_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_warforged_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_modular_warforged_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_zeus_huntress_dmr_mythic<public> := class<final>(entity) {}
+    item_modular_zeus_huntress_dmr_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shield_bubble_jr<public> := class<final>(entity) {}
+    item_shield_bubble_jr<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thunderbolt_of_zeus<public> := class<final>(entity) {}
+    item_thunderbolt_of_zeus<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wings_of_icarus<public> := class<final>(entity) {}
+    item_wings_of_icarus<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/ParadiseItems
   ParadiseItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_birthday_presents<public> := class<final>(entity) {}
+    item_birthday_presents<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cobra_dmr_common<public> := class<final>(entity) {}
+    item_cobra_dmr_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cobra_dmr_epic<public> := class<final>(entity) {}
+    item_cobra_dmr_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cobra_dmr_legendary<public> := class<final>(entity) {}
+    item_cobra_dmr_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cobra_dmr_mythic<public> := class<final>(entity) {}
+    item_cobra_dmr_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cobra_dmr_rare<public> := class<final>(entity) {}
+    item_cobra_dmr_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cobra_dmr_uncommon<public> := class<final>(entity) {}
+    item_cobra_dmr_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dial_a_drop<public> := class<final>(entity) {}
+    item_dial_a_drop<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_burst_rifle_common<public> := class<final>(entity) {}
+    item_evochrome_burst_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_burst_rifle_epic<public> := class<final>(entity) {}
+    item_evochrome_burst_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_burst_rifle_legendary<public> := class<final>(entity) {}
+    item_evochrome_burst_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_burst_rifle_mythic<public> := class<final>(entity) {}
+    item_evochrome_burst_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_burst_rifle_rare<public> := class<final>(entity) {}
+    item_evochrome_burst_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_burst_rifle_uncommon<public> := class<final>(entity) {}
+    item_evochrome_burst_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_shotgun_common<public> := class<final>(entity) {}
+    item_evochrome_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_shotgun_epic<public> := class<final>(entity) {}
+    item_evochrome_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_shotgun_legendary<public> := class<final>(entity) {}
+    item_evochrome_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_shotgun_mythic<public> := class<final>(entity) {}
+    item_evochrome_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_shotgun_rare<public> := class<final>(entity) {}
+    item_evochrome_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_evochrome_shotgun_uncommon<public> := class<final>(entity) {}
+    item_evochrome_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_goo_gun_rare<public> := class<final>(entity) {}
+    item_explosive_goo_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grapple_glider<public> := class<final>(entity) {}
+    item_grapple_glider<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_inkquisitors_suppressed_smg_mythic<public> := class<final>(entity) {}
+    item_inkquisitors_suppressed_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_key<public> := class<final>(entity) {}
+    item_key<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_legacy_launch_pad<public> := class<final>(entity) {}
+    item_legacy_launch_pad<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_port_a_bunker<public> := class<final>(entity) {}
+    item_port_a_bunker<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_rapid_fire_smg_mythic<public> := class<final><concrete>(entity) {}
+  }
+
+  # Module import path: /Fortnite.com/Itemization/PreSeasonItems
+  PreSeasonItems<public> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    item_ammo_heavy_bullets<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_ammo_light_bullets<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_ammo_medium_bullets<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_ammo_rockets<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_ammo_shells<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_burst_assault_rifle_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_burst_assault_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_burst_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_bandage<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_med_kit<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_legacy_shield_potion<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_metal<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_revolver_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_revolver_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/PreSeasonItems:)item_revolver_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_stone<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_wood<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/PrimalItems
   PrimalItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_ammo_arrows<public> := class<final>(entity) {}
+    item_ammo_arrows<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_animal_bones<public> := class<final>(entity) {}
+    item_animal_bones<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cuddle_fish<public> := class<final>(entity) {}
+    item_cuddle_fish<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_pistols_legendary<public> := class<final>(entity) {}
+    item_dual_pistols_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dual_pistols_uncommon<public> := class<final>(entity) {}
+    item_dual_pistols_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grappler_bow_exotic<public> := class<final>(entity) {}
+    item_egg_launcher_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_bow_uncommon<public> := class<final>(entity) {}
+    item_grappler_bow_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_revolver_common<public> := class<final>(entity) {}
+    item_makeshift_bow_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_revolver_rare<public> := class<final>(entity) {}
+    item_makeshift_revolver_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_revolver_uncommon<public> := class<final>(entity) {}
+    item_makeshift_revolver_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_rifle_common<public> := class<final>(entity) {}
+    item_makeshift_revolver_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_rifle_rare<public> := class<final>(entity) {}
+    item_makeshift_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_rifle_uncommon<public> := class<final>(entity) {}
+    item_makeshift_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_shotgun_common<public> := class<final>(entity) {}
+    item_makeshift_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_shotgun_rare<public> := class<final>(entity) {}
+    item_makeshift_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_shotgun_uncommon<public> := class<final>(entity) {}
+    item_makeshift_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_submachine_gun_common<public> := class<final>(entity) {}
+    item_makeshift_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_submachine_gun_rare<public> := class<final>(entity) {}
+    item_makeshift_submachine_gun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_makeshift_submachine_gun_uncommon<public> := class<final>(entity) {}
+    item_makeshift_submachine_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_marksman_six_shooter_exotic<public> := class<final>(entity) {}
+    item_makeshift_submachine_gun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_meat<public> := class<final>(entity) {}
+    item_marksman_six_shooter_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_bow_rare<public> := class<final>(entity) {}
+    item_meat<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_explosive_bow_epic<public> := class<final>(entity) {}
+    item_mechanical_bow_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_explosive_bow_legendary<public> := class<final>(entity) {}
+    item_mechanical_explosive_bow_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_explosive_bow_rare<public> := class<final>(entity) {}
+    item_mechanical_explosive_bow_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_parts<public> := class<final>(entity) {}
+    item_mechanical_explosive_bow_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_shockwave_bow_epic<public> := class<final>(entity) {}
+    item_mechanical_parts<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_shockwave_bow_legendary<public> := class<final>(entity) {}
+    item_mechanical_shockwave_bow_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mechanical_shockwave_bow_rare<public> := class<final>(entity) {}
+    item_mechanical_shockwave_bow_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_bow_rare<public> := class<final>(entity) {}
+    item_mechanical_shockwave_bow_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_flame_bow_epic<public> := class<final>(entity) {}
+    item_primal_bow_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_flame_bow_legendary<public> := class<final>(entity) {}
+    item_primal_flame_bow_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_flame_bow_rare<public> := class<final>(entity) {}
+    item_primal_flame_bow_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_pistol_epic<public> := class<final>(entity) {}
+    item_primal_flame_bow_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_pistol_legendary<public> := class<final>(entity) {}
+    item_primal_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_pistol_rare<public> := class<final>(entity) {}
+    item_primal_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_pistol_uncommon<public> := class<final>(entity) {}
+    item_primal_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_rifle_epic<public> := class<final>(entity) {}
+    item_primal_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_rifle_legendary<public> := class<final>(entity) {}
+    item_primal_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_rifle_rare<public> := class<final>(entity) {}
+    item_primal_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_rifle_uncommon<public> := class<final>(entity) {}
+    item_primal_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_shotgun_epic<public> := class<final>(entity) {}
+    item_primal_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_shotgun_legendary<public> := class<final>(entity) {}
+    item_primal_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_shotgun_rare<public> := class<final>(entity) {}
+    item_primal_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_shotgun_uncommon<public> := class<final>(entity) {}
+    item_primal_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_smg_epic<public> := class<final>(entity) {}
+    item_primal_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_smg_legendary<public> := class<final>(entity) {}
+    item_primal_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_smg_rare<public> := class<final>(entity) {}
+    item_primal_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_smg_uncommon<public> := class<final>(entity) {}
+    item_primal_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_stink_bow_epic<public> := class<final>(entity) {}
+    item_primal_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_stink_bow_legendary<public> := class<final>(entity) {}
+    item_primal_stink_bow_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_primal_stink_bow_rare<public> := class<final>(entity) {}
+    item_primal_stink_bow_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_razs_explosive_bow_mythic<public> := class<final>(entity) {}
+    item_primal_stink_bow_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_recycler_epic<public> := class<final>(entity) {}
+    item_razs_explosive_bow_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_recycler_legendary<public> := class<final>(entity) {}
+    item_recycler_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_recycler_rare<public> := class<final>(entity) {}
+    item_recycler_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_assassins_primal_shotgun_mythic<public> := class<final>(entity) {}
+    item_recycler_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_assassins_recycler_mythic<public> := class<final>(entity) {}
+    item_spire_assassins_primal_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_guardians_primal_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_spire_assassins_recycler_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_jumpboots<public> := class<final>(entity) {}
+    item_spire_guardians_primal_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_stink_sac<public> := class<final>(entity) {}
+    item_spire_jumpboots<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tntinas_ka_boom_bow<public> := class<final>(entity) {}
+    item_stink_fish<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_unstable_bow<public> := class<final>(entity) {}
+    item_stink_sac<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_vehicle_mod_off_road_tires<public> := class<final>(entity) {}
+    item_tntinas_ka_boom_bow<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_unstable_bow<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vehicle_mod_off_road_tires<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/RebellionItems
   RebellionItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_anvil_rocket_launcher_epic<public> := class<final>(entity) {}
+    item_anvil_rocket_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_anvil_rocket_launcher_legendary<public> := class<final>(entity) {}
+    item_anvil_rocket_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_anvil_rocket_launcher_rare<public> := class<final>(entity) {}
+    item_anvil_rocket_launcher_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_smg_common<public> := class<final>(entity) {}
+    item_combat_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_smg_epic<public> := class<final>(entity) {}
+    item_combat_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_smg_legendary<public> := class<final>(entity) {}
+    item_combat_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_smg_mythic<public> := class<final>(entity) {}
+    item_combat_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_smg_rare<public> := class<final>(entity) {}
+    item_combat_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_combat_smg_uncommon<public> := class<final>(entity) {}
+    item_combat_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_command_cavern_keycard<public> := class<final>(entity) {}
+    item_command_cavern_keycard<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_huntmaster_sabers_thermal_rifle_mythic<public> := class<final>(entity) {}
+    item_drum_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_shotgun_common<public> := class<final>(entity) {}
+    item_drum_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_shotgun_epic<public> := class<final>(entity) {}
+    item_huntmaster_sabers_thermal_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_shotgun_legendary<public> := class<final>(entity) {}
+    item_light_machine_gun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_shotgun_rare<public> := class<final>(entity) {}
+    item_light_machine_gun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ranger_shotgun_uncommon<public> := class<final>(entity) {}
+    item_light_machine_gun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_repair_torch<public> := class<final>(entity) {}
+    item_ranger_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_burst_rifle_common<public> := class<final>(entity) {}
+    item_ranger_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_burst_rifle_epic<public> := class<final>(entity) {}
+    item_ranger_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_burst_rifle_legendary<public> := class<final>(entity) {}
+    item_ranger_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_burst_rifle_mythic<public> := class<final>(entity) {}
+    item_ranger_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_burst_rifle_rare<public> := class<final>(entity) {}
+    item_repair_torch<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_striker_burst_rifle_uncommon<public> := class<final>(entity) {}
+    item_striker_burst_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_vehicle_mod_cow_catcher<public> := class<final>(entity) {}
+    item_striker_burst_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_burst_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_burst_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_burst_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_striker_burst_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vehicle_mod_cow_catcher<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/ShockNAwesomeItems
   ShockNAwesomeItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_bug_blaster_epic<public> := class<final>(entity) {}
+    item_bug_blaster_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bug_blaster_legendary<public> := class<final>(entity) {}
+    item_bug_blaster_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bug_blaster_rare<public> := class<final>(entity) {}
+    item_bug_blaster_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_double_exotic<public> := class<final>(entity) {}
+    item_double_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_enhanced_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_wrecker_revolver_mythic<public> := class<final>(entity) {}
+    item_enhanced_wrecker_revolver_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_eradicator_hop_rock_fury_assault_rifle_exotic<public> := class<final>(entity) {}
+    item_eradicator_hop_rock_fury_assault_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_eradicator_marksman_wrecker_revolver_exotic<public> := class<final>(entity) {}
+    item_eradicator_marksman_wrecker_revolver_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_eradicator_oxr_rifle_exotic<public> := class<final>(entity) {}
+    item_eradicator_oxr_rifle_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_eradicator_shadow_precision_smg_exotic<public> := class<final>(entity) {}
+    item_eradicator_shadow_precision_smg_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_eradicator_shock_n_slow_shockwave_launcher_exotic<public> := class<final>(entity) {}
+    item_eradicator_shock_n_slow_shockwave_launcher_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_exotic_slapberry_fizz<public> := class<final>(entity) {}
+    item_exotic_slapberry_fizz<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_launch_pad<public> := class<final>(entity) {}
+    item_launch_pad<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_leadspitter_3000_epic<public> := class<final>(entity) {}
+    item_leadspitter_3000_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_leadspitter_3000_legendary<public> := class<final>(entity) {}
+    item_leadspitter_3000_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_leadspitter_3000_mythic<public> := class<final>(entity) {}
+    item_leadspitter_3000_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxr_rifle_common<public> := class<final>(entity) {}
+    item_oxr_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxr_rifle_epic<public> := class<final>(entity) {}
+    item_oxr_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxr_rifle_legendary<public> := class<final>(entity) {}
+    item_oxr_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxr_rifle_mythic<public> := class<final>(entity) {}
+    item_oxr_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxr_rifle_rare<public> := class<final>(entity) {}
+    item_oxr_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oxr_rifle_uncommon<public> := class<final>(entity) {}
+    item_oxr_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_precision_air_strike<public> := class<final>(entity) {}
+    item_precision_air_strike<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_pumpkin_launcher_epic<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)item_pumpkin_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_pumpkin_launcher_legendary<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)item_pumpkin_launcher_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_pumpkin_launcher_rare<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)item_pumpkin_launcher_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shockwave_launcher_epic<public> := class<final>(entity) {}
+    item_shockwave_launcher_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    (/Fortnite.com/Itemization/ShockNAwesomeItems:)fort_item_slurp_juice<public> := class<final>(entity) {}
+    (/Fortnite.com/Itemization/ShockNAwesomeItems:)item_slurp_juice<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_swarmstrike_epic<public> := class<final>(entity) {}
+    item_swarmstrike_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_swarmstrike_legendary<public> := class<final>(entity) {}
+    item_swarmstrike_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sweeper_shotgun_common<public> := class<final>(entity) {}
+    item_sweeper_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sweeper_shotgun_epic<public> := class<final>(entity) {}
+    item_sweeper_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sweeper_shotgun_legendary<public> := class<final>(entity) {}
+    item_sweeper_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sweeper_shotgun_mythic<public> := class<final>(entity) {}
+    item_sweeper_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sweeper_shotgun_rare<public> := class<final>(entity) {}
+    item_sweeper_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sweeper_shotgun_uncommon<public> := class<final>(entity) {}
+    item_sweeper_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_trouble_exotic<public> := class<final>(entity) {}
+    item_trouble_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wrecker_revolver_common<public> := class<final>(entity) {}
+    item_wrecker_revolver_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wrecker_revolver_epic<public> := class<final>(entity) {}
+    item_wrecker_revolver_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wrecker_revolver_legendary<public> := class<final>(entity) {}
+    item_wrecker_revolver_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wrecker_revolver_rare<public> := class<final>(entity) {}
+    item_wrecker_revolver_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wrecker_revolver_uncommon<public> := class<final>(entity) {}
+    item_wrecker_revolver_uncommon<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/SuperItems
   SuperItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_ascended_myst_legendary<public> := class<final>(entity) {}
+    item_ascended_myst_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bass_boost_epic<public> := class<final>(entity) {}
+    item_bass_boost_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bass_boost_mythic<public> := class<final>(entity) {}
+    item_bass_boost_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bass_boost_rare<public> := class<final>(entity) {}
+    item_bass_boost_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_deadeye_dmr_common<public> := class<final>(entity) {}
+    item_deadeye_dmr_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_deadeye_dmr_epic<public> := class<final>(entity) {}
+    item_deadeye_dmr_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_deadeye_dmr_legendary<public> := class<final>(entity) {}
+    item_deadeye_dmr_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_deadeye_dmr_rare<public> := class<final>(entity) {}
+    item_deadeye_dmr_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_deadeye_dmr_uncommon<public> := class<final>(entity) {}
+    item_deadeye_dmr_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_hyperburst_pistol_mythic<public> := class<final>(entity) {}
+    item_enhanced_hyperburst_pistol_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_spire_rifle_mythic<public> := class<final>(entity) {}
+    item_enhanced_spire_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hyperburst_pistol_common<public> := class<final>(entity) {}
+    item_hyperburst_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hyperburst_pistol_epic<public> := class<final>(entity) {}
+    item_hyperburst_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hyperburst_pistol_legendary<public> := class<final>(entity) {}
+    item_hyperburst_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hyperburst_pistol_rare<public> := class<final>(entity) {}
+    item_hyperburst_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hyperburst_pistol_uncommon<public> := class<final>(entity) {}
+    item_hyperburst_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_killswitch_revolvers_epic<public> := class<final>(entity) {}
+    item_killswitch_revolvers_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_killswitch_revolvers_legendary<public> := class<final>(entity) {}
+    item_killswitch_revolvers_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_killswitch_revolvers_rare<public> := class<final>(entity) {}
+    item_killswitch_revolvers_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_killswitchs_revolvers_mythic<public> := class<final>(entity) {}
+    item_killswitchs_revolvers_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kors_deadeye_dmr_mythic<public> := class<final>(entity) {}
+    item_kors_deadeye_dmr_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lightriders_surf_cube<public> := class<final>(entity) {}
+    item_lightriders_surf_cube<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_myst_form<public> := class<final>(entity) {}
+    item_myst_form<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_myst_gauntlets_epic<public> := class<final>(entity) {}
+    item_myst_gauntlets_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_rifle_common<public> := class<final>(entity) {}
+    item_spire_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_rifle_epic<public> := class<final>(entity) {}
+    item_spire_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_rifle_legendary<public> := class<final>(entity) {}
+    item_spire_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_rifle_rare<public> := class<final>(entity) {}
+    item_spire_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spire_rifle_uncommon<public> := class<final>(entity) {}
+    item_spire_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_surf_cube<public> := class<final>(entity) {}
+    item_surf_cube<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tracking_visor<public> := class<final>(entity) {}
+    item_tracking_visor<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_unstable_bounce_grenade<public> := class<final>(entity) {}
+    item_unstable_bounce_grenade<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_unstable_frostfire_shotgun_exotic<public> := class<final>(entity) {}
+    item_unstable_frostfire_shotgun_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_unstable_thunderclap_dmr_exotic<public> := class<final>(entity) {}
+    item_unstable_thunderclap_dmr_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_unstable_voltage_burst_pistol_exotic<public> := class<final>(entity) {}
+    item_unstable_voltage_burst_pistol_exotic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_unstable_yoink_shotgun_exotic<public> := class<final>(entity) {}
+    item_unstable_yoink_shotgun_exotic<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/UndergroundItems
   UndergroundItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_ballistic_shield_epic<public> := class<final>(entity) {}
+    item_ballistic_shield_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_bandage<public> := class<final>(entity) {}
+    item_bandage<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_cluster_clinger<public> := class<final>(entity) {}
+    item_cluster_clinger<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flowberry<public> := class<final>(entity) {}
+    item_flowberry<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flowberry_fizz<public> := class<final>(entity) {}
+    item_flowberry_fizz<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grapple_blade_epic<public> := class<final>(entity) {}
+    item_grapple_blade_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_med_kit<public> := class<final>(entity) {}
+    item_med_kit<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_enforcer_ar_common<public> := class<final>(entity) {}
+    item_modular_enforcer_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_enforcer_ar_epic<public> := class<final>(entity) {}
+    item_modular_enforcer_ar_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_enforcer_ar_legendary<public> := class<final>(entity) {}
+    item_modular_enforcer_ar_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_enforcer_ar_rare<public> := class<final>(entity) {}
+    item_modular_enforcer_ar_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_enforcer_ar_uncommon<public> := class<final>(entity) {}
+    item_modular_enforcer_ar_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_frenzy_auto_shotgun_common<public> := class<final>(entity) {}
+    item_modular_frenzy_auto_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_frenzy_auto_shotgun_epic<public> := class<final>(entity) {}
+    item_modular_frenzy_auto_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_frenzy_auto_shotgun_legendary<public> := class<final>(entity) {}
+    item_modular_frenzy_auto_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_frenzy_auto_shotgun_rare<public> := class<final>(entity) {}
+    item_modular_frenzy_auto_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_frenzy_auto_shotgun_uncommon<public> := class<final>(entity) {}
+    item_modular_frenzy_auto_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hammer_pump_shotgun_common<public> := class<final>(entity) {}
+    item_modular_hammer_pump_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hammer_pump_shotgun_epic<public> := class<final>(entity) {}
+    item_modular_hammer_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hammer_pump_shotgun_legendary<public> := class<final>(entity) {}
+    item_modular_hammer_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hammer_pump_shotgun_rare<public> := class<final>(entity) {}
+    item_modular_hammer_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hammer_pump_shotgun_uncommon<public> := class<final>(entity) {}
+    item_modular_hammer_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hyper_smg_common<public> := class<final>(entity) {}
+    item_modular_hyper_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hyper_smg_epic<public> := class<final>(entity) {}
+    item_modular_hyper_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hyper_smg_legendary<public> := class<final>(entity) {}
+    item_modular_hyper_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hyper_smg_rare<public> := class<final>(entity) {}
+    item_modular_hyper_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_hyper_smg_uncommon<public> := class<final>(entity) {}
+    item_modular_hyper_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_nemesis_ar_common<public> := class<final>(entity) {}
+    item_modular_nemesis_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_nemesis_ar_epic<public> := class<final>(entity) {}
+    item_modular_nemesis_ar_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_nemesis_ar_legendary<public> := class<final>(entity) {}
+    item_modular_nemesis_ar_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_nemesis_ar_rare<public> := class<final>(entity) {}
+    item_modular_nemesis_ar_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_nemesis_ar_uncommon<public> := class<final>(entity) {}
+    item_modular_nemesis_ar_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_ranger_pistol_common<public> := class<final>(entity) {}
+    item_modular_ranger_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_ranger_pistol_epic<public> := class<final>(entity) {}
+    item_modular_ranger_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_ranger_pistol_legendary<public> := class<final>(entity) {}
+    item_modular_ranger_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_ranger_pistol_rare<public> := class<final>(entity) {}
+    item_modular_ranger_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_ranger_pistol_uncommon<public> := class<final>(entity) {}
+    item_modular_ranger_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_ar_common<public> := class<final>(entity) {}
+    item_modular_striker_ar_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_ar_epic<public> := class<final>(entity) {}
+    item_modular_striker_ar_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_ar_legendary<public> := class<final>(entity) {}
+    item_modular_striker_ar_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_ar_rare<public> := class<final>(entity) {}
+    item_modular_striker_ar_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_striker_ar_uncommon<public> := class<final>(entity) {}
+    item_modular_striker_ar_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_thunder_burst_smg_common<public> := class<final>(entity) {}
+    item_modular_thunder_burst_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_thunder_burst_smg_epic<public> := class<final>(entity) {}
+    item_modular_thunder_burst_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_thunder_burst_smg_legendary<public> := class<final>(entity) {}
+    item_modular_thunder_burst_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_thunder_burst_smg_rare<public> := class<final>(entity) {}
+    item_modular_thunder_burst_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_thunder_burst_smg_uncommon<public> := class<final>(entity) {}
+    item_modular_thunder_burst_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_montagues_modular_nemesis_ar_mythic<public> := class<final>(entity) {}
+    item_montagues_modular_nemesis_ar_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_nishas_modular_striker_ar_mythic<public> := class<final>(entity) {}
+    item_nishas_modular_striker_ar_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_oscars_modular_frenzy_auto_shotgun_mythic<public> := class<final>(entity) {}
+    item_oscars_modular_frenzy_auto_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_reaper_modular_sniper_rifle_epic<public> := class<final>(entity) {}
+    item_reaper_modular_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_reaper_modular_sniper_rifle_legendary<public> := class<final>(entity) {}
+    item_reaper_modular_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_reaper_modular_sniper_rifle_rare<public> := class<final>(entity) {}
+    item_reaper_modular_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_reaper_modular_sniper_rifle_uncommon<public> := class<final>(entity) {}
+    item_reaper_modular_sniper_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_shield_potion<public> := class<final>(entity) {}
+    item_shield_potion<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_small_shield_potion<public> := class<final>(entity) {}
+    item_small_shield_potion<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_valerias_modular_hyper_smg_mythic<public> := class<final>(entity) {}
+    item_valerias_modular_hyper_smg_mythic<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/VibinItems
   VibinItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_charge_smg_common<public> := class<final>(entity) {}
+    item_charge_smg_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_charge_smg_epic<public> := class<final>(entity) {}
+    item_charge_smg_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_charge_smg_legendary<public> := class<final>(entity) {}
+    item_charge_smg_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_charge_smg_mythic<public> := class<final>(entity) {}
+    item_charge_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_charge_smg_rare<public> := class<final>(entity) {}
+    item_charge_smg_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_charge_smg_uncommon<public> := class<final>(entity) {}
+    item_charge_smg_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dmr_common<public> := class<final>(entity) {}
+    item_dmr_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dmr_epic<public> := class<final>(entity) {}
+    item_dmr_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dmr_legendary<public> := class<final>(entity) {}
+    item_dmr_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dmr_mythic<public> := class<final>(entity) {}
+    item_dmr_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dmr_rare<public> := class<final>(entity) {}
+    item_dmr_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_dmr_uncommon<public> := class<final>(entity) {}
+    item_dmr_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_firework_flare_gun_rare<public> := class<final>(entity) {}
+    item_firework_flare_gun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_frozen_icecream_cone<public> := class<final>(entity) {}
+    item_frozen_icecream_cone<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_grapple_glove<public> := class<final>(entity) {}
+    item_grapple_glove<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_guzzling_icecream_cone<public> := class<final>(entity) {}
+    item_guzzling_icecream_cone<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_assault_rifle_common<public> := class<final>(entity) {}
+    item_hammer_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_assault_rifle_epic<public> := class<final>(entity) {}
+    item_hammer_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_hammer_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_hammer_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_assault_rifle_rare<public> := class<final>(entity) {}
+    item_hammer_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_hammer_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_hammer_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_icecream_cone<public> := class<final>(entity) {}
+    item_heavy_sniper_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_lilwhips_special_serve<public> := class<final>(entity) {}
+    item_icecream_cone<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prime_shotgun_common<public> := class<final>(entity) {}
+    item_lilwhips_special_serve<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prime_shotgun_epic<public> := class<final>(entity) {}
+    item_prime_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prime_shotgun_legendary<public> := class<final>(entity) {}
+    item_prime_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prime_shotgun_mythic<public> := class<final>(entity) {}
+    item_prime_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prime_shotgun_rare<public> := class<final>(entity) {}
+    item_prime_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_prime_shotgun_uncommon<public> := class<final>(entity) {}
+    item_prime_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ripsaw_launcher_rare<public> := class<final>(entity) {}
+    item_prime_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_spicy_icecream_cone<public> := class<final>(entity) {}
+    item_ripsaw_launcher_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_two_shot_shotgun_common<public> := class<final>(entity) {}
+    item_spicy_icecream_cone<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_two_shot_shotgun_epic<public> := class<final>(entity) {}
+    item_two_shot_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_two_shot_shotgun_legendary<public> := class<final>(entity) {}
+    item_two_shot_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_two_shot_shotgun_mythic<public> := class<final>(entity) {}
+    item_two_shot_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_two_shot_shotgun_rare<public> := class<final>(entity) {}
+    item_two_shot_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_two_shot_shotgun_uncommon<public> := class<final>(entity) {}
+    item_two_shot_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_two_shot_shotgun_uncommon<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/WildsItems
   WildsItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_cloak_gauntlets<public> := class<final>(entity) {}
+    item_cloak_gauntlets<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_drum_shotgun_mythic<public> := class<final>(entity) {}
+    item_enhanced_drum_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_enhanced_flapjack_rifle_mythic<public> := class<final>(entity) {}
+    item_enhanced_flapjack_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_repeater_rifle_common<public> := class<final>(entity) {}
+    item_explosive_repeater_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_repeater_rifle_epic<public> := class<final>(entity) {}
+    item_explosive_repeater_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_repeater_rifle_legendary<public> := class<final>(entity) {}
+    item_explosive_repeater_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_repeater_rifle_mythic<public> := class<final>(entity) {}
+    item_explosive_repeater_rifle_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_repeater_rifle_rare<public> := class<final>(entity) {}
+    item_explosive_repeater_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_explosive_repeater_rifle_uncommon<public> := class<final>(entity) {}
+    item_explosive_repeater_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flapjack_rifle_common<public> := class<final>(entity) {}
+    item_flapjack_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flapjack_rifle_epic<public> := class<final>(entity) {}
+    item_flapjack_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flapjack_rifle_legendary<public> := class<final>(entity) {}
+    item_flapjack_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flapjack_rifle_rare<public> := class<final>(entity) {}
+    item_flapjack_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_flapjack_rifle_uncommon<public> := class<final>(entity) {}
+    item_flapjack_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_kinetic_boomerang_epic<public> := class<final>(entity) {}
+    item_kinetic_boomerang_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mammoth_pistol_common<public> := class<final>(entity) {}
+    item_mammoth_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mammoth_pistol_epic<public> := class<final>(entity) {}
+    item_mammoth_pistol_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mammoth_pistol_legendary<public> := class<final>(entity) {}
+    item_mammoth_pistol_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mammoth_pistol_rare<public> := class<final>(entity) {}
+    item_mammoth_pistol_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_mammoth_pistol_uncommon<public> := class<final>(entity) {}
+    item_mammoth_pistol_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sharp_tooth_shotgun_epic<public> := class<final>(entity) {}
+    item_sharp_tooth_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sharp_tooth_shotgun_legendary<public> := class<final>(entity) {}
+    item_sharp_tooth_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sharp_tooth_shotgun_rare<public> := class<final>(entity) {}
+    item_sharp_tooth_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_sharp_tooth_shotgun_uncommon<public> := class<final>(entity) {}
+    item_sharp_tooth_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_slap_splash<public> := class<final>(entity) {}
+    item_slap_splash<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_super_slap_splash<public> := class<final>(entity) {}
+    item_super_slap_splash<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermal_dmr_common<public> := class<final>(entity) {}
+    item_thermal_dmr_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermal_dmr_epic<public> := class<final>(entity) {}
+    item_thermal_dmr_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermal_dmr_legendary<public> := class<final>(entity) {}
+    item_thermal_dmr_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermal_dmr_mythic<public> := class<final>(entity) {}
+    item_thermal_dmr_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermal_dmr_rare<public> := class<final>(entity) {}
+    item_thermal_dmr_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_thermal_dmr_uncommon<public> := class<final>(entity) {}
+    item_thermal_dmr_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wildguard_reliks_cloak_gauntlets<public> := class<final>(entity) {}
+    item_wildguard_reliks_cloak_gauntlets<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_wildwasp_jar<public> := class<final>(entity) {}
+    item_wildwasp_jar<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/WreckedItems
   WreckedItems<public> := module {
     using { /Verse.org/SceneGraph }
     @experimental
-    fort_item_heavy_impact_sniper_rifle_epic<public> := class<final>(entity) {}
+    item_heavy_impact_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heavy_impact_sniper_rifle_legendary<public> := class<final>(entity) {}
+    item_heavy_impact_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_heavy_impact_sniper_rifle_rare<public> := class<final>(entity) {}
+    item_heavy_impact_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_megalo_dons_modular_combat_shotgun_mythic<public> := class<final>(entity) {}
+    item_megalo_dons_modular_combat_shotgun_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_megalo_dons_nitro_fists_mythic<public> := class<final>(entity) {}
+    item_megalo_dons_nitro_fists_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_boom_bolt_epic<public> := class<final>(entity) {}
+    item_minigun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_boom_bolt_legendary<public> := class<final>(entity) {}
+    item_modular_boom_bolt_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_boom_bolt_rare<public> := class<final>(entity) {}
+    item_modular_boom_bolt_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_assault_rifle_common<public> := class<final>(entity) {}
+    item_modular_boom_bolt_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_assault_rifle_epic<public> := class<final>(entity) {}
+    item_modular_combat_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_assault_rifle_legendary<public> := class<final>(entity) {}
+    item_modular_combat_assault_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_assault_rifle_rare<public> := class<final>(entity) {}
+    item_modular_combat_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_assault_rifle_uncommon<public> := class<final>(entity) {}
+    item_modular_combat_assault_rifle_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_shotgun_common<public> := class<final>(entity) {}
+    item_modular_combat_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_shotgun_epic<public> := class<final>(entity) {}
+    item_modular_combat_shotgun_common<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_shotgun_legendary<public> := class<final>(entity) {}
+    item_modular_combat_shotgun_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_shotgun_rare<public> := class<final>(entity) {}
+    item_modular_combat_shotgun_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_combat_shotgun_uncommon<public> := class<final>(entity) {}
+    item_modular_combat_shotgun_rare<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_modular_conductor_hand_cannon_mythic<public> := class<final>(entity) {}
+    item_modular_combat_shotgun_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_nitro_fists_epic<public> := class<final>(entity) {}
+    item_modular_conductor_hand_cannon_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_nitro_splash<public> := class<final>(entity) {}
+    item_nitro_fists_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_ringmasters_modular_boom_bolt_mythic<public> := class<final>(entity) {}
+    item_nitro_splash<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_the_machinists_modular_combat_assault_rifle_mythic<public> := class<final>(entity) {}
+    item_ringmasters_modular_boom_bolt_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    fort_item_tow_hook_cannon_rare<public> := class<final>(entity) {}
+    item_the_machinists_modular_combat_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_tow_hook_cannon_rare<public> := class<final><concrete>(entity) {}
   }
 
   @experimental
@@ -14453,9 +14684,7 @@ Itemization<public> := module {
 
   @experimental
   # `fort_br_inventory_trap_component` is the FNBR inventory for the Fortnite trap slot.
-  fort_br_inventory_trap_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
-    var TotalSlots<override>: int = external {}
-  }
+  fort_br_inventory_trap_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
 
   @experimental
   # `fort_br_inventory_weapon_hotbar_component` is the FNBR inventory for Fortnite weapons and gadgets.
@@ -14502,7 +14731,7 @@ Itemization<public> := module {
     GetItemInSlot<native><public>(Slot: int)<reads><decides>: item_component
 
     # Returns the total number of slots in this inventory
-    GetMaxSlots<native><public>()<reads>: int
+    GetMaxSlots<native><public>()<reads><decides>: int
   }
 
   @experimental
@@ -14527,8 +14756,7 @@ Itemization<public> := module {
     CanAddItem<native><override>(
       InventoryComponent: inventory_component,
       Item: entity,
-      ?AllowMergeItems: logic = external {},
-      ?AllowPartialItemMove: logic = external {}
+      ?AllowMergeItems: logic = external {}
     ): ?failure_reason
 
     CanMergeItem<native><override>(InventoryComponent: inventory_component, Item: entity): ?failure_reason
@@ -14541,8 +14769,6 @@ Itemization<public> := module {
   fort_inventory_trap_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
-
-    var TotalSlots<override>: int = external {}
   }
 
   @experimental
@@ -14695,19 +14921,29 @@ Itemization<public> := module {
 
   @experimental
   item_attributes_component<native><final><epic_internal> := class<final_super>(component) {
+    GetAmmoIcon<native><public>()<reads><decides>: texture
+
     GetCurrentAmmoValue<native><public>()<reads>: int
 
-    GetCurrentChargeValue<native><public>()<reads>: float
+    GetCurrentChargesValue<native><public>()<reads>: int
 
     GetCurrentDurability<native><public>()<reads>: float
+
+    GetCurrentMagazineValue<native><public>()<reads>: int
+
+    GetCurrentReserveAmmoValue<native><public>()<reads>: int
 
     GetDurabilityPercent<native><public>()<reads>: float
 
     GetMaxDurability<native><public>()<reads>: float
 
+    GetReserveEnergyPercent<native><public>()<reads>: float
+
     SetCurrentDurability<native><public>(NewDurability: float): void
 
     SetMaxDurability<native><public>(NewMaxDurability: float): void
+
+    ShowMagazineAsPercentage<native><public>()<reads>: logic
   }
 
   @experimental
@@ -14723,13 +14959,11 @@ Itemization<public> := module {
 }
 
 Marketplace<public> := module {
-  @experimental
   # Displays the Epic purchase UI to the player to purchase the `Offer`.
   # Returns true if an offer was purchased.
   BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
 
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   # Consumes a consumable `product`.
   # Fails if:
   #  * The `product` is not consumable.
@@ -14740,10 +14974,8 @@ Marketplace<public> := module {
     ?Count: int = external {}
   )<suspends>: logic
 
-  @experimental
   GetPriceVBucks<native><public>(P: price_vbucks): float
 
-  @experimental
   # Used to listen for purchase change events during a game session.
   # Runtime error if `product` is used directly.
   GetProductsChangedEvent<native><public>(
@@ -14752,7 +14984,6 @@ Marketplace<public> := module {
     []product_change(product_type)
   ))
 
-  @experimental
   # Get all available `product`s for `Player`, along with the number of those `product`s.
   # This includes finding `product`s of derived types.
   # Calling GetPurchasedProducts(Player:player, product) will suspend forever.
@@ -14763,7 +14994,6 @@ Marketplace<public> := module {
   )
 
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   # Grant an item directly to `Player`.
   # This function does not gate granting items based on ProductDisclosures.
   # Items are always granted assuming they match the MaxCount requirement.
@@ -14773,29 +15003,23 @@ Marketplace<public> := module {
     ?Count: int = external {}
   )<suspends>: logic
 
-  @experimental
   MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
 
-  @experimental
   # Informs if usage of direct prompts to purchase is restricted for `Player`.
   RestrictDirectPromptsToPurchase<native><public>(Player: player)<reads><decides>: void
 
-  @experimental
   # Informs if usage of paid random items is restricted for `Player`
   # due to platform, territory, age, or user configuration restrictions.
   RestrictPaidRandomItems<native><public>(Player: player)<reads><decides>: void
 
-  @experimental
   # Shows the Epic provided store front contain the specified `Offers`.
   ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
 
-  @experimental
   # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
   bundle_offer<native><public> := class<castable>(offer) {
     Offers<native><public>: []tuple(offer, int) = external {}
   }
 
-  @experimental
   # Offers are used to sell products to players. See `product_offer` and `bundle_offer` classes for more information.
   offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
     # Override this method to restrict availability of an offer in certain regions and minimum ages.
@@ -14823,23 +15047,40 @@ Marketplace<public> := module {
     Price<native><public>: price_dimension
   }
 
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  @experimental
+  offer_interactable_component<native><public> := class(interactable_component) {
+    CanInteract<native><native_callable><override>(Agent: agent)<reads><decides>: void
+
+    InteractMessage<override>(Agent: agent)<reads><decides>: message = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnSucceed<protected>(Agent: agent): void = external {}
+
+    @editable
+    var Offer<public>: offer
+
+    var SucceededEventHandle<public>: ?cancelable = external {}
+  }
+
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/Presentation }
-  using { /Verse.org/Simulation }
-  @experimental
   price_dimension<native><public> := class<computes><abstract><epic_internal> {}
 
-  @experimental
   price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
 
-  @experimental
   # A product that is tracked by the commerce system.
   #
   #  * A player may only have one `product` if the product is not consumable.
   #  * A player may have `MaxCount` of a consumable product.
   #  * Your derived type must be <concrete> to be used by the purchase system.
+  #  * If the item you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
   product<native><public> := class<castable>(has_icon, has_description) {
+    ConsequentialToGameplay<native><public>: logic = external {}
+
     Consumable<native><public>: logic = external {}
 
     MaxCount<native><public>: int = external {}
@@ -14849,10 +15090,9 @@ Marketplace<public> := module {
     PaidRandomItem<native><public>: logic = external {}
   }
 
-  @experimental
   # Products that have changed in quantity.
   # This will also include product changes triggered by moderation, refunds and other commerce operations.
-  product_change<native><public>(t: subtype(product)) := class<internal> {
+  product_change<native><public>(t: type) := class<internal> {
     # Change to the original quantity of product.
     Change<native><public>: int
 
@@ -14865,7 +15105,6 @@ Marketplace<public> := module {
     Quantity<native><public>: int
   }
 
-  @experimental
   # A `product_offer` allows an individual product to be purchased.
   product_offer<native><public> := class<castable>(offer) {
     @available { MinUploadedAtFNVersion := 3800 }
@@ -14919,6 +15158,34 @@ QuestUtilities<public> := module {
   BroadcastCustomVerb<native><epic_internal>(Author: agent, CustomVerbNameTag: tag, Amount: int): void
 
   BroadcastCustomVerb<native><epic_internal>(Author: agent, CustomVerbTagString: string, Amount: int): void
+}
+
+SceneGraphCameras<public> := module {
+  # Module import path: /Fortnite.com/SceneGraphCameras/FortSceneGraphCameras
+  FortSceneGraphCameras<public> := module {
+    using { /Verse.org/Assets }
+    using { /Verse.org/SceneGraph/VerseCamera }
+    @experimental
+    fort_fixed_angle_camera_operator_component<native><epic_internal> := class(camera_operator_component) {
+      CameraRigAsset<override>: camera_rig_asset = external {}
+
+      UpdateCamera<override>(UpdateParameters: camera_operator_update_parameters): void = external {}
+    }
+
+    @experimental
+    fort_fixed_point_camera_operator_component<native><epic_internal> := class(camera_operator_component) {
+      CameraRigAsset<override>: camera_rig_asset = external {}
+
+      UpdateCamera<override>(UpdateParameters: camera_operator_update_parameters): void = external {}
+    }
+
+    @experimental
+    fort_orbit_camera_operator_component<native><epic_internal> := class(camera_operator_component) {
+      CameraRigAsset<override>: camera_rig_asset = external {}
+
+      UpdateCamera<override>(UpdateParameters: camera_operator_update_parameters): void = external {}
+    }
+  }
 }
 
 # Module import path: /Fortnite.com/Teams
@@ -15683,6 +15950,7 @@ Vehicles<public> := module {
 
   @hide_in_editor
   @experimental
+  @deprecated
   fort_vehicle_component<native><epic_internal> := class<final_super>(component, fort_vehicle) {
     Damage<override>(Amount: float): void = external {}
 
@@ -15983,6 +16251,7 @@ VerseInternalTesting<public> := module {
     using { /Fortnite.com/Characters }
     using { /Fortnite.com/Devices }
     using { /Fortnite.com/Game }
+    using { /Fortnite.com/Marketplace }
     using { /Fortnite.com/Vehicles }
     using { /UnrealEngine.com/Temporary/Diagnostics }
     using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -16060,6 +16329,14 @@ VerseInternalTesting<public> := module {
       Subscribe<public>(Event: listenable(tuple(int, logic))): void = external {}
 
       var ArgTuple<public>: ?tuple(int, logic) = external {}
+    }
+
+    test_event_tuple_player_product_change_handler_mock<public> := class(test_device_event_handler_mock) {
+      HandleEvent<public>(InResult: tuple(player, []product_change(product))): void = external {}
+
+      Subscribe<public>(Event: listenable(tuple(player, []product_change(product)))): void = external {}
+
+      var ArgTuple<public>: ?tuple(player, []product_change(product)) = external {}
     }
 
     test_plan<epic_internal> := class {}

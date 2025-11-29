@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.11-CL-48390828
+# Generated from build: ++Fortnite+Release-39.00-CL-48444883
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -56,6 +56,7 @@ Assets<public> := module {
   level<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   material<native><public> := class<epic_internal>(asset, property_changed_interface) {
+    @transient
     MaterialPath<native><epic_internal>: string = external {}
 
     OnPropertyChangedFromVerse<native><override>(PropertyName: string)<transacts>: void
@@ -661,7 +662,6 @@ Predicts<public> := module {
 
 Presentation<public> := module {
   using { /Verse.org/Simulation }
-  @experimental
   # Interface that provides descriptive names or text.
   has_description<public> := interface {
     @editable
@@ -792,6 +792,9 @@ SceneGraph<public> := module {
   # When querying from the simulation entity, the simulation entity itself is not included in the results.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindDescendantEntitiesWithTag<native><public>(Tag: tag)<transacts>: generator(entity)
+
+  @experimental
+  (InEntity: entity).GetAllowsPartialLoading<native><epic_internal>()<transacts>: ?logic
 
   @experimental
   (InEntity: entity).GetEnableStreaming<native><epic_internal>()<transacts>: ?logic
@@ -1171,6 +1174,72 @@ SceneGraph<public> := module {
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
   }
 
+  # Module import path: /Verse.org/SceneGraph/SceneGraphDebugTools
+  SceneGraphDebugTools<public> := module {
+    @experimental
+    debug_button_widget<native><epic_internal> := class(debug_widget) {
+      @replicated("")
+      ButtonId<native><public>: string = external {}
+
+      ClickedEvent<native><public>: listenable(tuple()) = external {}
+
+      @replicated("")
+      var Text<native><public>: string = external {}
+    }
+
+    @experimental
+    debug_container_widget<native><epic_internal> := class<abstract>(debug_widget) {
+      var Children<public>: []debug_widget = external {}
+
+      @replicated("")
+      var _Children<native><public>: []debug_widget = external {}
+    }
+
+    @experimental
+    debug_text_widget<native><epic_internal> := class(debug_widget) {
+      @replicated("")
+      var Text<native><public>: string = external {}
+    }
+
+    @experimental
+    # Debug component for creating debug UI's'
+    debug_ui_component<native><epic_internal> := class<final_super>(component) {
+      OnBeginSimulationInternal<native><override>(): void
+
+      OnEndSimulationInternal<native><override>(): void
+
+      var Windows<public>: []debug_window_widget = external {}
+    }
+
+    @experimental
+    debug_widget<native><epic_internal> := class<abstract>(debug_widget_base) {}
+
+    using { /Verse.org/Native }
+    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+    @import_as("/Script/SceneGraphDebugToolsRuntime.UVerseDebugWidgetBase")
+    @experimental
+    debug_widget_base<native><epic_internal> := class<abstract> {}
+
+    @experimental
+    debug_window_widget<native><epic_internal> := class(debug_container_widget) {
+      @replicated("")
+      UniqueName<native><public>: string
+
+      @replicated("")
+      var IsVisible<native><public>: logic = external {}
+
+      @replicated("")
+      var WindowHeight<native><public>: float = external {}
+
+      @replicated("")
+      var WindowTitle<native><public>: string
+
+      @replicated("")
+      var WindowWidth<native><public>: float = external {}
+    }
+  }
+
+  using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3800 }
   # Module import path: /Verse.org/SceneGraph/UI
   (/Verse.org/SceneGraph:)UI<public> := module {
@@ -1555,6 +1624,9 @@ SceneGraph<public> := module {
     # 2D Perlin Noise
     (CameraOperator: camera_operator_component).PerlinNoise2D<native><epic_internal>(X: float, Y: float): float
 
+    @experimental
+    (SimulationCameraDirector: simulation_camera_director_component).GetActiveCamera_AutomatedTestingOnly<native><epic_internal>(Player: player)<transacts><decides>: entity
+
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
     using { /Verse.org/Simulation }
@@ -1710,6 +1782,9 @@ SceneGraph<public> := module {
     @experimental
     # Component that animates the state of a camera component over time
     camera_operator_component<native><epic_internal> := class<abstract><final_super>(component) {
+      @experimental
+      CameraRigAsset<native><epic_internal>: camera_rig_asset = external {}
+
       @experimental
       UpdateCamera<native_callable><epic_internal>(UpdateParameters: camera_operator_update_parameters): void
     }
@@ -2005,7 +2080,6 @@ SceneGraph<public> := module {
     Valid: logic = external {}
   }
 
-  using { /Verse.org/Assets }
   using { /Verse.org/Colors }
   using { /Verse.org/Simulation/Tags }
   # A `capsule_light_component` emits light in all directions into the scene from a capsule shaped source with a specified radius and length. A radius and length of 0 makes it a point light. You can use these
@@ -2176,7 +2250,7 @@ SceneGraph<public> := module {
   #        OnEndSimulation
   #      OnRemovingFromScene
   # ==============================================================================
-  component<native><public> := class<abstract><unique><castable><final_super_base>(diagnosable) {
+  component<native><public> := class<abstract><unique><castable><final_super_base>(diagnosable, scene_event_participant) {
     @allow_self_reference
     @experimental_always_overridden
     # The parent entity of this component.
@@ -2230,10 +2304,6 @@ SceneGraph<public> := module {
 
     OnInitializedInternal<native><native_callable><epic_internal>(): void
 
-    @experimental
-    # Respond to an event being propagated through the scene graph. Returns if the event is consumed, in which case the event will not be passed to the next entity, depending on how the event is being sent through the hierarchy.
-    OnReceive<native><native_callable><public>(SceneEvent: scene_event): logic
-
     # Called when the component is about to be removed from the scene.
     #   * Components are removed from a scene when the parent entity is removed from the scene.
     #   * `OnRemovingFromScene` is only called on components that have already had `OnAddedToScene` called.
@@ -2257,6 +2327,9 @@ SceneGraph<public> := module {
     #   * Removed components are removed from the scene and can only be added back to the same entity.
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
+
+    # Send a scene event to this component.  Return true to consume the event and halt propogation.
+    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
 
     # Set callbacks to `TickEvents.PrePhysics` and `TickEvents.PostPhysics` to receive per-frame updates before and after physics is updated on your object.
     var<private> TickEvents<protected>: tick_events = external {}
@@ -2303,17 +2376,17 @@ SceneGraph<public> := module {
 
   # A `directional_light_component` simulates light that is being emitted from a source that is infinitely far away. This means that all shadows cast by this light will be parallel, making this the ideal choice for simulating sunlight.
   directional_light_component<native><public> := class<final>(light_component) {
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 1.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 1.000000 } }
     @category("Epic Internal")
     # Controls the size of the fade out region at the far extent of the dynamic shadow's influence
     CascadeDistanceFadeoutFraction<native><epic_internal>: float = external {}
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 1.000000 }, MaxValue := option { 4.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 1.000000 }; MaxValue := option { 4.000000 } }
     @category("Epic Internal")
     # Controls whether the cascades are distributed closer to the camera (larger exponent) or further from the camera (smaller exponent)
     CascadeDistributionExponent<native><epic_internal>: float = external {}
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 0.300000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 0.300000 } }
     @category("Epic Internal")
     # Proportion of the fade region between cascades
     CascadeTransitionFraction<native><epic_internal>: float = external {}
@@ -2328,7 +2401,7 @@ SceneGraph<public> := module {
     # Distance at which the far shadow cascade should end
     EnableLightShaftOcclusion<native><epic_internal>: logic = external {}
 
-    @editable_slider(int) { EpicOnly := true, MinValue := option { 0 }, MaxValue := option { 4 } }
+    @editable_slider(int) { EpicOnly := true; MinValue := option { 0 }; MaxValue := option { 4 } }
     @category("Epic Internal")
     # The number of cascades between DynamicShadowDistance and FarShadowDistance that are covered by Far Shadow Cascades, or zero to disable far shadow cascades
     FarShadowCascadeCount<native><epic_internal>: int = external {}
@@ -2338,7 +2411,7 @@ SceneGraph<public> := module {
     # Distance, in centimeters, at which the far shadow cascade should end
     FarShadowDistance<native><epic_internal>: float = external {}
 
-    @editable_slider(int) { EpicOnly := true, MinValue := option { 0 }, MaxValue := option { 4 } }
+    @editable_slider(int) { EpicOnly := true; MinValue := option { 0 }; MaxValue := option { 4 } }
     @category("Epic Internal")
     # Number of cascades to split the view frustum into for the whole scene dynamic shadow
     NumDynamicShadowCascades<native><epic_internal>: int = external {}
@@ -2380,7 +2453,11 @@ SceneGraph<public> := module {
   #   that you do not add code directly to the entity class, and instead keep logic in components. Keeping logic and data in
   #   components allows you to restructure your prefabs throughout production of your experience, without needing to massively
   #   refactor your class structure.
-  entity<native><public> := class<concrete><unique><transacts><castable>(base_entity, diagnosable) {
+  entity<native><public> := class<concrete><unique><transacts><castable>(
+    base_entity,
+    diagnosable,
+    scene_event_participant
+  ) {
     # Adds the provided components to the entity.
     #   * If a component is not allowed to be added to this entity it is skipped.
     #   Note: When called during the AddedToScene or BeginSimulation phase, it will make sure the added component has achieved the corresponding phase.
@@ -2422,17 +2499,11 @@ SceneGraph<public> := module {
     #   * Entity can be added back later by using `NewParent.AddEntities`.
     RemoveFromParent<native><final><public>(): void
 
-    @experimental
-    # Send a scene event to only this entity. Returns true if the event was consumed.
-    SendDirect<final><native><public>(SceneEvent: scene_event): logic
+    # Send a scene event to this entity and then down the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendDown will be invoked on each child entity.  Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
+    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
 
-    @experimental
-    # Send a scene event to this entity and all of its descendants. OnReceive will be invoked for each entity. Consuming the event at any entity will halt propagation down that subtree. Entities are traversed in breadth-first order, i.e. each layer is evaluated before moving deeper. Returns true if the event was consumed.
-    SendDown<final><native><public>(SceneEvent: scene_event): logic
-
-    @experimental
-    # Send a scene event to this entity and its ancestors. Events do not propagate beyond the Simulation Entity. OnReceive will be invoked for each entity. Consuming the event will halt propagation to the next ancestor. Returns true if the event was consumed.
-    SendUp<final><native><public>(SceneEvent: scene_event): logic
+    # Send a scene event to this entity and then up the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendUp will be invoked on this entity's parent. Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
+    SendUp<native><native_callable><public>(SceneEvent: scene_event): logic
   }
 
   @available { MinUploadedAtFNVersion := 3200 }
@@ -2467,9 +2538,7 @@ SceneGraph<public> := module {
   @hide_in_editor
   entity_registry_component<native><epic_internal> := class<final_super><epic_internal>(component) {}
 
-  # Used to subscribe a callback or await an event based callback '
-  #
-  # IMPORTANT: You must keep a pointer on your component to the returned `cancelable`. Otherwise the GC will eventually clean up your subscription and your callback will stop being invoked.
+  # Used to subscribe a callback or await an event based callback.
   execution_event<native><epic_internal> := class<epic_internal>(listenable(tuple())) {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`.
     Await<native><override>()<suspends>: tuple()
@@ -2478,9 +2547,7 @@ SceneGraph<public> := module {
     Subscribe<native><override>(Callback: type { _(): void })<transacts>: cancelable
   }
 
-  # Users to subscribe to, or await on, a DeltaTime based callback from one of the phases in a component's `TickEvents` object.'
-  #
-  # IMPORTANT: You must keep a pointer on your component to the returned `cancelable`. Otherwise the GC will eventually clean up your subscription and your callback will stop being invoked.
+  # Users to subscribe to, or await on, a DeltaTime based callback from one of the phases in a component's `TickEvents` object.
   execution_listenable<native><public> := class<epic_internal>(listenable(float)) {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`. Returns the event `payload`.
     Await<native><override>()<suspends>: float
@@ -2510,6 +2577,15 @@ SceneGraph<public> := module {
   # gear change event data
   gear_change_info<native><epic_internal> := struct<epic_internal> {
     ChangedToGear<native><public>: int
+  }
+
+  using { /Verse.org/Assets }
+  @experimental
+  # Internal common implementation for skeletal_animation
+  generic_skeletal_animation<native><epic_internal> := class<abstract>(skeletal_animation, property_changed_interface) {
+    Asset<native><epic_internal>: asset = external {}
+
+    OnPropertyChangedFromVerse<native><override>(PropertyName: string)<transacts>: void
   }
 
   @experimental
@@ -2589,11 +2665,11 @@ SceneGraph<public> := module {
     ExpiredEvent<native><public>: listenable(tuple()) = external {}
 
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
-    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_102: accessor)<transacts>: float
+    GetRemainingDuration<native><epic_internal>(__dupe___unnamed_parameter_100: accessor)<transacts>: float
 
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_101: accessor,
+      __dupe___unnamed_parameter_99: accessor,
       InRemainingDuration: float
     )<transacts>: void
 
@@ -2614,13 +2690,13 @@ SceneGraph<public> := module {
 
     # Get the remaining shared cooldown duration in seconds, affecting all agents.
     GetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_104: accessor,
+      __dupe___unnamed_parameter_102: accessor,
       Agent: agent
     )<transacts>: float
 
     # Set the remaining shared cooldown duration in seconds, affecting all agents.
     SetRemainingDurationForAgent<native><epic_internal>(
-      __dupe___unnamed_parameter_103: accessor,
+      __dupe___unnamed_parameter_101: accessor,
       Agent: agent,
       InRemainingDuration: float
     )<transacts>: void
@@ -2638,23 +2714,23 @@ SceneGraph<public> := module {
   # Used to set an interaction duration.
   interactable_duration<native><public> := class<concrete> {
     # Interact duration getter.
-    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_106: accessor)<transacts>: float
+    GetInteractDuration<native><epic_internal>(__dupe___unnamed_parameter_104: accessor)<transacts>: float
 
     # Max Simultaneous Interactors duration getter.
-    GetMaxSimultaneousInteractors<native><epic_internal>(__dupe___unnamed_parameter_108: accessor)<transacts>: ?int
+    GetMaxSimultaneousInteractors<native><epic_internal>(__dupe___unnamed_parameter_106: accessor)<transacts>: ?int
 
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.Returns the same value when called multiple times within a transaction.
     GetRemainingInteractDurationForAgent<final><native><public>(Agent: agent)<reads><decides>: float
 
     # Interact duration setter.
     SetInteractDuration<native><epic_internal>(
-      __dupe___unnamed_parameter_105: accessor,
+      __dupe___unnamed_parameter_103: accessor,
       InRemainingDuration: float
     )<transacts>: void
 
     # Max Simultaneous Interactors duration setter.
     SetMaxSimultaneousInteractors<native><epic_internal>(
-      __dupe___unnamed_parameter_107: accessor,
+      __dupe___unnamed_parameter_105: accessor,
       InRemainingDuration: ?int
     )<transacts>: void
 
@@ -2692,12 +2768,12 @@ SceneGraph<public> := module {
     ClearSuccessfulInteractionCount<native><public>()<transacts>: void
 
     # Get the maximum number of successful interactions possible.
-    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_110: accessor)<transacts>: ?int
+    GetMaxSuccessfulInteractions<native><epic_internal>(__dupe___unnamed_parameter_108: accessor)<transacts>: ?int
 
     # Update the maximum number of successful interactions possible, a value of false is unlimited.
     # If the current number of tracked interactions is greater than the value specified here, all current interactions will be canceled.
     SetMaxSuccessfulInteractions<native><epic_internal>(
-      __dupe___unnamed_parameter_109: accessor,
+      __dupe___unnamed_parameter_107: accessor,
       InMaxSuccessfulInteractions: ?int
     )<transacts>: void
 
@@ -2775,7 +2851,7 @@ SceneGraph<public> := module {
     # Whether to enable lighting on the second custom channel
     EnableLightingChannel2<native><epic_internal>: logic = external {}
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 10.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
     @display_name("IES Intensity Scale")
     @category("Epic Internal")
     # Global scale for IES brightness contribution. Only available when "Use IES Intensity" is selected, and a valid IES profile texture is set.
@@ -2787,7 +2863,7 @@ SceneGraph<public> := module {
     # If true, take light brightness from IES profile texture. If false, use the light brightness. The maximum light in one direction is used to define no masking. Will be disabled if a valid IES profile texture is not supplied.
     IESProfileTexture<native><epic_internal>: ?texture = external {}
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 6.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 6.000000 } }
     @category("Epic Internal")
     # Scales the indirect lighting contribution from this light
     IndirectLightingIntensity<native><epic_internal>: float = external {}
@@ -2795,7 +2871,7 @@ SceneGraph<public> := module {
     # Succeeds if the component is enabled, fails if it's disabled.
     IsEnabled<native><override>()<transacts><decides>: void
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 1.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 1.000000 } }
     @category("Epic Internal")
     # Brightness factor applied to the light when the light function is specified but disabled
     LightFunctionDisabledBrightness<native><epic_internal>: float = external {}
@@ -2829,7 +2905,7 @@ SceneGraph<public> := module {
     # If true, take light brightness from IES profile texture. If false, use the light brightness. The maximum light in one direction is used to define no masking. Will be disabled if a valid IES profile texture is not supplied.
     UseIESIntensity<native><epic_internal>: logic = external {}
 
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 0.000000 }, MaxValue := option { 4.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 4.000000 } }
     @category("Epic Internal")
     # Intensity of the volumetric scattering from this light
     VolumetricScatteringIntensity<native><epic_internal>: float = external {}
@@ -3043,7 +3119,7 @@ SceneGraph<public> := module {
     OnUninitializingInternal<native><override>(): void
 
     # Apply control input of type MAxis3D
-    SetInput<native><public>(InputName: string, Value: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): void
+    SetInput<native><public>(InputName: string, Value: (/Verse.org/SpatialMath:)vector3): void
 
     # Apply control input of type MAxis1D
     SetInput<native><public>(InputName: string, Value: float): void
@@ -3054,11 +3130,8 @@ SceneGraph<public> := module {
     # Apply control input of type MBoolean
     SetInput<native><public>(InputName: string, Value: logic): void
 
-    # Apply control input of type MAxis2D
-    SetInput<native><public>(InputName: string, Value: vector2): void
-
     # Apply state input of type MAxis3D
-    SetState<native><public>(InputName: string, Value: (/UnrealEngine.com/Temporary/SpatialMath:)vector3): void
+    SetState<native><public>(InputName: string, Value: (/Verse.org/SpatialMath:)vector3): void
 
     # Apply state input of type MAxis1D
     SetState<native><public>(InputName: string, Value: float): void
@@ -3068,9 +3141,6 @@ SceneGraph<public> := module {
 
     # Apply state input of type MBoolean
     SetState<native><public>(InputName: string, Value: logic): void
-
-    # Apply state input of type MAxis2D
-    SetState<native><public>(InputName: string, Value: vector2): void
 
     # Replace the current control input configuration
     SetupControlInputConfiguration<native_callable><public>(ControlInputConfigurationIn: []vehicle_input_setup): void = external {}
@@ -3087,8 +3157,6 @@ SceneGraph<public> := module {
     SimComponent<native><public>: vehicle_sim_base_component
   }
 
-  using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /Verse.org/Native }
   using { /Verse.org/SpatialMath }
   # Enumerated presets for the types of control input variable; Equates to what enhanced input can provide
   module_input_value_type<native><public> := enum {
@@ -3359,12 +3427,25 @@ SceneGraph<public> := module {
   @hide_in_editor
   root_entity<native><epic_internal> := class<concrete><unique><transacts>(entity) {}
 
-  @experimental
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
 
+  # Capable of handling scene events.
+  scene_event_participant<public> := interface<epic_internal> {
+    # Handle a scene event. Return true if the scene event is consumed by any participant and that propogation should halt.
+    SendDown<native_callable><public>(SceneEvent: scene_event): logic
+  }
+
   @hide_in_editor
   simulation_entity<native><epic_internal> := class<concrete><unique><transacts>(root_entity) {}
+
+  @experimental
+  # All things that produce a skeleton implement the skeletal_animation interface
+  skeletal_animation<native><epic_internal> := interface {}
+
+  @experimental
+  # Skeletons are collections of bones & sets/chains
+  skeleton<native><epic_internal> := class {}
 
   slow_component_array_copy_query_iterator<native><epic_internal> := class<epic_internal>(component_query_iterator_interface) {
     NextValue<native><override>()<transacts><decides>: component
@@ -3428,7 +3509,7 @@ SceneGraph<public> := module {
   # A `sphere_light_component` emits light in all directions into the scene from a spherical source shape with a specified radius. A radius of 0 makes it a point light. You can use these
   # to simulate any kind of light sources that emit in all directions, such as a light bulb.
   sphere_light_component<native><public> := class<final>(light_component) {
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 2.000000 }, MaxValue := option { 16.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 2.000000 }; MaxValue := option { 16.000000 } }
     @category("Epic Internal")
     # Controls the radial falloff of the light when UseInverseSquaredFalloff is disabled
     LightFalloffExponent<native><epic_internal>: float = external {}
@@ -3458,7 +3539,7 @@ SceneGraph<public> := module {
   # extents of the `OuterConeAngleDegrees` a falloff takes place, creating a penumbra, or softening around the `spot_light_component`'s disc of
   # illumination. The Radius of the light defines the length of the cones. More simply, this will work like a flash light or stage can light.
   spot_light_component<native><public> := class<final>(light_component) {
-    @editable_slider(float) { EpicOnly := true, MinValue := option { 2.000000 }, MaxValue := option { 16.000000 } }
+    @editable_slider(float) { EpicOnly := true; MinValue := option { 2.000000 }; MaxValue := option { 16.000000 } }
     @category("Epic Internal")
     # Controls the radial falloff of the light when UseInverseSquaredFalloff is disabled
     LightFalloffExponent<native><epic_internal>: float = external {}
@@ -3493,17 +3574,12 @@ SceneGraph<public> := module {
   streaming_component<native><epic_internal> := class<final_super>(component) {
     @editable
     @experimental
+    AllowsPartialLoading<native><epic_internal>: ?logic = external {}
+
+    @editable
+    @experimental
     EnableStreaming<native><epic_internal>: ?logic = external {}
   }
-
-  @hide_in_editor
-  streaming_data_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    @experimental
-    Impl<native><epic_internal>: streaming_data_component_impl
-  }
-
-  @import_as("/Script/EntityStreaming.UStreamingDataComponentImpl")
-  streaming_data_component_impl<native><epic_internal> := class<abstract> {}
 
   # The results of a sweep query. See entity.FindSweepHits(). We will get one sweep_hit for each intersection of any volume in SourceVolumes with any other volume.
   sweep_hit<native><public> := struct<epic_internal> {
@@ -3715,40 +3791,6 @@ SceneGraph<public> := module {
   # wheel contact event
   wheel_touch_change_info<native><epic_internal> := struct<epic_internal> {
     IsInContact<native><public>: logic
-  }
-}
-
-SceneGraphTests<public> := module {
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  @hide_in_editor
-  @experimental
-  Test_CustomInteractTime<native><epic_internal> := class<epic_internal>(interactable_component) {
-    OnBeginSimulation<override>(): void = external {}
-
-    OnStarted<override>(Agent: agent)<transacts><decides>: void = external {}
-
-    var CurrentAgent<public>: agent
-
-    var TimesSucceeded<native><public>: int = external {}
-  }
-
-  @hide_in_editor
-  @experimental
-  Test_InitBasicVariables<native><epic_internal> := class<epic_internal>(basic_interactable_component) {
-    OnBeginSimulation<override>(): void = external {}
-  }
-
-  @hide_in_editor
-  @experimental
-  Test_OnStartedNoSignalling<native><epic_internal> := class<epic_internal>(interactable_component) {
-    OnBeginSimulation<override>(): void = external {}
-
-    OnStarted<override>(Agent: agent)<transacts><decides>: void = external {}
-
-    var CurrentAgent<public>: agent
-
-    var TimesSucceeded<native><public>: int = external {}
   }
 }
 

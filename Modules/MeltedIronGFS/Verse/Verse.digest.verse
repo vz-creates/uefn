@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.11-CL-48390828
+# Generated from build: ++Fortnite+Release-39.00-CL-48444883
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -473,7 +473,6 @@ Native<public> := module {
 
 Presentation<public> := module {
   using { /Verse.org/Simulation }
-  @experimental
   # Interface that provides descriptive names or text.
   has_description<public> := interface {
     @editable
@@ -1002,7 +1001,7 @@ SceneGraph<public> := module {
   #        OnEndSimulation
   #      OnRemovingFromScene
   # ==============================================================================
-  component<native><public> := class<abstract><unique><castable><final_super_base> {
+  component<native><public> := class<abstract><unique><castable><final_super_base>(scene_event_participant) {
     # The parent entity of this component.
     #   * Components must have a parent entity pointer provided when being constructed.
     #   * Components cannot be moved between parents.
@@ -1034,10 +1033,6 @@ SceneGraph<public> := module {
     #   * `OnEndSimulation` is only called on components that have already had `OnBeginSimulation` called.
     OnEndSimulation<native><native_callable><protected>(): void
 
-    @experimental
-    # Respond to an event being propagated through the scene graph. Returns if the event is consumed, in which case the event will not be passed to the next entity, depending on how the event is being sent through the hierarchy.
-    OnReceive<native><native_callable><public>(SceneEvent: scene_event): logic
-
     # Called when the component is about to be removed from the scene.
     #   * Components are removed from a scene when the parent entity is removed from the scene.
     #   * `OnRemovingFromScene` is only called on components that have already had `OnAddedToScene` called.
@@ -1053,6 +1048,9 @@ SceneGraph<public> := module {
     #   * Removed components are removed from the scene and can only be added back to the same entity.
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
+
+    # Send a scene event to this component.  Return true to consume the event and halt propogation.
+    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
 
     # Set callbacks to `TickEvents.PrePhysics` and `TickEvents.PostPhysics` to receive per-frame updates before and after physics is updated on your object.
     var<private> TickEvents<protected>: tick_events = external {}
@@ -1085,7 +1083,7 @@ SceneGraph<public> := module {
   #   that you do not add code directly to the entity class, and instead keep logic in components. Keeping logic and data in
   #   components allows you to restructure your prefabs throughout production of your experience, without needing to massively
   #   refactor your class structure.
-  entity<native><public> := class<concrete><unique><transacts><castable> {
+  entity<native><public> := class<concrete><unique><transacts><castable>(scene_event_participant) {
     # Adds the provided components to the entity.
     #   * If a component is not allowed to be added to this entity it is skipped.
     #   Note: When called during the AddedToScene or BeginSimulation phase, it will make sure the added component has achieved the corresponding phase.
@@ -1125,17 +1123,11 @@ SceneGraph<public> := module {
     #   * Entity can be added back later by using `NewParent.AddEntities`.
     RemoveFromParent<native><final><public>(): void
 
-    @experimental
-    # Send a scene event to only this entity. Returns true if the event was consumed.
-    SendDirect<final><native><public>(SceneEvent: scene_event): logic
+    # Send a scene event to this entity and then down the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendDown will be invoked on each child entity.  Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
+    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
 
-    @experimental
-    # Send a scene event to this entity and all of its descendants. OnReceive will be invoked for each entity. Consuming the event at any entity will halt propagation down that subtree. Entities are traversed in breadth-first order, i.e. each layer is evaluated before moving deeper. Returns true if the event was consumed.
-    SendDown<final><native><public>(SceneEvent: scene_event): logic
-
-    @experimental
-    # Send a scene event to this entity and its ancestors. Events do not propagate beyond the Simulation Entity. OnReceive will be invoked for each entity. Consuming the event will halt propagation to the next ancestor. Returns true if the event was consumed.
-    SendUp<final><native><public>(SceneEvent: scene_event): logic
+    # Send a scene event to this entity and then up the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendUp will be invoked on this entity's parent. Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
+    SendUp<native><native_callable><public>(SceneEvent: scene_event): logic
   }
 
   @available { MinUploadedAtFNVersion := 3200 }
@@ -1150,9 +1142,7 @@ SceneGraph<public> := module {
   # Reference type to editor defined prefab. Only generated digest code should reference this type.
   entity_prefab<native><public> := class<computes><epic_internal> {}
 
-  # Users to subscribe to, or await on, a DeltaTime based callback from one of the phases in a component's `TickEvents` object.'
-  #
-  # IMPORTANT: You must keep a pointer on your component to the returned `cancelable`. Otherwise the GC will eventually clean up your subscription and your callback will stop being invoked.
+  # Users to subscribe to, or await on, a DeltaTime based callback from one of the phases in a component's `TickEvents` object.
   execution_listenable<native><public> := class<epic_internal>(listenable(float)) {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`. Returns the event `payload`.
     Await<native><override>()<suspends>: float
@@ -1419,9 +1409,14 @@ SceneGraph<public> := module {
     var SourceWidth<public>: float = external {}
   }
 
-  @experimental
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
+
+  # Capable of handling scene events.
+  scene_event_participant<public> := interface<epic_internal> {
+    # Handle a scene event. Return true if the scene event is consumed by any participant and that propogation should halt.
+    SendDown<native_callable><public>(SceneEvent: scene_event): logic
+  }
 
   sound_component<native><public> := class<abstract><final_super><epic_internal>(component, enableable) {
     # Disable the sound component.

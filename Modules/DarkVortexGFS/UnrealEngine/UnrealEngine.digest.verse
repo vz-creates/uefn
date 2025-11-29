@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.11-CL-48390828
+# Generated from build: ++Fortnite+Release-39.00-CL-48444883
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -117,6 +117,11 @@ Itemization<public> := module {
     var Errors<native><public>: []add_item_error = external {}
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/Presentation }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   @experimental
   add_item_result<native><public> := class<epic_internal> {
     # Items that were newly added to this inventory as a result of the transaction.
@@ -181,21 +186,15 @@ Itemization<public> := module {
     Item<native><public>: entity
   }
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/Presentation }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  @experimental
-  failure_reason<native><public> := class<castable><concrete><reads> {}
-
   @experimental
   # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
   # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
   find_inventory_event<native><public> := class<epic_internal>(scene_event) {
     ItemComponent<native><public>: item_component
 
-    var EligibleInventories<native><public>: []inventory_with_priority
+    var ChosenInventory<native><public>: ?inventory_component = external {}
+
+    var ChosenInventoryPriority<native><public>: float = external {}
   }
 
   @experimental
@@ -207,35 +206,34 @@ Itemization<public> := module {
   }
 
   @experimental
-  invalid_item_failure_reason<native><public> := class<final><reads>(failure_reason) {}
+  invalid_item_failure_reason<native><public> := class<final><reads> {}
 
   @experimental
   # Inventory components hold items. An entity with an inventory component can be considered to have an inventory.
   # The inventory component controls which items can enter or exit.
   # They also determine whether an item can be equipped.
   inventory_component<native><public> := class<final_super>(component) {
+    @available { MinUploadedAtFNVersion := 3800 }
     # Adds items to the inventory. Fails if no items could be added.
     AddItem<native><final><public>(
       Item: entity,
-      ?AllowMergeItems: logic = external {},
-      ?AllowPartialItemMove: logic = external {}
-    )<transacts><decides>: void
+      ?AllowMergeItems: logic = external {})<transacts>: result(add_item_result,
+      []add_item_error
+    )
 
     AddItemEvent<native><final><public>: listenable(add_item_result) = external {}
 
-    # Adds the provided inventory_rule_interface instance to this inventory's rule list if not already present.
-    # NOTE: this part of the API is likely to change during Experimental.
-    AddRule<native><final><public>(Rule: inventory_rule_interface)<transacts><decides>: cancelable
-
+    @available { MinUploadedAtFNVersion := 3800 }
     # Returns a failure reason (such as being full) if the provided item entity cannot be added.
     CanAddItem<final><native><public>(
       Item: entity,
-      ?AllowMergeItems: logic = external {},
-      ?AllowPartialItemMove: logic = external {}
-    )<transacts>: ?failure_reason
+      ?AllowMergeItems: logic = external {})<transacts>: result(false,
+      []add_item_error
+    )
 
+    @available { MinUploadedAtFNVersion := 3800 }
     # Returns a failure reason if the provided item is not present or cannot be removed.
-    CanRemoveItem<final><native><public>(Item: entity)<transacts>: ?failure_reason
+    CanRemoveItem<final><native><public>(Item: entity)<transacts>: result(false, []remove_item_error)
 
     EquipItemEvent<native><final><public>: listenable(equip_item_result) = external {}
 
@@ -263,46 +261,13 @@ Itemization<public> := module {
     # Returns a list of items (of a specific type) within this inventory only.
     GetItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
 
+    @available { MinUploadedAtFNVersion := 3800 }
     # Removes items from the inventory. Fails if no items could be removed.
-    RemoveItem<native><final><public>(Item: entity)<transacts><decides>: void
+    RemoveItem<native><final><public>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
 
     RemoveItemEvent<native><final><public>: listenable(remove_item_result) = external {}
 
     UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
-
-    var<private> InventoryRuleList<native><public>: []inventory_rule_interface = external {}
-  }
-
-  @experimental
-  # Interface for inventory rules. Used for composable rules for inventories.
-  # NOTE: this part of the API is likely to change during Experimental.
-  inventory_rule_interface<native><public> := interface<unique><castable> {
-    CanAddItem<native_callable><public>(
-      InventoryComponent: inventory_component,
-      Item: entity,
-      ?AllowMergeItems: logic = external {},
-      ?AllowPartialItemMove: logic = external {}
-    ): ?failure_reason = external {}
-
-    CanMergeItem<native_callable><public>(
-      InventoryComponent: inventory_component,
-      Item: entity
-    ): ?failure_reason = external {}
-
-    CanRemoveItem<native_callable><public>(
-      InventoryComponent: inventory_component,
-      Item: entity
-    ): ?failure_reason = external {}
-
-    # Called after an inventory_rule_interface instance is added to an inventory.
-    OnRuleAdded<native_callable><public>(InventoryComponent: inventory_component): void = external {}
-  }
-
-  @experimental
-  inventory_with_priority<native><public> := class {
-    Inventory<native><public>: inventory_component
-
-    Priority<native><public>: float
   }
 
   @experimental
@@ -364,9 +329,11 @@ Itemization<public> := module {
     SetStackSize<final><native><public>(NewStackSize: int)<transacts>: void
 
     # Takes the specified amount of this item's stack, reducing this item's stack size in the process.
-    #  If amount is greater than the amount in the stack, the stack amount will be used instead.
-    #  Returns a clone of the item with a stack size equial to the amount it was able to take from the item.
-    Take<final><native><public>(Amount: int)<transacts><decides>: entity
+    #  If taking the exact (full) amount, the item itself should be returned instead.
+    #  There is no default implementation of Take i.e. by default, it will fail.
+    #  If you want to allow this, you must override Take and return an entity containing
+    #  a new item_component. See the online documentation for more details.
+    Take<native><public>(Amount: int)<transacts><decides>: entity
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to unequip this item.
@@ -409,7 +376,7 @@ Itemization<public> := module {
   @experimental
   remove_item_result<native><public> := class<epic_internal> {
     # Item whose stack size changed as a result of the transaction.
-    ModifiedItem<native><public>: ?entity
+    ModifiedItem<native><public>: ?tuple(entity, int)
 
     # Total stack count of items removed as a result of this transaction.
     RemovedAmount<native><public>: int
@@ -668,6 +635,28 @@ Temporary<public> := module {
         ?Thickness: float = external {},
         ?DrawDurationPolicy: debug_draw_duration_policy = external {},
         ?Duration: float = external {}
+      )<transacts>: void = external {}
+
+      # Draws a 3D text using the provided draw parameters.
+      DrawText<native><public>(
+        Text: string,
+        Position: (/Verse.org/SpatialMath:)vector3,
+        ?Color: color = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {},
+        ?FontScale: float = external {},
+        ?DrawDropShadow: logic = external {}
+      )<transacts>: void
+
+      # Draws a 3D text using the provided draw parameters.
+      DrawText<public>(
+        Text: string,
+        Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+        ?Color: color = external {},
+        ?DrawDurationPolicy: debug_draw_duration_policy = external {},
+        ?Duration: float = external {},
+        ?FontScale: float = external {},
+        ?DrawDropShadow: logic = external {}
       )<transacts>: void = external {}
 
       # Hide Debug Draw for the channel for all users.
@@ -1232,6 +1221,9 @@ Temporary<public> := module {
 
     # Button is a container of a single child widget slot and fires the OnClick event when the button is clicked.
     button<native><public> := class<final>(widget) {
+      @experimental
+      HighlightEvent<public>(): listenable(widget_message) = external {}
+
       # Subscribable event that fires when the button is clicked.
       OnClick<public>(): listenable(widget_message) = external {}
 
@@ -1240,6 +1232,9 @@ Temporary<public> := module {
 
       # The child widget of the button. Used only during initialization of the widget and not modified by SetSlot.
       Slot<native><public>: button_slot
+
+      @experimental
+      UnhighlightEvent<public>(): listenable(widget_message) = external {}
     }
 
     # Slot for button widget.

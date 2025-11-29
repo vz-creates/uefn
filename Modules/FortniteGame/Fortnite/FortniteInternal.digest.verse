@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-38.10-CL-47888945
+# Generated from build: ++Fortnite+Release-38.11-CL-48390828
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -14712,14 +14712,6 @@ Itemization<public> := module {
 
 Marketplace<public> := module {
   @experimental
-  # Epic provides a function telling developers whether their platform, territory & age allows purchase exhortations.
-  AllowDirectPromptsToPurchase<native><public>(Player: player)<reads><decides>: void
-
-  @experimental
-  # Informs if the player allows use of paid random items.
-  AllowPaidRandomItems<native><public>(Player: player)<reads><decides>: void
-
-  @experimental
   # Displays the Epic purchase UI to the player to purchase the `Offer`.
   # Returns true if an offer was purchased.
   BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
@@ -14771,6 +14763,15 @@ Marketplace<public> := module {
 
   @experimental
   MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+
+  @experimental
+  # Informs if usage of direct prompts to purchase is restricted for `Player`.
+  RestrictDirectPromptsToPurchase<native><public>(Player: player)<reads><decides>: void
+
+  @experimental
+  # Informs if usage of paid random items is restricted for `Player`
+  # due to platform, territory, age, or user configuration restrictions.
+  RestrictPaidRandomItems<native><public>(Player: player)<reads><decides>: void
 
   @experimental
   # Shows the Epic provided store front contain the specified `Offers`.

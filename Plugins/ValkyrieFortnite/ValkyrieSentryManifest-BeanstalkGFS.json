@@ -24,7 +24,7 @@
 		"0D03FD52BF174EAE89C8DE2A98BF53FE":
 		{
 			"FriendlyName": "MaterialValidationGroup",
-			"Version": 1
+			"Version": 3
 		},
 		"0DF73D61A23F47EAB72789E90C41499A":
 		{
@@ -144,6 +144,11 @@
 		"30D58BE395EA4282A6E3B159D8EBB06A":
 		{
 			"FriendlyName": "Dev-NaniteResearch",
+			"Version": 1
+		},
+		"34241896A0D2474A9C6D5BB39138FA26":
+		{
+			"FriendlyName": "JunoPlayerSpawning",
 			"Version": 1
 		},
 		"35F94A83E258406CA31809F59610247C":
@@ -476,6 +481,11 @@
 			"FriendlyName": "LiveLinkVer",
 			"Version": 1
 		},
+		"ABE64419FE7548ACA6809FA50F75D7AF":
+		{
+			"FriendlyName": "FortMontageLowerBodyBlendMetaDataVersion",
+			"Version": 1
+		},
 		"AF43A65D7FD3494798733E8ED9C1BB05":
 		{
 			"FriendlyName": "Dev-Anim",
@@ -654,7 +664,7 @@
 		"F3DF151C85A943078F5B9F5381209F33":
 		{
 			"FriendlyName": "BlueprintBaseEvaluatorVersion",
-			"Version": 1
+			"Version": 2
 		},
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
@@ -862,7 +872,6 @@
 			"/Script/CommonConversationGraph.ConversationGraphNode_Task",
 			"/Script/CommonConversationRuntime.ConversationDatabase",
 			"/Script/CommonUI.CommonButtonBase",
-			"/Script/CommonUIMVVMExtensions.ActionWidget",
 			"/Script/Constraints.ConstraintsActor",
 			"/Script/Constraints.ConstraintsManager",
 			"/Script/Constraints.TickableLookAtConstraint",
@@ -873,6 +882,7 @@
 			"/Script/Constraints.TransformableComponentHandle",
 			"/Script/ControlRig.AdditiveControlRig",
 			"/Script/ControlRig.ControlRig",
+			"/Script/ControlRig.ControlRigBlueprintGeneratedClass",
 			"/Script/ControlRig.ControlRigComponent",
 			"/Script/ControlRig.ControlRigNumericalValidationPass",
 			"/Script/ControlRig.ControlRigPoseAsset",
@@ -1347,6 +1357,7 @@
 			"/Script/FMInWorldKnobsRuntime.FabricUserOptionSaveComponent",
 			"/Script/FMInWorldKnobsRuntime.FMInWorldCableOptionsComponent",
 			"/Script/FMInWorldKnobsRuntime.FMInWorldKnobActorCopyComponent",
+			"/Script/FNE_UILibrary.ActionWidget",
 			"/Script/FNE_VolumeRuntime.FNE_VolumeComponent",
 			"/Script/Foliage.FoliageInstancedStaticMeshComponent",
 			"/Script/Foliage.FoliageType_InstancedStaticMesh",
@@ -1740,6 +1751,7 @@
 			"/Script/MovieScene.MovieSceneNodeGroupCollection",
 			"/Script/MovieScene.MovieScenePlayRateCurve",
 			"/Script/MovieScene.MovieSceneSectionChannelOverrideRegistry",
+			"/Script/MovieScene.MovieSceneShotMetaData",
 			"/Script/MovieScene.MovieSceneSpawnSection",
 			"/Script/MovieScene.MovieSceneSpawnTrack",
 			"/Script/MovieScene.MovieSceneSubSection",
@@ -1989,6 +2001,7 @@
 			"/Script/RigVMDeveloper.RigVMCollapseNode",
 			"/Script/RigVMDeveloper.RigVMCommentNode",
 			"/Script/RigVMDeveloper.RigVMDispatchNode",
+			"/Script/RigVMDeveloper.RigVMEdGraphNode",
 			"/Script/RigVMDeveloper.RigVMEnumNode",
 			"/Script/RigVMDeveloper.RigVMFunctionEntryNode",
 			"/Script/RigVMDeveloper.RigVMFunctionInterfaceNode",
@@ -2011,6 +2024,7 @@
 			"/Script/SimpleVotingOptionRuntime.VotingOptionViewModel",
 			"/Script/SmartObjectsModule.SmartObjectPersistentCollection",
 			"/Script/SoundLibrary.SoundLibraryComponent",
+			"/Script/TakeMovieScene.FrameHitchSceneDecoration",
 			"/Script/TakeMovieScene.MovieSceneTakeSection",
 			"/Script/TakeMovieScene.MovieSceneTakeTrack",
 			"/Script/TakeRecorderSources.TakeRecorderActorSource",
@@ -2913,6 +2927,7 @@
 			"/Script/ControlRigSpline.RigUnit_TangentFromControlRigSpline",
 			"/Script/ControlRigSpline.RigUnit_TransformFromControlRigSpline",
 			"/Script/ControlRigSpline.RigUnit_TransformFromControlRigSpline2",
+			"/Script/CoreUObject.Guid",
 			"/Script/CoreUObject.Int64Vector2",
 			"/Script/CoreUObject.LinearColor",
 			"/Script/CoreUObject.Matrix",
@@ -3024,6 +3039,8 @@
 			"/Script/Niagara.NiagaraSpawnInfo",
 			"/Script/Niagara.NiagaraSystemStateData",
 			"/Script/Niagara.NiagaraWildcard",
+			"/Script/OptimusCore.RigVMTrait_OptimusDeformer",
+			"/Script/OptimusCore.RigVMTrait_OptimusDeformerSettings",
 			"/Script/PBIK.PBIKBoneSetting",
 			"/Script/PBIK.PBIKDebug",
 			"/Script/PBIK.PBIKEffector",
@@ -3662,6 +3679,8 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Candor.Character_Candor",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CandyCharm.Character_CandyCharm",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CaneAxl.Character_CaneAxl",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CannyGulf_NPC.Character_CannyGulf_NPC",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CannyShim_NPC.Character_CannyShim_NPC",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CarbideWeld.Character_CarbideWeld",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CarmineFae.Character_CarmineFae",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_CarolinaChili.Character_CarolinaChili",

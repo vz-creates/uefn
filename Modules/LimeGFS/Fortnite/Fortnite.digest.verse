@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.00-CL-48444883
+# Generated from build: ++Fortnite+Release-39.10-CL-48971054
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -2585,6 +2585,12 @@ Devices<public> := module {
 
     # Is true when `Agent` is in the zone.
     IsInVolume<public>(Agent: agent)<transacts><decides>: void = external {}
+
+    # Signaled when a `creative_prop` enters the device volume.
+    PropEnterEvent<public>: listenable(creative_prop) = external {}
+
+    # Signaled when a `creative_prop` exits the device volume.
+    PropExitEvent<public>: listenable(creative_prop) = external {}
 
     # Sets the damage to be applied each tick within the volume. `Damage` is clamped between `1` and `500`.
     SetDamage<public>(Damage: int): void = external {}
@@ -7383,60 +7389,6 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a Driftboard to be configured and spawned.
   vehicle_spawner_driftboard_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
-  vehicle_spawner_drivable_reboot_van_device<public> := class<concrete><final>(
-    vehicle_spawner_device,
-    reboot_van_interface
-  ) {
-    # Disable the device.
-    DisableReboot<override>(): void = external {}
-
-    # Enable the device.
-    EnableReboot<override>(): void = external {}
-
-    # Succeeds if the device is enabled, fails if it's disabled.
-    IsEnabledReboot<override>()<transacts><decides>: void = external {}
-
-    # Triggers when a player purchases a Reboot Card.
-    #  * `agent` is the player that purchased the Reboot Card.
-    RebootCardPurchaseEvent<override>: listenable(agent) = external {}
-
-    # Triggers when Reboot Van has finished rebooting a set of players.
-    #  * `agent`is the player that started the reboot.
-    RebootEvent<override>: listenable(agent) = external {}
-
-    # Triggers when Reboot Van has finished recharging.
-    #  * `agent` is the last interacting player.
-    RechargeCompleteEvent<override>: listenable(?agent) = external {}
-
-    # Triggers when Reboot Van has finished reviving a player from DBNO.
-    #  * `agent` is the player that was just revived.
-    ReviveCompleteEvent<public>: listenable(agent) = external {}
-
-    # Determines if players can purchase an eliminated player's reboot card.
-    var CanPurchaseRebootCard<override>: logic = external {}
-
-    # Multiplier on the decay rate of reboot progress. Clamped between `0.1` and `2.0`.
-    #  * Only used if `RebootProgressDecay` is set to `Custom Decay`.
-    var DecayRateMultiplier<override>: ?float = external {}
-
-    var InternalPurchaseRebootCardOptions<override>: reboot_card_purchase_options = external {}
-
-    # Purchase reboot card options.
-    #  * Only used if `CanPurchaseRebootCard` is `true`.
-    var PurchaseRebootCardOptions<override>: ?reboot_card_purchase_options = external {}
-
-    # How quickly reboot progress decays when nobody is interacting with the Reboot Van. Custom Decay - Set a custom multiplier on the decay rate. Instant Reset - Instantly reset progress to zero. Battle Royale - Use Battle Royale's decay rate.
-    var RebootProgressDecay<override>: reboot_progress_decay_behavior = external {}
-
-    # The remaining time (in seconds) on the recharge timer. Clamped between `0.0` and `3600.0`.
-    #  * If there is no active timer, getting returns `0.0`.
-    #  * If there is no active timer, setting does nothing.
-    var RechargeTimer<override>: float = external {}
-
-    # The length of the recharge timer in seconds, regardless of the timer's current state. Clamped between `0.0` and `3600.0`.
-    var RechargeTimerLength<override>: float = external {}
-  }
-
   # Specialized `vehicle_spawner_device` that allows a GetAway Car to be configured and spawned.
   vehicle_spawner_getaway_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -8708,10 +8660,10 @@ Itemization<public> := module {
     item_heavy_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
-    item_infantry_rifle_epic<public> := class<final><concrete>(entity) {}
+    (/Fortnite.com/Itemization/CH1S8Items:)item_infantry_rifle_epic<public> := class<final><concrete>(entity) {}
 
     @experimental
-    item_infantry_rifle_legendary<public> := class<final><concrete>(entity) {}
+    (/Fortnite.com/Itemization/CH1S8Items:)item_infantry_rifle_legendary<public> := class<final><concrete>(entity) {}
 
     @experimental
     item_jewel<public> := class<final><concrete>(entity) {}
@@ -9296,6 +9248,12 @@ Itemization<public> := module {
     item_enhanced_compact_smg_mythic<public> := class<final><concrete>(entity) {}
 
     @experimental
+    (/Fortnite.com/Itemization/CH6MS2Items:)item_infantry_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    (/Fortnite.com/Itemization/CH6MS2Items:)item_infantry_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
     item_suppressed_assault_rifle_common<public> := class<final><concrete>(entity) {}
 
     @experimental
@@ -9311,6 +9269,30 @@ Itemization<public> := module {
   # Module import path: /Fortnite.com/Itemization/CH7S1Items
   CH7S1Items<public> := module {
     using { /Verse.org/SceneGraph }
+    @experimental
+    item_arc_lightning_gun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_arc_lightning_gun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_brutus_twin_hammer_shotguns_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_deadeye_assault_rifle_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_deadeye_assault_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_deadeye_assault_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_deadeye_assault_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_deadeye_assault_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
     @experimental
     (/Fortnite.com/Itemization/CH7S1Items:)item_dual_micro_smgs_common<public> := class<final><concrete>(entity) {}
 
@@ -9342,6 +9324,51 @@ Itemization<public> := module {
     item_enforcer_ar_uncommon<public> := class<final><concrete>(entity) {}
 
     @experimental
+    (/Fortnite.com/Itemization/CH7S1Items:)item_grenade<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_holo_rush_smg_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_holo_rush_smg_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_holo_rush_smg_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_holo_rush_smg_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_holo_rush_smg_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_human_bills_arc_lightning_gun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_hushs_deadeye_assault_rifle_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_iron_pump_shotgun_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_iron_pump_shotgun_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_iron_pump_shotgun_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_iron_pump_shotgun_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_iron_pump_shotgun_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_pinpoint_iron_pump_shotgun_mythic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_six_shooter_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
     (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_common<public> := class<final><concrete>(entity) {}
 
     @experimental
@@ -9358,6 +9385,39 @@ Itemization<public> := module {
 
     @experimental
     (/Fortnite.com/Itemization/CH7S1Items:)item_tactical_pistol_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_hammer_shotguns_common<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_hammer_shotguns_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_hammer_shotguns_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_hammer_shotguns_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_twin_hammer_shotguns_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vengeful_sniper_rifle_epic<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vengeful_sniper_rifle_legendary<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vengeful_sniper_rifle_rare<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_vengeful_sniper_rifle_uncommon<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_wingsuit<public> := class<final><concrete>(entity) {}
+
+    @experimental
+    item_yule_troopers_holo_rush_smg_mythic<public> := class<final><concrete>(entity) {}
   }
 
   # Module import path: /Fortnite.com/Itemization/CreativeItems
@@ -12177,42 +12237,42 @@ Marketplace<public> := module {
   BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Consumes a consumable `product`.
+  # Consumes a consumable `entitlement`.
   # Fails if:
-  #  * The `product` is not consumable.
-  #  * The `Player` does not own requested `Count` of `product`.
-  ConsumeProduct<native><public>(
+  #  * The `entitlement` is not consumable.
+  #  * The `Player` does not own requested `Count` of `entitlement`.
+  ConsumeEntitlement<native><public>(
     Player: player,
-    product_type: concrete_subtype(product),
+    entitlement_type: concrete_subtype(entitlement),
     ?Count: int = external {}
   )<suspends>: logic
 
-  GetPriceVBucks<native><public>(P: price_vbucks): float
-
-  # Used to listen for purchase change events during a game session.
-  # Runtime error if `product` is used directly.
-  GetProductsChangedEvent<native><public>(
+  # Used to listen for entitlement change events during a game session.
+  # Runtime error if `entitlement` is used directly.
+  GetEntitlementsChangedEvent<native><public>(
     Player: player,
-    product_type: subtype(product)): listenable(tuple(player,
-    []product_change(product_type)
+    entitlement_type: subtype(entitlement)): listenable(tuple(player,
+    []entitlement_change(entitlement_type)
   ))
 
-  # Get all available `product`s for `Player`, along with the number of those `product`s.
-  # This includes finding `product`s of derived types.
-  # Calling GetPurchasedProducts(Player:player, product) will suspend forever.
-  GetPurchasedProducts<native><public>(
+  GetPriceVBucks<native><public>(P: price_vbucks): float
+
+  # Get all available `entitlement`s for `Player`, along with the number of those `entitlement`s.
+  # This includes finding `entitlement`s of derived types.
+  # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
+  GetPurchasedEntitlements<native><public>(
     Player: player,
-    product_type: subtype(product))<suspends>: []tuple(product_type,
+    entitlement_type: subtype(entitlement))<suspends>: []tuple(entitlement_type,
     int
   )
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Grant an item directly to `Player`.
-  # This function does not gate granting items based on ProductDisclosures.
-  # Items are always granted assuming they match the MaxCount requirement.
-  GrantProduct<native><public>(
+  # Grant an entitlement directly to `Player`.
+  # This function does not gate granting entitlements based on EntitlementDisclosures.
+  # Entitlements are always granted assuming they match the MaxCount requirement.
+  GrantEntitlement<native><public>(
     Player: player,
-    product_type: concrete_subtype(product),
+    entitlement_type: concrete_subtype(entitlement),
     ?Count: int = external {}
   )<suspends>: logic
 
@@ -12233,7 +12293,47 @@ Marketplace<public> := module {
     Offers<native><public>: []tuple(offer, int) = external {}
   }
 
-  # Offers are used to sell products to players. See `product_offer` and `bundle_offer` classes for more information.
+  # An entitlement that is tracked by the commerce system.
+  #
+  #  * A player may only have one `entitlement` if the entitlement is not consumable.
+  #  * A player may have `MaxCount` of a consumable entitlement.
+  #  * Your derived type must be <concrete> to be used by the purchase system.
+  #  * If the entitlement you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
+  entitlement<native><public> := class<castable>(has_icon, has_description) {
+    ConsequentialToGameplay<native><public>: logic = external {}
+
+    Consumable<native><public>: logic = external {}
+
+    MaxCount<native><public>: int = external {}
+
+    PaidArea<native><public>: logic = external {}
+
+    PaidRandomItem<native><public>: logic = external {}
+  }
+
+  # Entitlements that have changed in quantity.
+  # This will also include entitlement changes triggered by moderation, refunds and other commerce operations.
+  entitlement_change<native><public>(t: type) := class<internal> {
+    # Change to the original quantity of entitlement.
+    Change<native><public>: int
+
+    # Entitlement that has changed in quantity.
+    Entitlement<native><public>: t
+
+    (/Fortnite.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>: ?type { _(): tuple(t) } = external {}
+
+    # Total quantity of the entitlement now owned.
+    Quantity<native><public>: int
+  }
+
+  # An `entitlement_offer` allows an individual `entitlement` to be purchased.
+  entitlement_offer<native><public> := class<castable>(offer) {
+    @available { MinUploadedAtFNVersion := 3800 }
+    @editable
+    EntitlementType<native><public>: concrete_subtype(entitlement)
+  }
+
+  # Offers are used to sell entitlements to players. See `entitlement_offer` and `bundle_offer` classes for more information.
   offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
     # Override this method to restrict availability of an offer in certain regions and minimum ages.
     #
@@ -12284,46 +12384,6 @@ Marketplace<public> := module {
   price_dimension<native><public> := class<computes><abstract><epic_internal> {}
 
   price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
-
-  # A product that is tracked by the commerce system.
-  #
-  #  * A player may only have one `product` if the product is not consumable.
-  #  * A player may have `MaxCount` of a consumable product.
-  #  * Your derived type must be <concrete> to be used by the purchase system.
-  #  * If the item you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
-  product<native><public> := class<castable>(has_icon, has_description) {
-    ConsequentialToGameplay<native><public>: logic = external {}
-
-    Consumable<native><public>: logic = external {}
-
-    MaxCount<native><public>: int = external {}
-
-    PaidArea<native><public>: logic = external {}
-
-    PaidRandomItem<native><public>: logic = external {}
-  }
-
-  # Products that have changed in quantity.
-  # This will also include product changes triggered by moderation, refunds and other commerce operations.
-  product_change<native><public>(t: type) := class<internal> {
-    # Change to the original quantity of product.
-    Change<native><public>: int
-
-    (/Fortnite.com/Marketplace/product_change:)Marketplace_product_change_Variance<private>: ?type { _(): tuple(t) } = external {}
-
-    # Product that has changed in quantity.
-    Product<native><public>: t
-
-    # Total quantity of the product now owned.
-    Quantity<native><public>: int
-  }
-
-  # A `product_offer` allows an individual product to be purchased.
-  product_offer<native><public> := class<castable>(offer) {
-    @available { MinUploadedAtFNVersion := 3800 }
-    @editable
-    ProductType<native><public>: concrete_subtype(product)
-  }
 }
 
 # Module import path: /Fortnite.com/Playspaces
@@ -12672,5 +12732,14 @@ Vehicles<public> := module {
       Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<transacts><decides>: void
+
+    # The maximum boost capacity of the vehicle. If the vehicle uses boost, this value will be between 1.0 and Inf. Otherwise, this value will be false.
+    var<private> BoostCapacity<public>: ?float
+
+    # The boost state of the vehicle. If the vehicle uses boost, this value will be between 0.0 and `BoostCapacity`. Otherwise, this value will be false.
+    var<private> BoostRemaining<public>: ?float
+
+    # The current speed of the vehicle in km/hr.
+    var<private> Speed<public>: float
   }
 }

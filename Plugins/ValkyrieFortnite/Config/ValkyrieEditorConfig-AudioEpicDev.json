@@ -65,7 +65,8 @@
 				"AllowList": [
 					"bEnableSubmixSends",
 					"Priority",
-					"SoundSubmixSends"
+					"SoundSubmixSends",
+					"SoundSubmixObject"
 				]
 			},
 			{
@@ -95,11 +96,22 @@
 			},
 			{
 				"Type": "/Script/Engine.SoundCue",
-				"AllowList": [ "ConcurrencySet" ]
+				"AllowList": [ "ConcurrencySet"]
 			},
 			{
 				"Type": "/Script/Engine.SoundWave",
-				"AllowList": [ "NumChannels", "SampleRate", "ImportedSampleRate", "Duration", "TotalSamples", "ModulationSettings", "LoadingBehavior", "bMature", "bManualWordWrap", "bSingleLine", "SubtitlePriority", "Subtitles", "Comment" ]
+				"AllowList": [ "NumChannels", 
+								"SampleRate", 
+								"ImportedSampleRate", 
+								"Duration", 
+								"TotalSamples", 
+								"ModulationSettings", 
+								"LoadingBehavior", 
+								"bMature", "bManualWordWrap", 
+								"bSingleLine", "SubtitlePriority", 
+								"Subtitles", 
+								"Comment"	
+				]
 			}
 		]
 	}

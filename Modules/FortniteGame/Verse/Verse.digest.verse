@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.00-CL-48444883
+# Generated from build: ++Fortnite+Release-39.10-CL-48971054
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -570,6 +570,7 @@ SceneGraph<public> := module {
   # The order of the returned components is unspecified and subject to change.
   (InEntity: entity).FindDescendantComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
 
+  using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` of type `entity_type`.
   # The order of the returned entities is unspecified and subject to change.
@@ -811,15 +812,6 @@ SceneGraph<public> := module {
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
   }
 
-  using { /Verse.org/Native }
-  @available { MinUploadedAtFNVersion := 3800 }
-  # Module import path: /Verse.org/SceneGraph/UI
-  (/Verse.org/SceneGraph:)UI<public> := module {
-    using { /Verse.org/Native }
-    @import_as("/Script/LocalizableMessage.FLocalizableMessage")
-    localizable_message_internal<native><epic_internal> := struct<concrete> {}
-  }
-
   using { /Verse.org/Simulation }
   # An interactable component with a composable feature set.
   basic_interactable_component<native><public> := class(interactable_component) {
@@ -1001,7 +993,7 @@ SceneGraph<public> := module {
   #        OnEndSimulation
   #      OnRemovingFromScene
   # ==============================================================================
-  component<native><public> := class<abstract><unique><castable><final_super_base>(scene_event_participant) {
+  component<native><public> := class<abstract><unique><castable><final_super_base> {
     # The parent entity of this component.
     #   * Components must have a parent entity pointer provided when being constructed.
     #   * Components cannot be moved between parents.
@@ -1049,8 +1041,9 @@ SceneGraph<public> := module {
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
 
+    @experimental
     # Send a scene event to this component.  Return true to consume the event and halt propogation.
-    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
+    SendDown<native><native_callable><public>(SceneEvent: scene_event): logic
 
     # Set callbacks to `TickEvents.PrePhysics` and `TickEvents.PostPhysics` to receive per-frame updates before and after physics is updated on your object.
     var<private> TickEvents<protected>: tick_events = external {}
@@ -1083,7 +1076,7 @@ SceneGraph<public> := module {
   #   that you do not add code directly to the entity class, and instead keep logic in components. Keeping logic and data in
   #   components allows you to restructure your prefabs throughout production of your experience, without needing to massively
   #   refactor your class structure.
-  entity<native><public> := class<concrete><unique><transacts><castable>(scene_event_participant) {
+  entity<native><public> := class<concrete><unique><transacts><castable> {
     # Adds the provided components to the entity.
     #   * If a component is not allowed to be added to this entity it is skipped.
     #   Note: When called during the AddedToScene or BeginSimulation phase, it will make sure the added component has achieved the corresponding phase.
@@ -1123,9 +1116,11 @@ SceneGraph<public> := module {
     #   * Entity can be added back later by using `NewParent.AddEntities`.
     RemoveFromParent<native><final><public>(): void
 
+    @experimental
     # Send a scene event to this entity and then down the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendDown will be invoked on each child entity.  Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
-    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
+    SendDown<native><native_callable><public>(SceneEvent: scene_event): logic
 
+    @experimental
     # Send a scene event to this entity and then up the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendUp will be invoked on this entity's parent. Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
     SendUp<native><native_callable><public>(SceneEvent: scene_event): logic
   }
@@ -1409,14 +1404,9 @@ SceneGraph<public> := module {
     var SourceWidth<public>: float = external {}
   }
 
+  @experimental
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
-
-  # Capable of handling scene events.
-  scene_event_participant<public> := interface<epic_internal> {
-    # Handle a scene event. Return true if the scene event is consumed by any participant and that propogation should halt.
-    SendDown<native_callable><public>(SceneEvent: scene_event): logic
-  }
 
   sound_component<native><public> := class<abstract><final_super><epic_internal>(component, enableable) {
     # Disable the sound component.

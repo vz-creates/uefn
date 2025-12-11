@@ -5,7 +5,8 @@
 	"_comment_AdditionalFeatures": "Additional configs to load at end",
 	"AdditionalFeatures": {
 		"+": [
-			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioEpicDev.json"
+			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioEpicDev.json",
+			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-MetaSoundEpicDev.json"
 		]
 	},
 
@@ -1289,7 +1290,7 @@
 				]
 			},
 			{
-				"Type": "/Script/CommonUIMVVMExtensions.ActionWidget",
+				"Type": "/Script/FNE_UILibrary.ActionWidget",
 				"AllowList": [ "EnhancedInputExtension", "EnhancedInputObject", "EnhancedInputAction" ]
 			},
 			{

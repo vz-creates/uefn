@@ -319,7 +319,7 @@
 			"/Script/UMG.UniformGridPanel",
 			"/Script/UMG.WidgetSwitcher",
 			"/Script/UMG.WrapBox",
-			"/Script/CommonUIMVVMExtensions.ActionWidget",
+			"/Script/FNE_UILibrary.ActionWidget",
 			"/Game/Valkyrie/UMG/UEFN_Button_Loud.UEFN_Button_Loud",
 			"/Game/Valkyrie/UMG/UEFN_Button_Quiet.UEFN_Button_Quiet",
 			"/Game/Valkyrie/UMG/UEFN_Button_Regular.UEFN_Button_Regular",
@@ -876,7 +876,7 @@
 			"/Script/CinematicCamera.CineCameraActor":							{ "Visible": true },
 			"/Script/CinematicCamera.CineCameraComponent":						{ "Visible": true },
 			"/Script/CommonUI.CommonButtonBase":								{  },
-			"/Script/CommonUIMVVMExtensions.ActionWidget":						{ "Visible": true },
+			"/Script/FNE_UILibrary.ActionWidget":								{ "Visible": true },
 			"/Script/Constraints.ConstraintsActor":								{  },
 			"/Script/Constraints.ConstraintsManager":							{  },
 			"/Script/Constraints.TickableLookAtConstraint":						{  },
@@ -890,6 +890,7 @@
 			"/Script/ControlRig.ConstraintParent":								{  },
 			"/Script/ControlRig.ControlRig":									{ "Visible": true },
 			"/Script/ControlRig.ModularRig":									{ "Visible": true },
+			"/Script/ControlRig.ControlRigBlueprintGeneratedClass":				{ "Visible": true },
 			"/Script/ControlRig.ControlRigComponent":							{ "Visible": true },
 			"/Script/ControlRig.ControlRigComponentMappedElement":				{  },
 			"/Script/ControlRig.ControlRigExecuteContext":						{  },
@@ -988,6 +989,8 @@
 			"/Script/ControlRigEditor.AIESelectionSets":						{  },
 			"/Script/OptimusCore.OptimusDeformer":                              { "Visible": true },
 			"/Script/OptimusCore.OptimusDeformerInstanceSettings":				{  },
+			"/Script/OptimusCore.RigVMTrait_OptimusDeformer":					{  },
+			"/Script/OptimusCore.RigVMTrait_OptimusDeformerSettings":			{  },
 			"/Script/IKRig.IKRigSolver":										{  },
 			"/Script/IKRig.IKRig_BodyMoverEffector":							{  },
 			"/Script/IKRig.IKRig_BodyMover":									{  },
@@ -1059,6 +1062,7 @@
 			"/Script/CoreUObject.Vector3f":										{  },
 			"/Script/CoreUObject.Vector4f":										{  },
 			"/Script/CoreUObject.Vector2D":										{  },
+			"/Script/CoreUObject.Guid":											{  },
 			"/Script/CrowdVolume.CrowdSpawner":									{  },
 			"/Script/CurveEditor.CurveEditorBakeFilter":						{ "Visible": true },
 			"/Script/CurveEditor.CurveEditorEulerFilter":						{ "Visible": true },
@@ -1795,6 +1799,7 @@
 			"/Script/MovieScene.MovieScenePlayRateCurve":						{ "Visible": true },
 			"/Script/MovieScene.MovieSceneTimeWarpCurve":						{ "Visible": true },
 			"/Script/MovieScene.MovieSceneTimeWarpDecoration":                  {  },
+			"/Script/MovieScene.MovieSceneShotMetaData" :						{ },
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEventTrack": { "Visible": true },
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEventSection": { "Visible": true },
 			"/Script/MovieSceneGameplayEventTrack.MovieSceneGameplayEvent": { "Visible": true },
@@ -2921,11 +2926,13 @@
 			"/Script/RigVMDeveloper.RigVMLink":									{  },
 			"/Script/RigVMDeveloper.RigVMNode":									{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/RigVMDeveloper.RigVMPin":									{  },
+			"/Script/RigVMDeveloper.RigVMEdGraphNode":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/ShielderGameplayRuntime.ShielderCollisionHelperComponent":	{  },
 			"/Script/SlateCore.Geometry":										{  },
 			"/Script/SlateCore.SlateBrush":										{  },
 			"/Script/SmartObjectsModule.SmartObjectCollection":					{  },
 			"/Script/SmartObjectsModule.SmartObjectPersistentCollection":		{  },
+			"/Script/TakeMovieScene.FrameHitchSceneDecoration" :				{  },
 			"/Script/TakeMovieScene.MovieSceneTakeSection":						{  },
 			"/Script/TakeMovieScene.MovieSceneTakeTrack":						{ "Visible": true },
 			"/Script/TakesCore.ActorRecorderPropertyMap":                       {  },
@@ -3476,7 +3483,8 @@
 					"RigDependencyGraphView",
 					"ModularRigModel",
 					"RigModuleAssetBrowser",
-					"Event Queue"
+					"Event Queue",
+					"AdvancedPreviewTab"
 				]
 			},
 			"Global": {
@@ -3915,7 +3923,8 @@
 			"LEGO_BrickEditor",
 			"LEGO_ScotchBonnet",
 			"aurora_alpha1",
-			"brightcoil_research"
+			"brightcoil_research",
+			"HotSauce_Template02"
 		]
 	},
 	"PropertyEditorClassPermissionList": {
@@ -3983,7 +3992,7 @@
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshComponent",
-				"AllowList": [ "SkeletalMesh", "AnimationData", "SkeletalMeshAsset", "AnimationMode", "AnimClass" ]
+				"AllowList": [ "SkeletalMesh", "AnimationData", "SkeletalMeshAsset", "AnimationMode", "AnimClass", "bOverrideDefaultAnimatingRig", "DefaultAnimatingRigOverride" ]
 			},
 			{
 				"Type": "/Script/Engine.StaticMeshComponent",
@@ -4286,7 +4295,7 @@
 				"AllowList": [ "InnerSlotPadding", "WrapSize", "bExplicitWrapSize", "HorizontalAlignment", "Orientation" ]
 			},
 			{
-				"Type": "/Script/CommonUIMVVMExtensions.ActionWidget",
+				"Type": "/Script/FNE_UILibrary.ActionWidget",
 				"AllowList": [ "EnhancedInputAction" ]
 			},
 			{
@@ -4638,7 +4647,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement" ]
 			},
 			{
 				"Type": "/Script/CinematicCamera.CineCameraActor",
@@ -4986,11 +4995,11 @@
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Perception.CharacterModifier_Perception_C",
-				"AllowList": [ "bOverrideSightSettings", "SightPerceptionSettings", "bOverrideHearingSettings", "HearingPerceptionSettings" ]
+				"AllowList": [ "bOverrideSightSettings", "bEnableSight", "SightPerceptionSettings", "bOverrideHearingSettings", "bEnableHearing", "HearingPerceptionSettings", "bOverrideTouchSettings", "bEnableTouch", "TouchPerceptionSettings"  ]
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_GuardPerception.CharacterModifier_GuardPerception_C",
-				"AllowList": [ "bOverrideSightSettings", "SightPerceptionSettings", "bOverrideHearingSettings", "HearingPerceptionSettings" ]
+				"AllowList": [ "bOverrideSightSettings", "bEnableSight", "SightPerceptionSettings", "bOverrideHearingSettings", "bEnableHearing", "HearingPerceptionSettings", "bOverrideTouchSettings", "bEnableTouch", "TouchPerceptionSettings" ]
 			},
 			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterModifier_Team",

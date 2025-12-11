@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.00-CL-48444883
+# Generated from build: ++Fortnite+Release-39.10-CL-48971054
 #################################################
 
 AINavigation<public> := module {
@@ -432,6 +432,31 @@ EntityTestSuite<public> := module {
 }
 
 Itemization<public> := module {
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  # Returns a failure reason (such as being full) if the provided item entity cannot be added.
+  (Inventory: inventory_component).CanAddItem<native><public>(
+    Item: entity,
+    ?AllowMergeItems: logic = external {})<transacts>: result(false,
+    []add_item_error
+  )
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  # Returns a failure reason if the provided item is not present or cannot be removed.
+  (Inventory: inventory_component).CanRemoveItem<native><public>(Item: entity)<transacts>: result(
+    false,
+    []remove_item_error
+  )
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  (Item: item_component).CanEquip<native><public>()<transacts>: result(false, []equip_item_error)
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  (Item: item_component).CanUnequip<native><public>()<transacts>: result(false, []unequip_item_error)
+
   DefaultText<localizes><epic_internal>: message = external {}
 
   @experimental
@@ -448,11 +473,13 @@ Itemization<public> := module {
   # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
   # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
   add_item_query_event<native><public> := class<epic_internal>(scene_event) {
+    AddError<public>(Error: add_item_error): void = external {}
+
     Inventory<native><public>: inventory_component
 
     Item<native><public>: item_component
 
-    var Errors<native><public>: []add_item_error = external {}
+    var<private> Errors<native><public>: []add_item_error = external {}
   }
 
   @experimental
@@ -500,6 +527,34 @@ Itemization<public> := module {
   }
 
   @experimental
+  change_item_component_event<epic_internal> := class(scene_event) {
+    Entity<public>: entity
+
+    ItemComponent<public>: ?item_component = external {}
+  }
+
+  @experimental
+  change_item_details_component_event<epic_internal> := class(scene_event) {
+    Entity<public>: entity
+
+    ItemDetailsComponent<public>: ?item_details_component = external {}
+  }
+
+  @experimental
+  change_item_icon_component_event<epic_internal> := class(scene_event) {
+    Entity<public>: entity
+
+    ItemIconComponent<public>: ?item_icon_component = external {}
+  }
+
+  @experimental
+  change_item_rarity_component_event<epic_internal> := class(scene_event) {
+    Entity<public>: entity
+
+    ItemRarityComponent<public>: ?item_rarity_component = external {}
+  }
+
+  @experimental
   change_items_slot_result<native><epic_internal> := struct<epic_internal> {
     Inventory<native><public>: inventory_component
 
@@ -542,19 +597,15 @@ Itemization<public> := module {
 
   @experimental
   equip_item_query_event<native><public> := class(scene_event) {
-    Inventory<native><public>: inventory_component
+    AddError<public>(Error: equip_item_error): void = external {}
 
     Item<native><public>: item_component
-
-    Reject<public>(Error: equip_item_error): void = external {}
 
     var<private> Errors<native><public>: []equip_item_error = external {}
   }
 
   @experimental
   equip_item_result<native><public> := class<epic_internal> {
-    Inventory<native><public>: inventory_component
-
     Item<native><public>: entity
   }
 
@@ -581,7 +632,7 @@ Itemization<public> := module {
   }
 
   @experimental
-  invalid_item_failure_reason<native><public> := class<final><reads>(failure_reason) {}
+  invalid_item_failure_reason<epic_internal> := class<final><reads>(failure_reason) {}
 
   @experimental
   # Inventory components hold items. An entity with an inventory component can be considered to have an inventory.
@@ -603,18 +654,6 @@ Itemization<public> := module {
     # Adds the provided inventory_rule_interface instance to this inventory's rule list if not already present.
     # NOTE: this part of the API is likely to change during Experimental.
     AddRule<native><final><epic_internal>(Rule: inventory_rule_interface)<transacts><decides>: cancelable
-
-    @available { MinUploadedAtFNVersion := 3800 }
-    # Returns a failure reason (such as being full) if the provided item entity cannot be added.
-    CanAddItem<final><native><public>(
-      Item: entity,
-      ?AllowMergeItems: logic = external {})<transacts>: result(false,
-      []add_item_error
-    )
-
-    @available { MinUploadedAtFNVersion := 3800 }
-    # Returns a failure reason if the provided item is not present or cannot be removed.
-    CanRemoveItem<final><native><public>(Item: entity)<transacts>: result(false, []remove_item_error)
 
     EquipItemEvent<native><final><public>: listenable(equip_item_result) = external {}
 
@@ -693,7 +732,7 @@ Itemization<public> := module {
     RemoveInventory<native><final><epic_internal>(Inventory: inventory_component)<transacts><decides>: void
 
     @available { MinUploadedAtFNVersion := 3800 }
-    # Removes items from the inventory. Fails if no items could be removed.
+    # Removes an item from this inventory or its descendent inventories. Fails if the item could not be removed.
     RemoveItem<native><final><public>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
 
     RemoveItemEvent<native><final><public>: listenable(remove_item_result) = external {}
@@ -705,16 +744,10 @@ Itemization<public> := module {
     UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
 
     @replicated("")
-    var<private> EnableItemStacking<native><epic_internal>: logic = external {}
-
-    @replicated("")
     var<private> InventoryDescription<native><epic_internal>: message = external {}
 
     @replicated("")
     var<private> InventoryDisplayName<native><epic_internal>: message = external {}
-
-    @replicated("RepNotify")
-    var<private> InventoryMaxStackSizeOverride<native><epic_internal>: int = external {}
 
     @replicated("")
     var<private> InventoryName<native><epic_internal>: string = external {}
@@ -905,13 +938,14 @@ Itemization<public> := module {
 
     ChangeStackSizeEvent<native><final><public>: listenable(change_stack_size_result) = external {}
 
-    # Removes the item from its inventory and places it in the simulation world. Works on orphaned items i.e. outside the world or any inventory. Fails if the item is already a pickup.
+    # Removes the item from its inventory and places it in the simulation world. Works on orphaned items i.e. outside the world or any inventory.
+    #  Fails if the item is already a pickup. The transform of the item will not be altered except to unparent it from any inventory.
     Drop<native><public>()<transacts><decides>: void
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to equip this item within the inventory it is currently in.
     # Fails if not in an inventory or if equip_item_query_event contains any errors after querying.
-    Equip<final><native><public>()<transacts>: result(void, []equip_item_error)
+    Equip<final><native><public>()<transacts>: result(false, []equip_item_error)
 
     # Returns the inventory_component this item currently resides in. Fails if it cannot find a valid parent inventory.
     GetParentInventory<native><final><public>()<reads><decides>: inventory_component
@@ -944,6 +978,10 @@ Itemization<public> := module {
     # List of item_component classes we can be merged with.
     MergeableItemComponentClasses<native><public>: []castable_subtype(item_component) = external {}
 
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
     OnInitializedInternal<native><override>(): void
 
     # Fails if this item is already in an inventory, or the inventory cannot accept the item.
@@ -955,26 +993,28 @@ Itemization<public> := module {
     # Sets the stack size of this item.
     SetStackSize<final><native><public>(NewStackSize: int)<transacts>: void
 
+    @experimental
     # Takes the specified amount of this item's stack, reducing this item's stack size in the process.
     #  If taking the exact (full) amount, the item itself should be returned instead.
     #  There is no default implementation of Take i.e. by default, it will fail.
     #  If you want to allow this, you must override Take and return an entity containing
-    #  a new item_component. See the online documentation for more details.
+    #  a new item_component. This new entity should not be in any inventory.
+    #  See the online documentation for more details.
     Take<native><public>(Amount: int)<transacts><decides>: entity
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to unequip this item.
     # Fails if not in an inventory, not currently equipped or if unequip_item_query_event contains any errors after querying.
-    Unequip<final><native><public>()<transacts>: result(void, []unequip_item_error)
+    Unequip<final><native><public>()<transacts>: result(false, []unequip_item_error)
 
     @replicated("")
     var<private> ItemDefinition<native><epic_internal>: ?item_definition_base = external {}
 
     # Maximum stack size for this item.
-    var<protected> MaxStackSize<native><public>: ?int = external {}
+    var<private> MaxStackSize<native><public>: ?int = external {}
 
     # Current stack size of this item.
-    var<protected> StackSize<native><public>: int = external {}
+    var<private> StackSize<native><public>: int = external {}
   }
 
   @experimental
@@ -984,7 +1024,9 @@ Itemization<public> := module {
   @experimental
   # Component that holds the details of an item.
   item_details_component<native><public> := class<final_super>(component, has_description) {
-    ChangeItemDetailsEvent<native><final><epic_internal>: listenable(tuple()) = external {}
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
 
     OnItemDetailsChanged<native><epic_internal>()<transacts>: void
 
@@ -997,7 +1039,15 @@ Itemization<public> := module {
 
   @experimental
   # Component that holds the icon for an item.
-  item_icon_component<native><public> := class<final_super>(component, has_icon) {}
+  item_icon_component<native><public> := class<final_super>(component, has_icon) {
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnInitialized<override>(): void = external {}
+
+    OnUninitializing<override>(): void = external {}
+  }
 
   @experimental
   item_limit_inventory_rule<native><epic_internal> := class(inventory_rule_interface) {
@@ -1031,23 +1081,14 @@ Itemization<public> := module {
   }
 
   @experimental
-  # item_rarity is used to classify and rank items.
-  item_rarity<native><epic_internal> := class<castable><concrete><unique><final> {
-    @editable
-    RarityColor<native><public>: color = external {}
-
-    @editable
-    RarityName<native><public>: string = external {}
-
-    @editable
-    RarityTier<native><public>: float = external {}
-  }
-
-  @experimental
   # Component that contains the rarity of an item.
-  item_rarity_component<native><final><epic_internal> := class<final_super>(component) {
+  item_rarity_component<native><epic_internal> := class<final_super>(component) {
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
     @editable
-    var<private> Rarity<native><public>: ?item_rarity
+    var Rarity<native><public>: rarity
   }
 
   @experimental
@@ -1194,6 +1235,13 @@ Itemization<public> := module {
   pose_modifier<native><epic_internal> := class<concrete><unique>(asset) {}
 
   @experimental
+  # Rarity may be used by gameplay and presentation systems to classify and rank things.
+  rarity<native><epic_internal> := class<castable><concrete><unique><final> {
+    @editable
+    Color<native><public>: color = external {}
+  }
+
+  @experimental
   remove_inventory_result<native><epic_internal> := class<epic_internal> {
     Inventory<native><public>: inventory_component
 
@@ -1205,15 +1253,20 @@ Itemization<public> := module {
 
   @experimental
   remove_item_query_event<native><public> := class<epic_internal>(scene_event) {
+    AddError<public>(Error: remove_item_error): void = external {}
+
     Inventory<native><public>: inventory_component
 
     Item<native><public>: item_component
 
-    var Errors<native><public>: []remove_item_error = external {}
+    var<private> Errors<native><public>: []remove_item_error = external {}
   }
 
   @experimental
   remove_item_result<native><public> := class<epic_internal> {
+    # The inventory which the item was removed from.
+    Inventory<native><public>: inventory_component
+
     # Item whose stack size changed as a result of the transaction.
     ModifiedItem<native><public>: ?tuple(entity, int)
 
@@ -1229,19 +1282,15 @@ Itemization<public> := module {
 
   @experimental
   unequip_item_query_event<native><public> := class(scene_event) {
-    Inventory<native><public>: inventory_component
+    AddError<public>(Error: unequip_item_error): void = external {}
 
     Item<native><public>: item_component
-
-    Reject<public>(Error: unequip_item_error): void = external {}
 
     var<private> Errors<native><public>: []unequip_item_error = external {}
   }
 
   @experimental
   unequip_item_result<native><public> := class<epic_internal> {
-    Inventory<native><public>: inventory_component
-
     Item<native><public>: entity
   }
 }
@@ -2127,14 +2176,18 @@ Temporary<public> := module {
       ReportTestFailed<native><epic_internal>(
         Message: string,
         ?Category: string = external {},
-        ?SubCategory: string = external {}
+        ?SubCategory: string = external {},
+        ?StartTimeSec: float = external {},
+        ?DurationSec: float = external {}
       ): void
 
       # Report a test result of `Passed`. `Category` and `SubCategory` are used to calculate test result stats as part of printing the summary.
       ReportTestPassed<native><epic_internal>(
         Message: string,
         ?Category: string = external {},
-        ?SubCategory: string = external {}
+        ?SubCategory: string = external {},
+        ?StartTimeSec: float = external {},
+        ?DurationSec: float = external {}
       ): void
 
       # Report a test result of `Result`. `Category` and `SubCategory` are used to calculate test result stats as part of printing the summary.
@@ -2142,14 +2195,18 @@ Temporary<public> := module {
         Message: string,
         Result: test_result,
         ?Category: string = external {},
-        ?SubCategory: string = external {}
+        ?SubCategory: string = external {},
+        ?StartTimeSec: float = external {},
+        ?DurationSec: float = external {}
       ): void
 
       # Report a test result of `Skipped`. `Category` and `SubCategory` are used to calculate test result stats as part of printing the summary.
       ReportTestSkipped<native><epic_internal>(
         Message: string,
         ?Category: string = external {},
-        ?SubCategory: string = external {}
+        ?SubCategory: string = external {},
+        ?StartTimeSec: float = external {},
+        ?DurationSec: float = external {}
       ): void
 
       # Resets test results.
@@ -2214,7 +2271,6 @@ Temporary<public> := module {
 
     # Button is a container of a single child widget slot and fires the OnClick event when the button is clicked.
     button<native><public> := class<final>(widget) {
-      @experimental
       HighlightEvent<public>(): listenable(widget_message) = external {}
 
       # Subscribable event that fires when the button is clicked.
@@ -2226,7 +2282,6 @@ Temporary<public> := module {
       # The child widget of the button. Used only during initialization of the widget and not modified by SetSlot.
       Slot<native><public>: button_slot
 
-      @experimental
       UnhighlightEvent<public>(): listenable(widget_message) = external {}
     }
 

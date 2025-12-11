@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.00-CL-48444883
+# Generated from build: ++Fortnite+Release-39.10-CL-48971054
 #################################################
 
 # Module import path: /Verse.org/Assets
@@ -1174,71 +1174,6 @@ SceneGraph<public> := module {
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
   }
 
-  # Module import path: /Verse.org/SceneGraph/SceneGraphDebugTools
-  SceneGraphDebugTools<public> := module {
-    @experimental
-    debug_button_widget<native><epic_internal> := class(debug_widget) {
-      @replicated("")
-      ButtonId<native><public>: string = external {}
-
-      ClickedEvent<native><public>: listenable(tuple()) = external {}
-
-      @replicated("")
-      var Text<native><public>: string = external {}
-    }
-
-    @experimental
-    debug_container_widget<native><epic_internal> := class<abstract>(debug_widget) {
-      var Children<public>: []debug_widget = external {}
-
-      @replicated("")
-      var _Children<native><public>: []debug_widget = external {}
-    }
-
-    @experimental
-    debug_text_widget<native><epic_internal> := class(debug_widget) {
-      @replicated("")
-      var Text<native><public>: string = external {}
-    }
-
-    @experimental
-    # Debug component for creating debug UI's'
-    debug_ui_component<native><epic_internal> := class<final_super>(component) {
-      OnBeginSimulationInternal<native><override>(): void
-
-      OnEndSimulationInternal<native><override>(): void
-
-      var Windows<public>: []debug_window_widget = external {}
-    }
-
-    @experimental
-    debug_widget<native><epic_internal> := class<abstract>(debug_widget_base) {}
-
-    using { /Verse.org/Native }
-    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
-    @import_as("/Script/SceneGraphDebugToolsRuntime.UVerseDebugWidgetBase")
-    @experimental
-    debug_widget_base<native><epic_internal> := class<abstract> {}
-
-    @experimental
-    debug_window_widget<native><epic_internal> := class(debug_container_widget) {
-      @replicated("")
-      UniqueName<native><public>: string
-
-      @replicated("")
-      var IsVisible<native><public>: logic = external {}
-
-      @replicated("")
-      var WindowHeight<native><public>: float = external {}
-
-      @replicated("")
-      var WindowTitle<native><public>: string
-
-      @replicated("")
-      var WindowWidth<native><public>: float = external {}
-    }
-  }
-
   using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3800 }
   # Module import path: /Verse.org/SceneGraph/UI
@@ -2250,7 +2185,7 @@ SceneGraph<public> := module {
   #        OnEndSimulation
   #      OnRemovingFromScene
   # ==============================================================================
-  component<native><public> := class<abstract><unique><castable><final_super_base>(diagnosable, scene_event_participant) {
+  component<native><public> := class<abstract><unique><castable><final_super_base>(diagnosable) {
     @allow_self_reference
     @experimental_always_overridden
     # The parent entity of this component.
@@ -2328,8 +2263,9 @@ SceneGraph<public> := module {
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
 
+    @experimental
     # Send a scene event to this component.  Return true to consume the event and halt propogation.
-    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
+    SendDown<native><native_callable><public>(SceneEvent: scene_event): logic
 
     # Set callbacks to `TickEvents.PrePhysics` and `TickEvents.PostPhysics` to receive per-frame updates before and after physics is updated on your object.
     var<private> TickEvents<protected>: tick_events = external {}
@@ -2453,11 +2389,7 @@ SceneGraph<public> := module {
   #   that you do not add code directly to the entity class, and instead keep logic in components. Keeping logic and data in
   #   components allows you to restructure your prefabs throughout production of your experience, without needing to massively
   #   refactor your class structure.
-  entity<native><public> := class<concrete><unique><transacts><castable>(
-    base_entity,
-    diagnosable,
-    scene_event_participant
-  ) {
+  entity<native><public> := class<concrete><unique><transacts><castable>(base_entity, diagnosable) {
     # Adds the provided components to the entity.
     #   * If a component is not allowed to be added to this entity it is skipped.
     #   Note: When called during the AddedToScene or BeginSimulation phase, it will make sure the added component has achieved the corresponding phase.
@@ -2499,9 +2431,11 @@ SceneGraph<public> := module {
     #   * Entity can be added back later by using `NewParent.AddEntities`.
     RemoveFromParent<native><final><public>(): void
 
+    @experimental
     # Send a scene event to this entity and then down the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendDown will be invoked on each child entity.  Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
-    SendDown<override><native><native_callable>(SceneEvent: scene_event): logic
+    SendDown<native><native_callable><public>(SceneEvent: scene_event): logic
 
+    @experimental
     # Send a scene event to this entity and then up the hierarchy. First, SendDown will be invoked on each component on this entity. Next, SendUp will be invoked on this entity's parent. Consuming the event at any point will halt propogation. Returns true if any participant consumed the event.
     SendUp<native><native_callable><public>(SceneEvent: scene_event): logic
   }
@@ -3239,6 +3173,7 @@ SceneGraph<public> := module {
     Stop<native><public>(): void
 
     @editable
+    @replicated("")
     # Controls if the `particle_system_component` should play the simulation automatically when added to the scene, or when enabled from a disabled state.
     var<private> AutoPlay<native><public>: logic = external {}
 
@@ -3427,14 +3362,9 @@ SceneGraph<public> := module {
   @hide_in_editor
   root_entity<native><epic_internal> := class<concrete><unique><transacts>(entity) {}
 
+  @experimental
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
-
-  # Capable of handling scene events.
-  scene_event_participant<public> := interface<epic_internal> {
-    # Handle a scene event. Return true if the scene event is consumed by any participant and that propogation should halt.
-    SendDown<native_callable><public>(SceneEvent: scene_event): logic
-  }
 
   @hide_in_editor
   simulation_entity<native><epic_internal> := class<concrete><unique><transacts>(root_entity) {}
@@ -3499,6 +3429,7 @@ SceneGraph<public> := module {
     Stop<native><public>(): void
 
     @editable
+    @replicated("")
     var<private> AutoPlay<native><public>: logic = external {}
 
     @editable

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.11-CL-49242330
+# Generated from build: ++Fortnite+Release-39.20-CL-49564179
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -2478,6 +2478,14 @@ Devices<public> := module {
 
     # Spawns the creature.
     Spawn<public>(): void = external {}
+
+    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device’s rotation.
+    # Returns the agent spawned or false if the device has reached its maximum spawn count.
+    # This function is ‘<suspends>’ because it takes time to load the creature before it can be returned.
+    SpawnAt<public>(
+      Position: (/Verse.org/SpatialMath:)vector3,
+      ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
+    )<suspends>: ?agent = external {}
 
     # Signaled when a creature is spawned.
     # Sends the `agent` creature who was spawned.
@@ -7389,6 +7397,60 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a Driftboard to be configured and spawned.
   vehicle_spawner_driftboard_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  vehicle_spawner_drivable_reboot_van_device<public> := class<concrete><final>(
+    vehicle_spawner_device,
+    reboot_van_interface
+  ) {
+    # Disable the device.
+    DisableReboot<override>(): void = external {}
+
+    # Enable the device.
+    EnableReboot<override>(): void = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabledReboot<override>()<transacts><decides>: void = external {}
+
+    # Triggers when a player purchases a Reboot Card.
+    #  * `agent` is the player that purchased the Reboot Card.
+    RebootCardPurchaseEvent<override>: listenable(agent) = external {}
+
+    # Triggers when Reboot Van has finished rebooting a set of players.
+    #  * `agent`is the player that started the reboot.
+    RebootEvent<override>: listenable(agent) = external {}
+
+    # Triggers when Reboot Van has finished recharging.
+    #  * `agent` is the last interacting player.
+    RechargeCompleteEvent<override>: listenable(?agent) = external {}
+
+    # Triggers when Reboot Van has finished reviving a player from DBNO.
+    #  * `agent` is the player that was just revived.
+    ReviveCompleteEvent<public>: listenable(agent) = external {}
+
+    # Determines if players can purchase an eliminated player's reboot card.
+    var CanPurchaseRebootCard<override>: logic = external {}
+
+    # Multiplier on the decay rate of reboot progress. Clamped between `0.1` and `2.0`.
+    #  * Only used if `RebootProgressDecay` is set to `Custom Decay`.
+    var DecayRateMultiplier<override>: ?float = external {}
+
+    var InternalPurchaseRebootCardOptions<override>: reboot_card_purchase_options = external {}
+
+    # Purchase reboot card options.
+    #  * Only used if `CanPurchaseRebootCard` is `true`.
+    var PurchaseRebootCardOptions<override>: ?reboot_card_purchase_options = external {}
+
+    # How quickly reboot progress decays when nobody is interacting with the Reboot Van. Custom Decay - Set a custom multiplier on the decay rate. Instant Reset - Instantly reset progress to zero. Battle Royale - Use Battle Royale's decay rate.
+    var RebootProgressDecay<override>: reboot_progress_decay_behavior = external {}
+
+    # The remaining time (in seconds) on the recharge timer. Clamped between `0.0` and `3600.0`.
+    #  * If there is no active timer, getting returns `0.0`.
+    #  * If there is no active timer, setting does nothing.
+    var RechargeTimer<override>: float = external {}
+
+    # The length of the recharge timer in seconds, regardless of the timer's current state. Clamped between `0.0` and `3600.0`.
+    var RechargeTimerLength<override>: float = external {}
+  }
+
   # Specialized `vehicle_spawner_device` that allows a GetAway Car to be configured and spawned.
   vehicle_spawner_getaway_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -12194,7 +12256,7 @@ Itemization<public> := module {
     # Returns the item in the specified slot, if there is one.
     GetItemInSlot<native><public>(Slot: int)<reads><decides>: item_component
 
-    # Returns the total number of slots in this inventory
+    # Returns the total number of slots in this inventory.
     GetMaxSlots<native><public>()<reads><decides>: int
   }
 

@@ -94,6 +94,7 @@
 			"/Script/ControlRig.ERBFVectorDistanceType",
 			"/Script/ControlRig.EControlRigAnimEasingType",
 			"/Script/ControlRig.ECRSimPointIntegrateType",
+			"/Script/ControlRig.EPoseAssetGetPoseForItemsMode",
 			"/Script/UMG.EUMGSequencePlayMode"
 		],
 		"AllowedStructs": [
@@ -876,6 +877,7 @@
 			"/Script/CinematicCamera.CineCameraActor":							{ "Visible": true },
 			"/Script/CinematicCamera.CineCameraComponent":						{ "Visible": true },
 			"/Script/CommonUI.CommonButtonBase":								{  },
+			"/Script/CosmeticsFrameworkArbitration.CosmeticApplicatorComponent":	{ },
 			"/Script/FNE_UILibrary.ActionWidget":								{ "Visible": true },
 			"/Script/Constraints.ConstraintsActor":								{  },
 			"/Script/Constraints.ConstraintsManager":							{  },
@@ -895,6 +897,7 @@
 			"/Script/ControlRig.ControlRigComponentMappedElement":				{  },
 			"/Script/ControlRig.ControlRigExecuteContext":						{  },
 			"/Script/ControlRig.ControlRigNumericalValidationPass":				{  },
+			"/Script/ControlRig.ControlRigShapeLibraryLink":					{  },
 			"/Script/ControlRig.ControlRigValidator":							{  },
 			"/Script/ControlRig.CRSimLinearSpring":								{  },
 			"/Script/ControlRig.CRSimPointConstraint":							{  },
@@ -963,6 +966,23 @@
 			"/Script/ControlRig.RigUnit_SetMultiControlRotator_Entry":			{  },
 			"/Script/ControlRig.RigUnit_SetMultiControlVector2D_Entry":			{  },
 			"/Script/ControlRig.RigUnit_TwoBoneIKSimple_DebugSettings":			{  },
+			"/Script/ControlRig.RigUnit_PoseAsset_PoseInfo":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetBase":							{  },
+			"/Script/ControlRig.RigUnit_PoseAsset_WorkData":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetContainsPose":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetPoseNames":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetActivePoses":				{  },
+			"/Script/ControlRig.RigUnit_PoseAssetHasRootMotion":				{  },
+			"/Script/ControlRig.RigUnit_PoseAssetIsAdditive":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetter":						{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetBoneNames":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetInfluences":				{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetBoneIndex":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetPoseForItems":				{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetRigPose":					{  },
+			"/Script/ControlRig.RigUnit_PoseAssetGetCurveNames":				{  },
+			"/Script/ControlRig.RigUnit_PoseAssetApplyMultiplePoses":			{  },
+			"/Script/ControlRig.RigUnit_PoseAssetApplyAllPoses":				{  },		
 			"/Script/ControlRig.SphericalPoseReaderDebugSettings":				{  },
 			"/Script/ControlRig.TransformableControlHandle":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings":			{  },
@@ -2066,6 +2086,7 @@
 			"/Script/PlayspaceSystem.OverlapComponent":							{  },
 			"/Script/PointLight.PointLightNativeComponent":						{  },
 			"/Script/PropManipulation.PropManipulationNativeComponent":			{  },
+			"/Script/RigVM.DataAssetLink":										{  },
 			"/Script/RigVM.RigVM":												{  },
 			"/Script/RigVM.RigVMStruct":										{ "Subclasses": "NativeOnly" },
 			"/Script/RigVM.RigVMDispatchFactory":								{ "Subclasses": "NativeOnly" },
@@ -2954,6 +2975,7 @@
 			"/Script/UMG.GridSlot":												{  },
 			"/Script/UMG.Image":												{ "Visible": true },
 			"/Script/UMG.NamedSlot":											{ "Visible": true },
+			"/Script/UMG.PanelSlot":											{  },
 			"/Script/UMG.MovieScene2DTransformSection":							{  },
 			"/Script/UMG.MovieScene2DTransformTrack":							{ "Visible": true },
 			"/Script/UMG.MovieSceneMarginSection":								{  },
@@ -3402,7 +3424,7 @@
 				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
 			},
 			"SpatialProfiler.MainToolBar": {
-				"DenyList": [ "HeatmapsPresetCombo", "GenerateHeatmap" ]
+				"DenyList": [ "HeatmapsPresetCombo", "GenerateHeatmap", "UpdateMemReport" ]
 			},
 			"SpatialMetricsToolBar.ShowMenu": {
 				"DenyList": [ "ShowStreamingRadius" ]
@@ -4244,7 +4266,7 @@
 			},
 			{
 				"Type": "/FortUILibrary/UGC/Widgets/Buttons/CTA/WBP_UEFN_ButtonCTA_Base.WBP_UEFN_ButtonCTA_Base_C",
-				"AllowList": [ "MinWidth", "MinHeight", "bSelectable", "bShouldSelectUponReceivingFocus", "bInteractableWhenSelected", "ClickMethod", "TouchMethod", "PressMethod", "InputPriority", "Text", "TextSecondary", "BackgroundMaterial", "BorderMaterial", "IsBorderAdditive", "ClickEvent", "OnButtonBaseClicked", "OnButtonBaseHovered", "OnButtonBaseUnhovered", "OnButtonBaseSelected", "OnButtonBaseUnselected", "HoveredSound", "PressedSound" ]
+				"AllowList": [ "MinWidth", "MinHeight", "bSelectable", "bShouldSelectUponReceivingFocus", "bInteractableWhenSelected", "ClickMethod", "TouchMethod", "PressMethod", "InputPriority", "Text", "TextSecondary", "BackgroundMaterial", "BorderMaterial", "IsBorderAdditive", "ClickEvent", "OnButtonBaseClicked", "OnButtonBaseHovered", "OnButtonBaseUnhovered", "OnButtonBaseSelected", "OnButtonBaseUnselected", "OnButtonCTAHighlight", "OnButtonCTAUnhighlight", "HoveredSound", "PressedSound" ]
 			},
 			{
 				"Type": "/Script/UMG.GridPanel",
@@ -5245,6 +5267,10 @@
 			{
 				"Type": "/Script/Engine.EDynamicGlobalIlluminationMethod",
 				"AllowList": [ "None", "Lumen" ]
+			},
+			{
+				"Type": "/Script/CreativeCompanionRuntime.ESidekickVisibilityUserOptionValues",
+				"AllowList": ["Owner", "Everyone"]
 			}
 		]
 	},

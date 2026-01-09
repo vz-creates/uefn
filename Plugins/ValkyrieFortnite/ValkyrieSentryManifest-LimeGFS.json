@@ -636,6 +636,11 @@
 			"FriendlyName": "Dev-Editor",
 			"Version": 40
 		},
+		"E51B74659F7B40D18A48E425E5F7A828":
+		{
+			"FriendlyName": "FortProceduralMotionDataAssetVersion",
+			"Version": 1
+		},
 		"E68A5C1A42C3CA0DB01441B228C1F2DD":
 		{
 			"FriendlyName": "Dev-PhysicsControl",
@@ -918,6 +923,7 @@
 			"/Script/ControlRig.ControlRigNumericalValidationPass",
 			"/Script/ControlRig.ControlRigPoseAsset",
 			"/Script/ControlRig.ControlRigShapeLibrary",
+			"/Script/ControlRig.ControlRigShapeLibraryLink",
 			"/Script/ControlRig.ControlRigValidator",
 			"/Script/ControlRig.FKControlRig",
 			"/Script/ControlRig.ModularRig",
@@ -932,6 +938,7 @@
 			"/Script/ControlRigEditor.AnimLayers",
 			"/Script/CoreUObject.MetaData",
 			"/Script/CoreUObject.ObjectRedirector",
+			"/Script/CosmeticsFrameworkArbitration.CosmeticApplicatorComponent",
 			"/Script/CRD_AudioMixerRuntime.CreativeAudioMixerDevice",
 			"/Script/CRD_AudioPlayerRuntime.CreativeAudioComponent",
 			"/Script/CRD_CinematicSequence.CinematicSequenceDeviceBase",
@@ -2035,6 +2042,7 @@
 			"/Script/PropManipulation.PropManipulationNativeComponent",
 			"/Script/RenderTrace.MaterialExpressionPhysicalMaterialOutput",
 			"/Script/RigLogicModule.DNAAsset",
+			"/Script/RigVM.DataAssetLink",
 			"/Script/RigVM.RigVM",
 			"/Script/RigVM.RigVMMemoryStorage",
 			"/Script/RigVMDeveloper.RigVMAggregateNode",
@@ -2094,6 +2102,7 @@
 			"/Script/UMG.NamedSlot",
 			"/Script/UMG.Overlay",
 			"/Script/UMG.OverlaySlot",
+			"/Script/UMG.PanelSlot",
 			"/Script/UMG.ScaleBox",
 			"/Script/UMG.ScaleBoxSlot",
 			"/Script/UMG.ScrollBox",
@@ -2811,6 +2820,23 @@
 			"/Script/ControlRig.RigUnit_ParentSwitchConstraint",
 			"/Script/ControlRig.RigUnit_ParentSwitchConstraintArray",
 			"/Script/ControlRig.RigUnit_PointSimulation",
+			"/Script/ControlRig.RigUnit_PoseAsset_PoseInfo",
+			"/Script/ControlRig.RigUnit_PoseAsset_WorkData",
+			"/Script/ControlRig.RigUnit_PoseAssetApplyAllPoses",
+			"/Script/ControlRig.RigUnit_PoseAssetApplyMultiplePoses",
+			"/Script/ControlRig.RigUnit_PoseAssetBase",
+			"/Script/ControlRig.RigUnit_PoseAssetContainsPose",
+			"/Script/ControlRig.RigUnit_PoseAssetGetActivePoses",
+			"/Script/ControlRig.RigUnit_PoseAssetGetBoneIndex",
+			"/Script/ControlRig.RigUnit_PoseAssetGetBoneNames",
+			"/Script/ControlRig.RigUnit_PoseAssetGetCurveNames",
+			"/Script/ControlRig.RigUnit_PoseAssetGetInfluences",
+			"/Script/ControlRig.RigUnit_PoseAssetGetPoseForItems",
+			"/Script/ControlRig.RigUnit_PoseAssetGetPoseNames",
+			"/Script/ControlRig.RigUnit_PoseAssetGetRigPose",
+			"/Script/ControlRig.RigUnit_PoseAssetGetter",
+			"/Script/ControlRig.RigUnit_PoseAssetHasRootMotion",
+			"/Script/ControlRig.RigUnit_PoseAssetIsAdditive",
 			"/Script/ControlRig.RigUnit_PoseGetCurve",
 			"/Script/ControlRig.RigUnit_PoseGetDelta",
 			"/Script/ControlRig.RigUnit_PoseGetItems",
@@ -7173,6 +7199,7 @@
 			"/Game/Animation/Game/MainPlayer/Poses/QuestGiver_Poses/Male/Male_Pose_306.Male_Pose_306",
 			"/Game/Animation/Settings/FortniteAnimBoneCompressionSettings.FortniteAnimBoneCompressionSettings",
 			"/Game/Animation/Settings/FortniteAnimCurveCompressionSettings.FortniteAnimCurveCompressionSettings",
+			"/Game/Animation/Settings/FortniteRecorderBoneCompression.FortniteRecorderBoneCompression",
 			"/Game/Athena/Apollo/Environments/Blueprints/T_TwistyClouds_01.T_TwistyClouds_01",
 			"/Game/Athena/Apollo/Environments/Blueprints/T_TwistyClouds_N.T_TwistyClouds_N",
 			"/Game/Athena/Apollo/Environments/BuildingActors/Bridges/Walls/DataAssets/SteelBridge_Blue.SteelBridge_Blue",
@@ -11935,6 +11962,7 @@
 			"/Game/Environments/Helios/Sets/MountainVillage/TextureData/TD_GenericSet_MountainVillage_A_Wall_A_B.TD_GenericSet_MountainVillage_A_Wall_A_B",
 			"/Game/Environments/Helios/Sets/MountainVillage/TextureData/TD_GenericSet_MountainVillage_Staircase_A.TD_GenericSet_MountainVillage_Staircase_A",
 			"/Game/Environments/Helios/Sets/MountainVillage/TextureData/TD_MountainVillage_Wood_Wall_C_A_Dark.TD_MountainVillage_Wood_Wall_C_A_Dark",
+			"/Game/Environments/Helios/Sets/Orchard/Materials/MI_Orchard_Door_A.MI_Orchard_Door_A",
 			"/Game/Environments/Helios/Sets/Orchard/TextureData/TD_EclipseVault_FloorTile_A_B_Dirt.TD_EclipseVault_FloorTile_A_B_Dirt",
 			"/Game/Environments/Helios/Sets/Orchard/TextureData/TD_GenericSet_Stairs_Orchard_Grey.TD_GenericSet_Stairs_Orchard_Grey",
 			"/Game/Environments/Helios/Sets/Orchard/TextureData/TD_GenericSet_Stairs_Orchard_White.TD_GenericSet_Stairs_Orchard_White",
@@ -17091,7 +17119,26 @@
 			"/AudioModulation/Pitch.Pitch",
 			"/CR_Legacy/Playsets/PID_CP_Relevancy_TEST.PID_CP_Relevancy_TEST"
 		],
-		"VKCreateUGCPartner": []
+		"VKCreateUGCPartner": [
+			"/FigureCharacter/Figure_Core/Material/MaterialInstance/MI_Figure_DecoratedPlastic.MI_Figure_DecoratedPlastic",
+			"/FigureCharacter/Figure_Core/Material/MaterialInstance/MI_Figure_RigDrivenFace_rc1.MI_Figure_RigDrivenFace_rc1",
+			"/FigureCharacter/Figure_Core/Rig/Shapes/CRSL_DisplayedControls.CRSL_DisplayedControls",
+			"/FigureCharacter/Figure_Core/Rig/Shapes/CRSL_Figure.CRSL_Figure",
+			"/FigureCharacter/Figure_Core/Rig/Shapes/CRSL_Juno.CRSL_Juno",
+			"/FigureCharacter/Figure_Core/Rig/Struct_2DInt.Struct_2DInt",
+			"/FigureCharacter/Figure_Core/SkeletalMesh/SKM_Figure_Preview.SKM_Figure_Preview",
+			"/FigureCharacter/Rig/FacialMapping/Data/NameFloatArrays.NameFloatArrays",
+			"/FigureCosmetics/AMS/AMS_Figure_BlessFlan.AMS_Figure_BlessFlan",
+			"/FigureCosmetics/AMS/AMS_Figure_OvenDrastic.AMS_Figure_OvenDrastic",
+			"/FigureCosmetics/AMS/AMS_Figure_PrimeB_His.AMS_Figure_PrimeB_His",
+			"/FigureCosmetics/AMS/AMS_Figure_ScallopLava.AMS_Figure_ScallopLava",
+			"/FigureCosmetics/AMS/AMS_Figure_TicketPoke.AMS_Figure_TicketPoke",
+			"/FigureCosmetics/Figure/Figure_BlessFlan/Bake/SK_FigureBake_BlessFlan_0_0_3914140296.SK_FigureBake_BlessFlan_0_0_3914140296",
+			"/FigureCosmetics/Figure/Figure_OvenDrastic/Bake/SK_FigureBake_OvenDrastic_0_0_364712634.SK_FigureBake_OvenDrastic_0_0_364712634",
+			"/FigureCosmetics/Figure/Figure_PrimeB_His/Bake/FigureBake_PrimeB_His.FigureBake_PrimeB_His",
+			"/FigureCosmetics/Figure/Figure_ScallopLava/Bake/SK_FigureBake_ScallopLava_0_0_201612360.SK_FigureBake_ScallopLava_0_0_201612360",
+			"/FigureCosmetics/Figure/Figure_TicketPoke/Bake/SK_FigureBake_TicketPoke_0_h830073371.SK_FigureBake_TicketPoke_0_h830073371"
+		]
 	},
 	"BlueprintAllowLists":
 	{
@@ -31560,6 +31607,9 @@
 			"/Itemization/UI/PropertyInterfaces/InventoryPropertyInterface.InventoryPropertyInterface_C"
 		],
 		"VKCreateUGCPartner": [
+			"/FigureCharacter/Figure_Core/Rig/CR_Minifig_v3.CR_Minifig_v3_C",
+			"/FigureCosmetics/Rig/BP_Minifig_RigSet_SKM.BP_Minifig_RigSet_SKM_C",
+			"/FigureCosmetics/Rig/BP_Minifig_SKM.BP_Minifig_SKM_C",
 			"/Game/TimeOfDay/DaySequence/DaySequenceActors/BR_Ch7/DSA_BR_Ch7S1.DSA_BR_Ch7S1_C"
 		]
 	},

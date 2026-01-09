@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.11-CL-49242330
+# Generated from build: ++Fortnite+Release-39.20-CL-49564179
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -105,8 +105,17 @@ ControlInput<public> := module {
 Itemization<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
-  # Returns a failure reason (such as being full) if the provided item entity cannot be added.
+  # Returns a failure reason (such as being full) if the provided item entity cannot be added. Does not consider sub-inventories.
   (Inventory: inventory_component).CanAddItem<native><public>(
+    Item: entity,
+    ?AllowMergeItems: logic = external {})<transacts>: result(false,
+    []add_item_error
+  )
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  @experimental
+  # Returns a failure reason (such as being full) if the provided item entity cannot be added. AddItemDistribute allows the item to enter sub-inventories.
+  (Inventory: inventory_component).CanAddItemDistribute<native><public>(
     Item: entity,
     ?AllowMergeItems: logic = external {})<transacts>: result(false,
     []add_item_error
@@ -154,7 +163,7 @@ Itemization<public> := module {
     # Items that were newly added to this inventory as a result of the transaction.
     AddedItems<native><public>: []entity
 
-    # Items whose stack size changed as a result of the transaction.
+    # Items whose stack size changed as a result of the transaction, and the previous stack size value.
     ModifiedItems<native><public>: []tuple(entity, int)
   }
 
@@ -234,8 +243,16 @@ Itemization<public> := module {
   # They also determine whether an item can be equipped.
   inventory_component<native><public> := class<final_super>(component) {
     @available { MinUploadedAtFNVersion := 3800 }
-    # Adds items to the inventory. Fails if no items could be added.
+    # Adds the item to this inventory only, ignoring sub-inventories. Fails if no items could be added.
     AddItem<native><final><public>(
+      Item: entity,
+      ?AllowMergeItems: logic = external {})<transacts>: result(add_item_result,
+      []add_item_error
+    )
+
+    @available { MinUploadedAtFNVersion := 3800 }
+    # Adds the item to this inventory, including sub-inventories. Fails if no items could be added.
+    AddItemDistribute<native><final><public>(
       Item: entity,
       ?AllowMergeItems: logic = external {})<transacts>: result(add_item_result,
       []add_item_error
@@ -355,9 +372,11 @@ Itemization<public> := module {
     # Fails if not in an inventory, not currently equipped or if unequip_item_query_event contains any errors after querying.
     Unequip<final><native><public>()<transacts>: result(false, []unequip_item_error)
 
+    @editable
     # Maximum stack size for this item.
     var<private> MaxStackSize<native><public>: ?int = external {}
 
+    @editable_number(int) { MinValue := option { 1 } }
     # Current stack size of this item.
     var<private> StackSize<native><public>: int = external {}
   }

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.20-CL-49564179
+# Generated from build: ++Fortnite+Release-39.30-CL-49874243
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -197,6 +197,8 @@ AI<public> := module {
 
   movement_type<native><public> := enum<open> {
     (/Fortnite.com/AI/movement_type:)Running
+
+    Sprinting
 
     (/Fortnite.com/AI/movement_type:)Walking
   }
@@ -12192,7 +12194,6 @@ Itemization<public> := module {
   fort_inventory_collectibles_component<native><public> := class<final>(fort_inventory_component) {}
 
   using { /UnrealEngine.com/Itemization }
-  using { /Verse.org/SceneGraph }
   @experimental
   # `fort_inventory_component` is a shared class for all Fortnite inventories, with appropriate default UI and behavior.
   fort_inventory_component<native><public> := class<epic_internal>(inventory_component) {
@@ -12224,15 +12225,6 @@ Itemization<public> := module {
   fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_component) {
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
-  }
-
-  @experimental
-  fort_item_pickup_component<native><final><public> := class<final_super>(component) {
-    OnBeginSimulation<override>(): void = external {}
-
-    OnEndSimulation<override>(): void = external {}
-
-    var<private> PickupLifetime<native><public>: float = external {}
   }
 }
 

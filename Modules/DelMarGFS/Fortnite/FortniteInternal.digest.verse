@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.20-CL-49564179
+# Generated from build: ++Fortnite+Release-39.30-CL-49874243
 #################################################
 
 AI<public> := module {
@@ -394,6 +394,9 @@ AI<public> := module {
     # Roam around the current position. Use 'Tether' to specify the radius; otherwise, the Fortnite guard will roam anywhere.
     RoamAround<native><public>(?MovementType: movement_type = external {})<suspends>: result(void, ai_action_error_type)
 
+    # Trigger a slide.
+    Slide<native><epic_internal>()<suspends>: result(void, ai_action_error_type)
+
     # Go back to standing.
     StandUp<native><public>()<suspends>: result(void, ai_action_error_type)
 
@@ -510,6 +513,8 @@ AI<public> := module {
 
   movement_type<native><public> := enum<open> {
     (/Fortnite.com/AI/movement_type:)Running
+
+    Sprinting
 
     (/Fortnite.com/AI/movement_type:)Walking
   }
@@ -10201,6 +10206,78 @@ FortSafeZone<public> := module {
   }
 }
 
+Framework<public> := module {
+  # Module import path: /Fortnite.com/Framework/Analytics
+  Analytics<epic_internal> := module {
+    # Base class to inherit from to pass to analytics_attributes_request.AppendToAttributes to inject attributes in an analytics event
+    analytics_attributes_base<native><epic_internal> := class<persistent> {}
+
+    # System to allow verse to listen for native analytic events to allow injection of custom data
+    analytics_attributes_request<native><epic_internal> := class<persistent> {
+      AppendToAttributes<native><public>(FieldPrefix: string, Object: analytics_attributes_base): void
+
+      AppendToAttributesTags<native><public>(AddTags: []string): void
+
+      OnRequestAttributes<public>(): listenable(tuple([string]agent)) = external {}
+    }
+
+    using { /Verse.org/Simulation }
+    # Base class for creating analytic events from Verse. This would be the only public api.
+    analytics_framework_event_base<native><epic_internal> := class<persistent> {
+      GetEventName<native_callable><epic_internal>(): string = external {}
+
+      Send<native><epic_internal>(): void
+
+      Send<native><epic_internal>(Agent: agent): void
+    }
+
+    # Tags base class for creating analytic events to allow proper name and allow use of Tags to inject native data
+    tags_analytics_event_base<native><epic_internal> := class<persistent>(analytics_framework_event_base) {
+      GetAgentId<native><epic_internal>(Agent: agent): string
+
+      Send<native><override>(): void
+
+      Send<native><override>(Agent: agent): void
+
+      SendWithTags<native><epic_internal>(AddTags: []string): void
+
+      SendWithTags<native><epic_internal>(Agent: agent, AddTags: []string): void
+    }
+  }
+
+  # Module import path: /Fortnite.com/Framework/AnalyticsHelper
+  AnalyticsHelper<epic_internal> := module {
+    using { /Verse.org/Simulation }
+    SendELOAnalyticForPlayer<native><epic_internal>(
+      Player: player,
+      MatchPoints: float,
+      TeamPoints: float,
+      IndividualPoints: float
+    ): void
+  }
+
+  # Module import path: /Fortnite.com/Framework/CVarUtils
+  CVarUtils<epic_internal> := module {
+    GetCVarAsFloat<native><epic_internal>(CVarName: string)<transacts><decides>: float
+
+    GetCVarAsInt<native><epic_internal>(CVarName: string)<transacts><decides>: int
+
+    GetCVarAsLogic<native><epic_internal>(CVarName: string)<transacts><decides>: logic
+
+    IsCVarEnabled<native><epic_internal>(CVarName: string)<transacts><decides>: void
+  }
+
+  # Module import path: /Fortnite.com/Framework/Matchmaking
+  Matchmaking<epic_internal> := module {
+    using { /Verse.org/Simulation }
+    # A player agent method to play again.
+    (InAgent: agent).PlayAgain<native><epic_internal>(): void
+
+    # A player agent method indicating ready for matchmaking (used w/ PlayAgain).
+    (InAgent: agent).SetReadyForMatchmaking<native><epic_internal>(IsReady: logic): void
+  }
+}
+
 # Module import path: /Fortnite.com/Game
 Game<public> := module {
   # Returns the fort game events component, if it exists.
@@ -12437,9 +12514,17 @@ Itemization<public> := module {
 
   # Module import path: /Fortnite.com/Itemization/FortniteItemDefinitionUtils
   FortniteItemDefinitionUtils<epic_internal> := module {
-    using { /Verse.org/SceneGraph }
     @experimental
     AddItemComponents<native><epic_internal>(InEntity: entity, InItemDefinitionID: string)<converges>: void
+
+    using { /UnrealEngine.com/Itemization }
+    using { /Verse.org/SceneGraph }
+    @experimental
+    AddItemComponents<native><epic_internal>(
+      InEntity: entity,
+      InItemDefinitionID: string,
+      InItemComponentType: subtype(item_component)
+    )<converges>: void
   }
 
   # Module import path: /Fortnite.com/Itemization/FortniteItemRarities
@@ -13127,6 +13212,11 @@ Itemization<public> := module {
       MergeableItemComponentClasses<override>: []castable_subtype(item_component) = external {}
 
       var MaxStackSize<override>: ?int = external {}
+    }
+
+    @experimental
+    one_way_inventory_component<native><epic_internal> := class(inventory_component) {
+      SendDown<override>(Event: scene_event): logic = external {}
     }
 
     using { /UnrealEngine.com/Itemization }
@@ -14802,15 +14892,11 @@ Itemization<public> := module {
 
   @experimental
   # `fort_br_inventory_build_hotbar_component` is the FNBR inventory for Fortnite build tools.
-  fort_br_inventory_build_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
-    var TotalSlots<override>: int = external {}
-  }
+  fort_br_inventory_build_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
 
   @experimental
   # `fort_br_inventory_harvest_tool_component` is the FNBR inventory for the Fortnite harvest tool.
-  fort_br_inventory_harvest_tool_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
-    var TotalSlots<override>: int = external {}
-  }
+  fort_br_inventory_harvest_tool_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
 
   @experimental
   # `fort_br_inventory_legacy_quickbar_component` is a shared class for FNBR inventories that rely on coupling to the legacy AFortQuickBars class.
@@ -14825,8 +14911,6 @@ Itemization<public> := module {
   fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
-
-    var TotalSlots<override>: int = external {}
   }
 
   @experimental
@@ -14850,8 +14934,6 @@ Itemization<public> := module {
   fort_inventory_build_hotbar_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
-
-    var TotalSlots<override>: int = external {}
   }
 
   @experimental
@@ -14881,8 +14963,6 @@ Itemization<public> := module {
   fort_inventory_harvest_tool_component<native><public> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
-
-    var TotalSlots<override>: int = external {}
   }
 
   @experimental
@@ -14923,17 +15003,15 @@ Itemization<public> := module {
 
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
-
-    var TotalSlots<override>: int = external {}
   }
 
   @experimental
-  fort_item_pickup_component<native><final><public> := class<final_super>(component, copy_from_item) {
+  fort_item_pickup_component<native><final><epic_internal> := class<final_super>(component, copy_from_item) {
     CopyFromItem<override><final><native>(SourceItem: entity)<transacts>: void
 
-    OnBeginSimulation<override>(): void = external {}
-
     OnEndSimulation<override>(): void = external {}
+
+    OnSimulate<override>()<suspends>: void = external {}
 
     var<private> DestroyOnDropFromInventory<native><epic_internal>: logic = external {}
 
@@ -16420,6 +16498,7 @@ VerseInternalTesting<public> := module {
     using { /Fortnite.com/Game }
     using { /Fortnite.com/Marketplace }
     using { /Fortnite.com/Vehicles }
+    using { /UnrealEngine.com/Itemization }
     using { /UnrealEngine.com/Temporary/Diagnostics }
     using { /UnrealEngine.com/Temporary/SpatialMath }
     using { /UnrealEngine.com/Temporary/Testing }
@@ -16456,6 +16535,67 @@ VerseInternalTesting<public> := module {
       ResetCallCount<public>(): void = external {}
     }
 
+    @experimental
+    test_event_add_item_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(add_item_result)): void = external {}
+
+      var ArgAddResult<public>: ?add_item_result = external {}
+
+      var ArgAddedItems<public>: ?[]entity = external {}
+
+      var ArgModifiedItems<public>: ?[]tuple(entity, int) = external {}
+    }
+
+    @experimental
+    test_event_change_equipped_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(change_equipped_result)): void = external {}
+
+      var ArgChangeEquipResult<public>: ?change_equipped_result = external {}
+
+      var ArgIsItemEquipped<public>: logic = external {}
+
+      var ArgItemComponent<public>: ?item_component = external {}
+    }
+
+    @experimental
+    test_event_change_inventory_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(change_inventory_result)): void = external {}
+
+      var ArgChangeInvResult<public>: ?change_inventory_result = external {}
+
+      var ArgCurrentInventory<public>: ?inventory_component = external {}
+
+      var ArgItemComponent<public>: ?item_component = external {}
+
+      var ArgPreviousInventory<public>: ?inventory_component = external {}
+    }
+
+    @experimental
+    test_event_change_max_stack_size_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(change_max_stack_size_result)): void = external {}
+
+      var ArgChangeMaxStackResult<public>: ?change_max_stack_size_result = external {}
+
+      var ArgCurrentStackSize<public>: ?int = external {}
+
+      var ArgItemComponent<public>: ?item_component = external {}
+
+      var ArgPreviousStackSize<public>: ?int = external {}
+    }
+
+    @experimental
+    test_event_change_stack_size_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(change_stack_size_result)): void = external {}
+
+      var ArgChangeStackResult<public>: ?change_stack_size_result = external {}
+
+      var ArgCurrentStackSize<public>: int = external {}
+
+      var ArgItemComponent<public>: ?item_component = external {}
+
+      var ArgPreviousStackSize<public>: int = external {}
+    }
+
     test_event_creative_prop_handler_mock<public> := class(test_device_event_handler_mock) {
       Subscribe<public>(Event: listenable(creative_prop)): void = external {}
 
@@ -16468,6 +16608,15 @@ VerseInternalTesting<public> := module {
       var ArgEntity<public>: ?entity = external {}
     }
 
+    @experimental
+    test_event_equip_item_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(equip_item_result)): void = external {}
+
+      var ArgEquipResult<public>: ?equip_item_result = external {}
+
+      var ArgItem<public>: ?entity = external {}
+    }
+
     test_event_float_handler_mock<public> := class(test_device_event_handler_mock) {
       Subscribe<public>(Event: listenable(float)): void = external {}
 
@@ -16478,6 +16627,21 @@ VerseInternalTesting<public> := module {
       Subscribe<public>(Event: listenable(int)): void = external {}
 
       var ArgInt<public>: int = external {}
+    }
+
+    @experimental
+    test_event_remove_item_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(remove_item_result)): void = external {}
+
+      var ArgInventory<public>: ?inventory_component = external {}
+
+      var ArgModifiedItem<public>: ?tuple(entity, int) = external {}
+
+      var ArgRemoveResult<public>: ?remove_item_result = external {}
+
+      var ArgRemovedAmount<public>: int = external {}
+
+      var ArgRemovedItems<public>: ?[]entity = external {}
     }
 
     test_event_tuple_agent_vehicle_int_handler_mock<public> := class(test_device_event_handler_mock) {
@@ -16504,6 +16668,15 @@ VerseInternalTesting<public> := module {
       Subscribe<public>(Event: listenable(tuple(player, []entitlement_change(entitlement)))): void = external {}
 
       var ArgTuple<public>: ?tuple(player, []entitlement_change(entitlement)) = external {}
+    }
+
+    @experimental
+    test_event_unequip_item_result_handler_mock<public> := class(test_device_event_handler_mock) {
+      Subscribe<public>(Event: listenable(unequip_item_result)): void = external {}
+
+      var ArgItem<public>: ?entity = external {}
+
+      var ArgUnEquipResult<public>: ?unequip_item_result = external {}
     }
 
     test_plan<epic_internal> := class {}

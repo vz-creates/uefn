@@ -18,6 +18,7 @@
 		"bSelectProjectByIdAllowed": true,
 		"bShowingExtendedProjectDetails": true,
 		"bShowingContentVersePath": true,
+		"bRelaxedValidationAllowed": true,
 		"bWorkspaceAllowed": true,
 		"bProjectRenameAllowed": true,
 		"TeamMembershipInvitationPermission": "IndividualAndEmailDomains"

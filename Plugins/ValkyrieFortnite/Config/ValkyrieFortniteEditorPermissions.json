@@ -25,6 +25,7 @@
 		"bModuleIdNamedPlugins": false,
 		"bOnlinePluginFriendlyNameAllowed": false,
 		"bShowingContentVersePath": false,
+		"bRelaxedValidationAllowed": false,
 		"bWorkspaceAllowed": false,
 		"bProjectRenameAllowed": false,
 		"bModuleApiAllowed": false,
@@ -3042,6 +3043,8 @@
 			"/Script/WorldPartitionHLODUtilities.HLODBuilderMeshMergeSettings":	{  },
 			"/Script/WorldPartitionHLODUtilities.HLODBuilderMeshSimplifySettings": { },
 			"/Script/WorldPartitionHLODUtilities.HLODBuilderMeshApproximateSettings": {},
+			"/Script/WorldPartitionHLODUtilities.HLODRebuildPolicyHashData":	{  },
+			"/Script/WorldPartitionHLODUtilities.HLODRebuildPolicyImageData":	{  },
 			"/Script/WorldPartitionHLODUtilities.WorldPartitionHLODModifierMeshDestruction": { "Visible": true },
 			"/Script/RigLogicModule.DNAAsset":									{  },
 			"/Script/Engine.LODSyncComponent":									{ "Visible": true },
@@ -3055,8 +3058,8 @@
 			"/Creative_TemporaryTeams/Components/BP_UserOptionComponent_TemporaryTeams.BP_UserOptionComponent_TemporaryTeams_C": { "Visible": true },
 			"/Creative_TemporaryTeams/Components/BP_TemporaryTeams_TeamSettingsAndInventory.BP_TemporaryTeams_TeamSettingsAndInventory_C": { "Visible": true },
 			"/Script/SimpleVotingOptionRuntime.VotingGroupViewModel": { "Visible": true },
-			"/Script/SimpleVotingOptionRuntime.VotingOptionViewModel": { "Visible": true }
-
+			"/Script/SimpleVotingOptionRuntime.VotingOptionViewModel": { "Visible": true },
+			"/Script/ExperienceSettings.Newton_UserOptionFilterComponent":		{  }
 		},
 		"AllowedMenus": {
 			"AssetEditor.IKRetargetEditor.MainMenu.CreateMenu": {
@@ -4318,7 +4321,7 @@
 			},
 			{
 				"Type": "/Script/FNE_UILibrary.ActionWidget",
-				"AllowList": [ "EnhancedInputAction" ]
+				"AllowList": [ "EnhancedInputAction", "DisplayType" ]
 			},
 			{
 				"Type": "/Script/AIModule.AISenseConfig_Sight",

@@ -1168,5 +1168,12 @@
 			"Items/QuestItems/Ranked/quest_feralcorgi_ranked_repeatable_q04",
 			"Items/Tokens/Athena_FeralCorgi_Daily_Token"
 		]
+	},
+	"FN1Framework":
+	{
+		"assets": [],
+		"epicInternalAssets": [
+			"FN1Framework"
+		]
 	}
 }

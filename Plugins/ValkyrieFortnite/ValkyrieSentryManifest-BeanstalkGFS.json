@@ -681,6 +681,11 @@
 			"FriendlyName": "Fortnite",
 			"Version": 6
 		},
+		"FB54E6E9DF2B452F87E20C4A37D76396":
+		{
+			"FriendlyName": "CommonUI",
+			"Version": 2
+		},
 		"FB680AF259EF4BA3BAA819B573C8443D":
 		{
 			"FriendlyName": "ClothingAssetVer",
@@ -1344,6 +1349,7 @@
 			"/Script/EntityActor.SimObject",
 			"/Script/EntityLevel.LevelEntity",
 			"/Script/EntityRegistry.EntityContainer",
+			"/Script/ExperienceSettings.Newton_UserOptionFilterComponent",
 			"/Script/FabricDevices.FabricDeviceComponent",
 			"/Script/FabricEngineSequencer.FabricAudioSyncSection",
 			"/Script/FabricEngineSequencer.FabricAudioSyncTrack",
@@ -1424,7 +1430,6 @@
 			"/Script/FortniteGame.CreativeRegisteredPlayersManagerComponent",
 			"/Script/FortniteGame.CreativeVersionComponent",
 			"/Script/FortniteGame.FortActorComponent_Affiliation",
-			"/Script/FortniteGame.FortActorMetadataComponent",
 			"/Script/FortniteGame.FortActorTemplatesComponent",
 			"/Script/FortniteGame.FortAthenaSplineZipline",
 			"/Script/FortniteGame.FortBuildingAddStructuralSupportComponent",
@@ -2123,6 +2128,8 @@
 			"/Script/WorldPartitionHLODUtilities.HLODBuilderMeshApproximateSettings",
 			"/Script/WorldPartitionHLODUtilities.HLODBuilderMeshMergeSettings",
 			"/Script/WorldPartitionHLODUtilities.HLODBuilderMeshSimplifySettings",
+			"/Script/WorldPartitionHLODUtilities.HLODRebuildPolicyHashData",
+			"/Script/WorldPartitionHLODUtilities.HLODRebuildPolicyImageData",
 			"/Script/WorldPartitionHLODUtilities.WorldPartitionHLODModifierMeshDestruction"
 		],
 		"VKCreateUGCEarlyAccess": [],
@@ -13399,7 +13406,6 @@
 			"/Game/Playgrounds/Maps/Test/Playsets/Pat_J/Island_Water_Plane4.Island_Water_Plane4",
 			"/Game/Playgrounds/Maps/Test/Playsets/Pat_J/Island_Water_Plane4_Floor.Island_Water_Plane4_Floor",
 			"/Game/Playsets/PID_CP_Devices_Hover_Platform.PID_CP_Devices_Hover_Platform",
-			"/Game/Sounds/Creative/Ambiences/Creative_Water_Outer_Cue.Creative_Water_Outer_Cue",
 			"/Game/Sounds/Creative/Gadgets/Ball/Ball_Bounce_Cue.Ball_Bounce_Cue",
 			"/Game/Sounds/Creative/Gadgets/Ball/Ball_Pop_Cue.Ball_Pop_Cue",
 			"/Game/Sounds/Creative/Gadgets/Ball/Ball_Roll_Loop_Cue.Ball_Roll_Loop_Cue",
@@ -27954,11 +27960,11 @@
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairBalcony_A.Asteria_Quarry_ScaffoldingStairBalcony_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingStairF_A.Asteria_Quarry_ScaffoldingStairF_A_C",
 			"/Game/Environments/Asteria/Sets/Quarry/Quarry_Scaffolding_A/Blueprints/Asteria_Quarry_ScaffoldingWall_B.Asteria_Quarry_ScaffoldingWall_B_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Doorway_A.Asteria_SlurpRoom_Doorway_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_A.Asteria_SlurpRoom_StringLights_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_StringLights_B.Asteria_SlurpRoom_StringLights_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Wall_A.Asteria_SlurpRoom_Wall_A_C",
-			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
+			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_SlurpRoom_Window_A.Asteria_SlurpRoom_Window_A_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/Blueprints/Asteria_SlurpRoom_Window_B.Asteria_SlurpRoom_Window_B_C",
 			"/Game/Environments/Asteria/Sets/SlurpRoom/BluePrints/Asteria_StringLights_02.Asteria_StringLights_02_C",
 			"/Game/Environments/Asteria/Sets/TattooShop/BluePrints/Asteria_TattooShop_Wall_A.Asteria_TattooShop_Wall_A_C",

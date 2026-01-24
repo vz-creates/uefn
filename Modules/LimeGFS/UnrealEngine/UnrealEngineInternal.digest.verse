@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.20-CL-49564179
+# Generated from build: ++Fortnite+Release-39.30-CL-49874243
 #################################################
 
 AINavigation<public> := module {
@@ -382,6 +382,9 @@ EntityTestSuite<public> := module {
   }
 
   @hide_in_editor
+  test_component_never_replicate_condition<native><epic_internal> := class<final_super>(component) {}
+
+  @hide_in_editor
   test_component_replication_settings<native><epic_internal> := class<final_super>(component) {}
 
   using { /Verse.org/Assets }
@@ -758,22 +761,15 @@ Itemization<public> := module {
 
     UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
 
-    @replicated("")
     var<private> InventoryDescription<native><epic_internal>: message = external {}
 
-    @replicated("")
     var<private> InventoryDisplayName<native><epic_internal>: message = external {}
 
-    @replicated("")
     var<private> InventoryName<native><epic_internal>: string = external {}
 
     var<private> InventoryRuleList<native><epic_internal>: []inventory_rule_interface = external {}
 
-    @replicated("")
     var<private> PickupPriority<native><epic_internal>: int = external {}
-
-    @replicated("RepNotify")
-    var<private> TotalSlots<native><epic_internal>: int = external {}
   }
 
   @experimental

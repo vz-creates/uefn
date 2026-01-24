@@ -2,14 +2,11 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.20-CL-49564179
+# Generated from build: ++Fortnite+Release-39.30-CL-49874243
 #################################################
 
 # Module import path: /Verse.org/Assets
 Assets<public> := module {
-  using { /Verse.org/Native }
-  using { /Verse.org/Restricted }
-  using { /Verse.org/Simulation }
   # Create an asset reference to the given internal asset path
   MakeAsset<native><epic_internal>(asset_type: subtype(asset), AssetPath: string)<converges>: asset_type
 
@@ -29,6 +26,16 @@ Assets<public> := module {
     GetAsyncLoadEvent<native><epic_internal>()<decides>: sticky_event(void)
 
     SyncLoad<native><epic_internal>(): logic
+  }
+
+  using { /Verse.org/Native }
+  using { /Verse.org/Restricted }
+  using { /Verse.org/Simulation }
+  @attribscope_class
+  @attribscope_struct
+  @attribscope_data
+  asset_locus<epic_internal> := class<computes>(attribute) {
+    Whence<epic_internal>: string
   }
 
   camera_rig_asset<native><epic_internal> := class<computes><epic_internal>(asset) {}
@@ -3003,14 +3010,6 @@ SceneGraph<public> := module {
 
     # Enable/disable visibility of this mesh.
     var Visible<public>: logic = external {}
-  }
-
-  metasound_trigger<native><epic_internal> := class<epic_internal> {
-    SoundComponentTarget<native><epic_internal>: ?sound_component = external {}
-
-    Trigger<native><epic_internal>(): void
-
-    TriggerIdentifier<native><epic_internal>: string = external {}
   }
 
   @experimental

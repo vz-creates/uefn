@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.30-CL-49874243
+# Generated from build: ++Fortnite+Release-39.40-CL-50577083
 #################################################
 
 AINavigation<public> := module {
@@ -2841,10 +2841,15 @@ Temporary<public> := module {
   WorldPartition<public> := module {
     # Module import path: /UnrealEngine.com/Temporary/WorldPartition/VerseWorldPartition
     VerseWorldPartition<public> := module {
+      @deprecated
+      # Deprecated, use GetWorldPartitionHelperForEntity instead which is a less ambiguous/future proof way to obtaining the helper
       GetWorldPartitionHelper<native><epic_internal>()<transacts>: ?world_partition_helper
+
+      GetWorldPartitionHelperForEntity<native><epic_internal>(Entity: entity)<transacts>: ?world_partition_helper
 
       using { /UnrealEngine.com/Temporary/SpatialMath }
       using { /Verse.org/Assets }
+      using { /Verse.org/SceneGraph }
       data_layer_asset<native><epic_internal> := class<concrete><computes><final><epic_internal>(asset) {}
 
       world_partition_helper<native><epic_internal> := class<concrete> {

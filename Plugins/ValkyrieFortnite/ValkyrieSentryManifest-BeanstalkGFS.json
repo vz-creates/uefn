@@ -174,7 +174,7 @@
 		"40D2FBA74B484CE5B0385A75884E499E":
 		{
 			"FriendlyName": "Water",
-			"Version": 8
+			"Version": 9
 		},
 		"4288211B454816C61A7667B2507A2A00":
 		{
@@ -12422,6 +12422,7 @@
 			"/Game/Environments/Props/Rocks/Materials/MI_Props_Rocks_Winter.MI_Props_Rocks_Winter",
 			"/Game/Environments/Props/Rocks/Meshes/SM_LavaCliff_A.SM_LavaCliff_A",
 			"/Game/Environments/Props/Rooftops/Materials/PP2/MI_Rooftop_SmallChimney_02_Ambient.MI_Rooftop_SmallChimney_02_Ambient",
+			"/Game/Environments/Props/ShootingTargets/Materials/MI_ShootingTargets.MI_ShootingTargets",
 			"/Game/Environments/Props/ShootingTargets/Meshes/SM_Target_Char12.SM_Target_Char12",
 			"/Game/Environments/Props/ShootingTargets/Meshes/SM_Target_TrackCart.SM_Target_TrackCart",
 			"/Game/Environments/Props/Shrubs/Materials/PP2/MI_Shrub_05_Atlas_Ambient.MI_Shrub_05_Atlas_Ambient",

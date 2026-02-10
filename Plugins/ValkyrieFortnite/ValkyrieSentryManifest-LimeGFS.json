@@ -174,7 +174,7 @@
 		"40D2FBA74B484CE5B0385A75884E499E":
 		{
 			"FriendlyName": "Water",
-			"Version": 8
+			"Version": 9
 		},
 		"4288211B454816C61A7667B2507A2A00":
 		{
@@ -5846,6 +5846,7 @@
 			"/CreativeCoreDevices/SetupAssets/PID_Device_MovementModulator.PID_Device_MovementModulator",
 			"/CreativeCoreDevices/SetupAssets/PID_Device_PinballBumper.PID_Device_PinballBumper",
 			"/CreativeCoreDevices/SetupAssets/PID_Device_PinballFlipper.PID_Device_PinballFlipper",
+			"/CreativeCoreDevices/SetupAssets/PID_Device_PowerUp_Damage.PID_Device_PowerUp_Damage",
 			"/CreativeCoreDevices/SetupAssets/PID_Device_Powerup_VFX.PID_Device_Powerup_VFX",
 			"/CreativeCoreDevices/SetupAssets/PID_Device_PropOMaticManager.PID_Device_PropOMaticManager",
 			"/CreativeCoreDevices/SetupAssets/PID_Device_PulseTrigger.PID_Device_PulseTrigger",
@@ -15052,7 +15053,11 @@
 			"/LimeBurstPulse/WID_Lime_BurstPulseRifle_VR.WID_Lime_BurstPulseRifle_VR",
 			"/LimeCoconut/WID_Lime_Coconut.WID_Lime_Coconut",
 			"/LimeCornCob/WID_Lime_Corn.WID_Lime_Corn",
-			"/LimeCrossbow/Weapons/WoodenBow/Bow_T1/WID_Lime_Crossbow.WID_Lime_Crossbow",
+			"/LimeCrossbow/Weapons/WoodenBow/Bow_T1/WID_Lime_Crossbow_C.WID_Lime_Crossbow_C",
+			"/LimeCrossbow/Weapons/WoodenBow/Bow_T1/WID_Lime_Crossbow_R.WID_Lime_Crossbow_R",
+			"/LimeCrossbow/Weapons/WoodenBow/Bow_T1/WID_Lime_Crossbow_SR.WID_Lime_Crossbow_SR",
+			"/LimeCrossbow/Weapons/WoodenBow/Bow_T1/WID_Lime_Crossbow_UC.WID_Lime_Crossbow_UC",
+			"/LimeCrossbow/Weapons/WoodenBow/Bow_T1/WID_Lime_Crossbow_VR.WID_Lime_Crossbow_VR",
 			"/LimeEgg/WID_Lime_SpringEgg_Heal.WID_Lime_SpringEgg_Heal",
 			"/LimeEmptyPlot/Blueprints/LEGO_Grid_Primitive.LEGO_Grid_Primitive",
 			"/LimeEmptyPlot/Blueprints/S_Plane_1x1.S_Plane_1x1",
@@ -15163,7 +15168,11 @@
 			"/LimeHotSauce/SetupAssets/Props/Monastery/SM_HotSauce_Wall_Window_08_C.SM_HotSauce_Wall_Window_08_C",
 			"/LimeHotSauce/SetupAssets/Props/Monastery/SM_HotSauce_Wall_Window_16_A.SM_HotSauce_Wall_Window_16_A",
 			"/LimeImpulseGrenade/WID_LimeImpulseGrenade.WID_LimeImpulseGrenade",
-			"/LimeKatana/Weapons/Sword/WID_LimeKatana.WID_LimeKatana",
+			"/LimeKatana/Weapons/Sword/WID_Lime_Sword_C.WID_Lime_Sword_C",
+			"/LimeKatana/Weapons/Sword/WID_Lime_Sword_R.WID_Lime_Sword_R",
+			"/LimeKatana/Weapons/Sword/WID_Lime_Sword_SR.WID_Lime_Sword_SR",
+			"/LimeKatana/Weapons/Sword/WID_Lime_Sword_UC.WID_Lime_Sword_UC",
+			"/LimeKatana/Weapons/Sword/WID_Lime_Sword_VR.WID_Lime_Sword_VR",
 			"/LimeKymera/WID_Lime_Kymera.WID_Lime_Kymera",
 			"/LimeKymera/WID_Lime_Kymera_R.WID_Lime_Kymera_R",
 			"/LimeKymera/WID_Lime_Kymera_SR.WID_Lime_Kymera_SR",
@@ -15172,7 +15181,11 @@
 			"/LimeMakeshiftRevolver/Weapons/WID_Lime_MakeshiftRevolver_R.WID_Lime_MakeshiftRevolver_R",
 			"/LimeMakeshiftRevolver/Weapons/WID_Lime_MakeshiftRevolver_UC.WID_Lime_MakeshiftRevolver_UC",
 			"/LimeMeatCooked/WID_Lime_Meat.WID_Lime_Meat",
-			"/LimeMedievalSword/WID_Edged_MedievalSword_UC_Lime.WID_Edged_MedievalSword_UC_Lime",
+			"/LimeMedievalSword/WID_Lime_HandAxe_C.WID_Lime_HandAxe_C",
+			"/LimeMedievalSword/WID_Lime_HandAxe_R.WID_Lime_HandAxe_R",
+			"/LimeMedievalSword/WID_Lime_HandAxe_SR.WID_Lime_HandAxe_SR",
+			"/LimeMedievalSword/WID_Lime_HandAxe_UC.WID_Lime_HandAxe_UC",
+			"/LimeMedievalSword/WID_Lime_HandAxe_VR.WID_Lime_HandAxe_VR",
 			"/LimePatchworkTool/AGID_LimePatchworkTool.AGID_LimePatchworkTool",
 			"/LimePizza/WID_Lime_PizzaSlice.WID_Lime_PizzaSlice",
 			"/LimePlayerSpawn/ItemDefinitions/PID_Device_LimePlayerSpawnPad.PID_Device_LimePlayerSpawnPad",
@@ -17496,6 +17509,7 @@
 			"/CreativeCoreDevices/Device_MovementModulator_V2.Device_MovementModulator_V2_C",
 			"/CreativeCoreDevices/Device_PinballBumper_V2.Device_PinballBumper_V2_C",
 			"/CreativeCoreDevices/Device_PinballFlipper_V2.Device_PinballFlipper_V2_C",
+			"/CreativeCoreDevices/Device_Powerup_DamageAmplifier_V2.Device_Powerup_DamageAmplifier_V2_C",
 			"/CreativeCoreDevices/Device_Powerup_VisualEffect_V2.Device_Powerup_VisualEffect_V2_C",
 			"/CreativeCoreDevices/Device_PropOMaticManager_V2.Device_PropOMaticManager_V2_C",
 			"/CreativeCoreDevices/Device_PulseTrigger.Device_PulseTrigger_C",

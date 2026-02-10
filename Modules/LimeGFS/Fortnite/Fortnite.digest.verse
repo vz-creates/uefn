@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.30-CL-49874243
+# Generated from build: ++Fortnite+Release-39.40-CL-50577083
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -1708,6 +1708,12 @@ Devices<public> := module {
 
     # Toggles between `Enable` and `Disable`.
     ToggleEnabled<public>(): void = external {}
+
+    # The current capture progress of the capture area.
+    # As a team captures the area, the value will increase from 0.0 to 1.0, with 1.0 representing a fully captured area.
+    # If the device supports neutralization or decay, the value will drop back towards 0.0 as it returns to neutral.
+    # If the device is disabled, the capture progress is set to 0.0.
+    var<private> CaptureProgress<public>: float = external {}
   }
 
   # Spawns and tracks a single item as a game objective (e.g. flag).
@@ -7406,11 +7412,20 @@ Devices<public> := module {
     # Disable the device.
     DisableReboot<override>(): void = external {}
 
+    # Disable the revival seat.
+    DisableRevive<public>(): void = external {}
+
     # Enable the device.
     EnableReboot<override>(): void = external {}
 
+    # Enable the revival seat.
+    EnableRevive<public>(): void = external {}
+
     # Succeeds if the device is enabled, fails if it's disabled.
     IsEnabledReboot<override>()<transacts><decides>: void = external {}
+
+    # Succeeds if the revival seat is enabled, fails if it's disabled.
+    IsEnabledRevive<public>()<transacts><decides>: void = external {}
 
     # Triggers when a player purchases a Reboot Card.
     #  * `agent` is the player that purchased the Reboot Card.

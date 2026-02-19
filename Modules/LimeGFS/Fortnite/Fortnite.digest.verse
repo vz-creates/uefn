@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.40-CL-50577083
+# Generated from build: ++Fortnite+Release-39.50-CL-50854790
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -296,9 +296,8 @@ AI<public> := module {
       Target: navigation_target,
       ?MovementType: movement_type = external {},
       ?ReachRadius: float = external {},
-      ?AllowPartialPath: logic = external {})<suspends>: result(navigation_action_success_type,
-      navigation_action_error_type
-    )
+      ?AllowPartialPath: logic = external {}
+    )<suspends>: result(navigation_action_success_type, navigation_action_error_type)
 
     # Stop navigation.
     StopNavigation<native><public>(): void
@@ -948,9 +947,8 @@ Devices<public> := module {
   SpawnProp<native><public>(
     Asset: creative_prop_asset,
     Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-    Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: tuple(?creative_prop,
-    spawn_prop_result
-  )
+    Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+  )<transacts>: tuple(?creative_prop, spawn_prop_result)
 
   # Spawns a `creative_prop` at the specified `Transform`. `Units are in cm.
   # Returns tuple:
@@ -958,9 +956,8 @@ Devices<public> := module {
   #  1: Success or failure results.
   SpawnProp<native><public>(
     Asset: creative_prop_asset,
-    Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<transacts>: tuple(?creative_prop,
-    spawn_prop_result
-  )
+    Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform
+  )<transacts>: tuple(?creative_prop, spawn_prop_result)
 
   # Used to set up islands so players will earn Battle Pass XP when they interact with your island. Accolades are achievements or accomplishments that players can complete to earn XP.
   accolades_device<public> := class<concrete><final>(creative_device_base) {
@@ -1118,10 +1115,10 @@ Devices<public> := module {
     Pause<public>(Agent: agent): void = external {}
 
     # Resets affected building actors to the state they were in at the start of the round.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/assembly_device:)Reset<public>(): void = external {}
 
     # Resets affected building actors to the state they were in at the start of the round.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/assembly_device:)Reset<public>(Agent: agent): void = external {}
 
     # Show the hologram used to preview the fully assembled device
     ShowHologram<public>(): void = external {}
@@ -1335,7 +1332,7 @@ Devices<public> := module {
     PauseSequence<override>(): void = external {}
 
     # Restores vault to default state, deactivates the device, and heals all weakpoints to max health. Requires the device to be enabled.
-    Reset<override>(): void = external {}
+    (/Fortnite.com/Devices/bank_vault_interface:)Reset<override>(): void = external {}
 
     # Restores the active weakpoint to full health. Requires the device to be enabled. Must have active weakpoint.
     RestoreActiveWeakpoint<override>(): void = external {}
@@ -1402,7 +1399,7 @@ Devices<public> := module {
     PauseSequence<public>(): void
 
     # Restores vault to default state, deactivates the device, and heals all weakpoints to max health. Requires the device to be enabled.
-    Reset<public>(): void
+    (/Fortnite.com/Devices/bank_vault_interface:)Reset<public>(): void
 
     # Restores the active weakpoint to full health. Requires the device to be enabled. Must have active weakpoint.
     RestoreActiveWeakpoint<public>(): void
@@ -1695,7 +1692,7 @@ Devices<public> := module {
     Neutralize<public>(): void = external {}
 
     # Resets control of this device for all teams.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/capture_area_device:)Reset<public>(): void = external {}
 
     # Sets the *Capture Height* (in meters) of the capture area.
     SetHeight<public>(Height: float): void = external {}
@@ -2127,7 +2124,7 @@ Devices<public> := module {
     Hide<public>(): void = external {}
 
     # Resets this device to its initial settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/color_changing_tiles_device:)Reset<public>(): void = external {}
 
     # Sets the color of the tile to `Agent`'s team color.
     (/Fortnite.com/Devices/color_changing_tiles_device:)SetTeam<public>(Agent: agent): void = external {}
@@ -2180,7 +2177,7 @@ Devices<public> := module {
     NotEnoughItemsEvent<public>: listenable(agent) = external {}
 
     # Resets this device to its original settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/conditional_button_device:)Reset<public>(): void = external {}
 
     # Sets the text that appears when `agent`s approach the device. `Text` is limited to `150` characters and will revert back to default if empty.
     SetInteractionText<public>(Text: message): void = external {}
@@ -2556,7 +2553,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets the light to its initial state.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/customizable_light_device:)Reset<public>(): void = external {}
 
     # Toggles between `TurnOn` and `TurnOff`.
     Toggle<public>(): void = external {}
@@ -2861,7 +2858,7 @@ Devices<public> := module {
     Hide<public>(): void = external {}
 
     # Resets this device.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/explosive_device:)Reset<public>(): void = external {}
 
     # Shows this device in the world.
     Show<public>(): void = external {}
@@ -2915,7 +2912,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets the number of available uses for this device back to *Uses Allowed*.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/fishing_zone_device:)Reset<public>(): void = external {}
 
     # Returns all caught and removed items to the inventory. This only works when *Pool Type* is set to *Device Inventory*.
     Restock<public>(): void = external {}
@@ -2937,7 +2934,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets fuel stock to *Fuel Capacity* value.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/fuel_pump_device:)Reset<public>(): void = external {}
   }
 
   # Used to update the camera’s current viewpoint and rotation based on current camera mode.
@@ -3115,7 +3112,7 @@ Devices<public> := module {
     HiredEvent<public>: listenable(device_ai_interaction_result) = external {}
 
     # Resets the spawn count allowing spawning of a new batch of guards.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/guard_spawner_device:)Reset<public>(): void = external {}
 
     # Allows guards to be hired.
     SetGuardsHireable<public>(): void = external {}
@@ -3245,7 +3242,7 @@ Devices<public> := module {
     IsSpawned<public>()<transacts><decides>: void
 
     # Resets the Spire to its initial state.
-    Reset<public>(): void
+    (/Fortnite.com/Devices/has_spire_functionality:)Reset<public>(): void
 
     # Spawns the Spire, causing it to become visible and enabling collision
     #  *  Does nothing if the Spire is already spawned or destroyed
@@ -3342,7 +3339,7 @@ Devices<public> := module {
 
     # Close the chest, refresh its loot, and set the chest to its default locked state for everyone.
     #  * The default locked state is initialized by the *Start Locked* user option and is overridden by *LockForAll* and *UnlockForAll*.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/hero_chest_device:)Reset<public>(): void = external {}
 
     # Unlock the chest for `Agent`. Has no effect if the chest is open.
     Unlock<public>(Agent: agent): void = external {}
@@ -3508,7 +3505,7 @@ Devices<public> := module {
     # Reset the hive stash. This closes it, sets it to full health, and sets *ShouldPlayRescuedAnimation*, *CanBeDamaged*, *CanDropItems*, *InteractTextOverride*, and *HiveStashStyle* to their initial values.
     #  * This can also clear the link to a spawner depending on *ShouldKeepLinkOnReset*.
     #  * The hive stash will not reset if the rescue animation is currently playing.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/hive_stash_device:)Reset<public>(): void = external {}
 
     # Set the device's current health.
     SetHealth<override>(Health: float)<transacts>: void = external {}
@@ -4052,7 +4049,7 @@ Devices<public> := module {
     GetAgents<public>()<transacts>: []agent = external {}
 
     # Resets the spawn count allowing spawning of a new batch of characters.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/npc_spawner_device:)Reset<public>(): void = external {}
 
     # Tries to spawn a character.
     Spawn<public>(): void = external {}
@@ -4190,7 +4187,7 @@ Devices<public> := module {
     IsSpawned<override>()<transacts><decides>: void = external {}
 
     # Resets the Spire to its initial state.
-    Reset<override>(): void = external {}
+    (/Fortnite.com/Devices/has_spire_functionality:)Reset<override>(): void = external {}
 
     # Sets the main target of the Spire, causing the Spire to focus attacks on the 'TargetAgent' while they are within the `Activation Distance`.
     #  * `TargetAgent` is an invalid `agent`, this function will clear the target.
@@ -4575,7 +4572,7 @@ Devices<public> := module {
     RemovedEvent<public>: listenable(agent) = external {}
 
     # Resets *Target Player Count* to the default value defined in the device settings. If *Target Player Count* was previously incremented or decremented, this reset immediately triggers a new comparison.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/player_counter_device:)Reset<public>(): void = external {}
 
     # Sets the number of players required for this counter to succeed. Immediately triggers a new comparison.
     SetTargetCount<public>(Count: int): void = external {}
@@ -4828,7 +4825,7 @@ Devices<public> := module {
     Enable<public>(Agent: agent): void = external {}
 
     # Resets to the starting strength, ending any ongoing blending only for the instigating `Agent`.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/post_process_device:)Reset<public>(Agent: agent): void = external {}
 
     # Resets to the starting strength, ending any ongoing blending for all players.
     ResetForAll<public>(): void = external {}
@@ -5023,7 +5020,7 @@ Devices<public> := module {
     PropHitEvent<public>: listenable(tuple()) = external {}
 
     # Moves the prop to its original position.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/prop_mover_device:)Reset<public>(): void = external {}
 
     # Reverses the prop's moving direction.
     Reverse<public>(): void = external {}
@@ -5653,10 +5650,10 @@ Devices<public> := module {
     MaxTriggersEvent<public>: listenable(agent) = external {}
 
     # Resets this device to its original state.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/score_manager_device:)Reset<public>(): void = external {}
 
     # Resets this device to its original state.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/score_manager_device:)Reset<public>(Agent: agent): void = external {}
 
     # Signaled when the this device awards points to an `agent`.
     # Sends the `agent` who received the points.
@@ -5720,7 +5717,7 @@ Devices<public> := module {
     IsSpawned<override>()<transacts><decides>: void = external {}
 
     # Resets the Spire to its initial state.
-    Reset<override>(): void = external {}
+    (/Fortnite.com/Devices/has_spire_functionality:)Reset<override>(): void = external {}
 
     # Spawns the Spire, causing it to become visible and enabling collision
     #  *  Does nothing if the Spire is already spawned or destroyed.
@@ -5957,7 +5954,7 @@ Devices<public> := module {
     PopUpEvent<public>: listenable(tuple()) = external {}
 
     # Resets the target to its initial settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/shooting_range_target_device:)Reset<public>(): void = external {}
   }
 
   # A set of customizable pop up targets that can be hit by players to trigger various events.
@@ -6020,7 +6017,7 @@ Devices<public> := module {
     PopUpEvent<public>: listenable(tuple()) = external {}
 
     # Resets the target to its initial settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/shooting_range_target_track_device:)Reset<public>(): void = external {}
   }
 
   # Used to trigger a custom response to a *Primary* or *Secondary* signal, sent by a *Signal Remote* item.
@@ -6861,10 +6858,10 @@ Devices<public> := module {
     PauseForAll<public>(Agent: agent): void = external {}
 
     # Resets the timer back to its base time and stops it.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/timer_device:)Reset<public>(): void = external {}
 
     # Resets the timer back to its base time and stops it for `Agent`.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/timer_device:)Reset<public>(Agent: agent): void = external {}
 
     # Resets the timer back to its base time and stops it for all `agent`s.
     ResetForAll<public>(): void = external {}
@@ -6991,7 +6988,7 @@ Devices<public> := module {
     RemoveFromAll<public>(): void = external {}
 
     # Resets the progress for `Agent` (and any `agent`s sharing progress).
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/tracker_device:)Reset<public>(Agent: agent): void = external {}
 
     # Saves tracked progress for `Agent`. Only valid if *Use Persistence* is set to *Use*.
     Save<public>(Agent: agent): void = external {}
@@ -7056,7 +7053,7 @@ Devices<public> := module {
     )<suspends>: move_to_result = external {}
 
     # Restores the tile removed when this device was triggered.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/trick_tile_device:)Reset<public>(): void = external {}
 
     # Teleports the `trick_tile_device` to the specified `Position` and `Rotation`.
     # Only the trigger will teleport, the target buildings will not change.
@@ -7106,7 +7103,7 @@ Devices<public> := module {
     GetTriggerCountRemaining<public>()<transacts>: int = external {}
 
     # Resets the number of times this device has been activated. This will set `GetTriggerCountRemaining` back to `0`
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/trigger_base_device:)Reset<public>(): void = external {}
 
     # Sets the maximum amount of times this device can trigger.
     #  * `0` can be used to indicate no limit on trigger count.
@@ -7823,7 +7820,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets the water level in the volume to the value set in the *Default Vertical Water Percentage* option.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/water_device:)Reset<public>(): void = external {}
 
     # Resumes either filling or emptying the volume.
     ResumeVerticalMovement<public>(): void = external {}
@@ -7896,7 +7893,7 @@ Devices<public> := module {
     GetSpawnLimit<public>()<transacts>: int = external {}
 
     # Resets the count on the *Total Spawn Count* option.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/wildlife_spawner_device:)Reset<public>(): void = external {}
 
     # Restores energy to wildlife belonging to `Agent` by *Energy Restore Amount*.
     RestoreEnergy<public>(Agent: agent): void = external {}
@@ -12320,9 +12317,8 @@ Marketplace<public> := module {
   # Runtime error if `entitlement` is used directly.
   GetEntitlementsChangedEvent<native><public>(
     Player: player,
-    entitlement_type: subtype(entitlement)): listenable(tuple(player,
-    []entitlement_change(entitlement_type)
-  ))
+    entitlement_type: subtype(entitlement)
+  ): listenable(tuple(player, []entitlement_change(entitlement_type)))
 
   GetPriceVBucks<native><public>(P: price_vbucks): float
 
@@ -12331,9 +12327,8 @@ Marketplace<public> := module {
   # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
   GetPurchasedEntitlements<native><public>(
     Player: player,
-    entitlement_type: subtype(entitlement))<suspends>: []tuple(entitlement_type,
-    int
-  )
+    entitlement_type: subtype(entitlement)
+  )<suspends>: []tuple(entitlement_type, int)
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Grant an entitlement directly to `Player`.
@@ -12749,6 +12744,7 @@ Teams<public> := module {
   using { /Fortnite.com/Playspaces }
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /UnrealEngine.com/Temporary/UI }
+  using { /Verse.org/Assets }
   using { /Verse.org/Colors }
   using { /Verse.org/Simulation }
   # Button with text message common base class. Displays a button with a custom message string.
@@ -12764,6 +12760,10 @@ Teams<public> := module {
 
     # Sets the text displayed in the widget.
     SetText<native><public>(InText: message): void
+
+    @experimental
+    # The UI input action that will trigger the Click event of this button.
+    var TriggeringInputAction<public>: ?input_action(logic) = external {}
   }
 }
 

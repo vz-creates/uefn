@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.40-CL-50577083
+# Generated from build: ++Fortnite+Release-39.50-CL-50854790
 #################################################
 
 AI<public> := module {
@@ -621,9 +621,8 @@ AI<public> := module {
       Target: navigation_target,
       ?MovementType: movement_type = external {},
       ?ReachRadius: float = external {},
-      ?AllowPartialPath: logic = external {})<suspends>: result(navigation_action_success_type,
-      navigation_action_error_type
-    )
+      ?AllowPartialPath: logic = external {}
+    )<suspends>: result(navigation_action_success_type, navigation_action_error_type)
 
     OnInitialized<native><override>(): void
 
@@ -1410,6 +1409,20 @@ Devices<public> := module {
 
   (MovableObject: creative_movable_object_base).TeleportToInternalImpl<native><epic_internal>(Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<transacts>: teleport_to_result
 
+  @experimental
+  # Removes any persona assignment for a participant.
+  (Participant: agent).ClearConversationTarget<native><epic_internal>()<transacts>: void
+
+  @experimental
+  # Returns the persona a participant is assigned to, fails if unassigned.
+  (Participant: agent).GetConversationTarget<native><epic_internal>()<reads><decides>: conversation_target
+
+  @experimental
+  # A participant can only speak to one conversation target at a time.
+  #  A conversation target can be spoken to by many participants at a time.
+  #  Fails if the conversation target refuses the addition, or if the participant is assigned to a different conversation target.
+  (Participant: agent).SetConversationTarget<native><epic_internal>(ConversationTarget: conversation_target)<transacts><decides>: void
+
   using { /Fortnite.com/AI }
   using { /Fortnite.com/Playspaces }
   using { /UnrealEngine.com/Temporary/Diagnostics }
@@ -1674,6 +1687,18 @@ Devices<public> := module {
 
   HandleMoveToInternalResult<epic_internal>(Result: move_to_internal_result): move_to_result = external {}
 
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakePersonaErrorResult<native_callable><epic_internal>(Result: error_type where error_type: type): result(
+    false,
+    error_type
+  ) = external {}
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakePersonaSuccessResult<native_callable><epic_internal>(Result: success_type where success_type: type): result(
+    success_type,
+    false
+  ) = external {}
+
   Patchwork<public> := module {
     cable_splitter_device<public> := class<concrete><final>(patchwork_device) {}
 
@@ -1887,9 +1912,8 @@ Devices<public> := module {
   SpawnProp<native><public>(
     Asset: creative_prop_asset,
     Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
-    Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: tuple(?creative_prop,
-    spawn_prop_result
-  )
+    Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+  )<transacts>: tuple(?creative_prop, spawn_prop_result)
 
   # Spawns a `creative_prop` at the specified `Transform`. `Units are in cm.
   # Returns tuple:
@@ -1897,9 +1921,8 @@ Devices<public> := module {
   #  1: Success or failure results.
   SpawnProp<native><public>(
     Asset: creative_prop_asset,
-    Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<transacts>: tuple(?creative_prop,
-    spawn_prop_result
-  )
+    Transform: (/UnrealEngine.com/Temporary/SpatialMath:)transform
+  )<transacts>: tuple(?creative_prop, spawn_prop_result)
 
   # Returns a `string` representation of `move_to_internal_result` objects.
   (/Fortnite.com/Devices:)ToString<epic_internal>(MoveToInternalResult: move_to_internal_result)<computes>: string = external {}
@@ -1989,6 +2012,8 @@ Devices<public> := module {
     PatrolPathStoppedEvent<public>: listenable(agent) = external {}
   }
 
+  ai_prompt_device<epic_internal> := class {}
+
   # Used to boost `agent`s, vehicles, and other objects upwards into the air.
   air_vent_device<public> := class<concrete><final>(creative_device_base) {
     # Activates this device.
@@ -2067,10 +2092,10 @@ Devices<public> := module {
     Pause<public>(Agent: agent): void = external {}
 
     # Resets affected building actors to the state they were in at the start of the round.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/assembly_device:)Reset<public>(): void = external {}
 
     # Resets affected building actors to the state they were in at the start of the round.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/assembly_device:)Reset<public>(Agent: agent): void = external {}
 
     # Show the hologram used to preview the fully assembled device
     ShowHologram<public>(): void = external {}
@@ -2289,7 +2314,7 @@ Devices<public> := module {
     PauseSequence<override>(): void = external {}
 
     # Restores vault to default state, deactivates the device, and heals all weakpoints to max health. Requires the device to be enabled.
-    Reset<override>(): void = external {}
+    (/Fortnite.com/Devices/bank_vault_interface:)Reset<override>(): void = external {}
 
     # Restores the active weakpoint to full health. Requires the device to be enabled. Must have active weakpoint.
     RestoreActiveWeakpoint<override>(): void = external {}
@@ -2356,7 +2381,7 @@ Devices<public> := module {
     PauseSequence<public>(): void
 
     # Restores vault to default state, deactivates the device, and heals all weakpoints to max health. Requires the device to be enabled.
-    Reset<public>(): void
+    (/Fortnite.com/Devices/bank_vault_interface:)Reset<public>(): void
 
     # Restores the active weakpoint to full health. Requires the device to be enabled. Must have active weakpoint.
     RestoreActiveWeakpoint<public>(): void
@@ -2696,7 +2721,7 @@ Devices<public> := module {
     Neutralize<public>(): void = external {}
 
     # Resets control of this device for all teams.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/capture_area_device:)Reset<public>(): void = external {}
 
     # Sets the *Capture Height* (in meters) of the capture area.
     SetHeight<public>(Height: float): void = external {}
@@ -2761,7 +2786,6 @@ Devices<public> := module {
   }
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /Verse.org/Assets }
   # Used to spawn a carryable object into the experience.
   carryable_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
     # Signaled when the carryable collides with an agent.
@@ -3172,7 +3196,7 @@ Devices<public> := module {
     Hide<public>(): void = external {}
 
     # Resets this device to its initial settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/color_changing_tiles_device:)Reset<public>(): void = external {}
 
     # Sets the color of the tile to `Agent`'s team color.
     (/Fortnite.com/Devices/color_changing_tiles_device:)SetTeam<public>(Agent: agent): void = external {}
@@ -3228,7 +3252,7 @@ Devices<public> := module {
     NotEnoughItemsEvent<public>: listenable(agent) = external {}
 
     # Resets this device to its original settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/conditional_button_device:)Reset<public>(): void = external {}
 
     # Sets the text that appears when `agent`s approach the device. `Text` is limited to `150` characters and will revert back to default if empty.
     SetInteractionText<public>(Text: message): void = external {}
@@ -3321,6 +3345,48 @@ Devices<public> := module {
     # The Speaker Name of the device. When the value is changed, active conversations are not updated.
     # The value of SpeakerName is the default value used when initiating a conversation.
     var SpeakerName<public>: message = external {}
+  }
+
+  @experimental
+  conversation_target<native><epic_internal> := interface<unique><epic_internal> {
+    # When agent targets Self for conversation.
+    AddConversationTargeterEvent<final><public>: listenable(agent) = external {}
+
+    # Allow player to to talk to this persona.
+    AddPlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
+
+    # Succeeds if the agent can target Self for conversation.
+    CanConversationTargeterBeAdded<native_callable><epic_internal>(ConversationTargeter: agent)<reads><decides>: void = external {}
+
+    # When agent untargets Self for conversation.
+    RemoveConversationTargeterEvent<final><public>: listenable(agent) = external {}
+
+    # Stop player from being able to talk to this persona.
+    RemovePlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
+
+    # Signals the AddConversationTargeterEvent.
+    SignalAddConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
+
+    # Signals the RemoveConversationTargeterEvent.
+    SignalRemoveConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
+
+    # Listenable which is signaled when the player starts prompting the persona.
+    StartHearEvent<public>: listenable(agent)
+
+    # Listenable which is signaled when the persona starts talking.
+    #  1/ The agent (if involved) which prompted the response.
+    #  2/ The message being said.
+    #  3/ Cancelable to stop the target from talking.
+    StartSayEvent<public>: listenable(tuple(?agent, message, cancelable))
+
+    # Listenable which is signaled when the player finishes prompting the persona.
+    StopHearEvent<public>: listenable(agent)
+
+    # Listenable which is signaled when the target stops talking.
+    StopSayEvent<public>: listenable(tuple())
+
+    # All the agents currently targeting Self for conversation.
+    var<private> ConversationTargeters<public>: []agent
   }
 
   # Used to place a crash pad that can bounce players and protect them from fall damage.
@@ -3623,7 +3689,7 @@ Devices<public> := module {
   # Used to create a specialized light which can be enabled and disabled and set to a desired color in response to in game events.
   customizable_color_light_device<epic_internal> := class<concrete><final>(creative_device_base) {
     # Resets the light to its initial state.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/customizable_color_light_device:)Reset<public>(Agent: agent): void = external {}
 
     # Sets the light color to `Agent`'s team color.
     SetToTeamColor<public>(Agent: agent): void = external {}
@@ -3658,7 +3724,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets the light to its initial state.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/customizable_light_device:)Reset<public>(): void = external {}
 
     # Toggles between `TurnOn` and `TurnOff`.
     Toggle<public>(): void = external {}
@@ -4236,7 +4302,7 @@ Devices<public> := module {
     Hide<public>(): void = external {}
 
     # Resets this device.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/explosive_device:)Reset<public>(): void = external {}
 
     # Shows this device in the world.
     Show<public>(): void = external {}
@@ -4290,7 +4356,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets the number of available uses for this device back to *Uses Allowed*.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/fishing_zone_device:)Reset<public>(): void = external {}
 
     # Returns all caught and removed items to the inventory. This only works when *Pool Type* is set to *Device Inventory*.
     Restock<public>(): void = external {}
@@ -4312,7 +4378,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets fuel stock to *Fuel Capacity* value.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/fuel_pump_device:)Reset<public>(): void = external {}
   }
 
   function_parameter_agent<native><epic_internal> := class<computes>(function_parameter_base) {
@@ -4556,7 +4622,7 @@ Devices<public> := module {
     HiredEvent<public>: listenable(device_ai_interaction_result) = external {}
 
     # Resets the spawn count allowing spawning of a new batch of guards.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/guard_spawner_device:)Reset<public>(): void = external {}
 
     # Allows guards to be hired.
     SetGuardsHireable<public>(): void = external {}
@@ -4686,7 +4752,7 @@ Devices<public> := module {
     IsSpawned<public>()<transacts><decides>: void
 
     # Resets the Spire to its initial state.
-    Reset<public>(): void
+    (/Fortnite.com/Devices/has_spire_functionality:)Reset<public>(): void
 
     # Spawns the Spire, causing it to become visible and enabling collision
     #  *  Does nothing if the Spire is already spawned or destroyed
@@ -4783,7 +4849,7 @@ Devices<public> := module {
 
     # Close the chest, refresh its loot, and set the chest to its default locked state for everyone.
     #  * The default locked state is initialized by the *Start Locked* user option and is overridden by *LockForAll* and *UnlockForAll*.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/hero_chest_device:)Reset<public>(): void = external {}
 
     StringToMessage<localizes><epic_internal>(Value: string): message = external {}
 
@@ -4955,7 +5021,7 @@ Devices<public> := module {
     # Reset the hive stash. This closes it, sets it to full health, and sets *ShouldPlayRescuedAnimation*, *CanBeDamaged*, *CanDropItems*, *InteractTextOverride*, and *HiveStashStyle* to their initial values.
     #  * This can also clear the link to a spawner depending on *ShouldKeepLinkOnReset*.
     #  * The hive stash will not reset if the rescue animation is currently playing.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/hive_stash_device:)Reset<public>(): void = external {}
 
     # Set the device's current health.
     SetHealth<override>(Health: float)<transacts>: void = external {}
@@ -5557,6 +5623,8 @@ Devices<public> := module {
     VehicleTriggeredEvent<public>: listenable(?agent) = external {}
   }
 
+  non_parametric_agent_subscribable_persona_event<epic_internal> := class(subscribable_event_intrnl(agent)) {}
+
   # Used to spawn NPCs made with Character Definition asset.
   npc_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Despawns all characters. If set, `Instigator` will be considered as the eliminator of those characters.
@@ -5577,7 +5645,7 @@ Devices<public> := module {
     GetAgents<public>()<transacts>: []agent = external {}
 
     # Resets the spawn count allowing spawning of a new batch of characters.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/npc_spawner_device:)Reset<public>(): void = external {}
 
     # Tries to spawn a character.
     Spawn<public>(): void = external {}
@@ -5715,7 +5783,7 @@ Devices<public> := module {
     IsSpawned<override>()<transacts><decides>: void = external {}
 
     # Resets the Spire to its initial state.
-    Reset<override>(): void = external {}
+    (/Fortnite.com/Devices/has_spire_functionality:)Reset<override>(): void = external {}
 
     # Sets the main target of the Spire, causing the Spire to focus attacks on the 'TargetAgent' while they are within the `Activation Distance`.
     #  * `TargetAgent` is an invalid `agent`, this function will clear the target.
@@ -5934,6 +6002,169 @@ Devices<public> := module {
     IsPerceived<public>(Agent: agent)<transacts><decides>: void = external {}
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Colors }
+  @experimental
+  # NPC Persona component
+  persona_component<native><epic_internal> := class<final_super><epic_internal>(component, has_icon) {
+    var Icon<native><override>: texture = external {}
+
+    var<epic_internal> Color<native><public>: color = external {}
+
+    var<epic_internal> CosmeticDescription<native><public>: []string = external {}
+
+    var<epic_internal> Facts<native><public>: []string = external {}
+
+    var<epic_internal> HearingRange<native><public>: float = external {}
+
+    var<epic_internal> Name<native><public>: string
+
+    var<epic_internal> Voice<native><public>: string
+
+    var<epic_internal> Volume<native><public>: float = external {}
+  }
+
+  @experimental
+  persona_conversation_target<native><epic_internal> := class(conversation_target) {
+    # Adds a fact which is assessed at when a persona is prompted. The fact is generated by calling the FactFunc.
+    AddDynamicFact<native><public>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+
+    # Add information about, or known by, the persona. Cancelable is used to remove the fact.
+    # # The persona knows these facts, and device facts.
+    AddFact<native><public>(Fact: string)<transacts>: cancelable
+
+    # Allow player to to talk to this persona.
+    AddPlayer<native><override>(Player: agent)<transacts><decides>: void
+
+    # Fails if the participant is not in the list of participants
+    CanConversationTargeterBeAdded<override><native>(ConversationTargeter: agent)<reads><decides>: void
+
+    # Returns a diagnostic of the Persona facts, both static and dynamic.
+    DiagnoseFacts<native><public>()<reads>: diagnostic
+
+    # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
+    PromptFailureEvent<native><public>: listenable(persona_prompt_error) = external {}
+
+    # Requests the Persona to talk on the topic provided.
+    PromptToTalk<native><public>(Topic: message): void
+
+    # Requests the Persona to talk on the topic provided.
+    PromptToTalk<native><public>(Topic: string): void
+
+    # Stop player from being able to talk to this persona.
+    RemovePlayer<native><override>(Player: agent)<transacts><decides>: void
+
+    # Listenable which is signaled when the player starts prompting the persona.
+    StartHearEvent<native><override>: listenable(agent) = external {}
+
+    # Listenable which is signaled when the persona starts talking.
+    #  1/ The agent (if involved) which prompted the response.
+    #  2/ The message being said.
+    #  3/ Cancelable to stop the target from talking.
+    StartSayEvent<native><override>: listenable(tuple(?agent, message, cancelable)) = external {}
+
+    # Listenable which is signaled when the player finishes prompting the persona.
+    StopHearEvent<native><override>: listenable(agent) = external {}
+
+    # Listenable which is signaled when the target stops talking.
+    StopSayEvent<native><override>: listenable(tuple()) = external {}
+
+    # The result will conform to the result type. The result type must be a struct or a concrete class with no private fields which can contain
+    # numeric types, messages, bools and enums, as well as structs, concrete classes with no private fields or arrays which only contain those types, anything else results in an error.
+    # Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
+    # The result will conform to the result type. The result type must be a struct or a concrete class with no private fields which can contain
+    # numeric types, messages, bools and enums, as well as structs, concrete classes with no private fields or arrays which only contain those types, anything else results in an error.
+    # Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
+    SubscribeToResponseType<native><public>(response_type: type, Callback: type { _(: ?agent, : response_type): void }, Required: logic)<transacts>: cancelable
+
+    # All the agents currently targeting Self for conversation.
+    var ConversationTargeters<override>: []agent = external {}
+  }
+
+  @experimental
+  # A persona device manages conversations involving one or multiple persona objects
+  # that are either standalone (announcer) or in the future attachable to NPCs,
+  # behind the scenes using a single LLM session.
+  # The persona device sees all conversations by all personas and participants.
+  # The persona device only sees facts added to the device.
+  # A persona also sees all conversations among all of its device's personas and participants.
+  # A persona sees all facts added to its device and itself.
+  persona_device<native><epic_internal> := class<concrete><final>(creative_device_base) {
+    # Adds a fact which is assessed at when the device, or a persona is prompted. The fact is generated by calling the FactFunc.
+    AddDynamicFact<native><epic_internal>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+
+    # Add general information to the device. Cancelable is used to remove the fact.
+    # The persona knows these facts, and their persona facts.
+    AddFact<native><epic_internal>(Fact: string)<transacts>: cancelable
+
+    # Attempts to add a player to the list of participants on this device.
+    # Does nothing if the agent does not meet the criteria of participation configured on the device.
+    AddParticipant<public>(Agent: agent): void = external {}
+
+    # Attempts to add a persona on this device.
+    AddPersona<native><public>((local:)Persona: agent)<transacts><decides>: persona_conversation_target
+
+    # Removes all conversation history from the device.
+    ClearHistory<native><public>()<transacts>: void
+
+    # Returns the ID for the player.
+    GetPlayerParticipantId<native><public>(Player: player)<reads>: string
+
+    @available { MinUploadedAtFNVersion := 3810 }
+    # The result will conform to the result type. The result type must be a struct or a concrete class with no private fields which can contain
+    # numeric types, messages, bools and enums, as well as structs, concrete classes with no private fields or arrays which only contain those types, anything else results in an error.
+    # Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
+    Prompt<native><epic_internal>(
+      UserPrompt: string,
+      response_type: type
+    )<suspends>: result(response_type, persona_prompt_error)
+
+    # Removes an agent from the participants.
+    RemoveParticipant<public>(Agent: agent): void = external {}
+
+    # Attempts to remove a persona on this device.
+    RemovePersona<native><public>((local:)Persona: agent)<transacts>: void
+
+    # Fired when one of the response event criteria are met.
+    # 1/ the agent, if any, which prompted the persona to trigger the event
+    # 2/ the ID of the response event criteria which was met
+    ResponseEvent<public>: listenable(tuple(?agent, int)) = external {}
+
+    # All the players in the channel with the personas managed by this device.
+    var<private> Participants<public>: []agent = external {}
+
+    # Direct access to all personas configured on this device.
+    var<private> Personas<public>: []persona_conversation_target = external {}
+
+    # Different criteria, which if the LLM evaluates to be true, will fire the corresponding event
+    var<private> ResponseEventCriteria<public>: [int][]string = external {}
+  }
+
+  @experimental
+  persona_prompt_character_limit_error<native><epic_internal> := class(persona_prompt_error) {}
+
+  @experimental
+  persona_prompt_error<native><epic_internal> := class {
+    Message<native><public>: message
+  }
+
+  @experimental
+  persona_prompt_moderated_error<native><epic_internal> := class(persona_prompt_error) {}
+
+  @experimental
+  persona_prompt_throttled_error<native><epic_internal> := class(persona_prompt_error) {}
+
+  @experimental
+  persona_prompt_timeout_error<native><epic_internal> := class(persona_prompt_error) {}
+
+  persona_type_subscription<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
+  }
+
+  persona_utterance<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
+  }
+
   # Physics boulder that can be dislodged and damage `agent`s, vehicles, creatures, and structures.
   physics_boulder_device<public> := class<concrete><final>(physics_object_base_device) {
     # Signaled when the balanced boulder is destroyed.
@@ -6100,7 +6331,7 @@ Devices<public> := module {
     RemovedEvent<public>: listenable(agent) = external {}
 
     # Resets *Target Player Count* to the default value defined in the device settings. If *Target Player Count* was previously incremented or decremented, this reset immediately triggers a new comparison.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/player_counter_device:)Reset<public>(): void = external {}
 
     # Sets the number of players required for this counter to succeed. Immediately triggers a new comparison.
     SetTargetCount<public>(Count: int): void = external {}
@@ -6252,10 +6483,10 @@ Devices<public> := module {
     # Enables this device.
     Enable<public>(): void = external {}
 
-    # Respawn `Agent` from the best available Player Spawner Device in this device’s *Spawn Group*.
+    # Respawn `Agent` from the best available Player Spawner Device in `Group`.
     # Best available spawner is determined by the settings on each spawner device, such as *Priority Group* and *Enemy Range Check*.
     # Force respawns if the player is already spawned.
-    RespawnPlayerFromPlayerSpawnerGroup<epic_internal>(Agent: agent): void = external {}
+    RespawnPlayerFromPlayerSpawnerGroup<epic_internal>(Agent: agent, Group: []creative_device_base): void = external {}
 
     # Spawn `Agent` from this device.
     # Force respawns if the agent is already spawned.
@@ -6264,10 +6495,6 @@ Devices<public> := module {
     # Signaled when an `agent` is spawned from this device.
     # Sends the `agent` that spawned.
     SpawnedEvent<public>: listenable(agent) = external {}
-
-    # Maps to the device option for *Spawner Group*
-    # The Spawn Group value can be used to spawn a player at a specific subset of spawner devices.
-    var SpawnerGroup<epic_internal>: int = external {}
   }
 
   # Used to create HUD text boxes that give players information, and allows responses to be customized to player choices.
@@ -6389,7 +6616,7 @@ Devices<public> := module {
     Enable<public>(Agent: agent): void = external {}
 
     # Resets to the starting strength, ending any ongoing blending only for the instigating `Agent`.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/post_process_device:)Reset<public>(Agent: agent): void = external {}
 
     # Resets to the starting strength, ending any ongoing blending for all players.
     ResetForAll<public>(): void = external {}
@@ -6584,7 +6811,7 @@ Devices<public> := module {
     PropHitEvent<public>: listenable(tuple()) = external {}
 
     # Moves the prop to its original position.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/prop_mover_device:)Reset<public>(): void = external {}
 
     # Reverses the prop's moving direction.
     Reverse<public>(): void = external {}
@@ -7265,10 +7492,10 @@ Devices<public> := module {
     MaxTriggersEvent<public>: listenable(agent) = external {}
 
     # Resets this device to its original state.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/score_manager_device:)Reset<public>(): void = external {}
 
     # Resets this device to its original state.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/score_manager_device:)Reset<public>(Agent: agent): void = external {}
 
     # Signaled when the this device awards points to an `agent`.
     # Sends the `agent` who received the points.
@@ -7332,7 +7559,7 @@ Devices<public> := module {
     IsSpawned<override>()<transacts><decides>: void = external {}
 
     # Resets the Spire to its initial state.
-    Reset<override>(): void = external {}
+    (/Fortnite.com/Devices/has_spire_functionality:)Reset<override>(): void = external {}
 
     # Spawns the Spire, causing it to become visible and enabling collision
     #  *  Does nothing if the Spire is already spawned or destroyed.
@@ -7607,7 +7834,7 @@ Devices<public> := module {
     PopUpEvent<public>: listenable(tuple()) = external {}
 
     # Resets the target to its initial settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/shooting_range_target_device:)Reset<public>(): void = external {}
   }
 
   # A set of customizable pop up targets that can be hit by players to trigger various events.
@@ -7670,7 +7897,7 @@ Devices<public> := module {
     PopUpEvent<public>: listenable(tuple()) = external {}
 
     # Resets the target to its initial settings.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/shooting_range_target_track_device:)Reset<public>(): void = external {}
   }
 
   # Used to trigger a custom response to a *Primary* or *Secondary* signal, sent by a *Signal Remote* item.
@@ -8545,10 +8772,10 @@ Devices<public> := module {
     PauseForAll<public>(Agent: agent): void = external {}
 
     # Resets the timer back to its base time and stops it.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/timer_device:)Reset<public>(): void = external {}
 
     # Resets the timer back to its base time and stops it for `Agent`.
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/timer_device:)Reset<public>(Agent: agent): void = external {}
 
     # Resets the timer back to its base time and stops it for all `agent`s.
     ResetForAll<public>(): void = external {}
@@ -8701,7 +8928,7 @@ Devices<public> := module {
     RemoveFromAll<public>(): void = external {}
 
     # Resets the progress for `Agent` (and any `agent`s sharing progress).
-    Reset<public>(Agent: agent): void = external {}
+    (/Fortnite.com/Devices/tracker_device:)Reset<public>(Agent: agent): void = external {}
 
     # Saves tracked progress for `Agent`. Only valid if *Use Persistence* is set to *Use*.
     Save<public>(Agent: agent): void = external {}
@@ -8773,7 +9000,7 @@ Devices<public> := module {
     )<suspends>: move_to_result = external {}
 
     # Restores the tile removed when this device was triggered.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/trick_tile_device:)Reset<public>(): void = external {}
 
     # Teleports the `trick_tile_device` to the specified `Position` and `Rotation`.
     # Only the trigger will teleport, the target buildings will not change.
@@ -8823,7 +9050,7 @@ Devices<public> := module {
     GetTriggerCountRemaining<public>()<transacts>: int = external {}
 
     # Resets the number of times this device has been activated. This will set `GetTriggerCountRemaining` back to `0`
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/trigger_base_device:)Reset<public>(): void = external {}
 
     # Sets the maximum amount of times this device can trigger.
     #  * `0` can be used to indicate no limit on trigger count.
@@ -8889,7 +9116,6 @@ Devices<public> := module {
     var<epic_internal> PaintColor_Internal<epic_internal>: ?color = external {}
   }
 
-  using { /Verse.org/Colors }
   # Used to spawn customizable boxes containing vehicle mods. Hit a box with a vehicle to apply the mod.
   vehicle_mod_box_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
     # Triggers whenever the mod box is destroyed regardless of whether a mod was applied.
@@ -9638,7 +9864,7 @@ Devices<public> := module {
     Enable<public>(): void = external {}
 
     # Resets the water level in the volume to the value set in the *Default Vertical Water Percentage* option.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/water_device:)Reset<public>(): void = external {}
 
     # Resumes either filling or emptying the volume.
     ResumeVerticalMovement<public>(): void = external {}
@@ -9714,7 +9940,7 @@ Devices<public> := module {
     GetSpawnLimit<public>()<transacts>: int = external {}
 
     # Resets the count on the *Total Spawn Count* option.
-    Reset<public>(): void = external {}
+    (/Fortnite.com/Devices/wildlife_spawner_device:)Reset<public>(): void = external {}
 
     # Restores energy to wildlife belonging to `Agent` by *Energy Restore Amount*.
     RestoreEnergy<public>(Agent: agent): void = external {}
@@ -15314,9 +15540,8 @@ Marketplace<public> := module {
   # Runtime error if `entitlement` is used directly.
   GetEntitlementsChangedEvent<native><public>(
     Player: player,
-    entitlement_type: subtype(entitlement)): listenable(tuple(player,
-    []entitlement_change(entitlement_type)
-  ))
+    entitlement_type: subtype(entitlement)
+  ): listenable(tuple(player, []entitlement_change(entitlement_type)))
 
   GetPriceVBucks<native><public>(P: price_vbucks): float
 
@@ -15325,9 +15550,8 @@ Marketplace<public> := module {
   # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
   GetPurchasedEntitlements<native><public>(
     Player: player,
-    entitlement_type: subtype(entitlement))<suspends>: []tuple(entitlement_type,
-    int
-  )
+    entitlement_type: subtype(entitlement)
+  )<suspends>: []tuple(entitlement_type, int)
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Grant an entitlement directly to `Player`.
@@ -15447,6 +15671,35 @@ Marketplace<public> := module {
   price_dimension<native><public> := class<computes><abstract><epic_internal> {}
 
   price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+}
+
+Mimic<public> := module {
+  MakeLLMString<native_callable><epic_internal>(String: string): llm_string = external {}
+
+  MakeLLMStringMessage<localizes><native_callable><epic_internal>(LLMString: llm_string): message = external {}
+
+  (/Fortnite.com/Mimic:)MakeLocalizableValue<epic_internal>(V: llm_string): localizable_llm_string = external {}
+
+  llm_fact<native><epic_internal> := class(cancelable) {
+    Cancel<native><override>()<transacts>: void
+  }
+
+  @experimental
+  llm_session<native><epic_internal> := class<concrete><final> {
+    # Adds a fact which is assessed at when the device, or a persona is prompted. The fact is generated by calling the FactFunc.
+    AddDynamicFact<native><public>(FactFunc: type { _()<reads>: string })<transacts>: cancelable
+
+    # Adds a fact to the llm, returns a cancelable which revokes the fact.
+    AddFact<native><public>(Fact: string): cancelable
+  }
+
+  llm_string<native><epic_internal> := class {
+    Value<native><epic_internal>: string
+  }
+
+  localizable_llm_string<native><epic_internal> := class(localizable_value) {
+    Value<native><epic_internal>: string
+  }
 }
 
 # Module import path: /Fortnite.com/Playspaces
@@ -16227,8 +16480,9 @@ UI<public> := module {
     # Sets the text displayed in the widget.
     SetText<native><public>(InText: message): void
 
+    @experimental
     # The UI input action that will trigger the Click event of this button.
-    var TriggeringInputAction<epic_internal>: ?input_action(logic) = external {}
+    var TriggeringInputAction<public>: ?input_action(logic) = external {}
   }
 
   ui_tab_info<native><epic_internal> := class<epic_internal> {
@@ -17025,5 +17279,54 @@ VerseInternalTesting<public> := module {
     verse_internal_testing_utils<native><final><epic_internal> := class {
       HasServerCommandLineOption<native><epic_internal>(Option: string)<reads><decides>: void
     }
+  }
+}
+
+VerseScreenshotTest<public> := module {
+  using { /Verse.org/Assets }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  screenshot_test_component<native><epic_internal> := class(mesh_component) {
+    @editable_slider(float) { MinValue := option { 0.000000 } }
+    Delay<native><epic_internal>: float = external {}
+
+    @editable
+    HdrScreenshot<native><epic_internal>: logic = external {}
+
+    Mesh<override>: mesh = external {}
+
+    # Performs the screenshot test on the first player found in the world
+    PerformScreenshotTestRequest<native_callable><final><epic_internal>(?TargetAgent: ?agent = external {})<transacts><decides>: void = external {}
+
+    # Requests a screenshot test to be performed for the specified agent
+    RequestClientScreenshotTest<native><final><epic_internal>(Agent: agent)<transacts><decides>: void
+
+    @editable
+    ScreenshotTestFileName<native><epic_internal>: string = external {}
+
+    # Performs any setup needed for the screenshot test to execute
+    Setup<native_callable><epic_internal>()<transacts><decides>: void = external {}
+
+    @editable
+    ShowUI<native><epic_internal>: logic = external {}
+
+    # Performs any cleanup to on the executed test
+    TearDown<native_callable><epic_internal>()<transacts>: void = external {}
+
+    @editable_slider(float) { MinValue := option { 1.000000 } }
+    Timeout<native><epic_internal>: float = external {}
+  }
+
+  screenshot_test_runner_component<native><epic_internal> := class<final_super>(mesh_component) {
+    @editable_slider(float) { MinValue := option { 0.000000 } }
+    Delay<native><epic_internal>: float = external {}
+
+    Mesh<override>: mesh = external {}
+
+    # Listenable which is signaled when a screenshot test has been processed.
+    ScreenshotTestProcessedEvent<native><epic_internal>: listenable(tuple()) = external {}
+
+    @editable_slider(float) { MinValue := option { 1.000000 } }
+    Timeout<native><epic_internal>: float = external {}
   }
 }

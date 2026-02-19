@@ -649,7 +649,7 @@
 		"E70863686B234C5884391B7016265E91":
 		{
 			"FriendlyName": "FortniteRelease",
-			"Version": 18
+			"Version": 19
 		},
 		"EF0A537D90DA4CD2BCA16D6AE21E3589":
 		{
@@ -8806,6 +8806,8 @@
 			"/Game/Environments/Apollo/Sets/HuntersHaven/TextureData/TD_HH_Wall_StoneSlabs_01.TD_HH_Wall_StoneSlabs_01",
 			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_CrossYellow.TD_Industrial_ShippingContainer_01_CrossYellow",
 			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_CurtainRed.TD_Industrial_ShippingContainer_01_CurtainRed",
+			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_Green.TD_Industrial_ShippingContainer_01_Green",
+			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_Red.TD_Industrial_ShippingContainer_01_Red",
 			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_Slap.TD_Industrial_ShippingContainer_Slap",
 			"/Game/Environments/Apollo/Sets/Kitchen/Props/Materials/MI_Kitchen_Booth_02.MI_Kitchen_Booth_02",
 			"/Game/Environments/Apollo/Sets/Kitchen/Props/Materials/MI_Kitchen_Chair_01.MI_Kitchen_Chair_01",
@@ -18919,6 +18921,10 @@
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Diner_Counter_01_CP.Diner_Counter_01_CP_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Diner_Counter_Crn_01_CP.Diner_Counter_Crn_01_CP_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Diner_Counter_IceCream_CP.Diner_Counter_IceCream_CP_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GameTable_01.FNEC_Athena_Prop_WildWest_GameTable_01_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GreenTable_01.FNEC_Athena_Prop_WildWest_GreenTable_01_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_Table_01.FNEC_Athena_Prop_WildWest_Table_01_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_Table_02.FNEC_Athena_Prop_WildWest_Table_02_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/JackoLanterns01.JackoLanterns01_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/JackoLanterns02.JackoLanterns02_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/JackoLanterns03.JackoLanterns03_C",

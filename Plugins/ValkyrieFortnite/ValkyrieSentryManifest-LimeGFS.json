@@ -649,7 +649,7 @@
 		"E70863686B234C5884391B7016265E91":
 		{
 			"FriendlyName": "FortniteRelease",
-			"Version": 18
+			"Version": 19
 		},
 		"EF0A537D90DA4CD2BCA16D6AE21E3589":
 		{
@@ -4572,6 +4572,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_870_Athena_Commando_M_KevinCouture.CID_870_Athena_Commando_M_KevinCouture",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_871_Athena_Commando_F_StreetFashionGarnet.CID_871_Athena_Commando_F_StreetFashionGarnet",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_872_Athena_Commando_F_TeriyakiFishPrincess.CID_872_Athena_Commando_F_TeriyakiFishPrincess",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_883_Athena_Commando_M_ChOneJonesy.CID_883_Athena_Commando_M_ChOneJonesy",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_885_Athena_Commando_M_ChOneHawk.CID_885_Athena_Commando_M_ChOneHawk",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_886_Athena_Commando_M_ChOneRenegade.CID_886_Athena_Commando_M_ChOneRenegade",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_887_Athena_Commando_M_ChOneSpitfire.CID_887_Athena_Commando_M_ChOneSpitfire",
@@ -7537,7 +7538,6 @@
 			"/Game/Athena/Items/Cosmetics/Characters/CID_206_Athena_Commando_M_Bling.CID_206_Athena_Commando_M_Bling",
 			"/Game/Athena/Items/Cosmetics/Characters/CID_591_Athena_Commando_M_SoccerZombieC.CID_591_Athena_Commando_M_SoccerZombieC",
 			"/Game/Athena/Items/Cosmetics/Characters/CID_592_Athena_Commando_M_SoccerZombieD.CID_592_Athena_Commando_M_SoccerZombieD",
-			"/Game/Athena/Items/Cosmetics/Characters/CID_883_Athena_Commando_M_ChOneJonesy.CID_883_Athena_Commando_M_ChOneJonesy",
 			"/Game/Athena/Items/Cosmetics/Characters/CID_884_Athena_Commando_F_ChOneRamirez.CID_884_Athena_Commando_F_ChOneRamirez",
 			"/Game/Athena/Items/Cosmetics/Characters/CID_A_027_Athena_Commando_F_CasualBomberLight.CID_A_027_Athena_Commando_F_CasualBomberLight",
 			"/Game/Athena/Items/Cosmetics/Characters/CID_A_028_Athena_Commando_F_AncientGladiator.CID_A_028_Athena_Commando_F_AncientGladiator",
@@ -9766,6 +9766,8 @@
 			"/Game/Environments/Apollo/Sets/HuntersHaven/TextureData/TD_HH_Polished_Marble_Floor.TD_HH_Polished_Marble_Floor",
 			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_CrossYellow.TD_Industrial_ShippingContainer_01_CrossYellow",
 			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_CurtainRed.TD_Industrial_ShippingContainer_01_CurtainRed",
+			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_Green.TD_Industrial_ShippingContainer_01_Green",
+			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_01_Red.TD_Industrial_ShippingContainer_01_Red",
 			"/Game/Environments/Apollo/Sets/Industrial/Props/TextureData/TD_Industrial_ShippingContainer_Slap.TD_Industrial_ShippingContainer_Slap",
 			"/Game/Environments/Apollo/Sets/Kitchen/Props/Materials/MI_Kitchen_Booth_02.MI_Kitchen_Booth_02",
 			"/Game/Environments/Apollo/Sets/Kitchen/Props/Materials/MI_Kitchen_Chair_01.MI_Kitchen_Chair_01",
@@ -10680,6 +10682,7 @@
 			"/Game/Environments/Asteria/Foliage/Grass/Spawners/LS_JungleFloor_02.LS_JungleFloor_02",
 			"/Game/Environments/Asteria/Foliage/Grass/Spawners/LS_JungleFloor_03.LS_JungleFloor_03",
 			"/Game/Environments/Asteria/Foliage/Grass/Spawners/LS_JungleMoss.LS_JungleMoss",
+			"/Game/Environments/Asteria/Foliage/Plants/BouncePadFlower/Materials/MI_Foliage_BouncePadFlower_A.MI_Foliage_BouncePadFlower_A",
 			"/Game/Environments/Asteria/Materials/LightFunctions/MI_LF_FireAmbient_Rainforest.MI_LF_FireAmbient_Rainforest",
 			"/Game/Environments/Asteria/Props/AmberForestTown/AmberForestTown_ForgeWeaponRack_A/Meshes/SM_AmberForestTown_ForgeWeaponRack_A.SM_AmberForestTown_ForgeWeaponRack_A",
 			"/Game/Environments/Asteria/Props/AmberForestTown/AmberForestTown_ForgeWeaponRack_A/Meshes/SM_AmberForestTown_ForgeWeaponRack_B.SM_AmberForestTown_ForgeWeaponRack_B",
@@ -21001,6 +21004,10 @@
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Diner_Counter_01_CP.Diner_Counter_01_CP_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Diner_Counter_Crn_01_CP.Diner_Counter_Crn_01_CP_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Diner_Counter_IceCream_CP.Diner_Counter_IceCream_CP_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GameTable_01.FNEC_Athena_Prop_WildWest_GameTable_01_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GreenTable_01.FNEC_Athena_Prop_WildWest_GreenTable_01_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_Table_01.FNEC_Athena_Prop_WildWest_Table_01_C",
+			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_Table_02.FNEC_Athena_Prop_WildWest_Table_02_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/JackoLanterns01.JackoLanterns01_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/JackoLanterns02.JackoLanterns02_C",
 			"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/JackoLanterns03.JackoLanterns03_C",

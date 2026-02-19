@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-39.40-CL-50577083
+# Generated from build: ++Fortnite+Release-39.50-CL-50854790
 #################################################
 
 AINavigation<public> := module {
@@ -243,6 +243,96 @@ ControlInput<public> := module {
     Path: string
   ) where t: type)<converges>: input_action(t)
 
+  @available { MinUploadedAtFNVersion := 3950 }
+  # Module import path: /UnrealEngine.com/ControlInput/UI
+  UI<public> := module {
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Craft<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    CraftingMenuMapping<public>: input_mapping = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Drop<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Favorite<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Inspect<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    InventoryMenuMapping<public>: input_mapping = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    MapMenuMapping<public>: input_mapping = external {}
+
+    using { /Verse.org/Assets }
+    using { /Verse.org/Native }
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    MenuNavigationMapping<public>: input_mapping = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    NextPage<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    NextTab<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    PlaceMarker<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    PreviousPage<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    PreviousTab<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Reset<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Scrap<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Sort<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    ToggleView<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Track<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    Use<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    ZoomIn<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 3950 }
+    @experimental
+    ZoomOut<public>: input_action(logic) = external {}
+  }
+
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
@@ -440,18 +530,16 @@ Itemization<public> := module {
   # Returns a failure reason (such as being full) if the provided item entity cannot be added. Does not consider sub-inventories.
   (Inventory: inventory_component).CanAddItem<native><public>(
     Item: entity,
-    ?AllowMergeItems: logic = external {})<transacts>: result(false,
-    []add_item_error
-  )
+    ?AllowMergeItems: logic = external {}
+  )<transacts>: result(false, []add_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
   # Returns a failure reason (such as being full) if the provided item entity cannot be added. AddItemDistribute allows the item to enter sub-inventories.
   (Inventory: inventory_component).CanAddItemDistribute<native><public>(
     Item: entity,
-    ?AllowMergeItems: logic = external {})<transacts>: result(false,
-    []add_item_error
-  )
+    ?AllowMergeItems: logic = external {}
+  )<transacts>: result(false, []add_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -657,17 +745,15 @@ Itemization<public> := module {
     # Adds the item to this inventory only, ignoring sub-inventories. Fails if no items could be added.
     AddItem<native><final><public>(
       Item: entity,
-      ?AllowMergeItems: logic = external {})<transacts>: result(add_item_result,
-      []add_item_error
-    )
+      ?AllowMergeItems: logic = external {}
+    )<transacts>: result(add_item_result, []add_item_error)
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Adds the item to this inventory, including sub-inventories. Fails if no items could be added.
     AddItemDistribute<native><final><public>(
       Item: entity,
-      ?AllowMergeItems: logic = external {})<transacts>: result(add_item_result,
-      []add_item_error
-    )
+      ?AllowMergeItems: logic = external {}
+    )<transacts>: result(add_item_result, []add_item_error)
 
     AddItemEvent<native><final><public>: listenable(add_item_result) = external {}
 
@@ -722,9 +808,8 @@ Itemization<public> := module {
     @available { MinUploadedAtFNVersion := 3800 }
     MakeAddItemResultInternal<final><native_callable><epic_internal>(
       IsSuccess: logic,
-      AddItemResult: add_item_result): result(add_item_result,
-      []add_item_error
-    ) = external {}
+      AddItemResult: add_item_result
+    ): result(add_item_result, []add_item_error) = external {}
 
     @available { MinUploadedAtFNVersion := 3800 }
     MakeCanAddItemResultInternal<final><native_callable><epic_internal>(IsSuccess: logic): result(
@@ -741,9 +826,8 @@ Itemization<public> := module {
     @available { MinUploadedAtFNVersion := 3800 }
     MakeRemoveItemResultInternal<final><native_callable><epic_internal>(
       IsSuccess: logic,
-      RemoveItemResult: remove_item_result): result(remove_item_result,
-      []remove_item_error
-    ) = external {}
+      RemoveItemResult: remove_item_result
+    ): result(remove_item_result, []remove_item_error) = external {}
 
     OnInitializedInternal<native><override>(): void
 
@@ -954,7 +1038,7 @@ Itemization<public> := module {
 
     # Removes the item from its inventory and places it in the simulation world. Works on orphaned items i.e. outside the world or any inventory.
     #  Fails if the item is already a pickup. The transform of the item will not be altered except to unparent it from any inventory.
-    Drop<native><public>()<transacts><decides>: void
+    (/UnrealEngine.com/Itemization/item_component:)Drop<native><public>()<transacts><decides>: void
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to equip this item within the inventory it is currently in.
@@ -2241,7 +2325,7 @@ Temporary<public> := module {
   }
 
   # Module import path: /UnrealEngine.com/Temporary/UI
-  UI<public> := module {
+  (/UnrealEngine.com/Temporary:)UI<public> := module {
     # Returns the `player_ui` associated with `Player`.
     # Fails if there is no `player_ui` associated with `Player`.
     GetPlayerUI<native><public>(Player: player)<transacts><decides>: player_ui
@@ -2259,7 +2343,6 @@ Temporary<public> := module {
 
       LeftSecondary<epic_internal>: input_action(logic) = external {}
 
-      using { /Verse.org/Assets }
       Primary_1<epic_internal>: input_action(logic) = external {}
 
       Primary_2<epic_internal>: input_action(logic) = external {}
@@ -2271,6 +2354,9 @@ Temporary<public> := module {
       Secondary_1<epic_internal>: input_action(logic) = external {}
 
       Secondary_2<epic_internal>: input_action(logic) = external {}
+
+      using { /Verse.org/Assets }
+      UINavigationMapping<epic_internal>: input_mapping = external {}
     }
 
     ___DefaultEmptyString_Internal<localizes><epic_internal>: message = external {}
@@ -2299,6 +2385,10 @@ Temporary<public> := module {
       Slot<native><public>: button_slot
 
       UnhighlightEvent<public>(): listenable(widget_message) = external {}
+
+      @experimental
+      # The UI input action that will trigger the Click event of this button.
+      var TriggeringInputAction<public>: ?input_action(logic) = external {}
     }
 
     # Slot for button widget.
@@ -2646,6 +2736,9 @@ Temporary<public> := module {
 
       # Sets the size of the displayed text.
       SetTextSize<native><public>(InSize: float): void
+
+      # Whether the text should be automatically wrapped.
+      var Wrapping<epic_internal>: logic = external {}
     }
 
     # Text block widget. Displays text to the user.

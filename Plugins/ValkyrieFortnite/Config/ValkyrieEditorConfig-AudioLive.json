@@ -61,6 +61,8 @@
       "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObject":							{ "Visible": true },
       "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObjectArray":						{ "Visible": true },
       "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultLiteral":							{ "Visible": true },
+      "/Script/MetasoundFrontend.MetaSoundFrontendPresetConfigurationVertexMetadata":					{ "Visible": true },
+      "/Script/MetasoundFrontend.MetaSoundFrontendPresetDocumentConfiguration":							{ "Visible": true },
       "/Script/SoundLibrary.SoundLibraryComponent":												{  }
     },
     "AllowedMenus": {
@@ -79,19 +81,11 @@
       },
       {
         "Type": "/Script/Engine.SoundBase",
-        "AllowList": [ "AssetUserData" ]
+        "AllowList": [ "AssetUserData", "SoundCueGraph", "VirtualizationMode", "AttenuationSettings" ]
       },
       {
         "Type": "/Script/Engine.SoundWave",
         "AllowList": [ "NumChannels", "SampleRate", "ImportedSampleRate", "Duration", "TotalSamples", "ModulationSettings", "LoadingBehavior" ]
-      },
-      {
-        "Type": "/Script/Engine.SoundAttenuationSettings",
-        "AllowList": [ "bAttenuate", "DistanceAlgorithm", "AttenuationShapeExtents", "FalloffDistance", "bSpatialize" ]
-      },
-      {
-        "Type": "/Script/Engine.SoundBase",
-        "AllowList": [ "SoundCueGraph", "VirtualizationMode", "AttenuationSettings" ]
       },
       {
         "Type": "/Script/MetasoundEngine.MetaSoundSource",
@@ -110,6 +104,10 @@
   "PropertyEditorStructPermissionList": {
     "+": [
       {
+        "Type": "/Script/Engine.SoundAttenuationSettings",
+        "AllowList": [ "bAttenuate", "DistanceAlgorithm", "AttenuationShapeExtents", "FalloffDistance", "bSpatialize" ]
+      },
+      {
         "Type": "/Script/Engine.SoundModulationDefaultRoutingSettings",
         "AllowList": [ "VolumeRouting", "VolumeModulationDestination" ]
       }
@@ -122,7 +120,47 @@
         "AllowList": [ "bAllowSpatialization", "bOverrideAttenuation", "AttenuationOverrides", "Sound", "VolumeMultiplier", "PitchMultiplier" ],
         "DenyList": [],
         "bAllowListAllSubclassProperties": true
-      }
+      },
+      {
+				"Type": "/Script/AudioModulation.SoundControlBus",
+				"AllowList": [ "Address" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+      {
+				"Type": "/Script/Engine.SoundBase",
+				"AllowList": [ "bHasDelayNode", "bHasConcatenatorNode", "bOverrideConcurrency", "ConcurrencyOverrides", "MaxDistance" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/Engine.SoundCue",
+				"AllowList": [ "FirstNode", "AttenuationOverrides", "AllNodes", "Duration", "MaxDistance", "bHasPlayWhenSilent", "VolumeMultiplier", "PitchMultiplier" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/Engine.SoundWave",
+				"AllowList": [ "TimecodeInfo", "TimecodeOffset", "AssetImportData", "CuePoints", "LUFS", "SamplePeakDB", "ChannelOffsets", "ChannelSizes", "CuePointOrigin", "Volume", "CompressionQuality", "bLooping" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+      {
+				"Type": "/Script/MetasoundEngine.MetaSoundSource",
+				"AllowList": [ "RootMetasoundDocument", "ReferencedAssetClassKeys", "ReferencedAssetClassObjects", "QualitySetting", "QualitySettingGuid", "AssetImportData", "MaxDistance", "bLooping" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			}
+    ]
+  },
+  "HiddenPropertyStructPermissionList" : {
+		"+": [
+      {
+				"Type": "/Script/Engine.SoundAttenuationSettings",
+				"AllowList": [ "bEnableReverbSend", "bEnableSendToAudioLink", "StereoSpread", "SubmixSendSettings", "NonSpatializedRadiusStart", "CustomAttenuationCurve", "AttenuationShape", "bEnableSubmixSends" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			}
     ]
   }
 }

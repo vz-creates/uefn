@@ -22,6 +22,11 @@
 		"AllowedMenus": {
 			"DaySequence.ViewportToolbar": {
 				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence" ]
+			},
+			"OutputLog.ConsoleInputBox.CmdExecMenu": {
+				"AllowList": {
+					"+": [ "Cmd" ]
+				}
 			}
 		}
 	},

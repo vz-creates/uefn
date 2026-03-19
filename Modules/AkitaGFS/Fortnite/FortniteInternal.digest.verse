@@ -3785,18 +3785,6 @@ Devices<public> := module {
     Enable<public>(): void = external {}
   }
 
-  del_mar_checkpoint_device<epic_internal> := class<concrete><final>(creative_device_base) {}
-
-  # Used to created an EMP Hazard that slows vehicles.
-  del_mar_emp_hazard_device<epic_internal> := class<concrete><final>(creative_device_base) {
-    # Signaled when a vehicle triggers the EMP Hazard.Sends the `agent` that controls the vehicle.
-    EMPHazardTriggeredEvent<public>: listenable(agent) = external {}
-  }
-
-  del_mar_player_start_device<epic_internal> := class<concrete><final>(creative_device_base) {}
-
-  del_mar_speed_pad_device<epic_internal> := class<concrete><final>(creative_device_base) {}
-
   # Payload of `device_event_ai_interaction`.
   device_ai_interaction_result<native><public> := struct<epic_internal> {
     # Optional agent that triggered the interaction
@@ -4862,6 +4850,40 @@ Devices<public> := module {
     C
 
     S
+  }
+
+  # Used to apply a temporary hero transformation to a player.
+  # The transformation to apply is specified on the device, as are the conditions for when the transformation will end.
+  hero_device<public> := class<concrete><final>(creative_device_base) {
+    # Applies the hero transformation to the provided `player`.
+    # If the provided `player` does not pass the device's filter settings, or if another transformation is already present and the device's *Stomp Existing Transformation* option is set to false, the transformation will not be applied.
+    ApplyTransformation<public>(Player: player): void = external {}
+
+    # Signaled when a hero transformation from this device is successfully applied to `player`.
+    ApplyTransformationEvent<public>: listenable(player) = external {}
+
+    # Succeeds if the provided `player` has a hero transformation applied from this device.
+    IsTransformationApplied<public>(Player: player)<transacts><decides>: void = external {}
+
+    # Removes the transformations applied by this device, if it exists, from all players
+    RemoveAllMyTransformations<public>(): void = external {}
+
+    # Removes any applied hero transformations from `player`.
+    # Includes hero transformations applied by any hero device instance.
+    RemoveAnyTransformation<public>(Player: player): void = external {}
+
+    # Removes the transformation applied by this device, if it exists, from the provided `player`.
+    RemoveTransformation<public>(Player: player): void = external {}
+
+    # Signaled when a transformation applied by this device on `player` is removed.
+    # Removal can occur from calling the *Remove Transformation* function, or from getting replaced by another transformation.
+    # This event will not trigger if the transformation is ended due to outlined conditions or elimination.
+    RemoveTransformationEvent<public>: listenable(player) = external {}
+
+    # Signaled when a transformation applied by this device on `player` ends.
+    # The second optional `agent` describes who ended the transformation if ended by elimination.
+    # The conditions outlining when a transformation will end are set in the device's user options.
+    TransformedPlayerEliminateEvent<public>: listenable(tuple(player, ?agent)) = external {}
   }
 
   # The hiding prop device can be used to give players a place to hide, or to allow players a special way to commence a Hidden Travel to another Hiding prop.
@@ -14982,6 +15004,139 @@ Items<public> := module {
     }
   }
 
+  # Module import path: /Fortnite.com/Items/ForcePower
+  ForcePower<public> := module {
+    # Module import path: /Fortnite.com/Items/ForcePower/StarWars
+    (/Fortnite.com/Items/ForcePower:)StarWars<public> := module {
+      @experimental
+      # Force Awareness as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerAwareness_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Awareness as a weapon item. Must be equipped to use.
+      ForcePowerAwareness_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Distraction as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerDistraction_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Distraction as a weapon item. Must be equipped to use.
+      ForcePowerDistraction_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Heal as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerHeal_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Heal as a weapon item. Must be equipped to use.
+      ForcePowerHeal_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Lightning as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerLightning_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      using { /Fortnite.com/Itemization }
+      @experimental
+      # Force Lightning as a weapon item. Must be equipped to use.
+      ForcePowerLightning_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Pull as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerPull_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Pull as a weapon item. Must be equipped to use.
+      ForcePowerPull_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Push as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerPush_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Push as a weapon item. Must be equipped to use.
+      ForcePowerPush_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Saber Throw as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerSaberThrow_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Saber Throw as a weapon item. Must be equipped to use.
+      ForcePowerSaberThrow_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Shield as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerShield_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Shield as a weapon item. Must be equipped to use.
+      ForcePowerShield_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Throw as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerThrow_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Throw as a weapon item. Must be equipped to use.
+      ForcePowerThrow_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Training (Jump & Sprint) as an augment item.
+      ForcePowerTraining_Augment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Mind Trick as an augment item. Only usable with a lightsaber equipped.
+      ForcePowerTrick_LightsaberAugment<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      # Force Mind Trick as a weapon item. Must be equipped to use.
+      ForcePowerTrick_Weapon<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+    }
+  }
+
   # Module import path: /Fortnite.com/Items/FortillaKeycard
   FortillaKeycard<public> := module {
     # Module import path: /Fortnite.com/Items/FortillaKeycard/BattleRoyale
@@ -17085,6 +17240,63 @@ Items<public> := module {
         LightMachineGun_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
           ItemDefinitionID<override>: string = external {}
         }
+      }
+    }
+  }
+
+  # Module import path: /Fortnite.com/Items/Lightsaber
+  Lightsaber<public> := module {
+    # Module import path: /Fortnite.com/Items/Lightsaber/StarWars
+    (/Fortnite.com/Items/Lightsaber:)StarWars<public> := module {
+      @experimental
+      LightsaberJediPadawanA<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberJediPadawanB<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberJediTraining<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      using { /Fortnite.com/Itemization }
+      @experimental
+      LightsaberKenobi<native><public> := class<final><concrete>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberRen<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberRey<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberSithApprentice<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberSkywalker<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberVader<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
+      }
+
+      @experimental
+      LightsaberWindu<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
+        ItemDefinitionID<override>: string = external {}
       }
     }
   }
@@ -23481,6 +23693,247 @@ SceneGraphCameras<public> := module {
       UpdateCamera<override>(UpdateParameters: camera_operator_update_parameters): void = external {}
     }
   }
+}
+
+StarWars<public> := module {
+  # Module import path: /Fortnite.com/StarWars/GalileoItemUtils
+  GalileoItemUtils<epic_internal> := module {
+    using { /Verse.org/SceneGraph }
+    @experimental
+    AddKyberCrystalComponent<native><epic_internal>(
+      InEntity: entity,
+      InComponent: subtype(kyber_crystal_component)
+    )<converges>: void
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Awareness power.
+  force_power_awareness_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var Duration<public>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Distraction power.
+  force_power_distraction_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Duration<public>: float = external {}
+
+    var Health<public>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Heal power.
+  force_power_heal_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var DrainRate<public>: float = external {}
+
+    var Energy<epic_internal>: float = external {}
+
+    var HealStrength<public>: float = external {}
+
+    var RechargeDelay<public>: float = external {}
+
+    var RechargeRate<public>: float = external {}
+  }
+
+  using { /UnrealEngine.com/Itemization }
+  using { /Verse.org/Colors }
+  using { /Verse.org/SceneGraph }
+  @experimental
+  force_power_item_component<native><public> := class<abstract><epic_internal>(item_component) {}
+
+  @experimental
+  # Represents an item that gives its holder the Force Lightning power.
+  force_power_lightning_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var BuildingDamage<public>: float = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var Damage<public>: float = external {}
+
+    var Duration<public>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Pull power.
+  force_power_pull_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var PullForce<epic_internal>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Push power.
+  force_power_push_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var PushForce<public>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Saber Throw power.
+  force_power_saber_throw_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var (/Fortnite.com/StarWars/force_power_saber_throw_component:)Distance<epic_internal>: float = external {}
+
+    var BuildingDamage<public>: float = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var Damage<public>: float = external {}
+
+    var Speed<epic_internal>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Shield power.
+  force_power_shield_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var DrainRate<public>: float = external {}
+
+    var Energy<public>: float = external {}
+
+    var KnockbackForce<public>: float = external {}
+
+    var RechargeDelay<public>: float = external {}
+
+    var RechargeRate<public>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Throw power.
+  force_power_throw_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var BuildingDamage<public>: float = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var Damage<public>: float = external {}
+
+    var MaxRange<epic_internal>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Training power (Jump and Sprint).
+  force_power_training_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var JumpStaminaCost<public>: float = external {}
+
+    var StaminaCost<public>: float = external {}
+  }
+
+  @experimental
+  # Represents an item that gives its holder the Force Mind Trick power.
+  force_power_trick_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+
+    var Cooldown<public>: float = external {}
+
+    var Duration<public>: float = external {}
+
+    var TimesHit<epic_internal>: int = external {}
+  }
+
+  @experimental
+  kyber_crystal_blue_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  kyber_crystal_component<native><public> := class<abstract><final_super><internal>(component) {
+    var ArcIntensity<public>: float = external {}
+
+    var Stability<public>: float = external {}
+
+    var<private> Color<public>: color = external {}
+
+    var<private> EmissiveIntensity<public>: float = external {}
+  }
+
+  @experimental
+  kyber_crystal_green_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  kyber_crystal_orange_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  kyber_crystal_purple_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  kyber_crystal_red_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  kyber_crystal_red_damaged_component<public> := class(kyber_crystal_red_component) {}
+
+  @experimental
+  kyber_crystal_red_unstable_component<public> := class(kyber_crystal_red_component) {}
+
+  @experimental
+  kyber_crystal_white_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  kyber_crystal_yellow_component<public> := class(kyber_crystal_component) {}
+
+  @experimental
+  lightsaber_item_component<native><public> := class<abstract><epic_internal>(item_component) {}
+
+  @experimental
+  lightsaber_item_crossguard<native><public> := class<abstract><epic_internal>(lightsaber_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+  }
+
+  @experimental
+  lightsaber_item_jedi_padawan_a<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_jedi_padawan_b<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_jedi_training<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_kenobi<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_ren<public> := class<final><epic_internal>(lightsaber_item_crossguard) {}
+
+  @experimental
+  lightsaber_item_rey<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_single<native><public> := class<abstract><epic_internal>(lightsaber_item_component, has_merge_rules) {
+    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+  }
+
+  @experimental
+  lightsaber_item_sith_apprentice<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_skywalker<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_vader<public> := class<final><epic_internal>(lightsaber_item_single) {}
+
+  @experimental
+  lightsaber_item_windu<public> := class<final><epic_internal>(lightsaber_item_single) {}
 }
 
 # Module import path: /Fortnite.com/Teams

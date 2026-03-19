@@ -24,7 +24,7 @@
 		"+": [
 			{
 				"Type": "/NPCDefault/Types/CharacterType_Creature.CharacterType_Creature_C",
-				"AllowList": [ "SelectedAI", "DisplayName" ]
+				"AllowList": [ "SelectedAI", "DisplayName", "SelectedPreset" ]
 			},
 			{
 				"Type": "/NPCDefault/Types/CharacterType_Custom.CharacterType_Custom_C",
@@ -34,12 +34,12 @@
 			},
 			{
 				"Type": "/NPCDefault/Types/CharacterType_Wildlife.CharacterType_Wildlife_C",
-				"AllowList": [ "SelectedAI", "DisplayName" ]
+				"AllowList": [ "SelectedAI", "DisplayName", "SelectedPreset" ]
 			},
 			{
 				"Type": "/NPCDefault/Types/CharacterType_Guard.CharacterType_Guard_C",
 				"AllowList": [ "DisplayName" ],
-				"DenyList": [ "SelectedAI" ]
+				"DenyList": [ "SelectedAI", "SelectedPreset" ]
 			},
 			{
 				"Type": "/NPCDefault/Types/CharacterType_Participant.CharacterType_Participant_C",

@@ -4,8 +4,8 @@
 	},
 	"ValkyrieEditorSettings": {
 		"AllowedAssetTypes": {
-			"/Script/AmbientAudio.AmbientAudioComponent": 		{ "Rules": ["View"] },
-			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View","Create"] },
+			"/Script/AmbientAudio.AmbientAudioComponent": 		{ "Rules": ["View", "ModuleAPI"] },
+			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View", "Create", "ModuleAPI"] },
 			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent": 		{ "Rules": ["View","Create"] },
 			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Rules": [ "View", "Create" ] },
 			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create" ] },
@@ -13,8 +13,14 @@
 			"/Script/Engine.SoundConcurrency":					{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/Engine.SoundEffectSubmixPreset":		{ "Rules": [ "View", "Create" ] },
 			"/Script/Engine.SoundSubmix":						{ "Rules": ["View"] },
+			"/Script/MetasoundEngine.MetaSoundPatch":			{ "Rules": ["View", "ModuleAPI"] },
+			"/Script/Engine.SubtitleAssetData":					{ "Rules": ["View", "Create", "Import", "ModuleAPI"], "Subclasses": "All" },
+			"/Script/Engine.SubtitleAssetUserData":				{ "Rules": ["View","Create","Import", "ModuleAPI"], "Subclasses": "All" },
 			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Rules": ["View","Create"] },
+			"/Script/Engine.AudioBus": { "Rules": ["View","Create"] },
+			"/Script/AudioModulation.SoundModulationGenerator": { "Rules": ["View","Create"] },
+			"/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower": { "Rules": ["View","Create"] },
 			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Rules": ["View","Create"] }
 		},
 		"AllowedClasses": {
@@ -26,7 +32,17 @@
 			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Visible": true },
 			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Visible": true },
-			"/Script/HarmonixMetasound.MusicClockComponent":            {  }
+			"/Script/HarmonixMetasound.MusicClockComponent":            {  },
+			"/Script/Engine.SubtitleAssetData":										{ "Visible": true },
+			"/Script/Engine.SubtitleAssetUserData":									{ "Visible": true },
+			"/Script/SubtitlesAndClosedCaptions.MovieSceneSubtitleSection":			{ "Visible": true },
+			"/Script/SubtitlesAndClosedCaptions.MovieSceneSubtitlesTrack":			{ "Visible": true },
+			"/Script/Engine.AudioBus": 										{ "Visible": true },
+			"/Script/AudioModulation.SoundModulationGenerator": 					{ "Visible": true },
+			"/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower": 					{ "Visible": true },
+			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleFactory":				{  },
+			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetDefinitions":	{  },
+			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetActionUtility":	{ "Visible": true }
 		}
 	},
 	"PropertyEditorClassPermissionList": {
@@ -42,6 +58,16 @@
 					"bBypass"
 				]
 			},
+			{
+				"Type": "/Script/Engine.AudioBus",
+				"AllowList": [
+					"AudioBusChannels"
+				]
+			},
+			{
+       			"Type": "/Script/AudioModulation.SoundControlBus",
+        		"AllowList": [ "Generators" ]
+      		},
 			{
 				"Type": "/Script/Engine.SoundModulationDefaultRoutingSettings",
 				"AllowList": [
@@ -112,6 +138,14 @@
 								"Subtitles", 
 								"Comment"	
 				]
+			}
+		]
+	},
+	"PropertyEditorStructPermissionList": {
+		"+": [
+			{
+				"Type": "/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower",
+				"AllowList": [ "FEnvelopeFollowerGeneratorParams" ]
 			}
 		]
 	}

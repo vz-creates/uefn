@@ -853,6 +853,8 @@
 			"/Script/ItemizationRuntime.ItemDefinition":					{ "Rules": ["View", "Create" ] },
 			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh":	{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/PhysicsCore.PhysicalMaterial":	            { "Rules": ["View","Create"] },
+			"/Script/UMG.WidgetBlueprintGeneratedClass":		{ "Rules": ["View","Create","ModuleAPI"] },
+			"/Script/UMGEditor.WidgetBlueprint":				{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/VerseAssets.PropertyInterfaceGeneratedClass":			{ "Rules": ["View","Create"] },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":	{ "Rules": ["View","Create"] }
 		},
@@ -997,7 +999,6 @@
 			"/Script/BlueprintGraph.K2Node_IfThenElse":					{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_Knot":						{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_Literal":					{ "Visible": true },
-			"/Script/BlueprintGraph.K2Node_LocalVariable":				{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_MacroInstance":				{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_MakeArray":					{ "Visible": true },
 			"/Script/BlueprintGraph.K2Node_MakeStruct":					{ "Visible": true },
@@ -1064,6 +1065,7 @@
 			"/Script/Engine.KismetMathLibrary":							{ "Visible": true },
 			"/Script/Engine.KismetSystemLibrary":						{ "Visible": true },
 			"/Script/Engine.PoseLink": {},
+			"/Script/Engine.MaterialExpressionFontSignedDistance":		{ "Visible": true, "Subclasses": "NativeOnly" },
 			"/Script/EnhancedInput.InputAction":						{ "Visible": true },
 			"/Script/EnhancedInput.InputMappingContext":				{ "Visible": true },
 			"/Script/EnhancedInput.InputTrigger":						{ "Visible": true },
@@ -1128,8 +1130,10 @@
 			"/Script/VerseAssets.PropertyInterface":					{ "Visible": true },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":		{ "Visible": true },
 			"/Script/MovieScene.MovieSceneBindingOverrides":			{  },
+			"/Script/Water.WaterTerrainComponent":						{ "Visible": true },
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C": { "Visible": true },
-			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C": { }
+			"/FNE_UI/Systems/Buttons/WBP_FNE_StylableButton_Base.WBP_FNE_StylableButton_Base_C": { }, 
+			"/Script/PhysicsCore.PhysicalMaterial": { "Visible": true, "Subclasses": "All" }
 		},
 		"AllowedEditorPreferencesSections": {
 			"General": {
@@ -1191,7 +1195,7 @@
 			},
 			"LevelEditor.MainMenu.Tools": {
 				"AllowList": {
-					"+": ["TestAutomation", "ValkyrieSessionInspector"]
+					"+": ["TestAutomation", "ValkyrieSessionInspector", "VkContentResolution"]
 				}
 			},
 			"SpatialProfiler.SettingsToolBar.SettingsMenu": {
@@ -1222,6 +1226,22 @@
 					"=": []
 				}
 			},
+			"TimingProfiler.MainToolBar.PanelSelectorMenu": {
+				"AllowList": {
+					"=": []
+				},
+				"DenyList" : {
+					"=": [ "ToggleModulesViewVisibility" ]
+				}
+			},
+			"TimingProfiler.MainToolBar": {
+				"AllowList": {
+					"=": []
+				},
+				"DenyList" : {
+					"=": [ "LegacyExtenders" ]
+				}
+			},
 			"DaySequence.ViewportToolbar": {
 				"AllowList": [ "DaySequencePreviewTime", "OpenRootSequence", "SelectDaySequenceActor", "RefreshDaySequenceActor", "OpenDaySequenceActor", "RespawnDaySequenceActor" ]
 			},
@@ -1240,7 +1260,12 @@
 			},
 			"Global": {
 				"AllowList": {
-					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "ValkyrieSessionInspector" ]
+					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "VkContentResolution" ]
+				}
+			},
+			"LevelEditor": {
+				"AllowList": {
+					"+": [ "VkContentResolution" ]
 				}
 			},
 			"ChaosVisualDebuggerTab": {
@@ -1490,7 +1515,7 @@
 				"DenyList": [ "Displacement", "Magnitude", "Center", "UVChannel", "MaskUVChannel" ]
 			},
 			{
-				"Type": "/Script/FeralCorgiGameplayRuntime.FortUserOptionComponent_TickRate",
+				"Type": "/Script/FN1UEFNFrameworkRuntime.FortUserOptionComponent_TickRate",
 				"DenyList": [ "DesiredTickRate", "DesiredPhysicsTickRate" ]
 			}
 		]

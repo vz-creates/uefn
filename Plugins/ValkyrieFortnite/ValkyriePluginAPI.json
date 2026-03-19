@@ -6,7 +6,6 @@
 			"Custom/Actors/ReferencedContent/Bridges/Materials/M_Bridge_00",
 			"Custom/Actors/ReferencedContent/Bridges/Textures/T_Bridge_TS_N",
 			"Custom/Actors/ReferencedContent/Bridges/Textures/T_Bridge_TS_rgb",
-			"Custom/Actors/ReferencedContent/FortniteGame/Weapons/Prototype/ObjectMover/Materials/MF_CreativeMoveTool",
 			"Custom/Actors/ReferencedContent/MI_Concrete_Pillar_01",
 			"Custom/Actors/ReferencedContent/Textures/T_Column_ConcreteDetail_N",
 			"Custom/Actors/ReferencedContent/Textures/T_Column_ConcreteTiles_R",
@@ -365,7 +364,6 @@
 			"Environments/Props/GlyphCracks/M_CrackPortalVortex",
 			"Environments/Props/GlyphCracks/M_EventCracks",
 			"Environments/Props/GlyphCracks/M_Glyphs",
-			"Environments/Props/GlyphCracks/MF_SDFSize",
 			"Environments/Props/GlyphCracks/MI_CrackPortalVortex",
 			"Environments/Props/GlyphCracks/MI_CrackPortalVortex_Event",
 			"Environments/Props/GlyphCracks/MI_GlyphCrack",
@@ -1175,5 +1173,22 @@
 		"epicInternalAssets": [
 			"FN1Framework"
 		]
+	},
+	"ClamberingCode":
+	{
+		"assets": [],
+		"epicInternalAssets": [
+			"GameFeatureData",
+			"Gameplay/PBWInstancedLedgeActor",
+			"Gameplay/PBWLedgeConfigurationData"
+		]
+	},
+	"FN1UEFNFramework":
+	{
+		"assets": [
+			"Components/BP_ServerConfig_Component",
+			"FN1UEFNFramework"
+		],
+		"epicInternalAssets": []
 	}
 }

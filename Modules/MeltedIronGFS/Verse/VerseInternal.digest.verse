@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.00-CL-51746096
+# Generated from build: ++Fortnite+Release-40.10-CL-52157884
 #################################################
 
 AgentGroup<public> := module {
@@ -132,6 +132,7 @@ Assets<public> := module {
   # Interface that provides an icon.
   has_icon<native><public> := interface {
     @editable
+    # A texture used as the 2D visual representation of this entity (e.g. an icon or portrait).
     var Icon<public>: texture
   }
 
@@ -206,6 +207,13 @@ Chat<public> := module {
     Entity: simulation_entity
   ): void = external {}
 
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  RemoveVoiceChannel<native_callable><epic_internal>(
+    Channel: voice_channel(has_voice_member_info),
+    Entity: simulation_entity
+  )<transacts>: void = external {}
+
   @experimental
   # Error returned when a channel cannot be added via the `AddChatChannel` function.
   add_channel_error<epic_internal> := class<computes> {}
@@ -241,7 +249,7 @@ Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
-  # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel’s `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
+  # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
   voice_channel<native><epic_internal>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
     # Disables users from communicating on the channel.
     Disable<override>(): void = external {}
@@ -615,9 +623,10 @@ Colors<public> := module {
 
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
+  @import_as("/*.FVColor")
   # Represents colors as RGB triples in the ACES 2065-1 color space.
   # Component values are linear (i.e. `*gamma* = 1.0`).
-  color<native><public> := struct<concrete><computes><persistable> {
+  color<native><public> := struct<concrete><computes><persistable><uht_comparable> {
     @editable
     # Blue component of this `color`.
     B<native><public>: float = external {}
@@ -632,12 +641,13 @@ Colors<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
+  @import_as("/*.FVColorAlpha")
   # Represents colors as RGB triples in the ACES 2065-1 color space with an additional alpha channel A.
   # This reasons about the `Color` and alpha (`A`) as separate concepts instead of as a single concept.
   # All values are stored strictly as unopinionated floats but, when interpreted as a color with alpha,
   # ranges for `A` are `0.0` (transparent) to `1.0` (opaque). Color values are not premultiplied.
   # Component values are linear (i.e. `*gamma* = 1.0`).
-  color_alpha<native><public> := struct<concrete><computes><persistable> {
+  color_alpha<native><public> := struct<concrete><computes><persistable><uht_comparable> {
     @editable
     # Alpha component of this `color_alpha`.
     A<native><public>: float = external {}
@@ -1081,14 +1091,12 @@ Predicts<public> := module {
 Presentation<public> := module {
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  @experimental
   change_description_component_event<epic_internal> := class(scene_event) {
     DescriptionComponent<public>: ?description_component = external {}
 
     Entity<public>: entity
   }
 
-  @experimental
   # Component that holds the details for an entity, such as name and description.
   description_component<native><public> := class<final_super>(component, has_description) {
     OnBeginSimulation<override>(): void = external {}
@@ -1107,15 +1115,15 @@ Presentation<public> := module {
   # Interface that provides descriptive names or text.
   has_description<native><public> := interface {
     @editable
-    # Full description.
+    # The full description of this entity.
     var Description<public>: message
 
     @editable
-    # Name.
+    # The display name of this entity.
     var Name<public>: message
 
     @editable
-    # Short description with only the essential information.
+    # A shortened description of this entity.
     var ShortDescription<public>: message
   }
 }
@@ -2581,7 +2589,7 @@ SceneGraph<public> := module {
     Split<override>(Amount: int)<transacts><decides>: entity = external {}
 
     @editable
-    # The prefab which will be returned when Split is called. Entities can only merge with others of the same prefab.
+    # The prefab used when this entity merges with another or when it is split into a new instance.
     split_prefab_type<native><public>: castable_concrete_subtype(entity) = external {}
   }
 
@@ -2598,11 +2606,11 @@ SceneGraph<public> := module {
   @import_as("/*.FBoundedBox")
   # 3-dimensional box.
   bounded_box<native><epic_internal> := struct<concrete> {
-    BoxMax: (/Verse.org/SpatialMath:)vector3 = external {}
+    BoxMax<native>: (/Verse.org/SpatialMath:)vector3 = external {}
 
-    BoxMin: (/Verse.org/SpatialMath:)vector3 = external {}
+    BoxMin<native>: (/Verse.org/SpatialMath:)vector3 = external {}
 
-    Valid: logic = external {}
+    Valid<native>: logic = external {}
   }
 
   using { /Verse.org/Colors }
@@ -2627,7 +2635,6 @@ SceneGraph<public> := module {
     var SourceRadius<public>: float = external {}
   }
 
-  @experimental
   change_icon_component_event<epic_internal> := class(scene_event) {
     Entity<public>: entity
 
@@ -2645,7 +2652,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   change_rarity_component_event<epic_internal> := class(scene_event) {
     Entity<public>: entity
 
@@ -2791,7 +2797,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   common_rarity<public> := class<allocates>(rarity) {}
 
   # Base class for authoring logic and data in the SceneGraph. Using components you
@@ -2896,9 +2901,8 @@ SceneGraph<public> := module {
     OnInitializedInternal<native><native_callable><epic_internal>(): void
 
     @available { MinUploadedAtFNVersion := 4000 }
-    @experimental
     # Respond to a scene event. Return true to consume the event and halt propagation to the next entity.
-    OnReceive<native><native_callable><protected>(SceneEvent: scene_event): logic
+    OnReceive<native_callable><protected>(SceneEvent: scene_event): logic = external {}
 
     # Called when the component is about to be removed from the scene.
     #   * Components are removed from a scene when the parent entity is removed from the scene.
@@ -2924,7 +2928,6 @@ SceneGraph<public> := module {
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
 
-    @experimental
     # Send a scene event to this component, invoking OnReceive.  Return true to consume the event and halt propagation to the next entity.
     SendDown<native><native_callable><final><public>(SceneEvent: scene_event): logic
 
@@ -3122,11 +3125,9 @@ SceneGraph<public> := module {
     # Removes the tag instance associated with the `tag_key`, succeeds if an instance was removed, fails otherwise.
     RemoveTag<override><native><final>(Key: tag_key)<transacts><decides>: void
 
-    @experimental
     # Send a scene event to this entity and then down the hierarchy. First, SendDown/OnReceive will be invoked on each component on this entity. Next, SendDown will be invoked on each child entity.  Consuming the event at any point will halt propagation. Returns true if any participant consumed the event.
     SendDown<native><native_callable><final><public>(SceneEvent: scene_event): logic
 
-    @experimental
     # Send a scene event to this entity and then up the hierarchy. First, SendDown/OnReceive will be invoked on each component on this entity. Next, SendUp will be invoked on this entity's parent. Consuming the event at any point will halt propagation. Returns true if any participant consumed the event.
     SendUp<native><native_callable><final><public>(SceneEvent: scene_event): logic
   }
@@ -3176,7 +3177,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   epic_rarity<public> := class<allocates>(rare_rarity) {
     Color<override>: color = external {}
   }
@@ -3449,7 +3449,6 @@ SceneGraph<public> := module {
     ThisEntity<native><public>: ?entity
   }
 
-  @experimental
   # Component that holds an icon for an entity.
   icon_component<native><public> := class<final_super>(component, has_icon) {
     OnBeginSimulation<override>(): void = external {}
@@ -3459,6 +3458,8 @@ SceneGraph<public> := module {
     OnIconChanged<native><epic_internal>()<transacts>: void
 
     var Icon<override>: texture = external {}
+
+    var<private> HasChangedFields<native><epic_internal>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -3644,7 +3645,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   legendary_rarity<public> := class<allocates>(epic_rarity) {
     Color<override>: color = external {}
   }
@@ -4193,13 +4193,11 @@ SceneGraph<public> := module {
   presentation_component<native><epic_internal> := class<final_super>(component) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   rare_rarity<public> := class<allocates>(uncommon_rarity) {
     Color<override>: color = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Rarity may be used by gameplay and presentation systems to classify and rank things.
   rarity<native><public> := class<castable><concrete><unique><allocates> {
     @editable
@@ -4207,7 +4205,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Component that denotes the rarity of an entity.
   rarity_component<native><public> := class<final_super>(component) {
     GetRarity<native><epic_internal>(__dupe___unnamed_parameter_100: accessor)<transacts>: rarity
@@ -4218,7 +4215,10 @@ SceneGraph<public> := module {
 
     SetRarity<native><epic_internal>(__dupe___unnamed_parameter_101: accessor, InRarity: rarity)<transacts>: void
 
+    # The rarity of this entity. An entity can have only one rarity.
     var Rarity<public>: rarity = external {}
+
+    var<private> HasChangedFields<native><epic_internal>: logic = external {}
   }
 
   # A `rect_light_component` emits light into the scene from a rectangular plane with a specified width and height. You can use these
@@ -4338,7 +4338,6 @@ SceneGraph<public> := module {
   @hide_in_editor
   root_entity<native><epic_internal> := class<concrete><unique><transacts>(entity) {}
 
-  @experimental
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
 
@@ -4514,12 +4513,14 @@ SceneGraph<public> := module {
 
     Split<native_callable><public>(Amount: int)<transacts><decides>: entity
 
+    var<private> HasChangedFields<native><epic_internal>: logic = external {}
+
     @editable
-    # Maximum stack size for this component. If false, unlimited stack size.
+    # The maximum amount this component can hold. If unset, it holds an unlimited amount.
     var<private> MaxStackSize<native><public>: ?int = external {}
 
     @editable_number(int) { MinValue := option { 1 } }
-    # Current stack size of this component.
+    # The current amount of this entity held in the stack.
     var<private> StackSize<native><public>: int = external {}
   }
 
@@ -4650,7 +4651,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   uncommon_rarity<public> := class<allocates>(common_rarity) {
     Color<override>: color = external {}
   }
@@ -4952,7 +4952,39 @@ Simulation<public> := module {
   }
 
   using { /Verse.org/SceneGraph }
-  agent<native><public> := class<unique><epic_internal>(entity) {}
+  agent<native><public> := class<unique><epic_internal>(entity) {
+    # Possess an entity. Fails if PossessableComponent.CanBePossessedBy[Self] fails.
+    BeginPossess<native_callable><epic_internal>(PossessableComponent: possessable_component)<transacts><decides>: void = external {}
+
+    # Event that will fire when a new entity is possessed.
+    BeginPossessEvent<native><epic_internal>: listenable(possessable_component) = external {}
+
+    # Unpossesses an entity.
+    EndPossess<native_callable><epic_internal>(PossessableComponent: possessable_component)<transacts>: void = external {}
+
+    # Event that will fire when an entity is unpossessed.
+    #  Entities are automatically unpossessed when removed from the scene
+    EndPossessEvent<native><epic_internal>: listenable(possessable_component) = external {}
+
+    # Checks if an entity is possessed.
+    IsEntityPossessed<native_callable><epic_internal>(PossessableComponent: possessable_component)<reads><decides>: void = external {}
+
+    # Signals the BeginPossessEvent.
+    SignalBeginPossessEvent<native><epic_internal>(PossessableComponent: possessable_component)<transacts>: void
+
+    # Signals the EndPossessEvent.
+    SignalEndPossessEvent<native><epic_internal>(PossessableComponent: possessable_component)<transacts>: void
+
+    # All entities possessed by this agent.
+    var<private> PossessedEntities<native><epic_internal>: []possessable_component = external {}
+  }
+
+  # Payload of the AgentChangeEvent. Contains the previous and the current possessing agent.
+  agent_changed_result<native><epic_internal> := struct {
+    CurrentAgent<native>: ?agent = external {}
+
+    PreviousAgent<native>: ?agent = external {}
+  }
 
   @attribscope_class
   @attribscope_data
@@ -5180,6 +5212,31 @@ Simulation<public> := module {
   player<native><public> := class<unique><persistent><module_scoped_var_weak_map_key><epic_internal>(agent) {
     # Succeeds when this `player` may be used as a module-scoped `var` `weak_map` key. This coincides with the corresponding player having joined the game and not yet left. Using a `player` as a module-scope `var` `weak_map` key when this method fails results in a runtime error.
     IsActive<native><public>()<reads><decides>: void
+  }
+
+  # Marks an entity that can be possessed by an agent.
+  possessable_component<native><epic_internal> := class<final_super>(component) {
+    # Notify when the possessing agent changes.
+    AgentChangeEvent<native><final><epic_internal>: listenable(agent_changed_result) = external {}
+
+    # Internal function to call when possessing for updating status and triggering the AgentChangeEvent.
+    BeginPossess<final><epic_internal>(NewPossessingAgent: agent)<transacts>: void = external {}
+
+    # Entity's opinion on whether it can be possessed by a specific agent.
+    #  By default it fails if the entity is already possessed.
+    CanBePossessedBy<native_callable><epic_internal>(AgentToCheck: agent)<reads><decides>: void = external {}
+
+    # Internal function to call when unpossessing for updating status and triggering the AgentChangeEvent.
+    EndPossess<final><epic_internal>()<transacts>: void = external {}
+
+    # Signals the AgentChangeEvent.
+    SignalAgentChangeEvent<final><epic_internal>(PreviousAgent: ?agent)<transacts>: void = external {}
+
+    # Internal function that signals the AgentChangeEvent.
+    SignalAgentChangeEventInternal<native><final><epic_internal>(AgentChangedResult: agent_changed_result)<transacts>: void
+
+    # Which agent is this entity currently possessed by.
+    var<private> Agent<native><final><epic_internal>: ?agent = external {}
   }
 
   using { /Verse.org/Native }
@@ -5518,32 +5575,32 @@ SpatialMath<public> := module {
   transform<native><public> := struct<concrete><computes> {
     @editable
     # The rotation of this `transform`.
-    Rotation<public>: rotation = external {}
+    Rotation<native><public>: rotation = external {}
 
     @editable
     @units("x")
     # The scale of this `transform`.
-    Scale<public>: vector3 = external {}
+    Scale<native><public>: vector3 = external {}
 
     @editable
     # The location of this `transform`.
-    Translation<public>: vector3 = external {}
+    Translation<native><public>: vector3 = external {}
   }
 
   @import_as("/*.FVVector3")
   # 3-dimensional vector with `float` components.
-  vector3<native><public> := struct<concrete><computes><persistable> {
+  vector3<native><public> := struct<concrete><computes><persistable><uht_comparable> {
     @editable
     # The Forward (was X) component of this vector.
-    Forward<public>: float = external {}
+    Forward<native><public>: float = external {}
 
     @editable
     # The Left (was -Y) component of this vector.
-    Left<public>: float = external {}
+    Left<native><public>: float = external {}
 
     @editable
     # The Up (was Z) component of this vector.
-    Up<public>: float = external {}
+    Up<native><public>: float = external {}
   }
 }
 

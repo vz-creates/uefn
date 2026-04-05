@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.00-CL-51746096
+# Generated from build: ++Fortnite+Release-40.10-CL-52157884
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -256,6 +256,9 @@ Itemization<public> := module {
     # Returns a list of items (of a specific type) within this inventory only.
     GetItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
 
+    @available { MinUploadedAtFNVersion := 4000 }
+    OnReceive<override><native>(SceneEvent: scene_event): logic
+
     @available { MinUploadedAtFNVersion := 3800 }
     # Removes an item from this inventory or its descendent inventories. Fails if the item could not be removed.
     RemoveItem<native><final><public>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
@@ -273,7 +276,7 @@ Itemization<public> := module {
   # Anything using this component should be considered an item. Required to interact with inventories.
   item_component<native><public> := class<final_super>(component) {
     @editable
-    # Categories which this item can belong to. Note that some projects may only use the first entry.
+    # Add one or more category instances to help define and organize this item.
     Categories<native><public>: []item_category = external {}
 
     # Broadcast when this item is equipped or unequipped.

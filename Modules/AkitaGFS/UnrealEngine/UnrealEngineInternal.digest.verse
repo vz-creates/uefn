@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.00-CL-51746096
+# Generated from build: ++Fortnite+Release-40.10-CL-52157884
 #################################################
 
 AINavigation<public> := module {
@@ -748,8 +748,8 @@ Itemization<public> := module {
     var ChosenInventoryPriority<native><public>: float = external {}
   }
 
-  @experimental
   @class_and_subclass_group_names("inventory")
+  @experimental
   # Inventory components hold items. An entity with an inventory component can be considered to have an inventory.
   # The inventory component controls which items can enter or exit.
   # They also determine whether an item can be equipped.
@@ -841,6 +841,9 @@ Itemization<public> := module {
     ): result(remove_item_result, []remove_item_error) = external {}
 
     OnInitializedInternal<native><override>(): void
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    OnReceive<override><native>(SceneEvent: scene_event): logic
 
     OnUninitializingInternal<native><override>(): void
 
@@ -1003,7 +1006,7 @@ Itemization<public> := module {
   # Anything using this component should be considered an item. Required to interact with inventories.
   item_component<native><public> := class<final_super>(component) {
     @editable
-    # Categories which this item can belong to. Note that some projects may only use the first entry.
+    # Add one or more category instances to help define and organize this item.
     Categories<native><public>: []item_category = external {}
 
     # Broadcast when this item is equipped or unequipped.
@@ -1057,8 +1060,8 @@ Itemization<public> := module {
     var<private> ItemDefinition<native><epic_internal>: ?item_definition_base = external {}
   }
 
-  @experimental
   @import_as("/Script/ItemizationCoreRuntime.UItemDefinitionBase")
+  @experimental
   item_definition_base<native><epic_internal> := class<epic_internal> {}
 
   @class_and_subclass_group_names("item")
@@ -1875,6 +1878,8 @@ RuntimeAI<public> := module {
   @experimental
   # An abstraction around a recorded history of events and sending prompts with that history context included.
   llm_session<native><epic_internal> := class<unique> {
+    CancelAllVoiceChannelSubscriptions<native_callable><epic_internal>()<transacts>: void = external {}
+
     # Removes all the history events from the session. Including conversation history.
     ClearHistory<native><public>()<transacts>: void
 
@@ -1901,6 +1906,8 @@ RuntimeAI<public> := module {
     SubscribeToVoiceChannelMemberAdded<native_callable><epic_internal>(VoiceChannel: voice_channel(member_info) where member_info: subtype(has_voice_member_info))<transacts>: cancelable = external {}
 
     SubscribeToVoiceChannelMemberRemoved<native_callable><epic_internal>(VoiceChannel: voice_channel(member_info) where member_info: subtype(has_voice_member_info))<transacts>: cancelable = external {}
+
+    var VoiceChannelSubscriptions<epic_internal>: []cancelable = external {}
   }
 
   llm_string<native><epic_internal> := class {
@@ -1966,11 +1973,13 @@ RuntimeAI<public> := module {
   persona_component<native><epic_internal> := class<final_super>(component) {
     OnInitialized<override>(): void = external {}
 
+    OnPersonaComponentConstructed<native><epic_internal>()<transacts>: void
+
     @available { MinUploadedAtFNVersion := 4000 }
     OnReceive<override>(SceneEvent: scene_event): logic = external {}
 
     # Defines the persona and what it knows
-    PersonaDefinition<native><public>: persona_definition
+    PersonaDefinition<native><public>: persona_definition = external {}
 
     # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
     #  Callback receives:
@@ -1999,7 +2008,10 @@ RuntimeAI<public> := module {
 
     # Registers a callback for when the persona receives structured data in the format of response_type.
     #  Required forces this be filled out every time the persona is prompted.
-    #  the returned cancelable unregisters this callback and stops the llm from attempting to send this kind of structured data
+    #  The returned cancelable unregisters this callback and stops the llm from attempting to send this kind of structured data.
+    #  The result type must be a struct which can contain.
+    #  - numeric types, message, bools and enums, as well as structs or arrays which only contain those types, anything else results in an error.
+    #  Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
     SubscribeToResponseType<native><public>(response_type: type, Required: logic, Callback: type { _(: ?agent, : response_type): void })<transacts>: cancelable
 
     UpdateDetails<native><epic_internal>()<transacts>: void
@@ -2088,10 +2100,14 @@ RuntimeAI<public> := module {
   # Defines the persona and what it knows.
   persona_definition<native><epic_internal> := class<final> {
     # What the persona currently knows
-    var KnowledgeSlot<native><public>: prompt_slot_provider
+    var KnowledgeSlot<public>: prompt_slot_provider = external {}
+
+    var KnowledgeSlotInternal<native><public>: prompt_slot_provider = external {}
 
     # Defines the personality
-    var PersonalitySlot<native><public>: prompt_slot_provider
+    var PersonalitySlot<public>: prompt_slot_provider = external {}
+
+    var PersonalitySlotInternal<native><public>: prompt_slot_provider = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }

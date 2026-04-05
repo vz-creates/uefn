@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.00-CL-51746096
+# Generated from build: ++Fortnite+Release-40.10-CL-52157884
 #################################################
 
 AI<public> := module {
@@ -10858,6 +10858,12 @@ Itemization<public> := module {
     @experimental
     WeaponHarvest<epic_internal>: item_category = external {}
 
+    @experimental
+    WeaponMelee<epic_internal>: item_category = external {}
+
+    @experimental
+    WeaponRanged<epic_internal>: item_category = external {}
+
     using { /UnrealEngine.com/Itemization }
     @experimental
     WorldItem<public>: item_category = external {}
@@ -11020,6 +11026,8 @@ Itemization<public> := module {
 
     ___PropertyInterface_On_ReloadTime_Changed<epic_internal>(): void = external {}
 
+    ___PropertyInterface_On_ShowAmmoIcon_Changed<epic_internal>(): void = external {}
+
     ___PropertyInterface_On_SlotSize_Changed<epic_internal>(): void = external {}
 
     @replicated("RepNotify=___PropertyInterface_On_Ammo_Changed")
@@ -11085,6 +11093,9 @@ Itemization<public> := module {
     @replicated("RepNotify=___PropertyInterface_On_ReloadTime_Changed")
     var ReloadTime<public>: float = external {}
 
+    @replicated("RepNotify=___PropertyInterface_On_ShowAmmoIcon_Changed")
+    var ShowAmmoIcon<public>: logic = external {}
+
     @replicated("RepNotify=___PropertyInterface_On_SlotSize_Changed")
     var SlotSize<public>: int = external {}
   }
@@ -11140,6 +11151,18 @@ Itemization<public> := module {
     closed_inventory_component<native><epic_internal> := class(inventory_component) {
       @available { MinUploadedAtFNVersion := 4000 }
       OnReceive<override>(SceneEvent: scene_event): logic = external {}
+    }
+
+    @experimental
+    @hide_in_editor
+    event_tester_inventory_component<native><epic_internal> := class(inventory_component) {
+      OnInitialized<override>(): void = external {}
+
+      OnUninitializing<override>(): void = external {}
+
+      var AddedItemCount<native><public>: int = external {}
+
+      var ModifiedItemCount<native><public>: int = external {}
     }
 
     @experimental
@@ -11250,6 +11273,9 @@ Itemization<public> := module {
 
     # Returns the total number of slots in this inventory.
     GetMaxSlots<native><public>()<reads><decides>: int
+
+    # Takes either a Melee or Ranged weapon item and reloads its initial ammount of ammo. Does not grant extra ammo
+    ResetWeaponState<native><epic_internal>(Weapon: item_component)<transacts><decides>: void
 
     # Moves the item to a particular slot. If the item is not already in the inventory, AddItem is called on it. Swaps places with any item already in that slot.
     SetItemInSlot<native><epic_internal>(Item: entity, Slot: int)<reads><decides>: void
@@ -14388,6 +14414,21 @@ Items<public> := module {
     }
   }
 
+  # Module import path: /Fortnite.com/Items/EnhancedHarpoonGun
+  EnhancedHarpoonGun<public> := module {
+    # Module import path: /Fortnite.com/Items/EnhancedHarpoonGun/BattleRoyale
+    (/Fortnite.com/Items/EnhancedHarpoonGun:)BattleRoyale<public> := module {
+      # Module import path: /Fortnite.com/Items/EnhancedHarpoonGun/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/EnhancedHarpoonGun/BattleRoyale:)CH7S2<public> := module {
+        using { /Fortnite.com/Itemization }
+        @experimental
+        EnhancedHarpoonGun_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+      }
+    }
+  }
+
   # Module import path: /Fortnite.com/Items/EstateVaultKeycard
   EstateVaultKeycard<public> := module {
     # Module import path: /Fortnite.com/Items/EstateVaultKeycard/BattleRoyale
@@ -16004,6 +16045,15 @@ Items<public> := module {
           ItemDefinitionID<override>: string = external {}
         }
       }
+
+      # Module import path: /Fortnite.com/Items/HeavyImpactSniperRifle/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/HeavyImpactSniperRifle/BattleRoyale:)CH7S2<public> := module {
+        using { /Fortnite.com/Itemization }
+        @experimental
+        LawfulHeavyImpactTrackingRifle_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+      }
     }
   }
 
@@ -16697,18 +16747,6 @@ Items<public> := module {
     }
   }
 
-  # Module import path: /Fortnite.com/Items/InkyPistol
-  InkyPistol<public> := module {
-    # Module import path: /Fortnite.com/Items/InkyPistol/BattleRoyale
-    (/Fortnite.com/Items/InkyPistol:)BattleRoyale<public> := module {
-      using { /Fortnite.com/Itemization }
-      @experimental
-      InkyPistol_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-        ItemDefinitionID<override>: string = external {}
-      }
-    }
-  }
-
   # Module import path: /Fortnite.com/Items/InstantLargeShield
   InstantLargeShield<public> := module {
     # Module import path: /Fortnite.com/Items/InstantLargeShield/Ballistic
@@ -17009,6 +17047,21 @@ Items<public> := module {
       @experimental
       SuperLaunchPad_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
         ItemDefinitionID<override>: string = external {}
+      }
+    }
+  }
+
+  # Module import path: /Fortnite.com/Items/LawfulShockwaveRocketLauncher
+  LawfulShockwaveRocketLauncher<public> := module {
+    # Module import path: /Fortnite.com/Items/LawfulShockwaveRocketLauncher/BattleRoyale
+    (/Fortnite.com/Items/LawfulShockwaveRocketLauncher:)BattleRoyale<public> := module {
+      # Module import path: /Fortnite.com/Items/LawfulShockwaveRocketLauncher/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/LawfulShockwaveRocketLauncher/BattleRoyale:)CH7S2<public> := module {
+        using { /Fortnite.com/Itemization }
+        @experimental
+        LawfulShockwaveRocketLauncher_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
       }
     }
   }
@@ -17666,6 +17719,15 @@ Items<public> := module {
 
         @experimental
         LawlessExplosiveMammothPistol_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+      }
+
+      # Module import path: /Fortnite.com/Items/MammothPistol/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/MammothPistol/BattleRoyale:)CH7S2<public> := module {
+        using { /Fortnite.com/Itemization }
+        @experimental
+        LawfulExplosiveMammothPistol_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
           ItemDefinitionID<override>: string = external {}
         }
       }
@@ -21544,24 +21606,53 @@ Items<public> := module {
           }
 
           @experimental
-          StrikerAR_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
             ItemDefinitionID<override>: string = external {}
           }
 
           @experimental
-          StrikerAR_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
             ItemDefinitionID<override>: string = external {}
           }
 
           @experimental
-          StrikerAR_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
             ItemDefinitionID<override>: string = external {}
           }
 
           @experimental
-          StrikerAR_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
             ItemDefinitionID<override>: string = external {}
           }
+        }
+      }
+
+      # Module import path: /Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2
+      (/Fortnite.com/Items/StrikerAR/BattleRoyale:)CH6MS2<public> := module {
+        using { /Fortnite.com/Itemization }
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
         }
       }
     }
@@ -22386,6 +22477,21 @@ Items<public> := module {
     }
   }
 
+  # Module import path: /Fortnite.com/Items/TheFoundationsRiftRifle
+  TheFoundationsRiftRifle<public> := module {
+    # Module import path: /Fortnite.com/Items/TheFoundationsRiftRifle/BattleRoyale
+    (/Fortnite.com/Items/TheFoundationsRiftRifle:)BattleRoyale<public> := module {
+      # Module import path: /Fortnite.com/Items/TheFoundationsRiftRifle/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/TheFoundationsRiftRifle/BattleRoyale:)CH7S2<public> := module {
+        using { /Fortnite.com/Itemization }
+        @experimental
+        TheFoundationsRiftRifle_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+          ItemDefinitionID<override>: string = external {}
+        }
+      }
+    }
+  }
+
   # Module import path: /Fortnite.com/Items/TheKneecapper
   TheKneecapper<public> := module {
     # Module import path: /Fortnite.com/Items/TheKneecapper/BattleRoyale
@@ -22397,18 +22503,6 @@ Items<public> := module {
         TheKneecapper_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
           ItemDefinitionID<override>: string = external {}
         }
-      }
-    }
-  }
-
-  # Module import path: /Fortnite.com/Items/TheMandaloriansJetpack
-  TheMandaloriansJetpack<public> := module {
-    # Module import path: /Fortnite.com/Items/TheMandaloriansJetpack/BattleRoyale
-    (/Fortnite.com/Items/TheMandaloriansJetpack:)BattleRoyale<public> := module {
-      using { /Fortnite.com/Itemization }
-      @experimental
-      TheMandaloriansJetpack_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-        ItemDefinitionID<override>: string = external {}
       }
     }
   }
@@ -23946,7 +24040,7 @@ Teams<public> := module {
     AddMemberEvent<override><final><native>: listenable(tuple(agent, fort_team_member_info)) = external {}
 
     # Get the underlying member map for this team
-    GetMemberMap<override>()<reads>: [agent]fort_team_member_info = external {}
+    GetMemberMap<override><native_callable>()<reads>: [agent]fort_team_member_info = external {}
 
     GetTeamVoiceChannel<native_callable><public>()<transacts>: ?voice_channel(fort_team_member_info) = external {}
 
@@ -23955,6 +24049,8 @@ Teams<public> := module {
 
     # Signalled whenever an agent successfully leaves this agent group.Passes in the agent that left along with their member_info.
     RemoveMemberEvent<override><final><native>: listenable(tuple(agent, fort_team_member_info)) = external {}
+
+    RemoveTeamVoiceChannel<native_callable><public>(SimulationEntity: simulation_entity)<transacts>: void = external {}
   }
 
   # Collection used to manage `team`s and `agent`s on those teams.

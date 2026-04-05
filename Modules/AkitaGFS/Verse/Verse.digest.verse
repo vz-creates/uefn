@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.00-CL-51746096
+# Generated from build: ++Fortnite+Release-40.10-CL-52157884
 #################################################
 
 AgentGroup<public> := module {
@@ -76,6 +76,7 @@ Assets<public> := module {
   # Interface that provides an icon.
   has_icon<native><public> := interface {
     @editable
+    # A texture used as the 2D visual representation of this entity (e.g. an icon or portrait).
     var Icon<public>: texture
   }
 
@@ -443,9 +444,10 @@ Colors<public> := module {
 
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
+  @import_as("/*.FVColor")
   # Represents colors as RGB triples in the ACES 2065-1 color space.
   # Component values are linear (i.e. `*gamma* = 1.0`).
-  color<native><public> := struct<concrete><computes><persistable> {
+  color<native><public> := struct<concrete><computes><persistable><uht_comparable> {
     @editable
     # Blue component of this `color`.
     B<native><public>: float = external {}
@@ -460,12 +462,13 @@ Colors<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
+  @import_as("/*.FVColorAlpha")
   # Represents colors as RGB triples in the ACES 2065-1 color space with an additional alpha channel A.
   # This reasons about the `Color` and alpha (`A`) as separate concepts instead of as a single concept.
   # All values are stored strictly as unopinionated floats but, when interpreted as a color with alpha,
   # ranges for `A` are `0.0` (transparent) to `1.0` (opaque). Color values are not premultiplied.
   # Component values are linear (i.e. `*gamma* = 1.0`).
-  color_alpha<native><public> := struct<concrete><computes><persistable> {
+  color_alpha<native><public> := struct<concrete><computes><persistable><uht_comparable> {
     @editable
     # Alpha component of this `color_alpha`.
     A<native><public>: float = external {}
@@ -706,7 +709,6 @@ Predicts<public> := module {
 Presentation<public> := module {
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  @experimental
   # Component that holds the details for an entity, such as name and description.
   description_component<native><public> := class<final_super>(component, has_description) {
     OnBeginSimulation<override>(): void = external {}
@@ -723,15 +725,15 @@ Presentation<public> := module {
   # Interface that provides descriptive names or text.
   has_description<native><public> := interface {
     @editable
-    # Full description.
+    # The full description of this entity.
     var Description<public>: message
 
     @editable
-    # Name.
+    # The display name of this entity.
     var Name<public>: message
 
     @editable
-    # Short description with only the essential information.
+    # A shortened description of this entity.
     var ShortDescription<public>: message
   }
 }
@@ -1098,7 +1100,7 @@ SceneGraph<public> := module {
     Split<override>(Amount: int)<transacts><decides>: entity = external {}
 
     @editable
-    # The prefab which will be returned when Split is called. Entities can only merge with others of the same prefab.
+    # The prefab used when this entity merges with another or when it is split into a new instance.
     split_prefab_type<native><public>: castable_concrete_subtype(entity) = external {}
   }
 
@@ -1233,7 +1235,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   common_rarity<public> := class<allocates>(rarity) {}
 
   using { /Verse.org/Assets }
@@ -1318,9 +1319,8 @@ SceneGraph<public> := module {
     OnEndSimulation<native><native_callable><protected>(): void
 
     @available { MinUploadedAtFNVersion := 4000 }
-    @experimental
     # Respond to a scene event. Return true to consume the event and halt propagation to the next entity.
-    OnReceive<native><native_callable><protected>(SceneEvent: scene_event): logic
+    OnReceive<native_callable><protected>(SceneEvent: scene_event): logic = external {}
 
     # Called when the component is about to be removed from the scene.
     #   * Components are removed from a scene when the parent entity is removed from the scene.
@@ -1338,7 +1338,6 @@ SceneGraph<public> := module {
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
 
-    @experimental
     # Send a scene event to this component, invoking OnReceive.  Return true to consume the event and halt propagation to the next entity.
     SendDown<native><native_callable><final><public>(SceneEvent: scene_event): logic
 
@@ -1443,11 +1442,9 @@ SceneGraph<public> := module {
     # Removes the tag instance associated with the `tag_key`, succeeds if an instance was removed, fails otherwise.
     RemoveTag<override><native><final>(Key: tag_key)<transacts><decides>: void
 
-    @experimental
     # Send a scene event to this entity and then down the hierarchy. First, SendDown/OnReceive will be invoked on each component on this entity. Next, SendDown will be invoked on each child entity.  Consuming the event at any point will halt propagation. Returns true if any participant consumed the event.
     SendDown<native><native_callable><final><public>(SceneEvent: scene_event): logic
 
-    @experimental
     # Send a scene event to this entity and then up the hierarchy. First, SendDown/OnReceive will be invoked on each component on this entity. Next, SendUp will be invoked on this entity's parent. Consuming the event at any point will halt propagation. Returns true if any participant consumed the event.
     SendUp<native><native_callable><final><public>(SceneEvent: scene_event): logic
   }
@@ -1477,7 +1474,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   epic_rarity<public> := class<allocates>(rare_rarity) {
     Color<override>: color = external {}
   }
@@ -1508,7 +1504,6 @@ SceneGraph<public> := module {
     OnMergeInto<public>(TargetEntity: entity, MergeAmount: int)<transacts>: void = external {}
   }
 
-  @experimental
   # Component that holds an icon for an entity.
   icon_component<native><public> := class<final_super>(component, has_icon) {
     OnBeginSimulation<override>(): void = external {}
@@ -1625,7 +1620,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   legendary_rarity<public> := class<allocates>(epic_rarity) {
     Color<override>: color = external {}
   }
@@ -1748,13 +1742,11 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   rare_rarity<public> := class<allocates>(uncommon_rarity) {
     Color<override>: color = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Rarity may be used by gameplay and presentation systems to classify and rank things.
   rarity<native><public> := class<castable><concrete><unique><allocates> {
     @editable
@@ -1762,13 +1754,13 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Component that denotes the rarity of an entity.
   rarity_component<native><public> := class<final_super>(component) {
     OnBeginSimulation<override>(): void = external {}
 
     OnEndSimulation<override>(): void = external {}
 
+    # The rarity of this entity. An entity can have only one rarity.
     var Rarity<public>: rarity = external {}
   }
 
@@ -1798,7 +1790,6 @@ SceneGraph<public> := module {
     var SourceWidth<public>: float = external {}
   }
 
-  @experimental
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
 
@@ -1897,11 +1888,11 @@ SceneGraph<public> := module {
     Split<native_callable><public>(Amount: int)<transacts><decides>: entity
 
     @editable
-    # Maximum stack size for this component. If false, unlimited stack size.
+    # The maximum amount this component can hold. If unset, it holds an unlimited amount.
     var<private> MaxStackSize<native><public>: ?int = external {}
 
     @editable_number(int) { MinValue := option { 1 } }
-    # Current stack size of this component.
+    # The current amount of this entity held in the stack.
     var<private> StackSize<native><public>: int = external {}
   }
 
@@ -1960,7 +1951,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   uncommon_rarity<public> := class<allocates>(common_rarity) {
     Color<override>: color = external {}
   }
@@ -2473,31 +2463,31 @@ SpatialMath<public> := module {
   transform<native><public> := struct<concrete><computes> {
     @editable
     # The rotation of this `transform`.
-    Rotation<public>: rotation = external {}
+    Rotation<native><public>: rotation = external {}
 
     @editable
     # The scale of this `transform`.
-    Scale<public>: vector3 = external {}
+    Scale<native><public>: vector3 = external {}
 
     @editable
     # The location of this `transform`.
-    Translation<public>: vector3 = external {}
+    Translation<native><public>: vector3 = external {}
   }
 
   @import_as("/*.FVVector3")
   # 3-dimensional vector with `float` components.
-  vector3<native><public> := struct<concrete><computes><persistable> {
+  vector3<native><public> := struct<concrete><computes><persistable><uht_comparable> {
     @editable
     # The Forward (was X) component of this vector.
-    Forward<public>: float = external {}
+    Forward<native><public>: float = external {}
 
     @editable
     # The Left (was -Y) component of this vector.
-    Left<public>: float = external {}
+    Left<native><public>: float = external {}
 
     @editable
     # The Up (was Z) component of this vector.
-    Up<public>: float = external {}
+    Up<native><public>: float = external {}
   }
 }
 

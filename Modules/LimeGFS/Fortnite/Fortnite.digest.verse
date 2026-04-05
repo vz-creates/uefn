@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.00-CL-51746096
+# Generated from build: ++Fortnite+Release-40.10-CL-52157884
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -10651,6 +10651,19 @@ Items<public> := module {
     }
   }
 
+  # Module import path: /Fortnite.com/Items/EnhancedHarpoonGun
+  EnhancedHarpoonGun<public> := module {
+    # Module import path: /Fortnite.com/Items/EnhancedHarpoonGun/BattleRoyale
+    (/Fortnite.com/Items/EnhancedHarpoonGun:)BattleRoyale<public> := module {
+      # Module import path: /Fortnite.com/Items/EnhancedHarpoonGun/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/EnhancedHarpoonGun/BattleRoyale:)CH7S2<public> := module {
+        using { /Verse.org/SceneGraph }
+        @experimental
+        EnhancedHarpoonGun_Mythic<public> := class<final><concrete>(entity) {}
+      }
+    }
+  }
+
   # Module import path: /Fortnite.com/Items/EstateVaultKeycard
   EstateVaultKeycard<public> := module {
     # Module import path: /Fortnite.com/Items/EstateVaultKeycard/BattleRoyale
@@ -11806,6 +11819,13 @@ Items<public> := module {
         @experimental
         LawlessHeavyImpactTrackingRifle_Exotic<public> := class<final><concrete>(entity) {}
       }
+
+      # Module import path: /Fortnite.com/Items/HeavyImpactSniperRifle/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/HeavyImpactSniperRifle/BattleRoyale:)CH7S2<public> := module {
+        using { /Verse.org/SceneGraph }
+        @experimental
+        LawfulHeavyImpactTrackingRifle_Exotic<public> := class<final><concrete>(entity) {}
+      }
     }
   }
 
@@ -12335,16 +12355,6 @@ Items<public> := module {
     }
   }
 
-  # Module import path: /Fortnite.com/Items/InkyPistol
-  InkyPistol<public> := module {
-    # Module import path: /Fortnite.com/Items/InkyPistol/BattleRoyale
-    (/Fortnite.com/Items/InkyPistol:)BattleRoyale<public> := module {
-      using { /Verse.org/SceneGraph }
-      @experimental
-      InkyPistol_Exotic<public> := class<final><concrete>(entity) {}
-    }
-  }
-
   # Module import path: /Fortnite.com/Items/IronPumpShotgun
   IronPumpShotgun<public> := module {
     # Module import path: /Fortnite.com/Items/IronPumpShotgun/BattleRoyale
@@ -12568,6 +12578,19 @@ Items<public> := module {
       using { /Verse.org/SceneGraph }
       @experimental
       SuperLaunchPad_Epic<public> := class<final><concrete>(entity) {}
+    }
+  }
+
+  # Module import path: /Fortnite.com/Items/LawfulShockwaveRocketLauncher
+  LawfulShockwaveRocketLauncher<public> := module {
+    # Module import path: /Fortnite.com/Items/LawfulShockwaveRocketLauncher/BattleRoyale
+    (/Fortnite.com/Items/LawfulShockwaveRocketLauncher:)BattleRoyale<public> := module {
+      # Module import path: /Fortnite.com/Items/LawfulShockwaveRocketLauncher/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/LawfulShockwaveRocketLauncher/BattleRoyale:)CH7S2<public> := module {
+        using { /Verse.org/SceneGraph }
+        @experimental
+        LawfulShockwaveRocketLauncher_Exotic<public> := class<final><concrete>(entity) {}
+      }
     }
   }
 
@@ -13029,6 +13052,13 @@ Items<public> := module {
 
         @experimental
         LawlessExplosiveMammothPistol_Exotic<public> := class<final><concrete>(entity) {}
+      }
+
+      # Module import path: /Fortnite.com/Items/MammothPistol/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/MammothPistol/BattleRoyale:)CH7S2<public> := module {
+        using { /Verse.org/SceneGraph }
+        @experimental
+        LawfulExplosiveMammothPistol_Exotic<public> := class<final><concrete>(entity) {}
       }
     }
   }
@@ -16040,17 +16070,36 @@ Items<public> := module {
           (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Common<public> := class<final><concrete>(entity) {}
 
           @experimental
-          StrikerAR_Epic<public> := class<final><concrete>(entity) {}
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Epic<public> := class<final><concrete>(entity) {}
 
           @experimental
-          StrikerAR_Legendary<public> := class<final><concrete>(entity) {}
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Legendary<public> := class<final><concrete>(entity) {}
 
           @experimental
-          StrikerAR_Rare<public> := class<final><concrete>(entity) {}
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Rare<public> := class<final><concrete>(entity) {}
 
           @experimental
-          StrikerAR_Uncommon<public> := class<final><concrete>(entity) {}
+          (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH5S1/Modular:)StrikerAR_Uncommon<public> := class<final><concrete>(entity) {}
         }
+      }
+
+      # Module import path: /Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2
+      (/Fortnite.com/Items/StrikerAR/BattleRoyale:)CH6MS2<public> := module {
+        using { /Verse.org/SceneGraph }
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Common<public> := class<final><concrete>(entity) {}
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Epic<public> := class<final><concrete>(entity) {}
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Legendary<public> := class<final><concrete>(entity) {}
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Rare<public> := class<final><concrete>(entity) {}
+
+        @experimental
+        (/Fortnite.com/Items/StrikerAR/BattleRoyale/CH6MS2:)StrikerAR_Uncommon<public> := class<final><concrete>(entity) {}
       }
     }
   }
@@ -16652,6 +16701,19 @@ Items<public> := module {
     }
   }
 
+  # Module import path: /Fortnite.com/Items/TheFoundationsRiftRifle
+  TheFoundationsRiftRifle<public> := module {
+    # Module import path: /Fortnite.com/Items/TheFoundationsRiftRifle/BattleRoyale
+    (/Fortnite.com/Items/TheFoundationsRiftRifle:)BattleRoyale<public> := module {
+      # Module import path: /Fortnite.com/Items/TheFoundationsRiftRifle/BattleRoyale/CH7S2
+      (/Fortnite.com/Items/TheFoundationsRiftRifle/BattleRoyale:)CH7S2<public> := module {
+        using { /Verse.org/SceneGraph }
+        @experimental
+        TheFoundationsRiftRifle_Exotic<public> := class<final><concrete>(entity) {}
+      }
+    }
+  }
+
   # Module import path: /Fortnite.com/Items/TheKneecapper
   TheKneecapper<public> := module {
     # Module import path: /Fortnite.com/Items/TheKneecapper/BattleRoyale
@@ -16662,16 +16724,6 @@ Items<public> := module {
         @experimental
         TheKneecapper_Epic<public> := class<final><concrete>(entity) {}
       }
-    }
-  }
-
-  # Module import path: /Fortnite.com/Items/TheMandaloriansJetpack
-  TheMandaloriansJetpack<public> := module {
-    # Module import path: /Fortnite.com/Items/TheMandaloriansJetpack/BattleRoyale
-    (/Fortnite.com/Items/TheMandaloriansJetpack:)BattleRoyale<public> := module {
-      using { /Verse.org/SceneGraph }
-      @experimental
-      TheMandaloriansJetpack_Mythic<public> := class<final><concrete>(entity) {}
     }
   }
 

@@ -1185,10 +1185,10 @@
 	},
 	"FN1UEFNFramework":
 	{
-		"assets": [
+		"assets": [],
+		"epicInternalAssets": [
 			"Components/BP_ServerConfig_Component",
 			"FN1UEFNFramework"
-		],
-		"epicInternalAssets": []
+		]
 	}
 }

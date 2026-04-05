@@ -245,6 +245,9 @@
 			"/Script/PhysicsControl.PhysicsControlModifierSparseData",
 			"/Script/PhysicsControl.PhysicsControlMultiplier",
 			"/Script/PhysicsControl.PhysicsControlTarget",
+			"/Script/RigLogicModule.BoneIndexControlAttributeMapping",
+			"/Script/RigLogicModule.RigUnit_RigLogic_Data",
+			"/Script/RigLogicModule.RigUnit_RigLogic_IntArray",
 			"/Script/UMG.WidgetTransform"
 		],
 		"AllowedPinCategories": [
@@ -311,7 +314,8 @@
 			"/Game/Valkyrie/UMG/UEFN_Button_Regular.UEFN_Button_Regular_C",
 			"/Game/Valkyrie/UMG/UEFN_Slider.UEFN_Slider_C",
 			"/Game/Valkyrie/UMG/UEFN_TextBlock.UEFN_TextBlock_C",
-			"/Script/UIFramework.UIFrameworkCustomButtonWidget"
+			"/Script/UIFramework.UIFrameworkCustomButtonWidget",
+			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget"
 		],
 		"FavoriteWidgetParentClasses": [
 			"/Script/UMG.UserWidget",
@@ -665,7 +669,6 @@
 			"/FMInWorldKnobs/Gameplay/Components/BP_MojoInWorldKnobOptionsComponent.BP_MojoInWorldKnobOptionsComponent_C":	{  },
 			"/FMInWorldKnobs/Gameplay/UI/Widgets/WBP_FabricScreenWidgetParent.WBP_FabricScreenWidgetParent_C":			{  },
 			"/FMDeviceCables/Gameplay/BP_FMMusicManagerRandomizer.BP_FMMusicManagerRandomizer_C":						{  },			
-			"/FN1UEFNFramework/Components/BP_ServerConfig_Component.BP_ServerConfig_Component_C":{  },
 			"/FortUILibrary/UGC/Widgets/Buttons/CTA/WBP_UEFN_ButtonCTA_Base.WBP_UEFN_ButtonCTA_Base_C":					{  },
 			"/FortWater/Blueprints/WaterBrushManager.WaterBrushManager_C":												{  },
 			"/Game/Athena/BuildingActors/ConsumableBGAs/CBGA_Parent.CBGA_Parent_C":										{  },
@@ -2053,6 +2056,9 @@
 			"/Script/PhysicsControl.PhysicsControlModifierSparseData":			{  },
 			"/Script/PhysicsControl.PhysicsControlMultiplier":					{  },
 			"/Script/PhysicsControl.PhysicsControlTarget":						{  },
+			"/Script/RigLogicModule.BoneIndexControlAttributeMapping":			{  },
+			"/Script/RigLogicModule.RigUnit_RigLogic_Data":						{  },
+			"/Script/RigLogicModule.RigUnit_RigLogic_IntArray":					{  },
 			"/Script/PlayspaceSystem.OverlapComponent":							{  },
 			"/Script/PointLight.PointLightNativeComponent":						{  },
 			"/Script/PropManipulation.PropManipulationNativeComponent":			{  },
@@ -2191,6 +2197,7 @@
 			"/Script/ExperienceSettings.Newton_UserOptionFilterComponent":		{  },
 			"/Script/DataRegistry.DataRegistryID":								{  },
 			"/Script/UIFramework.UIFrameworkCustomButtonWidget":		{ "Visible": true },
+			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget":		{ "Visible": true },
 			"/Script/UMG.ButtonSlot":											{  }
 		},
 		"AllowedMenus": {
@@ -2666,7 +2673,6 @@
 					"LevelEditor",
 					"MessageLog",
 					"OutputLog",
-					"PromptEditorTool",
 					"ReferenceViewer",
 					"SourceControlChangelists",
 					"SpatialMetricsViewer",
@@ -2717,7 +2723,6 @@
 					"MessageLog",
 					"OutputLog",
 					"PlacementBrowser",
-					"PromptEditorTool",
 					"ReferenceViewer",
 					"Sequencer",
 					"TakeRecorder",
@@ -2977,6 +2982,8 @@
 					"OpenConsoleCommandBox",
 					"OpenContentBrowserDrawer",
 					"OpenDocumentation",
+					"OpenEditorPreferences",
+					"OpenKeyboardShortcuts",
 					"OpenOutputLogDrawer",
 					"SummonControlTabNavigation",
 					"SummonControlTabNavigationAlternate",
@@ -3430,6 +3437,10 @@
 				"AllowList": [ "OnButtonClicked", "OnButtonHighlight", "OnButtonUnhighlight", "TriggeringInputAction"]
 			},
 			{
+				"Type": "/Script/UIFramework.UIFrameworkTouchActionWrapperWidget",
+				"AllowList": [ "TriggeringInputAction"]
+			},
+			{
 				"Type": "/Script/UMG.GridPanel",
 				"AllowList": [ "ColumnFill", "RowFill" ]
 			},
@@ -3806,7 +3817,7 @@
 			},
 			{
 				"Type": "/Script/UnrealEd.EditorStyleSettings",
-				"AllowList": [ "ApplicationScale", "SelectionColor", "bEnableHighDPIAwareness", "bUseSmallToolBarIcons", "AssetEditorOpenLocation", "ColorVisionDeficiencyPreviewType", "ColorVisionDeficiencySeverity", "bColorVisionDeficiencyCorrection", "bColorVisionDeficiencyCorrectionPreviewWithDeficiency", "bExpandConfigurationMenus" ]
+				"AllowList": [ "ApplicationScale", "SelectionColor", "bEnableHighDPIAwareness", "bUseSmallToolBarIcons", "AssetEditorOpenLocation", "ColorVisionDeficiencyPreviewType", "ColorVisionDeficiencySeverity", "bColorVisionDeficiencyCorrection", "bColorVisionDeficiencyCorrectionPreviewWithDeficiency", "bExpandConfigurationMenus", "MenuSearchFieldVisibilityThreshold" ]
 			},
 			{
 				"Type": "/Script/OutputLog.OutputLogSettings",
@@ -3842,7 +3853,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bLoadAssetsForValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement" ]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorPythonConfig",
@@ -4692,6 +4703,54 @@
 				"bWarnForDisallowedProperties": true
 			},
 			{
+				"Type": "/Script/UMG.Border",
+				"AllowList": [ "Padding", "BrushColor", "Background", "VerticalAlignment" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.Button",
+				"AllowList": [ "WidgetStyle" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.CheckBox",
+				"AllowList": [ "WidgetStyle", "CheckedState" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.EditableTextBox",
+				"AllowList": [ "Text" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.MultilineEditableTextBox",
+				"AllowList": [ "HintText", "WidgetStyle" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.ScrollBox",
+				"AllowList": [ "ScrollbarThickness", "ScrollbarPadding", "ScrollWhenFocusChanges" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.SpinBox",
+				"AllowList": [ "Value", "MinFractionalDigits", "MaxFractionalDigits", "Delta", "ForegroundColor", "bOverride_MinValue", "bOverride_MaxValue", "MinValue", "MaxValue" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.TextBlock",
+				"AllowList": [ "TextDelegate" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
 				"Type": "/Script/UMG.NamedSlot",
 				"AllowList": [ "SlotGuid" ],
 				"DenyList": [],
@@ -4711,13 +4770,13 @@
 			},
 			{
 				"Type": "/Script/UMG.UserWidget",
-				"AllowList": [ "bHasScriptImplementedTick", "bHasScriptImplementedPaint", "DesignSizeMode", "DesignTimeSize", "NamedSlotBindings" ],
+				"AllowList": [ "bHasScriptImplementedTick", "bHasScriptImplementedPaint", "DesignSizeMode", "DesignTimeSize", "NamedSlotBindings", "Extensions" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
 			{
 				"Type": "/Script/UMG.Widget",
-				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior" ],
+				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior", "VisibilityDelegate" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},

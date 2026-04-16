@@ -461,6 +461,11 @@
 			"FriendlyName": "CurveExpressionVersion",
 			"Version": 2
 		},
+		"A3C1D8F24E6B7A091F85C3D49B2E6F71":
+		{
+			"FriendlyName": "FortAnimationLayeringWeightsDataAssetVersion",
+			"Version": 1
+		},
 		"A4237A36CAEA41C98FA218F858681BF3":
 		{
 			"FriendlyName": "VisualLogger",
@@ -749,6 +754,7 @@
 	{
 		"VKCreateUGC": [
 			"/AnimPresets/AnimPreset_BipedLocomotion.AnimPreset_BipedLocomotion_C",
+			"/CRD_AIPrompt/Modifiers/CharacterModifierPersona.CharacterModifierPersona_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Awareness.CharacterModifier_Awareness_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C",
@@ -887,6 +893,8 @@
 			"/Script/AIModule.AISenseConfig_Hearing",
 			"/Script/AIModule.AISenseConfig_Sight",
 			"/Script/AIModule.AISenseConfig_Touch",
+			"/Script/AIPrompt.PersonaPrompt",
+			"/Script/AIPromptEditor.PersonaPromptEditorViewModel",
 			"/Script/AlembicLibrary.AbcAssetImportData",
 			"/Script/AnimationBudgetAllocator.SkeletalMeshComponentBudgeted",
 			"/Script/AnimationData.AnimationSequencerDataModel",
@@ -2971,7 +2979,6 @@
 			"/Script/ControlRigLibrary.RigUnit_JunoRuntine_RootAlignment",
 			"/Script/ControlRigLibrary.RigUnit_JunoRuntine_SolveIKTwoBones",
 			"/Script/ControlRigLibrary.RigUnit_ProjectItemOnPlane",
-			"/Script/ControlRigLibrary.RigUnit_TwoBoneIKOffPlane",
 			"/Script/ControlRigPhysics.RigPhysicsBodyComponent",
 			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings",
 			"/Script/ControlRigPhysics.RigPhysicsCollision",
@@ -3113,6 +3120,8 @@
 			"/Script/Engine.TransformAnimationAttribute",
 			"/Script/Engine.TwistConstraint",
 			"/Script/Engine.VectorSpringState",
+			"/Script/EpicControlRigLibrary.RigUnit_TwoBoneIKOffPlaneShoulder",
+			"/Script/EpicControlRigRuntime.RigUnit_TwoBoneIKOffPlane",
 			"/Script/FortControlRigUnits.FortRigUnit_SphereTraceByChannel",
 			"/Script/FortniteGame.BuildingActorClassData",
 			"/Script/FortniteGame.BuildingFloorActorClassData",
@@ -14917,6 +14926,10 @@
 			"/ControlRigModules/Modules58/Wheel.Wheel_C",
 			"/ControlRigSpline/SplineFunctionLibrary/SplineFunctionLibrary.SplineFunctionLibrary_C",
 			"/CowCatcherMod/Mods/CowCatcher/BGA_Barricade_CowCatcher.BGA_Barricade_CowCatcher_C",
+			"/CRD_AIPrompt/Modifiers/CharacterModifierPersona.CharacterModifierPersona_C",
+			"/CRD_AIPrompt/PromptEditorTool/VM_ConversationLogEntry.VM_ConversationLogEntry_C",
+			"/CRD_AIPrompt/PromptEditorTool/VM_PersonaPromptEditor.VM_PersonaPromptEditor_C",
+			"/CRD_AIPrompt/PromptEditorTool/VM_PromptResponseDetailEntry.VM_PromptResponseDetailEntry_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Awareness.CharacterModifier_Awareness_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C",

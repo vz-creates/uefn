@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.10-CL-52157884
+# Generated from build: ++Fortnite+Release-40.20-CL-52463280
 #################################################
 
 AgentGroup<public> := module {
@@ -194,7 +194,7 @@ Assets<public> := module {
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
-  (Entity: entity).GetVoiceChannels<native><epic_internal>(): []voice_channel(has_voice_member_info)
+  (Entity: entity).GetVoiceChannels<native><public>()<reads>: []voice_channel(has_voice_member_info)
 
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
@@ -216,7 +216,7 @@ Chat<public> := module {
 
   @experimental
   # Error returned when a channel cannot be added via the `AddChatChannel` function.
-  add_channel_error<epic_internal> := class<computes> {}
+  add_channel_error<public> := class<computes> {}
 
   using { /Verse.org/AgentGroup }
   using { /Verse.org/Native }
@@ -224,7 +224,7 @@ Chat<public> := module {
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
-  chat_channel<native><epic_internal>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal>(enableable) {
+  chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
     (/Verse.org/Chat/chat_channel:)Chat_chat_channel_Variance<private>(): tuple(member_info) = external {}
 
     GetAllPlayerAgents<native_callable><epic_internal>()<reads>: []agent = external {}
@@ -240,7 +240,7 @@ Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Used to specify permissions and other settings for a voice_channel.
-  has_voice_member_info<native><epic_internal> := interface(member_info_interface) {
+  has_voice_member_info<native><public> := interface(member_info_interface) {
     # Determines if the participant can send voice messages to the channel.
     # If true, the participant can still hear those who are broadcasting and see users in the social overlay panel.
     var CanBroadcast<public>: logic = external {}
@@ -250,15 +250,15 @@ Chat<public> := module {
   @experimental
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
-  voice_channel<native><epic_internal>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
+  voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
     # Disables users from communicating on the channel.
-    Disable<override>(): void = external {}
+    Disable<epic_internal>(): void = external {}
 
     # Allows users to communicate on the channel.
-    Enable<override>(): void = external {}
+    Enable<epic_internal>(): void = external {}
 
     # Returns if any user can communicate on the channel.
-    IsEnabled<override>()<transacts><decides>: void = external {}
+    IsEnabled<epic_internal>()<transacts><decides>: void = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -1008,6 +1008,9 @@ Native<public> := module {
   @attribscope_module
   import_as_attribute<epic_internal> := class<computes><internal>(attribute) {}
 
+  @attribscope_class
+  preload<epic_internal> := class<computes>(attribute) {}
+
   property_changed_interface<native><epic_internal> := interface {
     OnPropertyChangedFromVerse<epic_internal>(PropertyName: string)<transacts>: void
   }
@@ -1675,7 +1678,6 @@ SceneGraph<public> := module {
   @experimental
   MakeSkeletonModifierStack<native><epic_internal>()<converges>: modifier_stack(skeleton)
 
-  using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3800 }
   # Module import path: /Verse.org/SceneGraph/UI
   (/Verse.org/SceneGraph:)UI<public> := module {
@@ -2541,6 +2543,7 @@ SceneGraph<public> := module {
   @import_as("/Script/Entity.UBaseEntity")
   base_entity<native><epic_internal> := class<abstract> {}
 
+  using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   # An interactable component with a composable feature set.
@@ -2561,6 +2564,9 @@ SceneGraph<public> := module {
     # Get the remaining cooldown of the interactable for the supplied agent. This returns the duration left in seconds of either the shared or per agent cooldown, whichever is greater. Returns the same value when called multiple times within a transaction.
     GetRemainingCooldownDurationAffectingAgent<native><public>(Agent: agent): float
 
+    @available { MinUploadedAtFNVersion := 4020 }
+    InteractMessage<override>(Agent: agent)<reads><decides>: message = external {}
+
     @editable
     @replicated("")
     # An interaction with a duration does not succeed until the duration has elapsed, and success is not guaranteed as it can be canceled while the duration is active.
@@ -2576,12 +2582,21 @@ SceneGraph<public> := module {
     # Success limits prevent new interactions once the component has been successfully interacted with a specified number of times.
     SuccessLimit<native><public>: ?interactable_success_limit = external {}
 
+    @available { MinUploadedAtFNVersion := 4020 }
+    @editable
+    # Message shown if CanInteract succeeds.
+    var CanInteractMessage<public>: message = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    @editable
+    # Message shown if CanInteract fails.
+    var CannotInteractMessage<public>: message = external {}
+
     # The agents which are currently interacting with this interactable.
     var<private> InteractingAgents<native><public>: []agent = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   basic_stackable_component<native><public> := class(stackable_component) {
     # Succeeds if this entity can be merged into the target entity. Merging an entity with itself will always fail.
     CanMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -2642,7 +2657,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   change_max_stack_size_result<native><public> := class<epic_internal> {
     CurrentMaxStackSize<native><public>: ?int
 
@@ -2659,7 +2673,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   change_stack_size_result<native><public> := class<epic_internal> {
     CurrentStackSize<native><public>: int
 
@@ -2669,7 +2682,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   change_stackable_component_event<epic_internal> := class(scene_event) {
     Entity<public>: entity
 
@@ -3324,7 +3336,6 @@ SceneGraph<public> := module {
     SetLinearVelocityImpl<native><epic_internal>(LinearVelocity: (/Verse.org/SpatialMath:)vector3): void
   }
 
-  @experimental
   # Merge Rules Interface. Implemented by components that want to participate in entity mergeability checks.
   has_merge_rules<public> := interface<unique> {
     AllowMergeInto<public>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -4479,7 +4490,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # A component that when attached to an entity allows for it to merge or 'stack' with other entities with compatible components.
   stackable_component<native><public> := class<abstract><final_super>(component) {
     # Succeeds if this entity can be merged into the target entity. Merging an entity with itself will always fail. Note that merging should be checked in both directions!
@@ -5228,6 +5238,8 @@ Simulation<public> := module {
 
     # Internal function to call when unpossessing for updating status and triggering the AgentChangeEvent.
     EndPossess<final><epic_internal>()<transacts>: void = external {}
+
+    OnEndSimulation<override>(): void = external {}
 
     # Signals the AgentChangeEvent.
     SignalAgentChangeEvent<final><epic_internal>(PreviousAgent: ?agent)<transacts>: void = external {}

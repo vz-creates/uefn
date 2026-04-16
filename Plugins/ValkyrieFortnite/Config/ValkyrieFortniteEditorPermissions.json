@@ -35,6 +35,8 @@
 	"ValkyrieBlueprintsSettings": {
 		"bEnableBlueprintGraph": false,
 		"AllowedFunctions": [
+			"/CRD_AIPrompt/PromptEditorTool/VM_ConversationLogEntry.VM_ConversationLogEntry_C:GetActiveWidgetIndex",
+			"/CRD_AIPrompt/PromptEditorTool/VM_ConversationLogEntry.VM_ConversationLogEntry_C:GetErrorIconVisibility",
 			"/Script/ModelViewViewModel.MVVMPanelWidgetViewExtension:BP_SetItems",
 			"/Script/UMG.UserWidget:QueuePauseAnimation",
 			"/Script/UMG.UserWidget:QueuePlayAnimation",
@@ -602,6 +604,10 @@
 			"/ActorWeakpointsCore/GameplayActors/BGA_WeakpointActor_Base.BGA_WeakpointActor_Base_C": { },
 			"/SpireBoss/GameplayActors/BGA_WeakpointActor_MinorSpire.BGA_WeakpointActor_MinorSpire_C": { },
 			"/CowCatcherMod/Mods/CowCatcher/BGA_Barricade_CowCatcher.BGA_Barricade_CowCatcher_C":						{  },
+			"/CRD_AIPrompt/Modifiers/CharacterModifierPersona.CharacterModifierPersona_C": 													{ "Visible": true },
+			"/CRD_AIPrompt/PromptEditorTool/VM_ConversationLogEntry.VM_ConversationLogEntry_C":												{  },
+			"/CRD_AIPrompt/PromptEditorTool/VM_PersonaPromptEditor.VM_PersonaPromptEditor_C":												{  },
+			"/CRD_AIPrompt/PromptEditorTool/VM_PromptResponseDetailEntry.VM_PromptResponseDetailEntry_C":									{  },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Awareness.CharacterModifier_Awareness_C": 							{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C": 					{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C": 				{ "Visible": true },
@@ -839,6 +845,8 @@
 			"/Script/AIModule.AISenseConfig_Hearing":							{ "Visible": true },
 			"/Script/AIModule.AISenseConfig_Sight":								{ "Visible": true },
 			"/Script/AIModule.AISenseConfig_Touch":								{ "Visible": true },
+			"/Script/AIPromptEditor.PersonaPromptEditorViewModel":				{  },
+			"/Script/AIPrompt.PersonaPrompt":									{  },
 			"/Script/AlembicLibrary.AbcAssetImportData": 						{  },
 			"/Script/AnimationBudgetAllocator.SkeletalMeshComponentBudgeted":	{  },
 			"/Script/AnimationCore.CCDIKChainLink":								{  },
@@ -2673,6 +2681,7 @@
 					"LevelEditor",
 					"MessageLog",
 					"OutputLog",
+					"PromptEditorTool",
 					"ReferenceViewer",
 					"SourceControlChangelists",
 					"SpatialMetricsViewer",
@@ -2723,6 +2732,7 @@
 					"MessageLog",
 					"OutputLog",
 					"PlacementBrowser",
+					"PromptEditorTool",
 					"ReferenceViewer",
 					"Sequencer",
 					"TakeRecorder",
@@ -3458,7 +3468,7 @@
 			},
 			{
 				"Type": "/Script/UMG.ScrollBox",
-				"AllowList": [ "Style", "BarStyle", "Orientation", "ScrollBarVisibility" ]
+				"AllowList": [ "Style", "BarStyle", "Orientation", "ScrollBarVisibility", "WidgetStyle" ]
 			},
 			{
 				"Type": "/Script/UMG.SizeBox",
@@ -4134,6 +4144,11 @@
 				"DenyList": [ "SelectedAI" ]
 			},
 			{
+				"Type": "/CRD_AIPrompt/Modifiers/CharacterModifierPersona.CharacterModifierPersona_C",
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
+			},
+			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Awareness.CharacterModifier_Awareness_C",
 				"bAllowListAllProperties": true,
 				"bAllowListAllSubclassProperties": true
@@ -4727,8 +4742,14 @@
 				"bWarnForDisallowedProperties": true
 			},
 			{
+				"Type": "/Script/UMG.ExpandableArea",
+				"AllowList": [ "BorderBrush", "BorderColor", "bIsExpanded", "HeaderPadding", "AreaPadding", "HeaderContent", "BodyContent" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
 				"Type": "/Script/UMG.MultilineEditableTextBox",
-				"AllowList": [ "HintText", "WidgetStyle" ],
+				"AllowList": [ "HintText", "WidgetStyle", "Text" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4740,7 +4761,7 @@
 			},
 			{
 				"Type": "/Script/UMG.SpinBox",
-				"AllowList": [ "Value", "MinFractionalDigits", "MaxFractionalDigits", "Delta", "ForegroundColor", "bOverride_MinValue", "bOverride_MaxValue", "MinValue", "MaxValue" ],
+				"AllowList": [ "Value", "MinFractionalDigits", "MaxFractionalDigits", "Delta", "ForegroundColor", "bOverride_MinValue", "bOverride_MaxValue", "MinValue", "MaxValue", "Font" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4776,7 +4797,7 @@
 			},
 			{
 				"Type": "/Script/UMG.Widget",
-				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior", "VisibilityDelegate" ],
+				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior", "VisibilityDelegate", "ToolTipText" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -5068,6 +5089,10 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
+				"Type": "/Script/FortniteGame.FortGameFeatureData",
+				"AllowList": ["StagedPreloadAssets"]
+			},
+			{
 				"Type": "/Script/FortniteGame.FortGameplayMessageComponentBase",
 				"AllowList": ["ChannelIds","OnChannelIdsReplicated"],
 				"DenyList": [],
@@ -5304,6 +5329,48 @@
 				"AllowList": [],
 				"DenyList": [],
 				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_CategorizedFactEntry.EUW_CategorizedFactEntry_C",
+				"AllowList": [ "CategorizedFactEntryViewModel", "FactExpandableArea" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type":  "/CRD_AIPrompt/PromptEditorTool/EUW_ConversationLogEntry.EUW_ConversationLogEntry_C",
+				"AllowList": [ "WarningIndicatorIcon", "LLMMessage", "VM_ConversationLogEntry" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_ConversationPanel.EUW_ConversationPanel_C",
+				"AllowList": [ "PromptText", "PromptButton", "LogEntryScrollBox", "BulkResponseCount", "PersonaPrompt", "PromptModeToggle", "PromptModeConversationText", "PromptModeBulkResponseText", "CurrentlySelectedLogEntryWidget" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PETPanel.EUW_PETPanel_C",
+				"AllowList": [ "Title", "FooterWidget", "EmptyContentWidget", "EmptyContentMessage", "ContentSwitcher", "ContentBorder", "Content", "TitleText", "EmptyContentMessageText" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PromptFactsPanel.EUW_PromptFactsPanel_C",
+				"AllowList": [ "CategorizedFactList", "VM_PersonaPromptEditor", "FactBoxToVSlotMap" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type":  "/CRD_AIPrompt/PromptEditorTool/EUW_ResponseDetailEntry.EUW_ResponseDetailEntry_C",
+				"AllowList": [ "PromptTranscriptionText", "PersonaResponseText", "PersonaNameText", "ModerationDetailsText", "ModerationDetails", "VM_PromptResponseDetailEntry" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_ResponseDetialsPanel.EUW_ResponseDetialsPanel_C",
+				"AllowList": [ "EUW_PETPanel" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
 			}
 		]
 	},

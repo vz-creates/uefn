@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.10-CL-52157884
+# Generated from build: ++Fortnite+Release-40.20-CL-52463280
 #################################################
 
 AgentGroup<public> := module {
@@ -95,6 +95,45 @@ Assets<public> := module {
   sound_wave<native><public> := class<computes><final><epic_internal> {}
 
   texture<native><public> := class<computes><final><epic_internal> {}
+}
+
+Chat<public> := module {
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  (Entity: entity).GetVoiceChannels<native><public>()<reads>: []voice_channel(has_voice_member_info)
+
+  @experimental
+  # Error returned when a channel cannot be added via the `AddChatChannel` function.
+  add_channel_error<public> := class<computes> {}
+
+  using { /Verse.org/AgentGroup }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
+    (/Verse.org/Chat/chat_channel:)Chat_chat_channel_Variance<private>(): tuple(member_info) = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    Group<public>: agent_group_interface(member_info)
+
+    Name<public>: message
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Used to specify permissions and other settings for a voice_channel.
+  has_voice_member_info<native><public> := interface(member_info_interface) {
+    # Determines if the participant can send voice messages to the channel.
+    # If true, the participant can still hear those who are broadcasting and see users in the social overlay panel.
+    var CanBroadcast<public>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # A `voice_channel` defines a group of agents who can communicate via voice chat.
+  # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
+  voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {}
 }
 
 # Module import path: /Verse.org/Colors
@@ -818,7 +857,6 @@ SceneGraph<public> := module {
   # The order of the returned components is unspecified and subject to change.
   (InEntity: entity).FindDescendantComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
 
-  using { /Verse.org/Native }
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` of type `entity_type`.
   # The order of the returned entities is unspecified and subject to change.
@@ -1059,6 +1097,7 @@ SceneGraph<public> := module {
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
   }
 
+  using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   # An interactable component with a composable feature set.
   basic_interactable_component<native><public> := class(interactable_component) {
@@ -1076,6 +1115,9 @@ SceneGraph<public> := module {
     # Get the remaining cooldown of the interactable for the supplied agent. This returns the duration left in seconds of either the shared or per agent cooldown, whichever is greater. Returns the same value when called multiple times within a transaction.
     GetRemainingCooldownDurationAffectingAgent<native><public>(Agent: agent): float
 
+    @available { MinUploadedAtFNVersion := 4020 }
+    InteractMessage<override>(Agent: agent)<reads><decides>: message = external {}
+
     @editable
     # An interaction with a duration does not succeed until the duration has elapsed, and success is not guaranteed as it can be canceled while the duration is active.
     InteractableDuration<native><public>: ?interactable_duration = external {}
@@ -1087,12 +1129,21 @@ SceneGraph<public> := module {
     # Success limits prevent new interactions once the component has been successfully interacted with a specified number of times.
     SuccessLimit<native><public>: ?interactable_success_limit = external {}
 
+    @available { MinUploadedAtFNVersion := 4020 }
+    @editable
+    # Message shown if CanInteract succeeds.
+    var CanInteractMessage<public>: message = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    @editable
+    # Message shown if CanInteract fails.
+    var CannotInteractMessage<public>: message = external {}
+
     # The agents which are currently interacting with this interactable.
     var<private> InteractingAgents<native><public>: []agent = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   basic_stackable_component<native><public> := class(stackable_component) {
     # Succeeds if this entity can be merged into the target entity. Merging an entity with itself will always fail.
     CanMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -1126,7 +1177,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   change_max_stack_size_result<native><public> := class<epic_internal> {
     CurrentMaxStackSize<native><public>: ?int
 
@@ -1136,7 +1186,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   change_stack_size_result<native><public> := class<epic_internal> {
     CurrentStackSize<native><public>: int
 
@@ -1496,7 +1545,6 @@ SceneGraph<public> := module {
     Minimum<native><public>: float = external {}
   }
 
-  @experimental
   # Merge Rules Interface. Implemented by components that want to participate in entity mergeability checks.
   has_merge_rules<public> := interface<unique> {
     AllowMergeInto<public>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -1857,7 +1905,6 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # A component that when attached to an entity allows for it to merge or 'stack' with other entities with compatible components.
   stackable_component<native><public> := class<abstract><final_super>(component) {
     # Succeeds if this entity can be merged into the target entity. Merging an entity with itself will always fail. Note that merging should be checked in both directions!

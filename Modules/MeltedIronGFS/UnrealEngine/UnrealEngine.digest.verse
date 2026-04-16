@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.10-CL-52157884
+# Generated from build: ++Fortnite+Release-40.20-CL-52463280
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -102,9 +102,375 @@ ControlInput<public> := module {
   }
 }
 
+Conversations<public> := module {
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Sets the persona the player will attempt to prompt when they use the relevant hotkey.
+  #  The persona must be in the voice channel with the player in order for the player to be able to successfully prompt.
+  (Player: player where member_info: subtype(has_voice_member_info)).SetConversationTarget<native><public>(
+    (local:)Persona: persona_component,
+    Channel: voice_channel(member_info)
+  )<transacts>: void
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Unbind player from prompting personas
+  (Player: player).ClearConversationTarget<native><public>()<transacts>: void
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Retrieve the persona and channel the player is currently bound to prompt.
+  (Player: player).GetConversationTarget<native><public>()<reads><decides>: tuple(
+    persona_component,
+    voice_channel(has_voice_member_info)
+  )
+
+  (/UnrealEngine.com/Conversations:)MakeLocalizableValue<epic_internal>(V: llm_string): localizable_llm_string = external {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Join the output from multiple prompt providers together
+  aggregate_prompt_slot<native><public> := class(prompt_slot_provider) {
+    # The contents from each slot provider output as a single string.
+    GetSlotContents<native><override>()<allocates><reads>: string
+
+    # The prompt slot providers which have their contents concatenated with a newline.
+    var PromptSlotProviders<native><public>: []prompt_slot_provider = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Narrator, Med, Warm
+  alaina_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Whimsical, Med, Natural
+  aria_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Cinematic, Med, Warm
+  arthur_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Basic implementation of the prompt slot provider, which just returns a string
+  basic_prompt_slot<native><public> := class(prompt_slot_provider) {
+    # Returns the prompt string
+    GetSlotContents<native><override>()<allocates><reads>: string
+
+    # The content as a string
+    var Contents<native><public>: string = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Tough, High, Warm
+  brenna_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Comic, Med, Natural
+  caleb_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Whimsical, Med, Warm
+  chloe_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Cinematic, Med, Natural
+  clara_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Comic, Med, Natural
+  dante_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Whimsical, High, Warm
+  ethan_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Comic, High, Natural
+  felix_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Glamorous, Med, Natural
+  graham_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Refined, Med, Natural
+  grant_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Glamorous, Low, Natural
+  helen_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Refined, Med, Warm
+  julienne_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Comic, High, Warm
+  lily_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  llm_prompt_character_limit_error<native><public> := class(llm_prompt_error) {}
+
+  using { /Verse.org/Chat }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  llm_prompt_error<native><public> := class {
+    Message<native><public>: message
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  llm_prompt_moderated_error<native><public> := class(llm_prompt_error) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  llm_prompt_throttled_error<native><public> := class(llm_prompt_error) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  llm_prompt_timeout_error<native><public> := class(llm_prompt_error) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # An abstraction around a recorded history of events and sending prompts with that history context included.
+  llm_session<native><public> := class<unique> {
+    # Removes all the history events from the session. Including conversation history.
+    ClearHistory<native><public>()<transacts>: void
+
+    # The result will conform to the result type. The result type must be a struct which can contain.
+    #  - numeric types, message, bools and enums, as well as structs or arrays which only contain those types, anything else results in an error.
+    #  Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
+    Prompt<native><public>(
+      PromptTemplate: prompt_template,
+      response_type: type
+    )<suspends>: result(response_type, llm_prompt_error)
+  }
+
+  localizable_llm_string<native><epic_internal> := class(localizable_value) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Whimsical, High, Warm
+  luna_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Narrator, Low, Warm
+  maisie_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Cinematic, High, Natural
+  marcus_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Tough, High, Natural
+  marina_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Implementation of the prompt slot provider which is able to send encoded messages (output from the LLM) back to the LLM.
+  message_prompt_slot<native><public> := class(prompt_slot_provider) {
+    # If the message is encoded, calls to GetSlotContents from verse will be encoded, yet be clear when the prompt is sent to LLM.
+    GetSlotContents<native><override>()<allocates><reads>: string
+
+    # The content as a message
+    var Contents<native><public>: message = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Narrator, Med, Natural
+  milo_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # NPC Persona component
+  persona_component<native><public> := class<final_super>(component) {
+    @available { MinUploadedAtFNVersion := 4000 }
+    OnReceive<override>(SceneEvent: scene_event): logic = external {}
+
+    # Defines the persona and what it knows
+    PersonaDefinition<native><public>: persona_definition = external {}
+
+    # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
+    #  Callback receives:
+    #    1) The persona which had the failure
+    #    2) The error
+    PromptFailureEvent<native><public>: listenable(llm_prompt_error) = external {}
+
+    # Requests the Persona to talk on the topic provided, requires the persona to be on a channel
+    RequestToTalk<native><public>(RequestInstruction: prompt_slot_provider)<transacts><decides>: void
+
+    # Listenable which is signaled when the player starts prompting the persona.
+    StartHearEvent<native><public>: listenable(agent) = external {}
+
+    # Listenable which is signaled when the persona starts talking.
+    #  1/ The agent (if involved) which prompted the response
+    #  2/ The message being said.
+    #  3/ Cancelable to stop the target from talking
+    StartSayEvent<native><public>: listenable(tuple(?agent, message, cancelable)) = external {}
+
+    # Listenable which is signaled when the player finishes prompting the persona.
+    StopHearEvent<native><public>: listenable(agent) = external {}
+
+    # Listenable which is signaled when the target stops talking.
+    #  1/ logic that is true when interrupted
+    StopSayEvent<native><public>: listenable(logic) = external {}
+
+    # Registers a callback for when the persona receives structured data in the format of response_type.
+    #  Required forces this be filled out every time the persona is prompted.
+    #  The returned cancelable unregisters this callback and stops the llm from attempting to send this kind of structured data.
+    #  The result type must be a struct which can contain.
+    #  - numeric types, message, bools and enums, as well as structs or arrays which only contain those types, anything else results in an error.
+    #  Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
+    SubscribeToResponseType<native><public>(response_type: type, Required: logic, Callback: type { _(: ?agent, : response_type): void })<transacts>: cancelable
+
+    # How the persona will handle overlapping prompts.
+    var InterruptionRule<public>: persona_interruption_rule
+
+    # The session which will process all this persona's prompts
+    # When the persona is in a voice channel, every session in that channel will automatically
+    # propagate conversation history entries to all sessions found in the channel.
+    # All and only conversation directly to or from a persona will be automatically recorded.
+    var Session<public>: llm_session = external {}
+
+    # The voice assigned to this persona.
+    var Voice<public>: voice_model
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Defines the persona and what it knows.
+  persona_definition<native><public> := class<final> {
+    # What the persona currently knows
+    var KnowledgeSlot<public>: prompt_slot_provider = external {}
+
+    var KnowledgeSlotInternal<native><public>: prompt_slot_provider = external {}
+
+    # Defines the personality
+    var PersonalitySlot<public>: prompt_slot_provider = external {}
+
+    var PersonalitySlotInternal<native><public>: prompt_slot_provider = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Defines the way the persona will handle attempts to prompt it while it is processing.
+  persona_interruption_rule<native><public> := enum<open> {
+    # Cannot be interrupted, will ignore any input until the finished.
+    IgnoreUntilFinished
+
+    # Will be interrupted immediately when spoken to.
+    InterruptOnPromptStart
+
+    # Will interrupt when the response for the interrupting prompt is ready.
+    InterruptOnResponseStart
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # A prompt definition which is used by persona's - used to build a personality which knows things in the world.
+  persona_prompt_template<native><public> := class<final>(prompt_template) {
+    # Directions to the persona - what should it do
+    InstructionSlot<native><public>: prompt_slot_provider
+
+    # Defines the personality
+    PersonaDefinition<native><public>: persona_definition
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Base interface for retrieving the content in a slot on a prompt template at runtime.
+  prompt_slot_provider<native><public> := interface {
+    # Returns the prompt as a string
+    GetSlotContents<native_callable><public>()<allocates><reads>: string
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Base class for the abstraction of how prompts are constructed
+  prompt_template<native><public> := class<abstract><castable><epic_internal> {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Narrator, Low, Warm
+  rex_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Tough, Med, Natural
+  roxy_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Refined, Med, Warm
+  simon_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Whimsical, High, Warm
+  troy_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Tough, Med, Natural
+  vera_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Comic, High, Natural
+  victor_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Glamorous, Animated, warm
+  victoria_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Tough, Low, Natural
+  vivienne_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # The persona voice used when converting text-to-voice
+  voice_model<native><public> := class<abstract><epic_internal> {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Cinematic, Med, Natural
+  walter_voice<final><public> := class(voice_model) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Tough, Low, Gravelly
+  wyatt_voice<final><public> := class(voice_model) {}
+}
+
 Itemization<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   # Returns a failure reason (such as being full) if the provided item entity cannot be added. Does not consider sub-inventories.
   (Inventory: inventory_component).CanAddItem<native><public>(
     Item: entity,
@@ -112,7 +478,6 @@ Itemization<public> := module {
   )<transacts>: result(false, []add_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   # Returns a failure reason (such as being full) if the provided item entity cannot be added. AddItemDistribute allows the item to enter sub-inventories.
   (Inventory: inventory_component).CanAddItemDistribute<native><public>(
     Item: entity,
@@ -120,7 +485,6 @@ Itemization<public> := module {
   )<transacts>: result(false, []add_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   # Returns a failure reason if the provided item is not present or cannot be removed.
   (Inventory: inventory_component).CanRemoveItem<native><public>(Item: entity)<transacts>: result(
     false,
@@ -128,17 +492,13 @@ Itemization<public> := module {
   )
 
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   (Item: item_component).CanEquip<native><public>()<transacts>: result(false, []equip_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  @experimental
   (Item: item_component).CanUnequip<native><public>()<transacts>: result(false, []unequip_item_error)
 
-  @experimental
   add_item_error<native><public> := class<computes> {}
 
-  @experimental
   # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
   # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
   add_item_query_event<native><public> := class<epic_internal>(scene_event) {
@@ -156,7 +516,6 @@ Itemization<public> := module {
   using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  @experimental
   add_item_result<native><public> := class<epic_internal> {
     # Items that were newly added to this inventory as a result of the transaction.
     AddedItems<native><public>: []entity
@@ -165,14 +524,12 @@ Itemization<public> := module {
     ModifiedItems<native><public>: []tuple(entity, int)
   }
 
-  @experimental
   change_equipped_result<native><public> := class<epic_internal> {
     IsItemEquipped<native><public>: logic
 
     ItemComponent<native><public>: item_component
   }
 
-  @experimental
   change_inventory_result<native><public> := class<epic_internal> {
     CurrentInventory<native><public>: ?inventory_component
 
@@ -181,10 +538,8 @@ Itemization<public> := module {
     PreviousInventory<native><public>: ?inventory_component
   }
 
-  @experimental
   equip_item_error<native><public> := class<computes> {}
 
-  @experimental
   equip_item_query_event<native><public> := class(scene_event) {
     AddError<public>(Error: equip_item_error): void = external {}
 
@@ -193,12 +548,10 @@ Itemization<public> := module {
     var<private> Errors<native><public>: []equip_item_error = external {}
   }
 
-  @experimental
   equip_item_result<native><public> := class<epic_internal> {
     Item<native><public>: entity
   }
 
-  @experimental
   # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
   # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
   find_inventory_event<native><public> := class<epic_internal>(scene_event) {
@@ -209,7 +562,6 @@ Itemization<public> := module {
     var ChosenInventoryPriority<native><public>: float = external {}
   }
 
-  @experimental
   # Inventory components hold items. An entity with an inventory component can be considered to have an inventory.
   # The inventory component controls which items can enter or exit.
   # They also determine whether an item can be equipped.
@@ -268,11 +620,9 @@ Itemization<public> := module {
     UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
   }
 
-  @experimental
   # item_category is used to classify items.
   item_category<native><public> := class<castable><concrete><unique><allocates> {}
 
-  @experimental
   # Anything using this component should be considered an item. Required to interact with inventories.
   item_component<native><public> := class<final_super>(component) {
     @editable
@@ -340,10 +690,8 @@ Itemization<public> := module {
     var Icon<native><override>: texture
   }
 
-  @experimental
   remove_item_error<native><public> := class<computes> {}
 
-  @experimental
   remove_item_query_event<native><public> := class<epic_internal>(scene_event) {
     AddError<public>(Error: remove_item_error): void = external {}
 
@@ -354,7 +702,6 @@ Itemization<public> := module {
     var<private> Errors<native><public>: []remove_item_error = external {}
   }
 
-  @experimental
   remove_item_result<native><public> := class<epic_internal> {
     # The inventory which the item was removed from.
     Inventory<native><public>: inventory_component
@@ -369,10 +716,8 @@ Itemization<public> := module {
     RemovedItems<native><public>: []entity
   }
 
-  @experimental
   unequip_item_error<native><public> := class<computes> {}
 
-  @experimental
   unequip_item_query_event<native><public> := class(scene_event) {
     AddError<public>(Error: unequip_item_error): void = external {}
 
@@ -381,7 +726,6 @@ Itemization<public> := module {
     var<private> Errors<native><public>: []unequip_item_error = external {}
   }
 
-  @experimental
   unequip_item_result<native><public> := class<epic_internal> {
     Item<native><public>: entity
   }

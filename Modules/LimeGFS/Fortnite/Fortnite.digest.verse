@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -394,7 +394,7 @@ AI<public> := module {
   # Component to manage functionality shared by all Sidekick types.
   sidekick_component<native><public> := class<abstract><final_super><epic_internal>(component) {
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
-    ChangeMoodEvent<public>: listenable(tuple(sidekick_mood, sidekick_mood))
+    ChangeMoodEvent<native><public>: listenable(tuple(sidekick_mood, sidekick_mood))
 
     # Get the Sidekick's current mood.
     GetMood<public>()<reads>: sidekick_mood
@@ -405,10 +405,10 @@ AI<public> := module {
     PlayReaction<public>(Reaction: sidekick_reaction)<transacts><decides>: void
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
-    StartPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StartPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
-    StopPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StopPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
@@ -1570,7 +1570,7 @@ Devices<public> := module {
     GetInteractionTime<public>()<transacts>: float = external {}
 
     # Returns the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `GetTriggerMaxCount` will be between `0` and `10`.
+    #  * `GetTriggerMaxCount` will be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     GetMaxTriggerCount<public>()<transacts>: int = external {}
 
@@ -1588,7 +1588,7 @@ Devices<public> := module {
     SetInteractionTime<public>(Time: float): void = external {}
 
     # Sets the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `MaxCount` must be between `0` and `10`.
+    #  * `MaxCount` must be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     SetMaxTriggerCount<public>(MaxCount: int): void = external {}
   }
@@ -8395,19 +8395,14 @@ Itemization<public> := module {
   # Module import path: /Fortnite.com/Itemization/FortniteRarities
   FortniteRarities<public> := module {
     using { /Verse.org/SceneGraph }
-    @experimental
     Common<public>: rarity = external {}
 
-    @experimental
     Epic<public>: rarity = external {}
 
-    @experimental
     Legendary<public>: rarity = external {}
 
-    @experimental
     Rare<public>: rarity = external {}
 
-    @experimental
     Uncommon<public>: rarity = external {}
   }
 

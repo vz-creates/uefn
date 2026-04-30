@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 AI<public> := module {
@@ -207,6 +207,7 @@ AI<public> := module {
     Failure
   }
 
+  using { /Fortnite.com/Animation/PlayAnimation }
   using { /Fortnite.com/Assets }
   using { /Fortnite.com/Characters }
   using { /Fortnite.com/Playspaces }
@@ -721,16 +722,28 @@ AI<public> := module {
     # This will fail if the NPC does not use the FortniteSidekick cosmetic look or if the given agent does not have a Sidekick equipped in their locker.
     ApplyEquippedSidekickCosmetic<native><epic_internal>(Agent: agent)<transacts><decides>: void
 
+    # Apply a sidekick cosmetic.
+    # Fails if the NPC does not use the FortniteSidekick cosmetic look or if NPC companion usage is not enabled for the given cosmetic.
+    ApplySidekickCosmetic<native><epic_internal>(CosmeticDef: sidekick_cosmetic_definition)<transacts><decides>: void
+
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
     ChangeMoodEvent<override><native>: listenable(tuple(sidekick_mood, sidekick_mood)) = external {}
 
     # Get the Sidekick's current mood.
     GetMood<override><native>()<reads>: sidekick_mood
 
+    # Play an animation on the Sidekick and wait for it to complete.
+    PlayAnimAndWait<native><epic_internal>(AnimationSequence: animation_sequence)<suspends>: play_animation_result
+
     # Request to play a given reaction on the Sidekick.
     # This reaction is not guaranteed to play immediately; instead, the StartPlayReactionEvent should be used to monitor this.
     # This will fail if the Sidekick cannot play the given reaction.
     PlayReaction<override><native>(Reaction: sidekick_reaction)<transacts><decides>: void
+
+    # Request to play a given reaction on the Sidekick
+    PlayReactionAndWait<native><epic_internal>(Reaction: sidekick_reaction)<suspends>: logic
+
+    PlayReactionAndWait<native><epic_internal>(Reaction: sidekick_reaction_internal_test)<suspends>: logic
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
     StartPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
@@ -765,7 +778,7 @@ AI<public> := module {
   # Component to manage functionality shared by all Sidekick types.
   sidekick_component<native><public> := class<abstract><final_super><epic_internal>(component) {
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
-    ChangeMoodEvent<public>: listenable(tuple(sidekick_mood, sidekick_mood))
+    ChangeMoodEvent<native><public>: listenable(tuple(sidekick_mood, sidekick_mood))
 
     # Get the Sidekick's current mood.
     GetMood<public>()<reads>: sidekick_mood
@@ -776,10 +789,10 @@ AI<public> := module {
     PlayReaction<public>(Reaction: sidekick_reaction)<transacts><decides>: void
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
-    StartPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StartPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
-    StopPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StopPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
@@ -811,6 +824,16 @@ AI<public> := module {
     Happy
 
     Worried
+  }
+
+  sidekick_reaction_internal_test<native><epic_internal> := enum<open> {
+    Attack
+
+    Eat
+
+    HitReact
+
+    Sleeping
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
@@ -981,6 +1004,10 @@ Animation<public> := module {
   emote<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   npc_character_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
+
+  sidekick_cosmetic_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {
+    GetDisplayName<native><epic_internal>()<reads><decides>: message
+  }
 }
 
 # Module import path: /Fortnite.com/Blastberry
@@ -2508,7 +2535,7 @@ Devices<public> := module {
     GetInteractionTime<public>()<transacts>: float = external {}
 
     # Returns the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `GetTriggerMaxCount` will be between `0` and `10`.
+    #  * `GetTriggerMaxCount` will be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     GetMaxTriggerCount<public>()<transacts>: int = external {}
 
@@ -2526,7 +2553,7 @@ Devices<public> := module {
     SetInteractionTime<public>(Time: float): void = external {}
 
     # Sets the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `MaxCount` must be between `0` and `10`.
+    #  * `MaxCount` must be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     SetMaxTriggerCount<public>(MaxCount: int): void = external {}
   }
@@ -10361,14 +10388,23 @@ Framework<public> := module {
 
   # Module import path: /Fortnite.com/Framework/Matchmaking
   Matchmaking<epic_internal> := module {
-    using { /Fortnite.com/Playspaces }
-    using { /Verse.org/SceneGraph }
-    using { /Verse.org/Simulation }
     # A player agent method to play again.
     (InAgent: agent).PlayAgain<native><epic_internal>(): void
 
     # A player agent method indicating ready for matchmaking (used w/ PlayAgain).
     (InAgent: agent).SetReadyForMatchmaking<native><epic_internal>(IsReady: logic): void
+
+    # Get a matchmaking attribute from the session as an float
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsFloat<native><epic_internal>(AttributeKey: string)<transacts><decides>: float
+
+    # Get a matchmaking attribute from the session as an int
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsInt<native><epic_internal>(AttributeKey: string)<transacts><decides>: int
+
+    # Get a matchmaking attribute from the session as a logic
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsLogic<native><epic_internal>(AttributeKey: string)<transacts><decides>: logic
+
+    # Get a matchmaking attribute from the session as a string
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsString<native><epic_internal>(AttributeKey: string)<transacts><decides>: string
 
     # Get the desired number of bots to spawn.
     (InSimulationEntity: simulation_entity).GetMatchmakingDesiredBotCount<native><epic_internal>(): int
@@ -10385,6 +10421,9 @@ Framework<public> := module {
     # Method to check if the match being played is ranked or not.
     IsMatchRanked<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
+    using { /Fortnite.com/Playspaces }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
     # The struct of rank progress data for a player.
     ranked_progress<native><epic_internal> := struct<concrete> {
       AccountId<native><public>: string = external {}
@@ -10845,10 +10884,8 @@ Itemization<public> := module {
   # Module import path: /Fortnite.com/Itemization/FortniteRarities
   FortniteRarities<public> := module {
     using { /Verse.org/SceneGraph }
-    @experimental
     Common<public>: rarity = external {}
 
-    @experimental
     Epic<public>: rarity = external {}
 
     @experimental
@@ -10857,16 +10894,13 @@ Itemization<public> := module {
     @experimental
     Impossible<epic_internal>: rarity = external {}
 
-    @experimental
     Legendary<public>: rarity = external {}
 
     @experimental
     Mythic<epic_internal>: rarity = external {}
 
-    @experimental
     Rare<public>: rarity = external {}
 
-    @experimental
     Uncommon<public>: rarity = external {}
   }
 
@@ -11183,34 +11217,26 @@ Itemization<public> := module {
     MaxStackSize: ?int
   )<converges>: ?basic_stackable_component
 
-  @experimental
   # `fort_br_inventory_build_hotbar_component` is the FNBR inventory for Fortnite build tools.
-  fort_br_inventory_build_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_build_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_harvest_tool_component` is the FNBR inventory for the Fortnite harvest tool.
-  fort_br_inventory_harvest_tool_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_harvest_tool_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_legacy_quickbar_component` is a shared class for FNBR inventories that rely on coupling to the legacy AFortQuickBars class.
-  fort_br_inventory_legacy_quickbar_component<native><epic_internal> := class(fort_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_legacy_quickbar_component<native><epic_internal> := class<abstract>(fort_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_trap_component` is the FNBR inventory for the Fortnite trap slot.
-  fort_br_inventory_trap_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_trap_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_weapon_hotbar_component` is the FNBR inventory for Fortnite weapons and gadgets.
-  fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
-    # Sets the total number of slots.
-    SetMaxSlots<native><public>(InNumSlots: int): void
-  }
+  fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
   # `fort_inventory_ammo_component` is the inventory for Fortnite ammo.
   fort_inventory_ammo_component<native><public> := class<final>(fort_inventory_component) {}
 
   # `fort_inventory_build_hotbar_component` is the UEFN inventory for Fortnite build tools.
-  fort_inventory_build_hotbar_component<native><public> := class<final>(fort_inventory_component) {
+  fort_inventory_build_hotbar_component<native><public> := class<final>(fort_br_inventory_build_hotbar_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
   }
@@ -11231,7 +11257,7 @@ Itemization<public> := module {
     ResetWeaponState<native><epic_internal>(Weapon: item_component)<transacts><decides>: void
 
     # Moves the item to a particular slot. If the item is not already in the inventory, AddItem is called on it. Swaps places with any item already in that slot.
-    SetItemInSlot<native><epic_internal>(Item: entity, Slot: int)<reads><decides>: void
+    SetItemInSlot<native><epic_internal>(Item: entity, Slot: int)<transacts><decides>: void
   }
 
   # `fort_inventory_currencies_component` is the inventory for Fortnite currencies.
@@ -11242,7 +11268,7 @@ Itemization<public> := module {
   fort_inventory_edit_mode_component<native><epic_internal> := class<final>(fort_inventory_component) {}
 
   # `fort_inventory_harvest_tool_component` is the UEFN inventory for the Fortnite harvest tool.
-  fort_inventory_harvest_tool_component<native><public> := class<final>(fort_inventory_component) {
+  fort_inventory_harvest_tool_component<native><public> := class<final>(fort_br_inventory_harvest_tool_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
   }
@@ -11254,16 +11280,10 @@ Itemization<public> := module {
   fort_inventory_resources_component<native><public> := class<final>(fort_inventory_component) {}
 
   # `fort_inventory_trap_component` is the UEFN inventory for the Fortnite trap slot.
-  fort_inventory_trap_component<native><public> := class<final>(fort_inventory_legacy_quickbar_component) {
-    # Returns the item currently selected, if there is one.
-    GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
-
-    # Called when the trap inventory is updated and visibility flags for each item should be reset
-    OnTrapInventoryVisibiltyRefreshEvent<native><final><epic_internal>: listenable(entity) = external {}
-  }
+  fort_inventory_trap_component<native><public> := class<final>(fort_br_inventory_trap_component) {}
 
   # `fort_inventory_weapon_hotbar_component` is the UEFN inventory for Fortnite weapons and gadgets.
-  fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_component) {
+  fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_br_inventory_weapon_hotbar_component) {
     # Called when the inventory owner's class changes.
     ClassChangedEvent<native><final><epic_internal>: listenable(tuple()) = external {}
 
@@ -11272,9 +11292,6 @@ Itemization<public> := module {
 
     # Succeeds if the inventory has infinite consumables.
     HasInfiniteConsumables<native><epic_internal>()<reads><decides>: void
-
-    # Called when the time changes from 0 to the reload time, then every frame with the updated time until it reaches 0, or when the reload is canceled and the time is set to 0 early.
-    ReloadTimeChangedEvent<native><final><epic_internal>: listenable(float) = external {}
 
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
@@ -11387,6 +11404,7 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @class_and_subclass_group_names("inventory")
+  @deprecated
   @experimental
   @hide_in_editor
   inventory_item_view_model_component<native><epic_internal> := class<final><final_super>(component) {
@@ -11395,8 +11413,6 @@ Itemization<public> := module {
     InitializeViewModel<native_callable><public>(Item: entity): void = external {}
 
     OnDetailsChanged<protected>(OptionalDetailsComponent: ?description_component): void = external {}
-
-    OnEquippedChanged<protected>(ItemEquippedChange: change_equipped_result): void = external {}
 
     OnIconChanged<protected>(OptionalIconComponent: ?icon_component): void = external {}
 
@@ -11431,6 +11447,7 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @class_and_subclass_group_names("inventory")
+  @deprecated
   @experimental
   @hide_in_editor
   inventory_ui_action_component<native><epic_internal> := class<final><final_super>(component) {
@@ -11467,6 +11484,7 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @class_and_subclass_group_names("inventory")
+  @deprecated
   @experimental
   @hide_in_editor
   inventory_view_model_component<native><epic_internal> := class<final><final_super>(component) {
@@ -11513,6 +11531,9 @@ Itemization<public> := module {
 
     # Succeeds if the item entity is a consumable.
     IsItemConsumable<native><public>()<reads><decides>: void
+
+    # Called when the time changes from 0 to the reload time, then every frame with the updated time until it reaches 0, or when the reload is canceled and the time is set to 0 early.
+    ReloadTimeChangedEvent<native><final><epic_internal>: listenable(float) = external {}
 
     SetCurrentDurability<native><public>(NewDurability: float): void
 
@@ -12715,6 +12736,23 @@ Items<public> := module {
   }
 
   @preload
+  Currency_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
   DamageTrap_BR_CH1S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -13658,6 +13696,37 @@ Items<public> := module {
   }
 
   @preload
+  InstantLargeShield_Ballistic_V1_Exotic<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  InstantShield_Ballistic_V1_Exotic<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   JellyBean_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -13995,6 +14064,23 @@ Items<public> := module {
 
   @preload
   MedMistSmokeGrenade_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  MedMistSmokeGrenade_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15987,6 +16073,23 @@ Items<public> := module {
   }
 
   @preload
+  TheWall_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
   ThermalFish_BR_CH2S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -17153,7 +17256,7 @@ UI<public> := module {
   using { /Verse.org/Assets }
   using { /Verse.org/Simulation }
   dynamic_ui_z_order<native><epic_internal> := enum {
-    Back
+    (/Fortnite.com/UI/dynamic_ui_z_order:)Back
 
     Custom
 

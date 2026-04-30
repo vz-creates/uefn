@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 AgentGroup<public> := module {
@@ -581,6 +581,9 @@ Input<public> := module {
   # Module import path: /Verse.org/Input/UI
   # The module contains a set of Input Actions that are available in UI mode, given that they're bound to an interactive UI element.
   UI<public> := module {
+    @available { MinUploadedAtFNVersion := 4030 }
+    Back<public>: input_action(logic) = external {}
+
     @available { MinUploadedAtFNVersion := 4000 }
     Craft<public>: input_action(logic) = external {}
 
@@ -627,7 +630,7 @@ Input<public> := module {
     #   * PreviousTab: Q/Gamepad Left Shoulder
     #   * NextPage: C/Gamepad Right Trigger
     #   * PreviousPage: Z/Gamepad Left Trigger
-    #   * NextTab: E/Gamepad Right Shoulder
+    #   * Back: Escape/Gamepad Back Button
     MenuNavigationMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -1387,7 +1390,7 @@ SceneGraph<public> := module {
     #   * Flows through `OnEndSimulation`-> `OnRemovingFromScene`.
     RemoveFromEntity<native><final><public>(): void
 
-    # Send a scene event to this component, invoking OnReceive.  Return true to consume the event and halt propagation to the next entity.
+    # Send a scene event to this component, invoking OnReceive.  Returns true if any participant consumed the event.
     SendDown<native><native_callable><final><public>(SceneEvent: scene_event): logic
 
     # Set callbacks to `TickEvents.PrePhysics` and `TickEvents.PostPhysics` to receive per-frame updates before and after physics is updated on your object.

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -394,7 +394,7 @@ AI<public> := module {
   # Component to manage functionality shared by all Sidekick types.
   sidekick_component<native><public> := class<abstract><final_super><epic_internal>(component) {
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
-    ChangeMoodEvent<public>: listenable(tuple(sidekick_mood, sidekick_mood))
+    ChangeMoodEvent<native><public>: listenable(tuple(sidekick_mood, sidekick_mood))
 
     # Get the Sidekick's current mood.
     GetMood<public>()<reads>: sidekick_mood
@@ -405,10 +405,10 @@ AI<public> := module {
     PlayReaction<public>(Reaction: sidekick_reaction)<transacts><decides>: void
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
-    StartPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StartPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
-    StopPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StopPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
@@ -1513,7 +1513,7 @@ Devices<public> := module {
     GetInteractionTime<public>()<transacts>: float = external {}
 
     # Returns the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `GetTriggerMaxCount` will be between `0` and `10`.
+    #  * `GetTriggerMaxCount` will be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     GetMaxTriggerCount<public>()<transacts>: int = external {}
 
@@ -1531,7 +1531,7 @@ Devices<public> := module {
     SetInteractionTime<public>(Time: float): void = external {}
 
     # Sets the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `MaxCount` must be between `0` and `10`.
+    #  * `MaxCount` must be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     SetMaxTriggerCount<public>(MaxCount: int): void = external {}
   }
@@ -8372,19 +8372,14 @@ Itemization<public> := module {
   # Module import path: /Fortnite.com/Itemization/FortniteRarities
   FortniteRarities<public> := module {
     using { /Verse.org/SceneGraph }
-    @experimental
     Common<public>: rarity = external {}
 
-    @experimental
     Epic<public>: rarity = external {}
 
-    @experimental
     Legendary<public>: rarity = external {}
 
-    @experimental
     Rare<public>: rarity = external {}
 
-    @experimental
     Uncommon<public>: rarity = external {}
   }
 
@@ -8947,64 +8942,52 @@ Items<public> := module {
   # Module import path: /Fortnite.com/Items/StarWars
   (/Fortnite.com/Items:)StarWars<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Awareness as an augment item. Only usable with a lightsaber equipped.
     ForcePowerAwareness_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Distraction as an augment item. Only usable with a lightsaber equipped.
     ForcePowerDistraction_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Heal as an augment item. Only usable with a lightsaber equipped.
     ForcePowerHeal_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Lightning as an augment item. Only usable with a lightsaber equipped.
     ForcePowerLightning_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Pull as an augment item. Only usable with a lightsaber equipped.
     ForcePowerPull_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Push as an augment item. Only usable with a lightsaber equipped.
     ForcePowerPush_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Saber Throw as an augment item. Only usable with a lightsaber equipped.
     ForcePowerSaberThrow_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Shield as an augment item. Only usable with a lightsaber equipped.
     ForcePowerShield_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Throw as an augment item. Only usable with a lightsaber equipped.
     ForcePowerThrow_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Training (Jump & Sprint) as an augment item.
     ForcePowerTraining_Augment_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Mind Trick as an augment item. Only usable with a lightsaber equipped.
     ForcePowerTrick_LightsaberAugment_V1<native><public> := class<concrete><final>(entity) {}
 
     using { /Verse.org/Native }
     using { /Verse.org/SceneGraph }
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     Jetpack_V1_Mythic<public> := class<final><concrete>(entity) {}
   }
 
@@ -9283,7 +9266,6 @@ Playspaces<public> := module {
 }
 
 StarWars<public> := module {
-  @experimental
   # Represents an item that gives its holder the Force Awareness power.
   force_power_awareness_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9293,7 +9275,6 @@ StarWars<public> := module {
     var Duration<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Distraction power.
   force_power_distraction_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9303,7 +9284,6 @@ StarWars<public> := module {
     var Health<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Heal power.
   force_power_heal_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9322,10 +9302,8 @@ StarWars<public> := module {
   using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Colors }
   using { /Verse.org/SceneGraph }
-  @experimental
   force_power_item_component<native><public> := class<abstract><epic_internal>(item_component) {}
 
-  @experimental
   # Represents an item that gives its holder the Force Lightning power.
   force_power_lightning_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9339,7 +9317,6 @@ StarWars<public> := module {
     var Duration<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Pull power.
   force_power_pull_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9347,7 +9324,6 @@ StarWars<public> := module {
     var Cooldown<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Push power.
   force_power_push_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9357,7 +9333,6 @@ StarWars<public> := module {
     var PushForce<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Saber Throw power.
   force_power_saber_throw_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9369,7 +9344,6 @@ StarWars<public> := module {
     var Damage<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Shield power.
   force_power_shield_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9387,7 +9361,6 @@ StarWars<public> := module {
     var RechargeRate<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Throw power.
   force_power_throw_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9399,7 +9372,6 @@ StarWars<public> := module {
     var Damage<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Training power (Jump and Sprint).
   force_power_training_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9409,7 +9381,6 @@ StarWars<public> := module {
     var StaminaCost<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Mind Trick power.
   force_power_trick_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -9419,10 +9390,8 @@ StarWars<public> := module {
     var Duration<public>: float = external {}
   }
 
-  @experimental
   kyber_crystal_blue_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_component<native><public> := class<abstract><final_super><internal>(component) {
     var ArcIntensity<public>: float = external {}
 
@@ -9433,71 +9402,50 @@ StarWars<public> := module {
     var<private> EmissiveIntensity<public>: float = external {}
   }
 
-  @experimental
   kyber_crystal_green_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_orange_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_purple_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_red_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_red_damaged_component<public> := class(kyber_crystal_red_component) {}
 
-  @experimental
   kyber_crystal_red_unstable_component<public> := class(kyber_crystal_red_component) {}
 
-  @experimental
   kyber_crystal_white_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_yellow_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   lightsaber_item_component<native><public> := class<abstract><epic_internal>(item_component) {}
 
-  @experimental
   lightsaber_item_crossguard<native><public> := class<abstract><epic_internal>(lightsaber_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
   }
 
-  @experimental
   lightsaber_item_jedi_padawan_a<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_jedi_padawan_b<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_jedi_training<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_kenobi<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_ren<public> := class<final><epic_internal>(lightsaber_item_crossguard) {}
 
-  @experimental
   lightsaber_item_rey<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_single<native><public> := class<abstract><epic_internal>(lightsaber_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
   }
 
-  @experimental
   lightsaber_item_sith_apprentice<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_skywalker<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_vader<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_windu<public> := class<final><epic_internal>(lightsaber_item_single) {}
 }
 
@@ -11516,383 +11464,291 @@ Weapons<public> := module {
   # Module import path: /Fortnite.com/Weapons/StarWars
   (/Fortnite.com/Weapons:)StarWars<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     A280CFEBlasterRifle_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     A280CFEBlasterRifle_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     A280CFEBlasterRifle_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     A280CFEBlasterRifle_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     A280CFEBlasterRifle_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     A280CFEBlasterRifle_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ACPScatterBlaster_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ACPScatterBlaster_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ACPScatterBlaster_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ACPScatterBlaster_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ACPScatterBlaster_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ACPScatterBlaster_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     AmbanSniperRifle_InfiniteAmmo_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     using { /Verse.org/Native }
     using { /Verse.org/SceneGraph }
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     AmbanSniperRifle_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     BARMST12ScatterBlaster_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     BARMST12ScatterBlaster_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     BARMST12ScatterBlaster_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     BARMST12ScatterBlaster_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     BARMST12ScatterBlaster_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     BARMST12ScatterBlaster_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CA87JawaScatterBlaster_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CA87JawaScatterBlaster_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CA87JawaScatterBlaster_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CA87JawaScatterBlaster_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CA87JawaScatterBlaster_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CA87JawaScatterBlaster_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CR2Blaster_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CR2Blaster_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CR2Blaster_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CR2Blaster_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CR2Blaster_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     CR2Blaster_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DC15BlasterRifle_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DL44BlasterPistol_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DL44BlasterPistol_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DL44BlasterPistol_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DL44BlasterPistol_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DL44BlasterPistol_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DL44BlasterPistol_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DLT19BlasterRifle_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DLT19BlasterRifle_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DLT19BlasterRifle_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DLT19BlasterRifle_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DLT19BlasterRifle_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     DLT19BlasterRifle_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     E11BlasterRifle_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     F11DBlaster_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     F11DBlaster_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     F11DBlaster_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     F11DBlaster_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     F11DBlaster_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     F11DBlaster_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Awareness as a weapon item. Must be equipped to use.
     ForcePowerAwareness_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Distraction as a weapon item. Must be equipped to use.
     ForcePowerDistraction_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Heal as a weapon item. Must be equipped to use.
     ForcePowerHeal_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Lightning as a weapon item. Must be equipped to use.
     ForcePowerLightning_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Pull as a weapon item. Must be equipped to use.
     ForcePowerPull_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Push as a weapon item. Must be equipped to use.
     ForcePowerPush_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Saber Throw as a weapon item. Must be equipped to use.
     ForcePowerSaberThrow_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Shield as a weapon item. Must be equipped to use.
     ForcePowerShield_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Throw as a weapon item. Must be equipped to use.
     ForcePowerThrow_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     # Force Mind Trick as a weapon item. Must be equipped to use.
     ForcePowerTrick_Weapon_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberJediPadawanA_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberJediPadawanB_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberJediTraining_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberKenobi_V1<native><public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberRen_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberRey_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberSithApprentice_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberSkywalker_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberVader_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     LightsaberWindu_V1<native><public> := class<concrete><final>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ThermalImploder_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     ThermalImploder_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WESTAR34BlasterPistols_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WESTAR34BlasterPistols_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WESTAR34BlasterPistols_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WESTAR34BlasterPistols_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WESTAR34BlasterPistols_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WESTAR34BlasterPistols_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WookieeBowcaster_V1_Common<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WookieeBowcaster_V1_Epic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WookieeBowcaster_V1_Legendary<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WookieeBowcaster_V1_Mythic<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WookieeBowcaster_V1_Rare<public> := class<final><concrete>(entity) {}
 
     @available { MinUploadedAtFNVersion := 4020 }
-    @experimental
     WookieeBowcaster_V1_Uncommon<public> := class<final><concrete>(entity) {}
   }
 

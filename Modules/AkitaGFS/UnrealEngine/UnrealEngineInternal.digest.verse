@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 AINavigation<public> := module {
@@ -1465,8 +1465,6 @@ Itemization<public> := module {
 
     GetEquippedItems<final><native><public>(): []entity
 
-    GetInputAction<epic_internal>(ItemSlot: int): ?input_action(type) = external {}
-
     # Returns a list of sub-inventories of this inventory only.
     GetInventories<native><final><public>()<reads>: []inventory_component
 
@@ -1478,12 +1476,6 @@ Itemization<public> := module {
     @available { MinUploadedAtFNVersion := 3200 }
     # Returns a list of items (of a specific type) within this inventory only.
     GetItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
-
-    GetNativeInputAction<native><epic_internal>(ItemSlot: int): ?input_action(type)
-
-    GetNavigateNextInputAction<native><epic_internal>(): ?input_action(type)
-
-    GetNavigatePreviousInputAction<native><epic_internal>(): ?input_action(type)
 
     InventoryAddedEvent<native><final><epic_internal>: listenable(add_inventory_result) = external {}
 
@@ -1531,8 +1523,6 @@ Itemization<public> := module {
     RemoveItem<native><final><public>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
 
     RemoveItemEvent<native><final><public>: listenable(remove_item_result) = external {}
-
-    SlotBindingList<native><epic_internal>: []tuple(input_action(type), int) = external {}
 
     UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
 

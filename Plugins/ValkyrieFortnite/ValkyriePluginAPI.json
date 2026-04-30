@@ -273,9 +273,11 @@
 			"Environments/Props/FloorDecals/Blueprints/BP_Kurai_WallDecals_UnderConstruction_A_A",
 			"Environments/Props/FloorDecals/Blueprints/BP_Kurai_WallDecals_UnderConstruction_A_B",
 			"Environments/Props/FloorDecals/Materials/MasterMaterials/M_Kurai_FloorDecals_Master_A_A",
+			"Environments/Props/FloorDecals/Materials/MasterMaterials/M_Kurai_FloorDecals_Master_A_A_HLOD",
 			"Environments/Props/FloorDecals/Materials/MasterMaterials/M_Kurai_VistaDecals_Master_B_A",
 			"Environments/Props/FloorDecals/Materials/MasterMaterials/MI_Kurai_FloorDecals_Master_A_A",
 			"Environments/Props/FloorDecals/Materials/MI_Kurai_FloorDecals_A_A_Red",
+			"Environments/Props/FloorDecals/Materials/MI_Kurai_FloorDecals_A_A_Red_HLOD",
 			"Environments/Props/FloorDecals/Materials/MI_Kurai_FloorDecals_Blue_A_A",
 			"Environments/Props/FloorDecals/Materials/MI_Kurai_FloorDecals_Blue_A_B",
 			"Environments/Props/FloorDecals/Materials/MI_Kurai_FloorDecals_Green_A_A",
@@ -1145,26 +1147,6 @@
 			"Audio/Music/FN_Feral_Intro_v1_0_96bpm_Cue",
 			"Audio/Music/FN_Feral_Menu_Loop_v1_0_96bpm_Looped_Cue",
 			"Audio/Music/FN_Feral_PostScreen_v1_0_96bpm_Looped_Cue"
-		]
-	},
-	"FeralCorgiQuests":
-	{
-		"assets": [],
-		"epicInternalAssets": [
-			"CalendarData/RepeatableDailiescard_FeralCorgi",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q01",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q02",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q03",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q04",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q05",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q06",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q07",
-			"Items/QuestItems/Dailies/DailyQuests/quest_feralcorgi_daily_q08",
-			"Items/QuestItems/Ranked/quest_feralcorgi_ranked_repeatable_q01",
-			"Items/QuestItems/Ranked/quest_feralcorgi_ranked_repeatable_q02",
-			"Items/QuestItems/Ranked/quest_feralcorgi_ranked_repeatable_q03",
-			"Items/QuestItems/Ranked/quest_feralcorgi_ranked_repeatable_q04",
-			"Items/Tokens/Athena_FeralCorgi_Daily_Token"
 		]
 	},
 	"FN1Framework":

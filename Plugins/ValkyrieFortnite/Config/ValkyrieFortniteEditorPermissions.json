@@ -1659,6 +1659,10 @@
 			"/Script/FortniteGame.PlayStopPauseInterface":						{ "Visible": true },
 			"/Script/FortniteGame.UserOptionDefinitionContainer":				{  },
 			"/Script/FortniteGame.WaterVolume_Athena":							{  },
+			"/Script/FortDelMarTrackRuntime.FortDelMarTrackMatLayerComponent":	{  },
+			"/Script/FortDelMarTrackRuntime.FortDelMarTrackPointData":			{  },
+			"/Script/FortDelMarTrackRuntime.FortDelMarTrackSnapToComponent":	{  },
+			"/Script/FortDelMarTrackRuntime.FortDelMarTrackSnapToSplinePointComponent":									{  },
 			"/Script/FortNPCCharacterMovieSceneBindings.FortNPCCharacterMovieSceneReplaceableBinding":					{ "Visible": true },
 			"/Script/FortNPCCharacterMovieSceneBindings.FortNPCCharacterMovieSceneSpawnableBinding":					{ "Visible": true },
 			"/Script/FortniteUI.FortCTAButton":									{  },
@@ -2677,6 +2681,7 @@
 					"ContentBrowserTab4",
 					"CoopNotesSidePanelTab",
 					"EditorSettings",
+					"FortDelMarTrackStyleEditor",
 					"HomeScreen",
 					"LevelEditor",
 					"MessageLog",
@@ -3106,12 +3111,10 @@
 			"Minigame_Mastery",
 			"Social_Deduction",
 			"GreasyGames",
-			"LEGO_Seed_Template",
 			"LEGO_BrickEditor",
 			"LEGO_ScotchBonnet",
 			"aurora_alpha1",
 			"brightcoil_research",
-			"HotSauce_Template02",
 			"Akita_FlatGrid",
 			"Akita_FlatGridXL",
 			"Akita_Template2_Test",
@@ -3120,7 +3123,8 @@
 			"Lightsaber_and_Force_Powers",
 			"Nevarro_Starter",
 			"Space_Starter",
-			"Tatooine_Starter"
+			"Tatooine_Starter",
+			"LEGO_NinjagoStarterTemplate"
 		]
 	},
 	"PropertyEditorClassPermissionList": {
@@ -4182,7 +4186,7 @@
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
 				"DenyList": [ "CharacterCosmeticAssetId", "CompanionCosmeticAssetId", "AICompanionProxyToApply" ],
-				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook", "SidekickCosmetic" ]
+				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook", "SidekickCosmetic", "CompanionVariantChannels" ]
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C",
@@ -4265,6 +4269,18 @@
 				"Type": "/DelMarGame/Blueprints/StatusEffects/Jelly/DelMar_Jelly_BP.DelMar_Jelly_BP_C",
 				"AllowList": [ "Shape" ],
 				"DenyList": [ "OnEMPHazardTriggered" ]
+			},
+			{
+				"Type": "/Script/FortDelMarTrackRuntime.FortDelMarTrack",
+				"AllowList": [ "TrackType", "bIsIndependent", "ShowSplinePointNumbers", "bForceValidOOBTube", "bForceValidTrack" ]
+			},
+			{
+				"Type": "/Script/FortDelMarTrackRuntime.FortDelMarTrackBase",
+				"AllowList": [ "TrackPalette_V2", "TrackSplinePointData", "RebuildTrack" ]
+			},
+			{
+				"Type": "/FortDelMarJellyHazard/Blueprints/FortDelMar_Jelly_BP.FortDelMar_Jelly_BP",
+				"AllowList": [ "Shape" ]
 			},
 			{
 				"Type": "/Script/LiveLink.LiveLinkComponent",

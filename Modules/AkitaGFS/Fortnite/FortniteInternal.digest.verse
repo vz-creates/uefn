@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 AI<public> := module {
@@ -207,6 +207,7 @@ AI<public> := module {
     Failure
   }
 
+  using { /Fortnite.com/Animation/PlayAnimation }
   using { /Fortnite.com/Assets }
   using { /Fortnite.com/Characters }
   using { /Fortnite.com/Playspaces }
@@ -721,16 +722,28 @@ AI<public> := module {
     # This will fail if the NPC does not use the FortniteSidekick cosmetic look or if the given agent does not have a Sidekick equipped in their locker.
     ApplyEquippedSidekickCosmetic<native><epic_internal>(Agent: agent)<transacts><decides>: void
 
+    # Apply a sidekick cosmetic.
+    # Fails if the NPC does not use the FortniteSidekick cosmetic look or if NPC companion usage is not enabled for the given cosmetic.
+    ApplySidekickCosmetic<native><epic_internal>(CosmeticDef: sidekick_cosmetic_definition)<transacts><decides>: void
+
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
     ChangeMoodEvent<override><native>: listenable(tuple(sidekick_mood, sidekick_mood)) = external {}
 
     # Get the Sidekick's current mood.
     GetMood<override><native>()<reads>: sidekick_mood
 
+    # Play an animation on the Sidekick and wait for it to complete.
+    PlayAnimAndWait<native><epic_internal>(AnimationSequence: animation_sequence)<suspends>: play_animation_result
+
     # Request to play a given reaction on the Sidekick.
     # This reaction is not guaranteed to play immediately; instead, the StartPlayReactionEvent should be used to monitor this.
     # This will fail if the Sidekick cannot play the given reaction.
     PlayReaction<override><native>(Reaction: sidekick_reaction)<transacts><decides>: void
+
+    # Request to play a given reaction on the Sidekick
+    PlayReactionAndWait<native><epic_internal>(Reaction: sidekick_reaction)<suspends>: logic
+
+    PlayReactionAndWait<native><epic_internal>(Reaction: sidekick_reaction_internal_test)<suspends>: logic
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
     StartPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
@@ -765,7 +778,7 @@ AI<public> := module {
   # Component to manage functionality shared by all Sidekick types.
   sidekick_component<native><public> := class<abstract><final_super><epic_internal>(component) {
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
-    ChangeMoodEvent<public>: listenable(tuple(sidekick_mood, sidekick_mood))
+    ChangeMoodEvent<native><public>: listenable(tuple(sidekick_mood, sidekick_mood))
 
     # Get the Sidekick's current mood.
     GetMood<public>()<reads>: sidekick_mood
@@ -776,10 +789,10 @@ AI<public> := module {
     PlayReaction<public>(Reaction: sidekick_reaction)<transacts><decides>: void
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
-    StartPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StartPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
-    StopPlayReactionEvent<public>: listenable(sidekick_reaction)
+    StopPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
@@ -811,6 +824,16 @@ AI<public> := module {
     Happy
 
     Worried
+  }
+
+  sidekick_reaction_internal_test<native><epic_internal> := enum<open> {
+    Attack
+
+    Eat
+
+    HitReact
+
+    Sleeping
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
@@ -981,6 +1004,10 @@ Animation<public> := module {
   emote<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   npc_character_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
+
+  sidekick_cosmetic_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {
+    GetDisplayName<native><epic_internal>()<reads><decides>: message
+  }
 }
 
 # Module import path: /Fortnite.com/Blastberry
@@ -2508,7 +2535,7 @@ Devices<public> := module {
     GetInteractionTime<public>()<transacts>: float = external {}
 
     # Returns the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `GetTriggerMaxCount` will be between `0` and `10`.
+    #  * `GetTriggerMaxCount` will be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     GetMaxTriggerCount<public>()<transacts>: int = external {}
 
@@ -2526,7 +2553,7 @@ Devices<public> := module {
     SetInteractionTime<public>(Time: float): void = external {}
 
     # Sets the maximum amount of times this button can be interacted with before it will be disabled.
-    #  * `MaxCount` must be between `0` and `10`.
+    #  * `MaxCount` must be between `0` and `10000`.
     #  * `0` indicates no limit on trigger count.
     SetMaxTriggerCount<public>(MaxCount: int): void = external {}
   }
@@ -10395,14 +10422,23 @@ Framework<public> := module {
 
   # Module import path: /Fortnite.com/Framework/Matchmaking
   Matchmaking<epic_internal> := module {
-    using { /Fortnite.com/Playspaces }
-    using { /Verse.org/SceneGraph }
-    using { /Verse.org/Simulation }
     # A player agent method to play again.
     (InAgent: agent).PlayAgain<native><epic_internal>(): void
 
     # A player agent method indicating ready for matchmaking (used w/ PlayAgain).
     (InAgent: agent).SetReadyForMatchmaking<native><epic_internal>(IsReady: logic): void
+
+    # Get a matchmaking attribute from the session as an float
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsFloat<native><epic_internal>(AttributeKey: string)<transacts><decides>: float
+
+    # Get a matchmaking attribute from the session as an int
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsInt<native><epic_internal>(AttributeKey: string)<transacts><decides>: int
+
+    # Get a matchmaking attribute from the session as a logic
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsLogic<native><epic_internal>(AttributeKey: string)<transacts><decides>: logic
+
+    # Get a matchmaking attribute from the session as a string
+    (InSimulationEntity: simulation_entity).GetMatchmakingAttributeAsString<native><epic_internal>(AttributeKey: string)<transacts><decides>: string
 
     # Get the desired number of bots to spawn.
     (InSimulationEntity: simulation_entity).GetMatchmakingDesiredBotCount<native><epic_internal>(): int
@@ -10419,6 +10455,9 @@ Framework<public> := module {
     # Method to check if the match being played is ranked or not.
     IsMatchRanked<native><epic_internal>(Playspace: fort_playspace)<transacts><decides>: void
 
+    using { /Fortnite.com/Playspaces }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
     # The struct of rank progress data for a player.
     ranked_progress<native><epic_internal> := struct<concrete> {
       AccountId<native><public>: string = external {}
@@ -10879,10 +10918,8 @@ Itemization<public> := module {
   # Module import path: /Fortnite.com/Itemization/FortniteRarities
   FortniteRarities<public> := module {
     using { /Verse.org/SceneGraph }
-    @experimental
     Common<public>: rarity = external {}
 
-    @experimental
     Epic<public>: rarity = external {}
 
     @experimental
@@ -10891,16 +10928,13 @@ Itemization<public> := module {
     @experimental
     Impossible<epic_internal>: rarity = external {}
 
-    @experimental
     Legendary<public>: rarity = external {}
 
     @experimental
     Mythic<epic_internal>: rarity = external {}
 
-    @experimental
     Rare<public>: rarity = external {}
 
-    @experimental
     Uncommon<public>: rarity = external {}
   }
 
@@ -11217,34 +11251,26 @@ Itemization<public> := module {
     MaxStackSize: ?int
   )<converges>: ?basic_stackable_component
 
-  @experimental
   # `fort_br_inventory_build_hotbar_component` is the FNBR inventory for Fortnite build tools.
-  fort_br_inventory_build_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_build_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_harvest_tool_component` is the FNBR inventory for the Fortnite harvest tool.
-  fort_br_inventory_harvest_tool_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_harvest_tool_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_legacy_quickbar_component` is a shared class for FNBR inventories that rely on coupling to the legacy AFortQuickBars class.
-  fort_br_inventory_legacy_quickbar_component<native><epic_internal> := class(fort_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_legacy_quickbar_component<native><epic_internal> := class<abstract>(fort_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_trap_component` is the FNBR inventory for the Fortnite trap slot.
-  fort_br_inventory_trap_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {}
+  fort_br_inventory_trap_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   # `fort_br_inventory_weapon_hotbar_component` is the FNBR inventory for Fortnite weapons and gadgets.
-  fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class<final>(fort_br_inventory_legacy_quickbar_component) {
-    # Sets the total number of slots.
-    SetMaxSlots<native><public>(InNumSlots: int): void
-  }
+  fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
   # `fort_inventory_ammo_component` is the inventory for Fortnite ammo.
   fort_inventory_ammo_component<native><public> := class<final>(fort_inventory_component) {}
 
   # `fort_inventory_build_hotbar_component` is the UEFN inventory for Fortnite build tools.
-  fort_inventory_build_hotbar_component<native><public> := class<final>(fort_inventory_component) {
+  fort_inventory_build_hotbar_component<native><public> := class<final>(fort_br_inventory_build_hotbar_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
   }
@@ -11265,7 +11291,7 @@ Itemization<public> := module {
     ResetWeaponState<native><epic_internal>(Weapon: item_component)<transacts><decides>: void
 
     # Moves the item to a particular slot. If the item is not already in the inventory, AddItem is called on it. Swaps places with any item already in that slot.
-    SetItemInSlot<native><epic_internal>(Item: entity, Slot: int)<reads><decides>: void
+    SetItemInSlot<native><epic_internal>(Item: entity, Slot: int)<transacts><decides>: void
   }
 
   # `fort_inventory_currencies_component` is the inventory for Fortnite currencies.
@@ -11276,7 +11302,7 @@ Itemization<public> := module {
   fort_inventory_edit_mode_component<native><epic_internal> := class<final>(fort_inventory_component) {}
 
   # `fort_inventory_harvest_tool_component` is the UEFN inventory for the Fortnite harvest tool.
-  fort_inventory_harvest_tool_component<native><public> := class<final>(fort_inventory_component) {
+  fort_inventory_harvest_tool_component<native><public> := class<final>(fort_br_inventory_harvest_tool_component) {
     # Returns the item currently selected, if there is one.
     GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
   }
@@ -11288,16 +11314,10 @@ Itemization<public> := module {
   fort_inventory_resources_component<native><public> := class<final>(fort_inventory_component) {}
 
   # `fort_inventory_trap_component` is the UEFN inventory for the Fortnite trap slot.
-  fort_inventory_trap_component<native><public> := class<final>(fort_inventory_legacy_quickbar_component) {
-    # Returns the item currently selected, if there is one.
-    GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
-
-    # Called when the trap inventory is updated and visibility flags for each item should be reset
-    OnTrapInventoryVisibiltyRefreshEvent<native><final><epic_internal>: listenable(entity) = external {}
-  }
+  fort_inventory_trap_component<native><public> := class<final>(fort_br_inventory_trap_component) {}
 
   # `fort_inventory_weapon_hotbar_component` is the UEFN inventory for Fortnite weapons and gadgets.
-  fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_component) {
+  fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_br_inventory_weapon_hotbar_component) {
     # Called when the inventory owner's class changes.
     ClassChangedEvent<native><final><epic_internal>: listenable(tuple()) = external {}
 
@@ -11306,9 +11326,6 @@ Itemization<public> := module {
 
     # Succeeds if the inventory has infinite consumables.
     HasInfiniteConsumables<native><epic_internal>()<reads><decides>: void
-
-    # Called when the time changes from 0 to the reload time, then every frame with the updated time until it reaches 0, or when the reload is canceled and the time is set to 0 early.
-    ReloadTimeChangedEvent<native><final><epic_internal>: listenable(float) = external {}
 
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
@@ -11421,6 +11438,7 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @class_and_subclass_group_names("inventory")
+  @deprecated
   @experimental
   @hide_in_editor
   inventory_item_view_model_component<native><epic_internal> := class<final><final_super>(component) {
@@ -11429,8 +11447,6 @@ Itemization<public> := module {
     InitializeViewModel<native_callable><public>(Item: entity): void = external {}
 
     OnDetailsChanged<protected>(OptionalDetailsComponent: ?description_component): void = external {}
-
-    OnEquippedChanged<protected>(ItemEquippedChange: change_equipped_result): void = external {}
 
     OnIconChanged<protected>(OptionalIconComponent: ?icon_component): void = external {}
 
@@ -11465,6 +11481,7 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @class_and_subclass_group_names("inventory")
+  @deprecated
   @experimental
   @hide_in_editor
   inventory_ui_action_component<native><epic_internal> := class<final><final_super>(component) {
@@ -11501,6 +11518,7 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @class_and_subclass_group_names("inventory")
+  @deprecated
   @experimental
   @hide_in_editor
   inventory_view_model_component<native><epic_internal> := class<final><final_super>(component) {
@@ -11547,6 +11565,9 @@ Itemization<public> := module {
 
     # Succeeds if the item entity is a consumable.
     IsItemConsumable<native><public>()<reads><decides>: void
+
+    # Called when the time changes from 0 to the reload time, then every frame with the updated time until it reaches 0, or when the reload is canceled and the time is set to 0 early.
+    ReloadTimeChangedEvent<native><final><epic_internal>: listenable(float) = external {}
 
     SetCurrentDurability<native><public>(NewDurability: float): void
 
@@ -12749,6 +12770,23 @@ Items<public> := module {
   }
 
   @preload
+  Currency_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
   DamageTrap_BR_CH1S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -13692,6 +13730,37 @@ Items<public> := module {
   }
 
   @preload
+  InstantLargeShield_Ballistic_V1_Exotic<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  InstantShield_Ballistic_V1_Exotic<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   JellyBean_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -14029,6 +14098,23 @@ Items<public> := module {
 
   @preload
   MedMistSmokeGrenade_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  MedMistSmokeGrenade_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15809,7 +15895,6 @@ Items<public> := module {
   (/Fortnite.com/Items:)StarWars<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Awareness as an augment item. Only usable with a lightsaber equipped.
     ForcePowerAwareness_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15817,7 +15902,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Distraction as an augment item. Only usable with a lightsaber equipped.
     ForcePowerDistraction_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15825,7 +15909,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Heal as an augment item. Only usable with a lightsaber equipped.
     ForcePowerHeal_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15833,7 +15916,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Lightning as an augment item. Only usable with a lightsaber equipped.
     ForcePowerLightning_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15841,7 +15923,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Pull as an augment item. Only usable with a lightsaber equipped.
     ForcePowerPull_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15849,7 +15930,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Push as an augment item. Only usable with a lightsaber equipped.
     ForcePowerPush_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15857,7 +15937,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Saber Throw as an augment item. Only usable with a lightsaber equipped.
     ForcePowerSaberThrow_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15865,7 +15944,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Shield as an augment item. Only usable with a lightsaber equipped.
     ForcePowerShield_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15873,7 +15951,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Throw as an augment item. Only usable with a lightsaber equipped.
     ForcePowerThrow_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15881,7 +15958,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Training (Jump & Sprint) as an augment item.
     ForcePowerTraining_Augment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15889,7 +15965,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Mind Trick as an augment item. Only usable with a lightsaber equipped.
     ForcePowerTrick_LightsaberAugment_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -15899,7 +15974,6 @@ Items<public> := module {
     using { /Verse.org/Native }
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     Jetpack_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
@@ -16118,6 +16192,23 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  TheWall_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
   }
 
   @preload
@@ -16842,14 +16933,12 @@ StarWars<public> := module {
   # Module import path: /Fortnite.com/StarWars/GalileoItemUtils
   GalileoItemUtils<epic_internal> := module {
     using { /Verse.org/SceneGraph }
-    @experimental
     AddKyberCrystalComponent<native><epic_internal>(
       InEntity: entity,
       InComponent: subtype(kyber_crystal_component)
     )<converges>: void
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Awareness power.
   force_power_awareness_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16859,7 +16948,6 @@ StarWars<public> := module {
     var Duration<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Distraction power.
   force_power_distraction_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16869,7 +16957,6 @@ StarWars<public> := module {
     var Health<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Heal power.
   force_power_heal_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16890,10 +16977,8 @@ StarWars<public> := module {
   using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Colors }
   using { /Verse.org/SceneGraph }
-  @experimental
   force_power_item_component<native><public> := class<abstract><epic_internal>(item_component) {}
 
-  @experimental
   # Represents an item that gives its holder the Force Lightning power.
   force_power_lightning_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16907,7 +16992,6 @@ StarWars<public> := module {
     var Duration<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Pull power.
   force_power_pull_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16917,7 +17001,6 @@ StarWars<public> := module {
     var PullForce<epic_internal>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Push power.
   force_power_push_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16927,7 +17010,6 @@ StarWars<public> := module {
     var PushForce<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Saber Throw power.
   force_power_saber_throw_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16943,7 +17025,6 @@ StarWars<public> := module {
     var Speed<epic_internal>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Shield power.
   force_power_shield_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16961,7 +17042,6 @@ StarWars<public> := module {
     var RechargeRate<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Throw power.
   force_power_throw_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16975,7 +17055,6 @@ StarWars<public> := module {
     var MaxRange<epic_internal>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Training power (Jump and Sprint).
   force_power_training_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16985,7 +17064,6 @@ StarWars<public> := module {
     var StaminaCost<public>: float = external {}
   }
 
-  @experimental
   # Represents an item that gives its holder the Force Mind Trick power.
   force_power_trick_component<native><public> := class<epic_internal>(force_power_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
@@ -16997,10 +17075,8 @@ StarWars<public> := module {
     var TimesHit<epic_internal>: int = external {}
   }
 
-  @experimental
   kyber_crystal_blue_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_component<native><public> := class<abstract><final_super><internal>(component) {
     var ArcIntensity<public>: float = external {}
 
@@ -17011,71 +17087,50 @@ StarWars<public> := module {
     var<private> EmissiveIntensity<public>: float = external {}
   }
 
-  @experimental
   kyber_crystal_green_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_orange_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_purple_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_red_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_red_damaged_component<public> := class(kyber_crystal_red_component) {}
 
-  @experimental
   kyber_crystal_red_unstable_component<public> := class(kyber_crystal_red_component) {}
 
-  @experimental
   kyber_crystal_white_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   kyber_crystal_yellow_component<public> := class(kyber_crystal_component) {}
 
-  @experimental
   lightsaber_item_component<native><public> := class<abstract><epic_internal>(item_component) {}
 
-  @experimental
   lightsaber_item_crossguard<native><public> := class<abstract><epic_internal>(lightsaber_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
   }
 
-  @experimental
   lightsaber_item_jedi_padawan_a<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_jedi_padawan_b<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_jedi_training<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_kenobi<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_ren<public> := class<final><epic_internal>(lightsaber_item_crossguard) {}
 
-  @experimental
   lightsaber_item_rey<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_single<native><public> := class<abstract><epic_internal>(lightsaber_item_component, has_merge_rules) {
     AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
   }
 
-  @experimental
   lightsaber_item_sith_apprentice<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_skywalker<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_vader<public> := class<final><epic_internal>(lightsaber_item_single) {}
 
-  @experimental
   lightsaber_item_windu<public> := class<final><epic_internal>(lightsaber_item_single) {}
 }
 
@@ -17528,7 +17583,7 @@ UI<public> := module {
   using { /Verse.org/Assets }
   using { /Verse.org/Simulation }
   dynamic_ui_z_order<native><epic_internal> := enum {
-    Back
+    (/Fortnite.com/UI/dynamic_ui_z_order:)Back
 
     Custom
 
@@ -30575,91 +30630,78 @@ Weapons<public> := module {
   (/Fortnite.com/Weapons:)StarWars<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     A280CFEBlasterRifle_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     A280CFEBlasterRifle_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     A280CFEBlasterRifle_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     A280CFEBlasterRifle_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     A280CFEBlasterRifle_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     A280CFEBlasterRifle_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ACPScatterBlaster_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ACPScatterBlaster_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ACPScatterBlaster_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ACPScatterBlaster_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ACPScatterBlaster_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ACPScatterBlaster_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     AmbanSniperRifle_InfiniteAmmo_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
@@ -30668,280 +30710,240 @@ Weapons<public> := module {
     using { /Verse.org/Native }
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     AmbanSniperRifle_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     BARMST12ScatterBlaster_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     BARMST12ScatterBlaster_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     BARMST12ScatterBlaster_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     BARMST12ScatterBlaster_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     BARMST12ScatterBlaster_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     BARMST12ScatterBlaster_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CA87JawaScatterBlaster_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CA87JawaScatterBlaster_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CA87JawaScatterBlaster_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CA87JawaScatterBlaster_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CA87JawaScatterBlaster_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CA87JawaScatterBlaster_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CR2Blaster_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CR2Blaster_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CR2Blaster_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CR2Blaster_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CR2Blaster_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     CR2Blaster_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DC15BlasterRifle_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DL44BlasterPistol_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DL44BlasterPistol_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DL44BlasterPistol_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DL44BlasterPistol_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DL44BlasterPistol_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DL44BlasterPistol_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DLT19BlasterRifle_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DLT19BlasterRifle_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DLT19BlasterRifle_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DLT19BlasterRifle_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DLT19BlasterRifle_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     DLT19BlasterRifle_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     E11BlasterRifle_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     F11DBlaster_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     F11DBlaster_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     F11DBlaster_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     F11DBlaster_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     F11DBlaster_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     F11DBlaster_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Awareness as a weapon item. Must be equipped to use.
     ForcePowerAwareness_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30949,7 +30951,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Distraction as a weapon item. Must be equipped to use.
     ForcePowerDistraction_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30957,7 +30958,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Heal as a weapon item. Must be equipped to use.
     ForcePowerHeal_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30965,7 +30965,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Lightning as a weapon item. Must be equipped to use.
     ForcePowerLightning_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30973,7 +30972,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Pull as a weapon item. Must be equipped to use.
     ForcePowerPull_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30981,7 +30979,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Push as a weapon item. Must be equipped to use.
     ForcePowerPush_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30989,7 +30986,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Saber Throw as a weapon item. Must be equipped to use.
     ForcePowerSaberThrow_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -30997,7 +30993,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Shield as a weapon item. Must be equipped to use.
     ForcePowerShield_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -31005,7 +31000,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Throw as a weapon item. Must be equipped to use.
     ForcePowerThrow_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -31013,7 +31007,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     # Force Mind Trick as a weapon item. Must be equipped to use.
     ForcePowerTrick_Weapon_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
@@ -31021,210 +31014,180 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     IQA11MarksmanBlasterRifle_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberJediPadawanA_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberJediPadawanB_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberJediTraining_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberKenobi_V1<native><public> := class<final><concrete>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberRen_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberRey_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberSithApprentice_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberSkywalker_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberVader_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     LightsaberWindu_V1<native><public> := class<concrete><final>(fort_item_definition_entity_base) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ThermalImploder_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     ThermalImploder_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WESTAR34BlasterPistols_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WESTAR34BlasterPistols_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WESTAR34BlasterPistols_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WESTAR34BlasterPistols_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WESTAR34BlasterPistols_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WESTAR34BlasterPistols_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WookieeBowcaster_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WookieeBowcaster_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WookieeBowcaster_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WookieeBowcaster_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WookieeBowcaster_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4020 }
     @preload
-    @experimental
     WookieeBowcaster_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
       ItemDefinitionID<override>: string = external {}
     }

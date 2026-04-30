@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.20-CL-52463280
+# Generated from build: ++Fortnite+Release-40.30-CL-53276632
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets

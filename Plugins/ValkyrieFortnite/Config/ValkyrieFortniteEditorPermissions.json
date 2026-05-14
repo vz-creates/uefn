@@ -2481,7 +2481,10 @@
 				"AllowList": [ "ToggleRealTime", "DisableRealtimeOverride", "DisableRealtimeOverrideSeparator", "ToggleStats", "ToggleFPS", "ToggleViewportToolbar", "FOVAngle", "FarViewPlane", "ScreenPercentage", "ToggleCinematicPreview", "ToggleGameView", "ToggleImmersive", "HighResScreenshot", "Bookmark", "Configs" ]
 			},
 			"LevelEditor.LevelViewportToolbar.Show": {
-				"AllowList": [ "UseDefaultShowFlags", "Common_AntiAliasing", "Common_Atmosphere", "Common_BSP", "Common_Collision", "Common_Decals", "Common_Fog", "Common_Grid", "Common_Landscape", "Common_MediaPlanes", "Common_Navigation", "Common_Particles", "Common_SkeletalMeshes", "Common_StaticMeshes", "Common_Translucency", "ShowHLODsMenu", "ShowRevisionControlMenu", "ShowCoopNotes", "Animation" ]
+				"AllowList": [ "UseDefaultShowFlags", "Common_AntiAliasing", "Common_Atmosphere", "Common_BSP", "Common_Collision", "Common_Decals", "Common_Fog", "Common_Grid", "Common_Landscape", "Common_MediaPlanes", "Common_Navigation", "Common_Particles", "Common_SkeletalMeshes", "Common_StaticMeshes", "Common_Translucency", "ShowHLODsMenu", "ShowRevisionControlMenu", "ShowCoopNotes", "Animation", "SFG_Advanced" ]
+			},
+			"LevelEditor.ViewportToolBar.Show.SFG_Advanced": {
+				"AllowList": [ "Bounds" ]
 			},
 			"LevelEditor.LevelViewportToolbar.Show.Animation": {
 				"AllowList": [ "AxisOnSelection", "Hierarchy", "ControlsAsOverlay", "ControlShapes", "Nulls", "ProxyControls", "Sockets" ]

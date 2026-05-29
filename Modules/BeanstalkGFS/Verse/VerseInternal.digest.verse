@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.30-CL-53276632
+# Generated from build: ++Fortnite+Release-40.40-CL-53683214
 #################################################
 
 AgentGroup<public> := module {
@@ -803,7 +803,6 @@ Input<public> := module {
   using { /Verse.org/Simulation }
   using { /Verse.org/SpatialMath }
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Access input-related data and settings for a player.
   GetPlayerInput<native><public>(Player: player)<transacts><decides>: player_input
 
@@ -904,7 +903,6 @@ Input<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Input_events is a container for user input events which can be subscribed to.
   #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an input_events object for a given player.
   #   * Low-level notifications of current user input: BeginDetectEvent, DetectionOngoingEvent, and EndDetectEvent.
@@ -951,7 +949,6 @@ Input<public> := module {
   input_events_base<native><epic_internal> := class<abstract> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # This is the main manager class for input-related settings and functions for a player.
   player_input<native><public> := class {
     AddInputMapping<native><public>(InputMapping: input_mapping): void

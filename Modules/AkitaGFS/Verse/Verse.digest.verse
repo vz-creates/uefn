@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.30-CL-53276632
+# Generated from build: ++Fortnite+Release-40.40-CL-53683214
 #################################################
 
 AgentGroup<public> := module {
@@ -573,7 +573,6 @@ Input<public> := module {
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Access input-related data and settings for a player.
   GetPlayerInput<native><public>(Player: player)<transacts><decides>: player_input
 
@@ -674,7 +673,6 @@ Input<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Input_events is a container for user input events which can be subscribed to.
   #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an input_events object for a given player.
   #   * Low-level notifications of current user input: BeginDetectEvent, DetectionOngoingEvent, and EndDetectEvent.
@@ -718,7 +716,6 @@ Input<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # This is the main manager class for input-related settings and functions for a player.
   player_input<native><public> := class {
     AddInputMapping<native><public>(InputMapping: input_mapping): void
@@ -2018,8 +2015,6 @@ Simulation<public> := module {
   # Get the seconds that have elapsed since the world began simulating
   GetSimulationElapsedTime<native><public>()<transacts>: float
 
-  (/Verse.org/Simulation:)MakeLocalizableValue<epic_internal>(Agent: agent): localizable_agent = external {}
-
   # Waits specified number of seconds and then resumes. If `Seconds` = 0.0 then it waits until next tick/frame/update. If `Seconds` = Inf then it waits forever and only calls back if canceled - such as via `race`. If `Seconds` < 0.0 then it completes immediately and does not yield to other aysnc expressions.
   # Waiting until the next update (0.0) is especially useful in a loop of a coroutine that needs to do some work every update and this yields to other coroutines so that it doesn't hog a processor's resources.
   # Waiting forever (Inf) will have any expression that follows never be evaluated. Occasionally it is desireable to have a task never complete such as the last expression in a `race` subtask where the task must never win the race though it still may be canceled earlier.
@@ -2234,8 +2229,6 @@ Simulation<public> := module {
     # Used to scale a slider exponentially. Common values are found within the range of 1-20.
     SliderExponent<public>: ?t = external {}
   }
-
-  localizable_agent<native><epic_internal> := class(localizable_value) {}
 
   player<native><public> := class<unique><persistent><module_scoped_var_weak_map_key><epic_internal>(agent) {
     # Succeeds when this `player` may be used as a module-scoped `var` `weak_map` key. This coincides with the corresponding player having joined the game and not yet left. Using a `player` as a module-scope `var` `weak_map` key when this method fails results in a runtime error.

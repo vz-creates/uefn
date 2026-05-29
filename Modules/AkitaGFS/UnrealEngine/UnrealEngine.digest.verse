@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.30-CL-53276632
+# Generated from build: ++Fortnite+Release-40.40-CL-53683214
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -124,8 +124,6 @@ Conversations<public> := module {
     persona_component,
     voice_channel(has_voice_member_info)
   )
-
-  (/UnrealEngine.com/Conversations:)MakeLocalizableValue<epic_internal>(V: llm_string): localizable_llm_string = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
@@ -266,8 +264,6 @@ Conversations<public> := module {
     )<suspends>: result(response_type, llm_prompt_error)
   }
 
-  localizable_llm_string<native><epic_internal> := class(localizable_value) {}
-
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Whimsical, High, Warm
@@ -348,7 +344,7 @@ Conversations<public> := module {
     SubscribeToResponseType<native><public>(response_type: type, Required: logic, Callback: type { _(: ?agent, : response_type): void })<transacts>: cancelable
 
     # How the persona will handle overlapping prompts.
-    var InterruptionRule<public>: persona_interruption_rule
+    var InterruptionRule<public>: persona_interruption_rule = external {}
 
     # The session which will process all this persona's prompts
     # When the persona is in a voice channel, every session in that channel will automatically
@@ -357,7 +353,7 @@ Conversations<public> := module {
     var Session<public>: llm_session = external {}
 
     # The voice assigned to this persona.
-    var Voice<public>: voice_model
+    var Voice<public>: voice_model = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }

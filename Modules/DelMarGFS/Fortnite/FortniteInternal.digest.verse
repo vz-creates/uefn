@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.30-CL-53276632
+# Generated from build: ++Fortnite+Release-40.40-CL-53683214
 #################################################
 
 AI<public> := module {
@@ -729,27 +729,45 @@ AI<public> := module {
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
     ChangeMoodEvent<override><native>: listenable(tuple(sidekick_mood, sidekick_mood)) = external {}
 
+    GetAnticsEnabled<native><epic_internal>(__dupe___unnamed_parameter_129: accessor)<transacts>: logic
+
     # Get the Sidekick's current mood.
     GetMood<override><native>()<reads>: sidekick_mood
 
     # Play an animation on the Sidekick and wait for it to complete.
-    PlayAnimAndWait<native><epic_internal>(AnimationSequence: animation_sequence)<suspends>: play_animation_result
+    PlayAnimAndWait<native><epic_internal>(
+      AnimationSequence: animation_sequence,
+      BlendInTime: float,
+      BlendOutTime: float
+    )<suspends>: play_animation_result
 
     # Request to play a given reaction on the Sidekick.
     # This reaction is not guaranteed to play immediately; instead, the StartPlayReactionEvent should be used to monitor this.
     # This will fail if the Sidekick cannot play the given reaction.
     PlayReaction<override><native>(Reaction: sidekick_reaction)<transacts><decides>: void
 
-    # Request to play a given reaction on the Sidekick
-    PlayReactionAndWait<native><epic_internal>(Reaction: sidekick_reaction)<suspends>: logic
+    # Request to play a given reaction on the Sidekick and wait for it to complete.
+    PlayReactionAndWait<native><epic_internal>(
+      Reaction: sidekick_reaction,
+      BlendInTime: float,
+      BlendOutTime: float
+    )<suspends>: logic
 
     PlayReactionAndWait<native><epic_internal>(Reaction: sidekick_reaction_internal_test)<suspends>: logic
+
+    SetAnticsEnabled<native><epic_internal>(
+      __dupe___unnamed_parameter_130: accessor,
+      NewAnticsEnabled: logic
+    )<transacts>: void
 
     # Signaled when the Sidekick starts to play a reaction, returns the reaction that started playing.
     StartPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
 
     # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
     StopPlayReactionEvent<override><native>: listenable(sidekick_reaction) = external {}
+
+    # Enable or disable antics (idle personality animations) on the Sidekick. Enabled by default.
+    var AnticsEnabled<epic_internal>: logic = external {}
 
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
@@ -10398,6 +10416,13 @@ Framework<public> := module {
     IsCVarEnabled<native><epic_internal>(CVarName: string)<transacts><decides>: void
   }
 
+  # Module import path: /Fortnite.com/Framework/Competitive
+  Competitive<epic_internal> := module {
+    using { /Verse.org/Simulation }
+    # Sends tournaments stats for this player to the Events Service
+    (InPlayer: player).SendTournamentStats<native><epic_internal>(GameId: string, StatsMap: [string]int): void
+  }
+
   # Module import path: /Fortnite.com/Framework/Matchmaking
   Matchmaking<epic_internal> := module {
     # A player agent method to play again.
@@ -10796,37 +10821,29 @@ using { /Verse.org/Native }
   # Module import path: /Fortnite.com/Input/Character
   Character<public> := module {
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Crouch<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Jump<public>: input_action(logic) = external {}
 
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     RangedWeaponMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Reload<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Sprint<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     TraversalMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     WeaponPrimary<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     WeaponSecondary<public>: input_action(logic) = external {}
   }
 }
@@ -10915,228 +10932,6 @@ Itemization<public> := module {
 
     Uncommon<public>: rarity = external {}
   }
-
-  InventoryActionPropertyInterface<epic_internal> := class<public>(parameterized_property_interface) {
-    RequestDropHalfSelectedItemChangedEvent<public>: listenable(tuple()) = external {}
-
-    RequestDropSelectedItemChangedEvent<public>: listenable(tuple()) = external {}
-
-    RequestInventoryClosedEvent<public>: listenable(tuple()) = external {}
-
-    RequestInventoryOpenedEvent<public>: listenable(tuple()) = external {}
-
-    RequestSwapSelectedItemChangedEvent<public>: listenable(tuple()) = external {}
-
-    RequestUseSelectedItemChangedEvent<public>: listenable(tuple()) = external {}
-
-    SetIsInventoryActive<public>(NewIsInventoryActive: logic): void = external {}
-
-    SetRequestDropHalfSelectedItem<public>(NewRequestDropHalfSelectedItem: logic): void = external {}
-
-    SetRequestDropSelectedItem<public>(NewRequestDropSelectedItem: logic): void = external {}
-
-    SetRequestSwapSelectedItem<public>(NewRequestSwapSelectedItem: logic): void = external {}
-
-    SetRequestUseSelectedItem<public>(NewRequestUseSelectedItem: logic): void = external {}
-
-    UE5Class<override>: property_interface_UE5_definition = external {}
-
-    ___PropertyInterface_On_EquippedItem_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_HoveredItem_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_IsInventoryActive_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_IsInventoryAllowedToSwap_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_IsSwapping_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_RequestDropHalfSelectedItem_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_RequestDropSelectedItem_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_RequestSwapSelectedItem_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_RequestUseSelectedItem_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_SelectedItem_Changed<epic_internal>(): void = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_IsSwapping_Changed")
-    var IsSwapping<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_IsInventoryActive_Changed")
-    var<private> IsInventoryActive<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_RequestDropHalfSelectedItem_Changed")
-    var<private> RequestDropHalfSelectedItem<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_RequestDropSelectedItem_Changed")
-    var<private> RequestDropSelectedItem<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_RequestSwapSelectedItem_Changed")
-    var<private> RequestSwapSelectedItem<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_RequestUseSelectedItem_Changed")
-    var<private> RequestUseSelectedItem<public>: logic = external {}
-  }
-
-  InventoryActionPropertyInterface_asset<epic_internal>: property_interface_UE5_definition = external {}
-
-  InventoryActionPropertyInterface_subscribable_property_changed_event<epic_internal> := class(subscribable_event_intrnl(tuple())) {}
-
-  InventoryItemPropertyInterface<epic_internal> := class<public>(parameterized_property_interface) {
-    UE5Class<override>: property_interface_UE5_definition = external {}
-
-    ___PropertyInterface_On_AmmoIcon_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Ammo_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Amount_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Charges_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_CycleNextInputAction_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_CyclePreviousInputAction_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Durability_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Energy_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_FirstToUse_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_InputAction_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_IsActive_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_IsValid_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ItemDescription_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ItemIcon_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ItemName_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ItemShortDescription_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ItemTypeName_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_RarityColor_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_RarityTier_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ReloadPercent_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ReloadTime_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ShowAmmoIcon_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_SlotSize_Changed<epic_internal>(): void = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_Ammo_Changed")
-    var (/Fortnite.com/Itemization/InventoryItemPropertyInterface:)Ammo<public>: int = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_AmmoIcon_Changed")
-    var AmmoIcon<public>: texture = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_Amount_Changed")
-    var Amount<public>: int = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_Charges_Changed")
-    var Charges<public>: int = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_CycleNextInputAction_Changed")
-    var CycleNextInputAction<public>: input_action(type) = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_CyclePreviousInputAction_Changed")
-    var CyclePreviousInputAction<public>: input_action(type) = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_Durability_Changed")
-    var Durability<public>: float = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_Energy_Changed")
-    var Energy<public>: float = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_FirstToUse_Changed")
-    var FirstToUse<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_InputAction_Changed")
-    var InputAction<public>: input_action(type) = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_IsActive_Changed")
-    var IsActive<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_IsValid_Changed")
-    var IsValid<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ItemDescription_Changed")
-    var ItemDescription<public>: message = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ItemIcon_Changed")
-    var ItemIcon<public>: texture = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ItemName_Changed")
-    var ItemName<public>: message = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ItemShortDescription_Changed")
-    var ItemShortDescription<public>: message = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ItemTypeName_Changed")
-    var ItemTypeName<public>: message = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_RarityColor_Changed")
-    var RarityColor<public>: color = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_RarityTier_Changed")
-    var RarityTier<public>: int = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ReloadPercent_Changed")
-    var ReloadPercent<public>: float = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ReloadTime_Changed")
-    var ReloadTime<public>: float = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ShowAmmoIcon_Changed")
-    var ShowAmmoIcon<public>: logic = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_SlotSize_Changed")
-    var SlotSize<public>: int = external {}
-  }
-
-  InventoryItemPropertyInterface_asset<epic_internal>: property_interface_UE5_definition = external {}
-
-  InventoryPropertyInterface<epic_internal> := class<public>(parameterized_property_interface) {
-    UE5Class<override>: property_interface_UE5_definition = external {}
-
-    ___PropertyInterface_On_InventoryDescription_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_InventoryDisplayName_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_InventoryName_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_InventoryPropertyInterfaces_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ItemPropertyInterfaces_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_MagazineAmmo_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ReserveAmmo_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_ShowMagazineAsPercentage_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_TotalSlots_Changed<epic_internal>(): void = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_MagazineAmmo_Changed")
-    var MagazineAmmo<public>: int = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ReserveAmmo_Changed")
-    var ReserveAmmo<public>: int = external {}
-
-    @replicated("RepNotify=___PropertyInterface_On_ShowMagazineAsPercentage_Changed")
-    var ShowMagazineAsPercentage<public>: logic = external {}
-  }
-
-  InventoryPropertyInterface_asset<epic_internal>: property_interface_UE5_definition = external {}
 
   # Module import path: /Fortnite.com/Itemization/ItemizationTests
   ItemizationTests<epic_internal> := module {
@@ -11355,6 +11150,24 @@ Itemization<public> := module {
     var<private> PickupOverflowBehavior<native><epic_internal>: pickup_overflow_behavior = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4040 }
+  @class_and_subclass_group_names("item")
+  @experimental
+  # Place this component onto an entity to allow it to be added to an agent inventory on interaction. The owning entity should have an item_component and a mesh_component. This component expects the interacting agent to have a subentity with an inventory_component.
+  fort_item_pickup_interactable_component<public> := class(basic_interactable_component) {
+    DisableItemInteraction<protected>(): void = external {}
+
+    EnableItemInteraction<protected>(): void = external {}
+
+    GetInteractorInventory<public>(Agent: agent)<transacts><decides>: inventory_component = external {}
+
+    OnAddedToScene<override>(): void = external {}
+
+    OnInteractionSucceeded<protected>(Agent: agent): void = external {}
+
+    OnRemovingFromScene<override>(): void = external {}
+  }
+
   @experimental
   # `fort_npc_inventory_weapon_component` is the NPC inventory for Fortnite weapons and gadgets.
   fort_npc_inventory_weapon_component<native><epic_internal> := class<final>(fort_inventory_component) {
@@ -11406,9 +11219,7 @@ Itemization<public> := module {
 
   using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Assets }
-  using { /Verse.org/Colors }
   using { /Verse.org/Native }
-  using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
@@ -11420,41 +11231,9 @@ Itemization<public> := module {
   @experimental
   @hide_in_editor
   inventory_item_view_model_component<native><epic_internal> := class<final><final_super>(component) {
-    GetCategoryDisplayName<native><public>(ItemComponent: item_component)<reads>: message
-
     InitializeViewModel<native_callable><public>(Item: entity): void = external {}
 
-    OnDetailsChanged<protected>(OptionalDetailsComponent: ?description_component): void = external {}
-
-    OnIconChanged<protected>(OptionalIconComponent: ?icon_component): void = external {}
-
-    OnItemChanged<protected>(OptionalItemComponent: ?item_component): void = external {}
-
-    OnItemCountChanged<protected>(ItemComponent: item_component): void = external {}
-
-    OnRarityChanged<protected>(OptionalRarityComponent: ?rarity_component): void = external {}
-
-    OnReceive<override>(SceneEvent: scene_event): logic = external {}
-
-    OnReloadTimeChanged<protected>(NewTime: float): void = external {}
-
-    OnSimulate<override>()<suspends>: void = external {}
-
-    OnStackSizeChanged<protected>(ItemStackSizeChange: change_stack_size_result): void = external {}
-
-    OnStackableChanged<protected>(OptionalStackableComponent: ?stackable_component): void = external {}
-
-    OnTeamOrClassChanged<protected>(): void = external {}
-
-    OnTrapInventoryVisibiltyRefresh<protected>(TrapEntity: entity): void = external {}
-
-    PropertyInterface<public>: InventoryItemPropertyInterface = external {}
-
-    RefreshViewModel<public>(Item: entity): void = external {}
-
     UninitializeViewModel<native_callable><epic_internal>(): void = external {}
-
-    var StartingReloadTime<protected>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -11463,35 +11242,9 @@ Itemization<public> := module {
   @experimental
   @hide_in_editor
   inventory_ui_action_component<native><epic_internal> := class<final><final_super>(component) {
-    HandleEquipItem<protected>(EquipItemResult: equip_item_result): void = external {}
-
-    HandleItemsAdded<protected>(AddItemResult: add_item_result): void = external {}
-
-    HandleItemsRemoved<protected>(RemoveItemResult: remove_item_result): void = external {}
-
-    HandleRequestDropHalfSelectedItem<protected>(): void = external {}
-
-    HandleRequestDropSelectedItem<protected>(): void = external {}
-
-    HandleRequestInventoryClosedEvent<protected>(): void = external {}
-
-    HandleRequestInventoryOpenedEvent<protected>(): void = external {}
-
-    HandleRequestSwapSelectedItem<protected>(): void = external {}
-
-    HandleRequestUseSelectedItem<protected>(): void = external {}
-
-    HandleUnequipItem<protected>(UnequipItemResult: unequip_item_result): void = external {}
-
     Initialize<native_callable><public>(InventoryComponent: inventory_component): void = external {}
 
-    ResetSwap<protected>()<transacts>: void = external {}
-
-    SwapItem<protected>(Item: entity): void = external {}
-
     UninitializeViewModel<native_callable><epic_internal>(): void = external {}
-
-    UpdateIsInventoryAllowedToSwap<protected>(): void = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -11500,21 +11253,7 @@ Itemization<public> := module {
   @experimental
   @hide_in_editor
   inventory_view_model_component<native><epic_internal> := class<final><final_super>(component) {
-    HandleInventoryAdded<protected>(AddInventoryResult: add_inventory_result): void = external {}
-
-    HandleInventoryPropertyChanged<public>(InventoryPropertyChangeResult: inventory_property_change_result): void = external {}
-
-    HandleInventoryRemoved<protected>(RemoveInventoryResult: remove_inventory_result): void = external {}
-
-    HandleItemSlotsChanged<public>(ItemSlotsChangedResult: change_items_slot_result): void = external {}
-
-    HandleItemsAdded<public>(AddItemResult: add_item_result): void = external {}
-
-    HandleItemsRemoved<public>(RemoveItemResult: remove_item_result): void = external {}
-
     InitializeViewModel<native_callable><public>(InventoryComponent: inventory_component): void = external {}
-
-    PropertyInterface<public>: InventoryPropertyInterface = external {}
 
     UninitializeViewModel<native_callable><epic_internal>(): void = external {}
   }
@@ -17722,34 +17461,159 @@ VerseFortniteTestSuite<public> := module {
 VerseInternalTesting<public> := module {
   # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
   NexusFramework<public> := module {
+    FailureCategoryToString<epic_internal>(Category: nexus_failure_category): string = external {}
+
     example_nexus_device<epic_internal> := class(nexus_test_device) {
       OnBegin<override>()<suspends>: void = external {}
 
       OnEnd<override>(): void = external {}
     }
 
+    using { /Fortnite.com/Devices }
+    using { /UnrealEngine.com/Temporary/Diagnostics }
+    using { /UnrealEngine.com/Temporary/Testing }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
+    nexus_failure_category<epic_internal> := enum {
+      (/Fortnite.com/VerseInternalTesting/NexusFramework/nexus_failure_category:)Concurrency
+
+      Feature
+
+      Initialization
+
+      Integration
+
+      Lifecycle
+
+      (/Fortnite.com/VerseInternalTesting/NexusFramework/nexus_failure_category:)Persistence
+
+      State
+
+      Timeout
+    }
+
+    nexus_test_case<epic_internal> := struct {
+      Func<public>: type { _()<suspends>: void }
+
+      Name<public>: string
+
+      TimeoutOverride<public>: ?float = external {}
+    }
+
+    nexus_test_component<epic_internal> := class<final_super>(component) {
+      AddCheck<public>(Passed: logic, TestName: string, Context: string): void = external {}
+
+      AddCheckWithCategory<public>(
+        Passed: logic,
+        TestName: string,
+        Context: string,
+        Category: nexus_failure_category
+      ): void = external {}
+
+      AddFail<public>(TestName: string, Context: string): void = external {}
+
+      AddFailWithCategory<public>(TestName: string, Context: string, Category: nexus_failure_category): void = external {}
+
+      AddPass<public>(TestName: string, Context: string): void = external {}
+
+      AddPassWithCategory<public>(TestName: string, Context: string, Category: nexus_failure_category): void = external {}
+
+      AddSkip<public>(TestName: string, Context: string): void = external {}
+
+      AfterAll<public>()<suspends>: void = external {}
+
+      AfterEach<public>()<suspends>: void = external {}
+
+      BeforeAll<public>()<suspends>: void = external {}
+
+      BeforeEach<public>()<suspends>: void = external {}
+
+      EndPhase<public>(PhaseName: string): void = external {}
+
+      InitializeNexusReporting<protected>(): void = external {}
+
+      NexusExpect<public>(Condition: logic, TestName: string, Context: string): void = external {}
+
+      NexusGuard<public>(Condition: logic, TestName: string): void = external {}
+
+      OnSimulate<override>()<suspends>: void = external {}
+
+      ResetGuard<public>(): void = external {}
+
+      RunHeartbeat<public>(IntervalSeconds: float)<suspends>: void = external {}
+
+      StartPhase<public>(PhaseName: string, ?Category: ?nexus_failure_category = external {}): void = external {}
+
+      TestCases<public>(): []nexus_test_case = external {}
+
+      @editable
+      TestSuiteName<public>: string = external {}
+
+      var NexusRunner<protected>: ?nexus_test_runner_component = external {}
+    }
+
     nexus_test_device<epic_internal> := class(creative_device) {
       AddCheck<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
 
+      AddCheckWithCategory<epic_internal>(
+        IsPassed: logic,
+        TestName: string,
+        ContextString: string,
+        Category: nexus_failure_category
+      ): void = external {}
+
       AddFail<epic_internal>(TestName: string, ContextString: string): void = external {}
 
+      AddFailWithCategory<epic_internal>(
+        TestName: string,
+        ContextString: string,
+        Category: nexus_failure_category
+      ): void = external {}
+
       AddPass<epic_internal>(TestName: string, ContextString: string): void = external {}
+
+      AddPassWithCategory<epic_internal>(
+        TestName: string,
+        ContextString: string,
+        Category: nexus_failure_category
+      ): void = external {}
 
       AddResults<epic_internal>(TestName: string, Passed: logic, ContextString: string): void = external {}
 
       AddSkip<epic_internal>(IsPassed: logic, TestName: string, ContextString: string): void = external {}
 
+      AfterAll<public>()<suspends>: void = external {}
+
+      AfterEach<public>()<suspends>: void = external {}
+
+      BeforeAll<public>()<suspends>: void = external {}
+
+      BeforeEach<public>()<suspends>: void = external {}
+
+      EndPhase<public>(PhaseName: string): void = external {}
+
+      NexusExpect<epic_internal>(Condition: logic, TestName: string, Context: string): void = external {}
+
+      NexusGuard<epic_internal>(Condition: logic, TestName: string): void = external {}
+
       OnBegin<override>()<suspends>: void = external {}
 
       OnEnd<override>(): void = external {}
+
+      ResetGuard<epic_internal>(): void = external {}
+
+      RunHeartbeat<public>(IntervalSeconds: float)<suspends>: void = external {}
+
+      RunTestCases<public>()<suspends>: void = external {}
+
+      StartPhase<public>(PhaseName: string, ?Category: ?nexus_failure_category = external {}): void = external {}
+
+      TestCases<public>(): []nexus_test_case = external {}
 
       @editable
       var TestRunner<public>: nexus_test_runner = external {}
     }
 
-    using { /Fortnite.com/Devices }
-    using { /UnrealEngine.com/Temporary/Testing }
-    using { /Verse.org/Simulation }
     nexus_test_reporter<epic_internal> := class {
       AddResult<epic_internal>(
         TestName: string,
@@ -17757,10 +17621,72 @@ VerseInternalTesting<public> := module {
         ContextString: string,
         TestSuiteName: string
       ): void = external {}
+
+      AddResultWithCategory<epic_internal>(
+        TestName: string,
+        TestResult: test_result,
+        ContextString: string,
+        TestSuiteName: string,
+        FailureCategory: nexus_failure_category
+      ): void = external {}
     }
 
     nexus_test_runner<epic_internal> := class(creative_device) {
       OnEnd<override>(): void = external {}
+    }
+
+    nexus_test_runner_component<epic_internal> := class<final_super>(component) {
+      AddResult<public>(SuiteName: string, TestName: string, Passed: logic, Context: string): void = external {}
+
+      AddResultWithCategory<public>(
+        SuiteName: string,
+        TestName: string,
+        Passed: logic,
+        Context: string,
+        Category: nexus_failure_category
+      ): void = external {}
+
+      AddSkip<public>(SuiteName: string, TestName: string, Context: string): void = external {}
+
+      DisplayResults<public>(): void = external {}
+
+      EndPhase<public>(PhaseName: string): void = external {}
+
+      GetFailureCount<public>(Category: nexus_failure_category): int = external {}
+
+      GetPassCount<public>(Category: nexus_failure_category): int = external {}
+
+      GetRegisteredComponentCount<public>(): int = external {}
+
+      Heartbeat<public>(ComponentName: string): void = external {}
+
+      OnEndSimulation<override>(): void = external {}
+
+      RegisterComponent<public>(Component: nexus_test_component): void = external {}
+
+      RunStructuredTests<public>()<suspends>: void = external {}
+
+      StartPhase<public>(PhaseName: string): void = external {}
+
+      @editable
+      SummaryLogLevel<public>: log_level = external {}
+
+      @editable
+      TestReportName<public>: string = external {}
+
+      TestReporter<public>: test_reporter = external {}
+
+      var CurrentPhase<public>: string = external {}
+
+      var FailCount<public>: int = external {}
+
+      var FailuresByCategory<public>: [nexus_failure_category]int = external {}
+
+      var PassCount<public>: int = external {}
+
+      var PassesByCategory<public>: [nexus_failure_category]int = external {}
+
+      var SkipCount<public>: int = external {}
     }
   }
 
@@ -18245,6 +18171,8 @@ VerseInternalTesting<public> := module {
       CheckEqualIntArray<public>(Expected: []int, Actual: []int, Message: any): void = external {}
 
       CheckFailure<public>(TestFuncEval: ?any, FuncName: string)<decides>: void = external {}
+
+      CheckFalse<public>(Actual: logic, Message: any): void = external {}
 
       CheckNotEqual<public>(
         Actual: creative_object,

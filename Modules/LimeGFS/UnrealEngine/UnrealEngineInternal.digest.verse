@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.30-CL-53276632
+# Generated from build: ++Fortnite+Release-40.40-CL-53683214
 #################################################
 
 AINavigation<public> := module {
@@ -504,6 +504,10 @@ Conversations<public> := module {
     VoiceName<override>: string = external {}
   }
 
+  internal_response_data<native><epic_internal> := struct {
+    TargetAgent<native><localizes>: message
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Refined, Med, Warm
@@ -695,7 +699,7 @@ Conversations<public> := module {
     UpdateIcon<native><epic_internal>()<transacts>: void
 
     # How the persona will handle overlapping prompts.
-    var InterruptionRule<public>: persona_interruption_rule
+    var InterruptionRule<public>: persona_interruption_rule = external {}
 
     # The session which will process all this persona's prompts
     # When the persona is in a voice channel, every session in that channel will automatically
@@ -704,7 +708,7 @@ Conversations<public> := module {
     var Session<public>: llm_session = external {}
 
     # The voice assigned to this persona.
-    var Voice<public>: voice_model
+    var Voice<public>: voice_model = external {}
 
     var<epic_internal> Color<native><epic_internal>: color = external {}
 

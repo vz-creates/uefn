@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.30-CL-53276632
+# Generated from build: ++Fortnite+Release-40.40-CL-53683214
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -8284,37 +8284,29 @@ using { /Verse.org/Native }
   # Module import path: /Fortnite.com/Input/Character
   Character<public> := module {
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Crouch<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Jump<public>: input_action(logic) = external {}
 
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     RangedWeaponMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Reload<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     Sprint<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     TraversalMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     WeaponPrimary<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
-    @experimental
     WeaponSecondary<public>: input_action(logic) = external {}
   }
 }
@@ -8357,6 +8349,8 @@ Itemization<public> := module {
 
   using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   # `fort_inventory_component` is a shared class for all Fortnite inventories, with appropriate default UI and behavior. The HUD when using the BR Style Inventory Configuration will only be shown when using the default configuration. If new inventories are added you will need to create your own custom HUD using Verse UI.
   fort_inventory_component<native><public> := class<epic_internal>(inventory_component) {
     # Returns the total number of slots in this inventory.
@@ -8379,6 +8373,23 @@ Itemization<public> := module {
   fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_component) {
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
+  }
+
+  @available { MinUploadedAtFNVersion := 4040 }
+  @experimental
+  # Place this component onto an entity to allow it to be added to an agent inventory on interaction. The owning entity should have an item_component and a mesh_component. This component expects the interacting agent to have a subentity with an inventory_component.
+  fort_item_pickup_interactable_component<public> := class(basic_interactable_component) {
+    DisableItemInteraction<protected>(): void = external {}
+
+    EnableItemInteraction<protected>(): void = external {}
+
+    GetInteractorInventory<public>(Agent: agent)<transacts><decides>: inventory_component = external {}
+
+    OnAddedToScene<override>(): void = external {}
+
+    OnInteractionSucceeded<protected>(Agent: agent): void = external {}
+
+    OnRemovingFromScene<override>(): void = external {}
   }
 }
 

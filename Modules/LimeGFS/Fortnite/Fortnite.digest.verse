@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.41-CL-54326946
+# Generated from build: ++Fortnite+Release-41.00-CL-54618515
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -350,6 +350,10 @@ AI<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   # Component to manage functionality specifically for an NPC Sidekick.
   npc_sidekick_component<native><public> := class<final_super><epic_internal>(sidekick_component) {
+    # Apply the look and customizations of agent's currently equipped Sidekick to this Sidekick NPC.
+    # This will fail if the NPC does not use the FortniteSidekick cosmetic look or if the given agent does not have a Sidekick equipped in their locker.
+    ApplyEquippedSidekickCosmetic<native><public>(Agent: agent)<transacts><decides>: void
+
     # Signaled whenever the Sidekick's mood changes, either via the underlying mood system, or an override is applied. Returns the previous and new mood.
     ChangeMoodEvent<override><native>: listenable(tuple(sidekick_mood, sidekick_mood)) = external {}
 
@@ -410,6 +414,9 @@ AI<public> := module {
     # Signaled when the Sidekick ends playing a reaction, returns the reaction that played.
     StopPlayReactionEvent<native><public>: listenable(sidekick_reaction)
 
+    # Enable or disable antics (idle personality animations) on the Sidekick. Enabled by default.
+    var IdleAnticsEnabled<public>: logic = external {}
+
     # By default, Sidekicks will change their mood depending on actions in the game.
     # This value will lock the Sidekick into the mood passed in, overriding the automatic mood system.
     var MoodOverride<public>: ?sidekick_mood = external {}
@@ -433,11 +440,19 @@ AI<public> := module {
   sidekick_reaction<native><public> := enum<open> {
     Angry
 
+    Attack
+
     Dance
+
+    Eat
 
     Emote
 
     Happy
+
+    HitReact
+
+    Sleeping
 
     Worried
   }
@@ -553,6 +568,254 @@ Animation<public> := module {
       Stopped
     }
   }
+}
+
+Armory<public> := module {
+  assault_rifle_mesh<public> := class<final>(mesh_component) {}
+
+  # The entity prefab for a creator customizable assault rifle
+  assault_rifle_template<public> := class<concrete><final>(entity) {}
+
+  using { /Verse.org/Assets }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  # The multi trace specific subtype of trace_weapon_component which adds multiple traces per shot properties
+  fort_multi_trace_weapon_component<native><public> := class<final_super><internal>(fort_trace_weapon_component) {
+    SetBulletsPerShot<native><public>(Val: int): void
+
+    @editable_number(int) { MinValue := option { 1 }; MaxValue := option { 20 } }
+    # The number of bullets to fire per shot
+    var<private> BulletsPerShot<native><public>: int = external {}
+  }
+
+  # Struct that defines a range based damage multiplier
+  fort_range_damage_multiplier<native><public> := struct<concrete> {
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier applied to the damage at the specified range
+    DamageMultiplier<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 } }
+    # The distance at which to apply the damage multiplier
+    Range<native><public>: float = external {}
+  }
+
+  # The component on weapons entities like pistols and assault rifles for tweaking weapon properties
+  fort_trace_weapon_component<native><public> := class<internal>(fort_weapon_component) {
+    OnRemovingFromScene<native><override>(): void
+
+    SetAimDownSightRecoilMultiplier<native><public>(Val: float): void
+
+    SetAimDownSightSpreadMultiplier<native><public>(Val: float): void
+
+    SetAimingDownSightsEndSound<native><public>(Val: []sound_wave): void
+
+    SetAimingDownSightsStartSound<native><public>(Val: []sound_wave): void
+
+    SetBulletShells<native><public>(Val: ?particle_system): void
+
+    SetBulletTracer<native><public>(Val: ?particle_system): void
+
+    SetCooldownRateMultiplierOverTime<native><public>(Val: float): void
+
+    SetCrouchingSpreadMultiplier<native><public>(Val: float): void
+
+    SetDamage<native><public>(Val: float): void
+
+    SetEjectionPortOffset<native><public>(Val: (/Verse.org/SpatialMath:)transform): void
+
+    SetEnvironmentalDamageMultiplier<native><public>(Val: float): void
+
+    SetEquipSound<native><public>(Val: []sound_wave): void
+
+    SetExpansionRateMultiplierPerShot<native><public>(Val: float): void
+
+    SetFireRate<native><public>(Val: float): void
+
+    SetIdleSpreadMultiplier<native><public>(Val: float): void
+
+    SetMagazineCapacity<native><public>(Val: int): void
+
+    SetMaxRange<native><public>(Val: float): void
+
+    SetMovingSpreadMultiplier<native><public>(Val: float): void
+
+    SetMuzzleFlash<native><public>(Val: ?particle_system): void
+
+    SetMuzzleOffset<native><public>(Val: (/Verse.org/SpatialMath:)transform): void
+
+    SetOutOfAmmoSound<native><public>(Val: []sound_wave): void
+
+    SetRangeDamageMultiplier<native><public>(Val: []fort_range_damage_multiplier): void
+
+    SetRecoilMultiplier<native><public>(Val: float): void
+
+    SetReloadEndSound<native><public>(Val: []sound_wave): void
+
+    SetReloadInsertSound<native><public>(Val: []sound_wave): void
+
+    SetReloadStartSound<native><public>(Val: []sound_wave): void
+
+    SetReloadTime<native><public>(Val: float): void
+
+    SetShotAmmoCost<native><public>(Val: int): void
+
+    SetSlidingSpreadMultiplier<native><public>(Val: float): void
+
+    SetSprintingSpreadMultiplier<native><public>(Val: float): void
+
+    SetWeaponFireSound<native><public>(Val: []sound_wave): void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the recoil of the weapon when aiming down sights
+    var<private> AimDownSightRecoilMultiplier<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread while aiming down sights
+    var<private> AimDownSightSpreadMultiplier<native><public>: float = external {}
+
+    @editable
+    # The sounds to use when ending aiming down sights
+    var<private> AimingDownSightsEndSound<native><public>: []sound_wave = external {}
+
+    @editable
+    # The sounds to use when starting aiming down sights
+    var<private> AimingDownSightsStartSound<native><public>: []sound_wave = external {}
+
+    @editable
+    # The particle system to use for weapon bullet shells
+    var<private> BulletShells<native><public>: ?particle_system = external {}
+
+    @editable
+    # The particle system to use for weapon bullet tracers. The FX system's HitDistance parameter will update with impact distance or max range of the weapon.
+    var<private> BulletTracer<native><public>: ?particle_system = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread cooldown over time when not shooting
+    var<private> CooldownRateMultiplierOverTime<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread while crouching
+    var<private> CrouchingSpreadMultiplier<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 1000.000000 } }
+    # The damage dealt by the weapon
+    var<private> Damage<native><public>: float = external {}
+
+    @editable
+    # The transform by which to offset the bullet shell ejection FX
+    var<private> EjectionPortOffset<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The damage multiplier for the environment
+    var<private> EnvironmentalDamageMultiplier<native><public>: float = external {}
+
+    @editable
+    # The sounds to use when equipping the weapon
+    var<private> EquipSound<native><public>: []sound_wave = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread expansion per shot
+    var<private> ExpansionRateMultiplierPerShot<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 25.000000 } }
+    # The fire rate of the weapon
+    var<private> FireRate<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread while idle
+    var<private> IdleSpreadMultiplier<native><public>: float = external {}
+
+    @editable_number(int) { MinValue := option { 1 }; MaxValue := option { 1000 } }
+    # The magazine size of the weapon
+    var<private> MagazineCapacity<native><public>: int = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 } }
+    # The max range of the weapon
+    var<private> MaxRange<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread while moving
+    var<private> MovingSpreadMultiplier<native><public>: float = external {}
+
+    @editable
+    # The particle system to use for weapon muzzle flash
+    var<private> MuzzleFlash<native><public>: ?particle_system = external {}
+
+    @editable
+    # The transform by which to offset the weapon muzzle
+    var<private> MuzzleOffset<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+
+    @editable
+    # The sounds to use when the weapon is out of ammo
+    var<private> OutOfAmmoSound<native><public>: []sound_wave = external {}
+
+    @editable
+    # Range based damage multiplier
+    var<private> RangeDamageMultiplier<native><public>: []fort_range_damage_multiplier = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the recoil of the weapon
+    var<private> RecoilMultiplier<native><public>: float = external {}
+
+    @editable
+    # The sounds to use when finishing a reload
+    var<private> ReloadEndSound<native><public>: []sound_wave = external {}
+
+    @editable
+    # The sounds to use when inserting a magazine during reload
+    var<private> ReloadInsertSound<native><public>: []sound_wave = external {}
+
+    @editable
+    # The sounds to use when starting a reload
+    var<private> ReloadStartSound<native><public>: []sound_wave = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The reload time of the weapon
+    var<private> ReloadTime<native><public>: float = external {}
+
+    @editable_number(int) { MinValue := option { 0 }; MaxValue := option { 10 } }
+    # The amount of ammo consumed per shot
+    var<private> ShotAmmoCost<native><public>: int = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread while sliding
+    var<private> SlidingSpreadMultiplier<native><public>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
+    # The multiplier that affects the weapon spread while sprinting
+    var<private> SprintingSpreadMultiplier<native><public>: float = external {}
+
+    @editable
+    # The sounds to use when firing the weapon
+    var<private> WeaponFireSound<native><public>: []sound_wave = external {}
+  }
+
+  # Base component for weapon related properties
+  fort_weapon_component<native><public> := class<abstract><final_super><internal>(component) {
+    # Event that is signalled when the weapon holster state changes
+    HolsterChangedEvent<native><final><public>: listenable(tuple()) = external {}
+
+    OnAddedToScene<native><override>(): void
+
+    # Indicates whether the weapon is currently holstered
+    var<private> IsHolstered<native><public>: logic = external {}
+  }
+
+  pistol_mesh<public> := class<final>(mesh_component) {}
+
+  # The entity prefab for a creator customizable pistol
+  pistol_template<public> := class<concrete><final>(entity) {}
+
+  shotgun_mesh<public> := class<final>(mesh_component) {}
+
+  # The entity prefab for a creator customizable shotgun
+  shotgun_template<public> := class<concrete><final>(entity) {}
+
+  sub_machine_gun_mesh<public> := class<final>(mesh_component) {}
+
+  # The entity prefab for a creator customizable SMG
+  sub_machine_gun_template<public> := class<concrete><final>(entity) {}
 }
 
 # Module import path: /Fortnite.com/Characters
@@ -764,19 +1027,19 @@ Devices<public> := module {
     # Convenience interpolation modes. These built in modes are based on the CSS animation standard: https://www.w3.org/TR/css-easing-1/
     InterpolationTypes<public> := module {
       # `Ease` animations start slowly, speed up, then end slowly. The speed of the animation is slightly slower at the end than the start.
-      Ease<public>: cubic_bezier_parameters = external {}
+      (/Fortnite.com/Devices/CreativeAnimation/InterpolationTypes:)Ease<public>: cubic_bezier_parameters = external {}
 
       # `EaseIn` animations start slow, then speed up towards the end.
-      EaseIn<public>: cubic_bezier_parameters = external {}
+      (/Fortnite.com/Devices/CreativeAnimation/InterpolationTypes:)EaseIn<public>: cubic_bezier_parameters = external {}
 
       # `EaseInOut` animations are similar to `Ease` but the start and end animation speed is symmetric.
-      EaseInOut<public>: cubic_bezier_parameters = external {}
+      (/Fortnite.com/Devices/CreativeAnimation/InterpolationTypes:)EaseInOut<public>: cubic_bezier_parameters = external {}
 
       # `EaseOut` animations start fast, then slow down towards the end.
-      EaseOut<public>: cubic_bezier_parameters = external {}
+      (/Fortnite.com/Devices/CreativeAnimation/InterpolationTypes:)EaseOut<public>: cubic_bezier_parameters = external {}
 
       # `Linear` animations move at a constant speed.
-      Linear<public>: cubic_bezier_parameters = external {}
+      (/Fortnite.com/Devices/CreativeAnimation/InterpolationTypes:)Linear<public>: cubic_bezier_parameters = external {}
     }
 
     # Used to move and animate the position of `creative_prop` objects.
@@ -2319,7 +2582,7 @@ Devices<public> := module {
   # Inherit from this to create a custom creative device. Inherited classes will appear in the UEFN content browser the next time Verse compiles. Instances of your derived `creative_device` can then be placed in the island by dragging them from the content browser into the scene.
   creative_device<native><public> := class<concrete>(creative_object_interface) {
     # Gets the global transform of this device.
-    GetGlobalTransform<public>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
+    GetGlobalTransform<override>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
 
     # Returns the transform of the `creative_device` with units in cm.
     GetTransform<override>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
@@ -2379,7 +2642,7 @@ Devices<public> := module {
   # Base class for creative devices and props.
   creative_object<native><public> := class<epic_internal>(creative_object_interface) {
     # Gets the global transform of this object.
-    GetGlobalTransform<public>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
+    GetGlobalTransform<override>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
 
     # Returns the transform of the `creative_object` with units in cm. You must check `creative_object.IsValid` before calling this if there is a possibility the object has been disposed or destroyed by gameplay.
     # Otherwise a runtime error will result.
@@ -2543,9 +2806,9 @@ Devices<public> := module {
     # Spawns the creature.
     Spawn<public>(): void = external {}
 
-    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device’s rotation.
+    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device's rotation.
     # Returns the agent spawned or false if the device has reached its maximum spawn count.
-    # This function is ‘<suspends>’ because it takes time to load the creature before it can be returned.
+    # This function is '<suspends>' because it takes time to load the creature before it can be returned.
     SpawnAt<public>(
       Position: (/Verse.org/SpatialMath:)vector3,
       ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
@@ -2578,9 +2841,9 @@ Devices<public> := module {
     # Returns the spawn limit of the device.
     GetSpawnLimit<public>()<transacts>: int = external {}
 
-    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device’s rotation.
+    # Spawn a creature at the given position. When Rotation is not provided, it will default to the Device's rotation.
     # Returns the agent spawned or false if the device has reached its maximum spawn count.
-    # This function is ‘<suspends>’ because it takes time to load the creature before it can be returned.
+    # This function is `<suspends>` because it takes time to load the creature before it can be returned.
     SpawnAt<public>(
       Position: (/Verse.org/SpatialMath:)vector3,
       ?Rotation: ?(/Verse.org/SpatialMath:)rotation = external {}
@@ -2820,7 +3083,7 @@ Devices<public> := module {
     # Disable the device.
     Disable<override>(): void = external {}
 
-    # Disable the device’s ability to grant items. Can still interact and consume weapons.
+    # Disable the device's ability to grant items. Can still interact and consume weapons.
     DisableItemGranting<public>(): void = external {}
 
     # Prevents the `agent` from trading.
@@ -2829,7 +3092,7 @@ Devices<public> := module {
     # Enable the device, and resets all trade counts the Sprite is tracking.
     Enable<override>(): void = external {}
 
-    # Enable the device’s ability to grant items.
+    # Enable the device's ability to grant items.
     EnableItemGranting<public>(): void = external {}
 
     # Allows a `agent` to trade, and will reset the `agent`'s trade count for this Sprite.
@@ -2996,9 +3259,9 @@ Devices<public> := module {
     (/Fortnite.com/Devices/fuel_pump_device:)Reset<public>(): void = external {}
   }
 
-  # Used to update the camera’s current viewpoint and rotation based on current camera mode.
+  # Used to update the camera's current viewpoint and rotation based on current camera mode.
   gameplay_camera_device<public> := class<abstract><epic_internal>(creative_device_base) {
-    # Adds the camera to the `Agent`’s camera stack and pushes it to be the active camera.
+    # Adds the camera to the `Agent`'s camera stack and pushes it to be the active camera.
     AddTo<public>(Agent: agent): void = external {}
 
     # Adds the camera to all `Agent`s camera stacks and pushes it to be the active camera.
@@ -3010,7 +3273,7 @@ Devices<public> := module {
     # Enables this device.
     Enable<public>(): void = external {}
 
-    # Removes the camera from the `Agent`’s camera stack and pops from being the active camera replacing it with the next one in the stack.
+    # Removes the camera from the `Agent`'s camera stack and pops from being the active camera replacing it with the next one in the stack.
     RemoveFrom<public>(Agent: agent): void = external {}
 
     # Removes the camera from all `Agent`s camera stacks and pops from being the active camera replacing it with the next one in the stack.
@@ -3031,7 +3294,7 @@ Devices<public> := module {
 
   # Used to update the gameplay controls scheme based on current control mode.
   gameplay_controls_device<public> := class<abstract><epic_internal>(creative_device_base) {
-    # Adds the gameplay control to the `Player`’s gameplay controls stack and pushes it to be the active control.
+    # Adds the gameplay control to the `Player`'s gameplay controls stack and pushes it to be the active control.
     AddTo<public>(Agent: agent): void = external {}
 
     # Adds the gameplay control to all `Agent`s gameplay controls stack and pushes it to be the active control.
@@ -3043,7 +3306,7 @@ Devices<public> := module {
     # Enables this device.
     Enable<public>(): void = external {}
 
-    # Removes the gameplay control from the `Agent`’s gameplay controls stack and pops from being the active control replacing it with the next one in the stack.
+    # Removes the gameplay control from the `Agent`'s gameplay controls stack and pops from being the active control replacing it with the next one in the stack.
     RemoveFrom<public>(Agent: agent): void = external {}
 
     # Removes the gameplay control from all `Agent`s gameplay controls stack and pops from being the active control replacing it with the next one in the stack.
@@ -3254,7 +3517,7 @@ Devices<public> := module {
     # Determines if the guard is healed when it is hired.
     var RestoreHealthAndShieldOnHire<public>: logic = external {}
 
-    # If true, displays the guard’s health to players.
+    # If true, displays the guard's health to players.
     var ShowHealthBar<public>: logic = external {}
 
     # Determines the range, in centimeters, from which the guard will respond.
@@ -3542,13 +3805,13 @@ Devices<public> := module {
     IsOpen<public>()<transacts><decides>: void = external {}
 
     # Open the hive stash. If a spawner is linked, trigger it and rescue the resulting `agent` from the hive stash.
-    #  * When the `agent` is rescued, if *ShouldPlayRescuedAnimation* is `true`, they will play a short animation to get off the hive stash.
+    #  * When the `agent` is rescued, if `ShouldPlayRescuedAnimation` is `true`, they will play a short animation to get off the hive stash.
     Open<public>(): void = external {}
 
     # Triggers whenever the hive stash is opened, returning the instigating `agent` if applicable.
     OpenEvent<public>: listenable(?agent) = external {}
 
-    # Teleport `Agent` to the hive stash. If *ShouldPlayRescuedAnimation* is `true`, they will play a short animation to get off the hive stash.
+    # Teleport `Agent` to the hive stash. If `ShouldPlayRescuedAnimation` is `true`, they will play a short animation to get off the hive stash.
     #  * If the hive stash is closed, it will burst open first, ignoring a linked spawner. This will not clear a linked spawner.
     #  * Has no effect if `Agent` cannot be teleported for any reason, such as not being in the game anymore.
     RescueAgent<public>(Agent: agent): void = external {}
@@ -3557,12 +3820,12 @@ Devices<public> := module {
     #  * Returns the rescued `agent`.
     RescueAnimationEndEvent<public>: listenable(agent) = external {}
 
-    # Triggers whenever an `agent` is rescued, either by the hive stash opening with a linked spawner, or by calling *RescueAgent* while the hive stash is closed.
+    # Triggers whenever an `agent` is rescued, either by the hive stash opening with a linked spawner, or by calling `RescueAgent` while the hive stash is closed.
     #  * Returns the rescued `agent`.
     RescueEvent<public>: listenable(agent) = external {}
 
-    # Reset the hive stash. This closes it, sets it to full health, and sets *ShouldPlayRescuedAnimation*, *CanBeDamaged*, *CanDropItems*, *InteractTextOverride*, and *HiveStashStyle* to their initial values.
-    #  * This can also clear the link to a spawner depending on *ShouldKeepLinkOnReset*.
+    # Reset the hive stash. This closes it, sets it to full health, and sets `ShouldPlayRescuedAnimation`, `CanBeDamaged`, `CanDropItems`, `InteractTextOverride`, and `HiveStashStyle` to their initial values.
+    #  * This can also clear the link to a spawner depending on `ShouldKeepLinkOnReset`.
     #  * The hive stash will not reset if the rescue animation is currently playing.
     (/Fortnite.com/Devices/hive_stash_device:)Reset<public>(): void = external {}
 
@@ -3596,7 +3859,8 @@ Devices<public> := module {
     #  * `true` by default.
     var CanDropItems<public>: logic = external {}
 
-    # Determines what players can see inside the hive stash, as well as its interaction text. This does not affect what happens when it opens.
+    # Determines what players can see inside the hive stash, as well as its interaction text. This does not affect what comes out of the hive stash when it opens.
+    # See `SetLinkedSpawner` and `SetLinkedSpawnerFromAgent` for more information.
     #  * `Empty` shows nothing and says `Break Open`.
     #  * `Loot` shows a chest and says `Break Open`.
     #  * `Trapped` shows a floating character and says `Rescue`.
@@ -3605,11 +3869,11 @@ Devices<public> := module {
     # If set, this overrides the text shown when interacting while the hive stash is closed.
     var InteractTextOverride<public>: message = external {}
 
-    # Whether to keep or clear a spawner link when *Reset* is called. Links can always be cleared with *ClearSpawnerLink*.
+    # Whether to keep or clear a spawner link when `Reset` is called. Links can always be cleared with `ClearSpawnerLink`.
     #  * `true` by default.
     var ShouldKeepLinkOnReset<public>: logic = external {}
 
-    # Whether an `agent` spawned from registered data or teleported by *FreeAgent* plays a short animation to get them off the hive stash.
+    # Whether an `agent` spawned from registered data or teleported by `FreeAgent` plays a short animation to get them off the hive stash.
     #  * The animation may not work properly on skeletons other than the average player skeleton.
     #  * `true` by default.
     var ShouldPlayRescuedAnimation<public>: logic = external {}
@@ -4262,7 +4526,7 @@ Devices<public> := module {
     # Triggers when the Spire is spawned, either from players entering the `Activation Distance` or by events.
     SpawnEvent<public>: listenable(tuple()) = external {}
 
-    # Triggers when the Spire’s player target is changed to a different player
+    # Triggers when the Spire's player target is changed to a different player
     TargetChangeEvent<public>: listenable(agent) = external {}
 
     # Determines the distance where approaching players activate the Spire.
@@ -6738,7 +7002,7 @@ Devices<public> := module {
     # This will return them to the team they were on before they joined a Temporary Team
     RemoveTemporaryMemberFromTeam<public>(Agent: agent): void = external {}
 
-    # Returns all temporary team members for this Device’s Team Setting Value back to their original Teams.
+    # Returns all temporary team members for this Device's Team Setting Value back to their original Teams.
     # If the device is configured to All, then this function will remove all Temporary Team members from any Temporary Team they are on, returning them to their original team.
     RemoveTemporaryMembersFromTeam<public>(): void = external {}
 
@@ -7467,6 +7731,9 @@ Devices<public> := module {
     # Signaled when a vehicle is spawned or respawned by this device.
     # Deprecated, use SpawnedEvent instead.
     VehicleSpawnedEvent<public>: listenable(tuple()) = external {}
+
+    # The `fort_vehicle` currently associated with this spawner, if one exists.
+    var<private> Vehicle<public>: ?fort_vehicle = external {}
   }
 
   # Specialized `vehicle_spawner_device` that allows a DF.9 turret to be configured and spawned.
@@ -8187,6 +8454,9 @@ Game<public> := module {
     # Player, agent, etc. that instigated the damage to `Target`. Can be false when damage is instigated by code, the environment, etc.
     Instigator<native><public>: ?game_action_instigator = external {}
 
+    # `true` if the damage hit a weakpoint, `false` otherwise.
+    IsWeakpointDamage<native><public>: logic = external {}
+
     # Player, weapon, vehicle, etc. that damaged `Target`. Can be false when damage is caused by code, the environment, etc.
     Source<native><public>: ?game_action_causer = external {}
 
@@ -8210,6 +8480,7 @@ Game<public> := module {
   using { /Fortnite.com/Characters }
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/SceneGraph }
+  using { /Verse.org/SpatialMath }
   # Result data for `fort_character` elimination events.
   elimination_result<native><public> := struct<epic_internal> {
     # The `fort_character` eliminated from the match by `EliminatingCharacter`.
@@ -8304,6 +8575,9 @@ Game<public> := module {
   # Implemented by objects to allow reading position information.
   positional<native><public> := interface<epic_internal> {
     # Returns the transform of the object.
+    GetGlobalTransform<public>()<transacts>: (/Verse.org/SpatialMath:)transform = external {}
+
+    # Returns the transform of the object.
     GetTransform<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)transform
   }
 
@@ -8379,6 +8653,10 @@ Itemization<public> := module {
 
     Trap<public>: item_category = external {}
 
+    WeaponMelee<public>: item_category = external {}
+
+    WeaponRanged<public>: item_category = external {}
+
     using { /UnrealEngine.com/Itemization }
     WorldItem<public>: item_category = external {}
   }
@@ -8391,7 +8669,11 @@ Itemization<public> := module {
 
     Epic<public>: rarity = external {}
 
+    Exotic<public>: rarity = external {}
+
     Legendary<public>: rarity = external {}
+
+    Mythic<public>: rarity = external {}
 
     Rare<public>: rarity = external {}
 
@@ -8433,10 +8715,13 @@ Itemization<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4040 }
-  @experimental
   # Place this component onto an entity to allow it to be added to an agent inventory on interaction. The owning entity should have an item_component and a mesh_component. This component expects the interacting agent to have a subentity with an inventory_component.
   fort_item_pickup_interactable_component<public> := class(basic_interactable_component) {
+    Disable<override>(): void = external {}
+
     DisableItemInteraction<protected>(): void = external {}
+
+    Enable<override>(): void = external {}
 
     EnableItemInteraction<protected>(): void = external {}
 
@@ -8525,6 +8810,8 @@ Items<public> := module {
 
   Bouncer_BR_CH1S4_Rare<public> := class<final><concrete>(entity) {}
 
+  BrickABunker_BR_CH7S2_Common<public> := class<final><concrete>(entity) {}
+
   BrightcoreOre_Creative_V1_Epic<public> := class<final><concrete>(entity) {}
 
   BrownDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(entity) {}
@@ -8547,6 +8834,10 @@ Items<public> := module {
 
   CattyCornerKeycard_BR_CH2S3_Legendary<public> := class<final><concrete>(entity) {}
 
+  CeilingZapper_BR_CH1S1_Rare<public> := class<final><concrete>(entity) {}
+
+  @deprecated
+  # Deprecated. Please use CeilingZapper_BR_CH1S1_Rare instead.
   CeilingZapper_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
 
   CharBlackMineralPowder_Creative_V1_Common<public> := class<final><concrete>(entity) {}
@@ -8741,6 +9032,8 @@ Items<public> := module {
 
   LilWhipsSpecialServe_BR_CH3S3_Legendary<public> := class<final><concrete>(entity) {}
 
+  LimitlessSevenSliders_BR_CH7S3_Mythic<public> := class<final><concrete>(entity) {}
+
   LumpOfCoal_BR_CH2S1_Common<public> := class<final><concrete>(entity) {}
 
   MalachiteOre_Creative_V1_Epic<public> := class<final><concrete>(entity) {}
@@ -8871,6 +9164,8 @@ Items<public> := module {
 
   RustyMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(entity) {}
 
+  SevenSliders_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
   ShadowBomb_BR_CH1S8_Uncommon<public> := class<final><concrete>(entity) {}
 
   ShadowFlopper_BR_CH2S8_Rare<public> := class<final><concrete>(entity) {}
@@ -8955,6 +9250,8 @@ Items<public> := module {
 
   SneakySnowman_BR_CH2S1_Rare<public> := class<final><concrete>(entity) {}
 
+  SneakySnowman_OG_CH1S7_Common<public> := class<final><concrete>(entity) {}
+
   SnowyFlopper_BR_CH2S5_Uncommon<public> := class<final><concrete>(entity) {}
 
   SpectralTwine_Creative_V1_Uncommon<public> := class<final><concrete>(entity) {}
@@ -9023,6 +9320,10 @@ Items<public> := module {
 
   VoidOniMask_BR_CH6S1_Epic<public> := class<final><concrete>(entity) {}
 
+  WallDynamo_BR_CH1S1_Rare<public> := class<final><concrete>(entity) {}
+
+  @deprecated
+  # Deprecated. Please use WallDynamo_BR_CH1S1_Rare instead.
   WallDynamo_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
 
   Wheat_Creative_V1_Common<public> := class<final><concrete>(entity) {}
@@ -9432,7 +9733,7 @@ Teams<public> := module {
   player_hud_identifier_all<public> := class<final>(hud_element_identifier) {}
 
   # Slider with a text value. Displays a slider, its progress bar and value.
-  slider_regular<native><public> := class<final>((/UnrealEngine.com/Temporary/UI:)widget) {
+  slider_regular<native><public> := class<final>(widget) {
     # The maximum value that the slider can haver. Used only during initialization of the widget and not modified by SetMaxValue.
     DefaultMaxValue<native><public>: float = external {}
 
@@ -9510,7 +9811,7 @@ Teams<public> := module {
   using { /Verse.org/Colors }
   using { /Verse.org/Simulation }
   # Button with text message common base class. Displays a button with a custom message string.
-  text_button_base<native><public> := class<abstract><epic_internal>((/UnrealEngine.com/Temporary/UI:)widget) {
+  text_button_base<native><public> := class<abstract><epic_internal>(widget) {
     # The text to display to the user. Used only during initialization of the widget and not modified by SetText.
     DefaultText<localizes><native><public>: message = external {}
 
@@ -9533,20 +9834,33 @@ Vehicles<public> := module {
   using { /Fortnite.com/Characters }
   using { /Fortnite.com/Game }
   using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Simulation }
   # Returns the `fort_vehicle` for `InCharacter`.
   # Fails if `InCharacter` is not associated with a `fort_vehicle`.
   (InCharacter: fort_character).GetVehicle<native><public>()<transacts><decides>: fort_vehicle
 
   # Main API implemented by Fortnite vehicles.
   fort_vehicle<native><public> := interface<unique><epic_internal>(positional, healthful, damageable, game_action_causer) {
+    # Attempts to add the agent to the `fort_vehicle`. If there are no empty seats, or the agent cannot otherwise be placed in the vehicle, the operation fails.
+    AddAgent<public>(InAgent: agent)<transacts><decides>: void
+
+    # Returns an array with all the current drivers of the vehicle, which is usually a single agent.
+    GetDrivers<public>()<reads>: []agent
+
     # Returns the maximum fuel capacity of the vehicle. If the vehicle uses fuel, this value will be between 1.0 and Inf. Otherwise, this value will be -1.0.
     GetFuelCapacity<public>()<transacts>: float
 
     # Returns the fuel state of the vehicle. If the vehicle uses fuel, this value will be between 0.0 and `GetFuelCapacity`. Otherwise, this value will be -1.0.
     GetFuelRemaining<public>()<transacts>: float
 
-    # Returns an array with all the passengers of the vehicle.
-    GetPassengers<public>()<transacts>: []fort_character
+    # Returns an array with all `agent` currently occupying the vehicle.
+    GetOccupants<public>()<reads>: []agent
+
+    # Returns an array of every `fort_character` in the vehicle. Calls `GetOccupants()` and casts each occupying agent to a `fort_character`.
+    GetPassengers<public>()<transacts>: []fort_character = external {}
+
+    # Returns an array of all `fort_vehicle_seat`s in the `fort_vehicle`.
+    GetSeats<public>()<reads>: []fort_vehicle_seat
 
     # Succeeds if this `fort_vehicle` is standing in air.
     IsInAir<public>()<transacts><decides>: void
@@ -9556,6 +9870,12 @@ Vehicles<public> := module {
 
     # Succeeds if this `fort_vehicle` is standing on ground.
     IsOnGround<public>()<transacts><decides>: void
+
+    # Removes the specified agent from the vehicle. Fails if the agent is not in the vehicle.
+    RemoveAgent<public>(InAgent: agent)<transacts><decides>: void
+
+    # Removes all occupying agents from the vehicle.
+    RemoveAll<public>()<transacts>: void
 
     # Teleports the `fort_vehicle` to the specified `Position` and `Rotation`.
     TeleportTo<public>(
@@ -9571,6 +9891,21 @@ Vehicles<public> := module {
 
     # The current speed of the vehicle in m/s.
     var<private> Speed<public>: float
+  }
+
+  # Represents a seat in a `fort_vehicle`.
+  fort_vehicle_seat<native><public> := class<unique><epic_internal> {
+    # Succeeds if this is a driver seat.
+    IsDriverSeat<native><public>()<reads><decides>: void
+
+    # Attempts to seat `Agent` into this seat. Fails if the seat is occupied or the agent cannot be seated. Setting the occupant to `false` will remove any seated agent.
+    SetOccupant<native><public>(Value: ?agent)<transacts><decides>: void
+
+    # The `agent` currently occupying this seat, if any.
+    var<private> Occupant<public>: ?agent
+
+    # The `fort_vehicle` this seat belongs to.
+    var<private> Vehicle<public>: fort_vehicle
   }
 }
 
@@ -9709,6 +10044,16 @@ Weapons<public> := module {
 
   Chainsaw_BR_CH5S4_Epic<public> := class<final><concrete>(entity) {}
 
+  ChaosExploderRifle_BR_CH7S3_Common<public> := class<final><concrete>(entity) {}
+
+  ChaosExploderRifle_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
+  ChaosExploderRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(entity) {}
+
+  ChaosExploderRifle_BR_CH7S3_Rare<public> := class<final><concrete>(entity) {}
+
+  ChaosExploderRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(entity) {}
+
   ChaosReloaderShotgun_BR_CH7S2_Common<public> := class<final><concrete>(entity) {}
 
   ChaosReloaderShotgun_BR_CH7S2_Epic<public> := class<final><concrete>(entity) {}
@@ -9827,6 +10172,12 @@ Weapons<public> := module {
 
   Crossbow_BR_CH1S3_Rare<public> := class<final><concrete>(entity) {}
 
+  CubeRifle_BR_CH7S2_Epic<public> := class<final><concrete>(entity) {}
+
+  CubeRifle_BR_CH7S2_Legendary<public> := class<final><concrete>(entity) {}
+
+  CubeRifle_BR_CH7S2_Mythic<public> := class<final><concrete>(entity) {}
+
   CupidsCrossbow_BR_CH1S2_Epic<public> := class<final><concrete>(entity) {}
 
   DMR_BR_CH3S3_Common<public> := class<final><concrete>(entity) {}
@@ -9840,6 +10191,8 @@ Weapons<public> := module {
   DMR_BR_CH3S3_Rare<public> := class<final><concrete>(entity) {}
 
   DMR_BR_CH3S3_Uncommon<public> := class<final><concrete>(entity) {}
+
+  DarkVoyagersChaosRifle_BR_CH7S3_Mythic<public> := class<final><concrete>(entity) {}
 
   DarkVoyagersObliterator_BR_CH7S2_Mythic<public> := class<final><concrete>(entity) {}
 
@@ -10053,6 +10406,10 @@ Weapons<public> := module {
 
   ExCaliberRifle_BR_CH4S1_Uncommon<public> := class<final><concrete>(entity) {}
 
+  ExoticLeapingLightningGun_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
+
+  ExoticReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
+
   ExplosiveGooGun_BR_CH3S4_Rare<public> := class<final><concrete>(entity) {}
 
   ExplosiveRepeaterRifle_BR_CH4S3_Common<public> := class<final><concrete>(entity) {}
@@ -10066,6 +10423,16 @@ Weapons<public> := module {
   ExplosiveRepeaterRifle_BR_CH4S3_Rare<public> := class<final><concrete>(entity) {}
 
   ExplosiveRepeaterRifle_BR_CH4S3_Uncommon<public> := class<final><concrete>(entity) {}
+
+  ExtendingFocusShotgun_BR_CH7S3_Common<public> := class<final><concrete>(entity) {}
+
+  ExtendingFocusShotgun_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
+  ExtendingFocusShotgun_BR_CH7S3_Legendary<public> := class<final><concrete>(entity) {}
+
+  ExtendingFocusShotgun_BR_CH7S3_Rare<public> := class<final><concrete>(entity) {}
+
+  ExtendingFocusShotgun_BR_CH7S3_Uncommon<public> := class<final><concrete>(entity) {}
 
   FalconEyeSniper_BR_CH6S2_Common<public> := class<final><concrete>(entity) {}
 
@@ -10135,9 +10502,17 @@ Weapons<public> := module {
 
   GrenadeLauncher_BR_PreSeason_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use GuidedMissile_OG_CH1S3_Epic instead.
   GuidedMissile_BR_CH4MS1_Epic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use GuidedMissile_OG_CH1S3_Legendary instead.
   GuidedMissile_BR_CH4MS1_Legendary<public> := class<final><concrete>(entity) {}
+
+  GuidedMissile_OG_CH1S3_Epic<public> := class<final><concrete>(entity) {}
+
+  GuidedMissile_OG_CH1S3_Legendary<public> := class<final><concrete>(entity) {}
 
   GunnarsStingerSMG_BR_CH3S1_Mythic<public> := class<final><concrete>(entity) {}
 
@@ -10156,6 +10531,16 @@ Weapons<public> := module {
   HammerAssaultRifle_BR_CH3S3_Uncommon<public> := class<final><concrete>(entity) {}
 
   HammerPumpShotgun_Ballistic_V1_Common<public> := class<final><concrete>(entity) {}
+
+  HammerRevolver_BR_CH7S2_Epic<public> := class<final><concrete>(entity) {}
+
+  HammerRevolver_BR_CH7S2_Legendary<public> := class<final><concrete>(entity) {}
+
+  HammerRevolver_BR_CH7S2_Mythic<public> := class<final><concrete>(entity) {}
+
+  HammerRevolver_BR_CH7S2_Rare<public> := class<final><concrete>(entity) {}
+
+  HammerRevolver_BR_CH7S2_Uncommon<public> := class<final><concrete>(entity) {}
 
   HandCannon_BR_CH1S3_Epic<public> := class<final><concrete>(entity) {}
 
@@ -10819,6 +11204,8 @@ Weapons<public> := module {
 
   OverclockedPulseRifle_BR_CH4S2_Mythic<public> := class<final><concrete>(entity) {}
 
+  OverdrivePulseRifle_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
+
   OverdriveTacticalPistol_BR_CH7S1_Mythic<public> := class<final><concrete>(entity) {}
 
   PinpointIronPumpShotgun_BR_CH7S1_Mythic<public> := class<final><concrete>(entity) {}
@@ -11009,6 +11396,8 @@ Weapons<public> := module {
 
   RazsExplosiveBow_BR_CH2S6_Mythic<public> := class<final><concrete>(entity) {}
 
+  ReacherExtendingShotgun_BR_CH7S3_Mythic<public> := class<final><concrete>(entity) {}
+
   ReaperModularSniperRifle_BR_CH5S1_Epic<public> := class<final><concrete>(entity) {}
 
   ReaperModularSniperRifle_BR_CH5S1_Legendary<public> := class<final><concrete>(entity) {}
@@ -11043,14 +11432,24 @@ Weapons<public> := module {
 
   Revolver_BR_CH1S9_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Revolver_OG_CH1S1_Common instead.
   Revolver_BR_CH4MS1_Common<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Revolver_OG_CH1S1_Epic instead.
   Revolver_BR_CH4MS1_Epic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Revolver_OG_CH1S1_Legendary instead.
   Revolver_BR_CH4MS1_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Revolver_OG_CH1S1_Rare instead.
   Revolver_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Revolver_OG_CH1S1_Uncommon instead.
   Revolver_BR_CH4MS1_Uncommon<public> := class<final><concrete>(entity) {}
 
   Revolver_BR_PreSeason_Common<public> := class<final><concrete>(entity) {}
@@ -11058,6 +11457,16 @@ Weapons<public> := module {
   Revolver_BR_PreSeason_Rare<public> := class<final><concrete>(entity) {}
 
   Revolver_BR_PreSeason_Uncommon<public> := class<final><concrete>(entity) {}
+
+  Revolver_OG_CH1S1_Common<public> := class<final><concrete>(entity) {}
+
+  Revolver_OG_CH1S1_Epic<public> := class<final><concrete>(entity) {}
+
+  Revolver_OG_CH1S1_Legendary<public> := class<final><concrete>(entity) {}
+
+  Revolver_OG_CH1S1_Rare<public> := class<final><concrete>(entity) {}
+
+  Revolver_OG_CH1S1_Uncommon<public> := class<final><concrete>(entity) {}
 
   RingmastersModularBoomBolt_BR_CH5S3_Mythic<public> := class<final><concrete>(entity) {}
 
@@ -11325,15 +11734,33 @@ Weapons<public> := module {
 
   SubmachineGun_BR_CH2S1_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SubmachineGun_OG_CH1S1_Common instead.
   SubmachineGun_BR_CH4MS1_Common<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SubmachineGun_OG_CH1S1_Rare instead.
   SubmachineGun_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SubmachineGun_OG_CH1S1_Uncommon instead.
   SubmachineGun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(entity) {}
 
   SubmachineGun_BR_CH4S2_Epic<public> := class<final><concrete>(entity) {}
 
   SubmachineGun_BR_CH4S2_Legendary<public> := class<final><concrete>(entity) {}
+
+  SubmachineGun_OG_CH1S1_Common<public> := class<final><concrete>(entity) {}
+
+  SubmachineGun_OG_CH1S1_Rare<public> := class<final><concrete>(entity) {}
+
+  SubmachineGun_OG_CH1S1_Uncommon<public> := class<final><concrete>(entity) {}
+
+  SuperShredder_BR_CH7S2_Epic<public> := class<final><concrete>(entity) {}
+
+  SuperShredder_BR_CH7S2_Legendary<public> := class<final><concrete>(entity) {}
+
+  SuperShredder_BR_CH7S2_Rare<public> := class<final><concrete>(entity) {}
 
   SuppressedAssaultRifle_BR_CH1S5_Epic<public> := class<final><concrete>(entity) {}
 
@@ -11491,6 +11918,8 @@ Weapons<public> := module {
 
   TheMachinistsModularCombatAssaultRifle_BR_CH5S3_Mythic<public> := class<final><concrete>(entity) {}
 
+  TheVoidbladesBurstRifle_BR_CH7S3_Mythic<public> := class<final><concrete>(entity) {}
+
   ThermalDMR_BR_CH4S3_Common<public> := class<final><concrete>(entity) {}
 
   ThermalDMR_BR_CH4S3_Epic<public> := class<final><concrete>(entity) {}
@@ -11595,6 +12024,16 @@ Weapons<public> := module {
 
   ValeriasModularHyperSMG_BR_CH5S1_Mythic<public> := class<final><concrete>(entity) {}
 
+  VanguardBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(entity) {}
+
+  VanguardBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
+  VanguardBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(entity) {}
+
+  VanguardBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(entity) {}
+
+  VanguardBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(entity) {}
+
   Vector7DMR_BR_CH7S2_Epic<public> := class<final><concrete>(entity) {}
 
   Vector7DMR_BR_CH7S2_Legendary<public> := class<final><concrete>(entity) {}
@@ -11639,7 +12078,11 @@ Weapons<public> := module {
 
   YuleTroopersHoloRushSMG_BR_CH7S1_Mythic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Zapotron_OG_CH1S2_Legendary instead.
   Zapotron_OG_CH1S1_Legendary<public> := class<final><concrete>(entity) {}
+
+  Zapotron_OG_CH1S2_Legendary<public> := class<final><concrete>(entity) {}
 
   ZygAndChoppysRayGun_BR_CH2S7_Mythic<public> := class<final><concrete>(entity) {}
 }

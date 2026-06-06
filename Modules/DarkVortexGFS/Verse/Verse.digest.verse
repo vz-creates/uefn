@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.41-CL-54326946
+# Generated from build: ++Fortnite+Release-41.00-CL-54618515
 #################################################
 
 AgentGroup<public> := module {
@@ -21,7 +21,7 @@ AgentGroup<public> := module {
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
 
-    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(: member_info): tuple(member_info) = external {}
+    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(: member_info, : member_info): tuple(member_info) = external {}
 
     # Get the members of this agent group with their member info
     GetMemberMap<override><native>()<reads>: [agent]member_info
@@ -80,7 +80,7 @@ Assets<public> := module {
     var Icon<public>: texture
   }
 
-  input_action<native><public>(t: type) := class<computes><epic_internal> {
+  input_action<native><public>(t: type) := class<allocates><unique><computes><epic_internal> {
     (/Verse.org/Assets/input_action:)Assets_input_action_Variance<private>(): tuple(t) = external {}
   }
 
@@ -100,8 +100,29 @@ Assets<public> := module {
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
+  # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
+  # Fails if the `MaxSize` of the channel's `agent_group` is undefined or larger than the channel type's limit.
+  # * Voice Chat Max Size = 80 participants.
+  # * Text Chat Max Size = 100 participants.
+  (Entity: entity where MemberInfo: subtype(member_info_interface)).AddChatChannel<native><public>(Channel: chat_channel(MemberInfo)): result(
+    void,
+    add_channel_error
+  )
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Deregisters a `voice_channel` or `text channel` from the `simulation_entity`.
+  (Entity: entity where MemberInfo: subtype(member_info_interface)).RemoveChatChannel<native><public>(Channel: chat_channel(MemberInfo)): result(
+    void,
+    remove_channel_error
+  )
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Returns the registered voice channels on the `simulation_entity`
   (Entity: entity).GetVoiceChannels<native><public>()<reads>: []voice_channel(has_voice_member_info)
 
+  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Error returned when a channel cannot be added via the `AddChatChannel` function.
   add_channel_error<public> := class<computes> {}
@@ -131,9 +152,16 @@ Chat<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
+  # Error returned when a channel cannot be removed via the `RemoveChatChannel` function.
+  remove_channel_error<public> := class<computes> {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
-  voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {}
+  voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
+    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info): tuple() = external {}
+  }
 }
 
 # Module import path: /Verse.org/Colors
@@ -569,9 +597,16 @@ using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 4000 }
 # Module import path: /Verse.org/Input
 Input<public> := module {
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Transforms the given viewport space coordinates into 3D world origin and direction vectors. ViewportPosition is in centimeters: `Left` is the horizontal coordinate (positive rightward from the top-left corner) and `Up` is the vertical coordinate (positive upward, negative for points below the top of the screen). Only the `Left` and `Up` components are used; `Forward` is intentionally ignored because depth is unknown at the point of screen interaction — trace the returned ray against scene geometry to determine the world-space hit point at the correct depth.
+  (Player: player).DeprojectViewportToWorld<native><public>(ViewportPosition: (/Verse.org/SpatialMath:)vector3)<reads>: deproject_results
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Transforms a 3D world position to viewport space coordinates in centimeters. Returns a vector3 where `Left` is the horizontal viewport coordinate (positive is rightward from the screen's top-left corner) and `Up` is the vertical viewport coordinate (positive is upward, so a point below the top of the screen has a negative `Up`). `Forward` is always 0 because viewport coordinates are 2D. Fails if the world position is behind the camera.
+  (Player: player).ProjectWorldToViewport<native><public>(WorldPosition: (/Verse.org/SpatialMath:)vector3)<reads><decides>: (/Verse.org/SpatialMath:)vector3
+
   @available { MinUploadedAtFNVersion := 4000 }
   # Access input-related data and settings for a player.
   GetPlayerInput<native><public>(Player: player)<transacts><decides>: player_input
@@ -623,6 +658,7 @@ Input<public> := module {
 
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
+    using { /Verse.org/SpatialMath }
     @available { MinUploadedAtFNVersion := 4000 }
     # MenuNavigationMapping includes the following actions with default key bindings:
     #   * NextTab: E/Gamepad Right Shoulder
@@ -640,6 +676,10 @@ Input<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     PlaceMarker<public>: input_action(logic) = external {}
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    PointerSelect<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
     PreviousPage<public>: input_action(logic) = external {}
@@ -659,6 +699,10 @@ Input<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ToggleView<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    TouchMapping<public>: input_mapping = external {}
+
     @available { MinUploadedAtFNVersion := 4000 }
     Track<public>: input_action(logic) = external {}
 
@@ -670,6 +714,17 @@ Input<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ZoomOut<public>: input_action(logic) = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Holds the world-space ray produced by deprojecting a viewport coordinate.
+  deproject_results<native><public> := struct {
+    # Normalized world space direction vector of the ray, pointing from the camera through the given viewport coordinate into the scene.
+    Direction<native>: (/Verse.org/SpatialMath:)vector3
+
+    # World space position of the camera (the ray's origin). This is the camera eye point, not the near plane — a trace starting here may intersect geometry between the camera and the near plane that is not visible on screen. Use collision filtering to ignore the player pawn, or advance the start point along Direction past the near clip distance.
+    Origin<native>: (/Verse.org/SpatialMath:)vector3
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -707,22 +762,39 @@ Input<public> := module {
     #                 1: elapsed seconds since detection began
     EndDetectEvent<native><public>: listenable(tuple(player, float)) = external {}
 
-    (/Verse.org/Input/input_events:)Input_input_events_Variance<private>(): tuple(t) = external {}
-
     # This input has met all required conditions and has successfully fired. Most of the time, you should bind to this event.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
     TriggerActivationEvent<native><public>: listenable(tuple(player, t)) = external {}
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  # Represents the player's current preferred input method.
+  input_method<native><public> := enum<open> {
+    Gamepad
+
+    KeyboardAndMouse
+
+    Touch
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
-  # This is the main manager class for input-related settings and functions for a player.
+  # The per-player input manager. Get one for a player with 'GetPlayerInput', then use it to:   * Turn input mappings on or off for that player with 'AddInputMapping' / 'RemoveInputMapping'.   * Get the 'input_events' object for an 'input_action' with 'GetInputEvents', and subscribe to its events to react to that input. An input_action only generates events for a player while at least one input_mapping that references it is active on that player.
   player_input<native><public> := class {
+    # Adds the given input_mapping to the player, enabling the input_actions within it to be processed and execute events.
     AddInputMapping<native><public>(InputMapping: input_mapping): void
 
+    # Returns the input_events object for the given input_action, allowing you to bind to events for this action.
     GetInputEvents<native><public>(ActionToBind: input_action(t) where t: type): input_events(t)
 
+    # Removes the given input_mapping from the player, which will disable the input_actions within it from being processed and prevent them from executing events.
     RemoveInputMapping<native><public>(InputMapping: input_mapping): void
+
+    # The player's current preferred input method, updated when the player switches between keyboard/mouse, gamepad, or touch.
+    var<internal> PreferredInputMethod<native><public>: input_method = external {}
   }
 }
 
@@ -742,7 +814,7 @@ Native<public> := module {
 Predicts<public> := module {
   PredictsIsRunningOnServer<native><epic_internal>()<transacts><decides><predicts>: void
 
-  PredictsServerRegisterObject<native><epic_internal>(__dupe___unnamed_parameter_16: any)<transacts>: any
+  PredictsServerRegisterObject<native><epic_internal>(__dupe___unnamed_parameter_0: any)<transacts>: any
 }
 
 Presentation<public> := module {
@@ -827,6 +899,15 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   # Get the players that this entity is currently be presented to. False = presentable to everyone, array = presentable to no one.
   (Entity: entity).GetPresentableToPlayers<native><public>()<transacts>: ?[]player
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Play a skeletal_animation on an entity
+  (Entity: entity).PlaySkeletalAnimation<public>(
+    Animation: skeletal_animation,
+    ?EaseInWindow: easing_window = external {},
+    ?EaseOutWindow: easing_window = external {}
+  )<transacts><decides>: play_skeletal_animation_result = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Assign the players that this entity will be presented to. False = presentable to everyone, array = presentable to no one.
@@ -942,6 +1023,9 @@ SceneGraph<public> := module {
     # Visibility collision channel, Overlap all channel (used for e.g., visibility testing)
     VisibilityOverlapAll<public>: collision_profile = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  GlobalModifierPosition<public>: rational = external {}
 
   # Module import path: /Verse.org/SceneGraph/KeyframedMovement
   # Animate Scene Graph entities with keyframes.
@@ -1066,7 +1150,7 @@ SceneGraph<public> := module {
 
       @editable
       # Easing function to use for playback.
-      Easing<native><public>: easing_function = external {}
+      (/Verse.org/SceneGraph/KeyframedMovement/keyframed_movement_delta:)Easing<native><public>: easing_function = external {}
 
       @editable
       # Represents a change in the transform relative to the previous keyframe or initial animation position. Translation and Scale are interpreted additively.
@@ -1096,6 +1180,9 @@ SceneGraph<public> := module {
     # Play continuously reversing direction at each end.
     pingpong_keyframed_movement_playback_mode<native><public> := class<final><concrete><computes>(keyframed_movement_playback_mode) {}
   }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  VisualModifierPosition<public>: rational = external {}
 
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
@@ -1155,8 +1242,188 @@ SceneGraph<public> := module {
     split_prefab_type<native><public>: castable_concrete_subtype(entity) = external {}
   }
 
-  using { /Verse.org/Colors }
   using { /Verse.org/SpatialMath }
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Camera body settings, e.g. sensor/film settings, shutter speed, etc
+  camera_body<final><native><public> := class<computes> {
+    # The camera sensor sensitivity to light.
+    ISO<native><public>: float = external {}
+
+    # Height of camera sensor in millimeters.
+    SensorHeightMillimeters<native><public>: float = external {}
+
+    # Horizontal offset of camera sensor.
+    SensorHorizontalOffsetMillimeters<native><public>: float = external {}
+
+    # Vertical offset of camera sensor.
+    SensorVerticalOffsetMillimeters<native><public>: float = external {}
+
+    # Width of camera sensor in millimeters.
+    SensorWidthMillimeters<native><public>: float = external {}
+
+    # Camera shutter speed.
+    ShutterSpeed<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Represents the physical body, lens of the camera and other cinematographic qualities, such as sensor size, aspect ratio lock/constraint, focal length, focus distance, post-process settings, etc.
+  camera_component<native><public> := class<final_super><abstract>(component, has_camera_modifier) {
+    @editable
+    @experimental
+    # Optionally override the far clipping plane distance. If value is Inf then use the default settings
+    var FarClippingPlaneDistance<native><public>: float = external {}
+
+    @editable
+    @experimental
+    # Optionally override the near clipping plane distance. If value is <= 0.0 then use the default settings
+    var NearClippingPlaneDistance<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Responsible for selecting a camera and blending when the active camera changes.
+  # Also allows global settings to be shared between different cameras (such as post process settings) and modifications to the final blended camera state, such as camera shakes
+  camera_director_component<native><public> := class<final_super>(camera_component) {
+    # Add a camera to the director. The camera with the highest priority will be chosen to be the active camera
+    AddCamera<native><public>(Camera: camera_component, Priority: rational)<transacts><decides>: cancelable
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Camera lens settings
+  camera_lens<final><native><public> := class<computes> {
+    # Number of blades of diaphragm.
+    BladeCount<native><public>: int = external {}
+
+    # Aperture of the lens in FStop.
+    FStop<native><public>: float = external {}
+
+    # Focal length of the lens in millimeters.
+    FocalLengthMillimeters<native><public>: float = external {}
+
+    # Squeeze factor for anamorphic lenses.
+    SqueezeFactor<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Configurable blend between two camera modes
+  camera_mode_blend<native><public> := class<concrete> {}
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Linear blend between camera modes
+  camera_mode_blend_linear<native><public> := class<concrete>(camera_mode_blend) {}
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Configurable blend between two camera modes
+  camera_mode_blend_orbit<native><public> := class<concrete>(camera_mode_blend) {
+    DrivingBlend<native><public>: camera_mode_blend = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Instantly snap to target mode
+  camera_mode_blend_pop<native><public> := class<concrete>(camera_mode_blend) {}
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Camera mode blend that uses the smootherstep function to blend between the two camera modes
+  camera_mode_blend_smootherstep<native><public> := class<concrete>(camera_mode_blend) {}
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Camera mode blend that uses the smoothstep function to blend between the two camera modes
+  camera_mode_blend_smoothstep<native><public> := class<concrete>(camera_mode_blend) {}
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Base class for objects that can modify camera state.
+  camera_modifier<native><public> := class(modifier(camera_state)) {
+    Evaluate<override>(InValue: camera_state)<reads>: camera_state = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Modifier stack for camera state.
+  camera_modifier_stack<native><public> := class(modifier_stack(camera_state)) {
+    # Returns a camera_state which is the input evaluated against each modifier in the stack, executed in position order.
+    Evaluate<native><override>(InValue: camera_state)<reads>: camera_state
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  camera_projection_mode<native><public> := enum<open> {
+    Orthographic
+
+    Perspective
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  camera_state<final><native><public> := class<computes><epic_internal> {
+    @experimental
+    # Physical camera body settings
+    Body<native><public>: camera_body = external {}
+
+    @experimental
+    FarClippingPlaneDistance<native><public>: float = external {}
+
+    @experimental
+    # Physical camera lens settings
+    Lens<native><public>: camera_lens = external {}
+
+    @experimental
+    NearClippingPlaneDistance<native><public>: float = external {}
+
+    @experimental
+    # Determines how wide the camera projects in orthographic mode, in centimeters - Used only if projection mode is orthographic
+    OrthographicProjectionWidth<native><public>: float = external {}
+
+    @experimental
+    # How much to apply physical camera settings between 0.0 and 1.0
+    PhysicalCameraWeight<native><public>: float = external {}
+
+    @experimental
+    # Projection mode - perspective or orthographic
+    ProjectionMode<native><public>: camera_projection_mode = external {}
+
+    @experimental
+    # Render location of the camera. This render location can be modified by camera directions (like camera shakes), without modifying the physical location of any camera entity
+    RenderLocation<native><public>: (/Verse.org/SpatialMath:)vector3
+
+    @experimental
+    # Render rotation of the camera. This render rotation can be modified by camera directions (like camera shakes), without modifying the physical location of any camera entity
+    RenderRotation<native><public>: (/Verse.org/SpatialMath:)rotation
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Controls how a camera mode transitions to another
+  camera_transition<native><public> := class<concrete> {
+    @editable
+    Blend<native><public>: camera_mode_blend = external {}
+
+    @editable
+    # Sets the duration of the camera transition
+    Duration<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Controls how a camera mode transitions to another
+  camera_transition_initial_orientation<native><public> := enum {
+    PreviousAbsoluteTarget
+
+    PreviousRelativeTarget
+
+    PreviousYawPitch
+  }
+
+  using { /Verse.org/Colors }
   # A `capsule_light_component` emits light in all directions into the scene from a capsule shaped source with a specified radius and length. A radius and length of 0 makes it a point light. You can use these
   # to simulate any kind of light sources that emit in all directions and need an elongated source shape, such as a long light bulb.
   capsule_light_component<native><public> := class<final>(light_component) {
@@ -1403,6 +1670,34 @@ SceneGraph<public> := module {
     var SourceAngleDegrees<public>: float = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Interface used to trigger easing behaviors
+  easeable<public> := interface<epic_internal>(cancelable) {
+    # Trigger an ease-out. If an easing_window is provided here, then it will override any previous provided window.
+    (/Verse.org/SceneGraph/easeable:)EaseOut<public>(EaseOutWindow: ?easing_window)<transacts>: void
+  }
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # An easing function combined with a relative time window
+  easing_window<native><public> := struct<concrete> {
+    @editable
+    # Duration of the easing window in seconds
+    Duration<native>: float = external {}
+
+    # Easing function to apply
+    (/Verse.org/SceneGraph/easing_window:)Easing<native>: type { _(: float)<reads>: float } = external {}
+
+    @editable
+    # Offset of the easing window in seconds
+    # The offset allows the window to be moved later or earlier relative to the easing modifier’s internal timeline.
+    # For example, moving the ease-in window later (ie +Offset) would cause the blend to happen later - ie delay it.
+    # For -ve offsets to ease-in and +ve offsets to ease-out, this has the effect of allowing ‘frozen’ states of targets
+    # to be observed (for time-varying targets).
+    Offset<native>: float = external {}
+  }
+
   # Entities are the base object in the SceneGraph.
   #   * Objects in experiences are constructed of one or more entities.
   #   * Entities are hierarchical. You can query your parent using `GetParent` and add child entities using `AddEntities`.
@@ -1543,6 +1838,15 @@ SceneGraph<public> := module {
     Maximum<native><public>: float = external {}
 
     Minimum<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Interface for classes that own a camera modifier stack.
+  has_camera_modifier<native><public> := interface {
+    @editable
+    @experimental
+    CameraModifiers<public>: modifier_stack(camera_state) = external {}
   }
 
   # Merge Rules Interface. Implemented by components that want to participate in entity mergeability checks.
@@ -1744,6 +2048,16 @@ SceneGraph<public> := module {
     GetTransform<native_callable><public>()<transacts>: (/Verse.org/SpatialMath:)transform
   }
 
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Simple orthographic camera.
+  orthographic_camera_component<native><public> := class<final_super>(camera_component) {
+    @editable
+    @experimental
+    # Determines how wide the camera projects in orthographic mode, in centimeters
+    var OrthographicProjectionWidth<native><public>: float = external {}
+  }
+
   # The results of an overlap query. See entity.FindOverlapHits(). We will get one overlap_hit for each intersection of any volume in SourceVolumes with any other volume.
   overlap_hit<native><public> := struct<epic_internal> {
     # The source component and volume (query input). For compound inputs (like an entity hierarchy) this will be a component/volume in that hierarchy. The SourceTransform is the transform of SourceVolume used for the overlap test. For single volume inputs like a sphere, the Source volume and transform are just the inputs to the overlap test, and the component is false.
@@ -1787,6 +2101,40 @@ SceneGraph<public> := module {
     @editable
     # Controls if the `particle_system_component` should start enabled.
     var<private> Enabled<native><public>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Simple perspective camera.
+  perspective_camera_component<native><public> := class<final_super>(camera_component) {
+    @editable
+    @experimental
+    # Horizontal field of view in degrees, specified for an aspect ratio of 16:9 /nThis is then to calculate an effective horizontal field of view for the display’s real aspect ratio /nIf for example the screen is an ultrawide (21:9, or 32:9 being common ultrawide aspect ratios) then in practice the actual field of view will be wider. This is known as the Hor+ view scaling method and is generally accepted to be the best solution for ultrawide displays.
+    var FieldOfViewDegrees<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Camera that is physically based, determining its view properties in a manner more consistent with a physical camera
+  physical_camera_component<native><public> := class<final_super>(camera_component) {
+    @experimental
+    # Camera’s body settings.
+    #  This contains sensor settings, e.g. film or digital camera sensor, shutter speed, etc
+    var Body<public>: camera_body = external {}
+
+    @experimental
+    # Lens of the camera
+    var Lens<public>: camera_lens = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  play_skeletal_animation_result<public> := struct<epic_internal> {
+    # The skeletal_animation that was played
+    Animation: skeletal_animation
+
+    # An easable interface used to control blending
+    Easeable: easeable
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -1840,6 +2188,18 @@ SceneGraph<public> := module {
 
   # An event which can be sent through the scene graph.
   scene_event<native><public> := interface {}
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # A modifier of skeletons, used to animate meshes using skeletal animation
+  skeletal_animation<native><public> := class<castable><epic_internal>(modifier(skeleton)) {
+    Evaluate<native><override>(InValue: skeleton)<reads>: skeleton
+  }
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Skeletons are collections of bones & sets/chains
+  skeleton<native><public> := class<epic_internal> {}
 
   sound_component<native><public> := class<abstract><final_super><epic_internal>(component, enableable) {
     # Disable the sound component.
@@ -2015,6 +2375,8 @@ Simulation<public> := module {
   # Get the seconds that have elapsed since the world began simulating
   GetSimulationElapsedTime<native><public>()<transacts>: float
 
+  (/Verse.org/Simulation:)MakeLocalizableValue<epic_internal>(Agent: agent): localizable_agent = external {}
+
   # Waits specified number of seconds and then resumes. If `Seconds` = 0.0 then it waits until next tick/frame/update. If `Seconds` = Inf then it waits forever and only calls back if canceled - such as via `race`. If `Seconds` < 0.0 then it completes immediately and does not yield to other aysnc expressions.
   # Waiting until the next update (0.0) is especially useful in a loop of a coroutine that needs to do some work every update and this yields to other coroutines so that it doesn't hog a processor's resources.
   # Waiting forever (Inf) will have any expression that follows never be evaluated. Occasionally it is desireable to have a task never complete such as the last expression in a `race` subtask where the task must never win the race though it still may be canceled earlier.
@@ -2133,7 +2495,7 @@ Simulation<public> := module {
     # The minimum value the editor allows.
     MinValue<public>: ?t = external {}
 
-    (/Verse.org/Simulation/editable_number:)Simulation_editable_number_Variance<private>(): tuple(t) = external {}
+    (/Verse.org/Simulation/editable_number:)Simulation_editable_number_Variance<private>(): tuple(t, t, t) = external {}
 
     # Snap the spinbox to the nearest delta.
     SpinBoxDelta<public>: ?t = external {}
@@ -2155,7 +2517,7 @@ Simulation<public> := module {
 
     MouseShiftMovePixelPerDelta<public>: float = external {}
 
-    (/Verse.org/Simulation/editable_slider:)Simulation_editable_slider_Variance<private>(): tuple(t) = external {}
+    (/Verse.org/Simulation/editable_slider:)Simulation_editable_slider_Variance<private>(): tuple(t, t, t, t) = external {}
 
     # The amount the slider moves for each step.
     SliderDelta<public>: ?t = external {}
@@ -2193,7 +2555,7 @@ Simulation<public> := module {
     # Show the button that allows locking the vector aspect ratio.
     ShowPreserveRatio<public>: logic = external {}
 
-    (/Verse.org/Simulation/editable_vector_number:)Simulation_editable_vector_number_Variance<private>(): tuple(t) = external {}
+    (/Verse.org/Simulation/editable_vector_number:)Simulation_editable_vector_number_Variance<private>(): tuple(t, t, t) = external {}
 
     # Snap the spinbox to the nearest delta.
     SpinBoxDelta<public>: ?t = external {}
@@ -2221,7 +2583,7 @@ Simulation<public> := module {
     # Show the button that allows locking the vector aspect ratio.
     ShowPreserveRatio<public>: logic = external {}
 
-    (/Verse.org/Simulation/editable_vector_slider:)Simulation_editable_vector_slider_Variance<private>(): tuple(t) = external {}
+    (/Verse.org/Simulation/editable_vector_slider:)Simulation_editable_vector_slider_Variance<private>(): tuple(t, t, t, t) = external {}
 
     # The amount the slider moves for each step.
     SliderDelta<public>: ?t = external {}
@@ -2499,6 +2861,7 @@ SpatialMath<public> := module {
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @import_as("/*.FVRotation")
+  # An abstract representation of an orientation change in 3d-space.
   rotation<native><public> := struct<concrete> {}
 
   @import_as("/*.FVTransform")
@@ -2702,6 +3065,41 @@ Verse<public> := module {
   # Returns the hyperbolic cosine of `X`.
   Cosh<native><public>(X: float)<reads>: float
 
+  @available { MinUploadedAtFNVersion := 4100 }
+  # Module import path: /Verse.org/Verse/Easing
+  Easing<public> := module {
+    using { /Verse.org/Native }
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    # Make a cubic bezier interpolation function.
+    CubicBezier<native><public>(X1: float, Y1: float, X2: float, Y2: float)<converges>: type { _(: float)<reads>: float }
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    # Ease interpolation function. `Ease` animations start slowly, speed up, then end slowly. The speed of the animation is slightly slower at the end than the start.
+    Ease<native_callable><public>(Value: float)<reads>: float = external {}
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    # Ease-in interpolation function. `EaseIn` animations start slow, then speed up towards the end.
+    EaseIn<native_callable><public>(Value: float)<reads>: float = external {}
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    # Ease-in-out interpolation function. `EaseInOut` animations are similar to `Ease` but the start and end animation speed is symmetric.
+    EaseInOut<native_callable><public>(Value: float)<reads>: float = external {}
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    # Ease-out interpolation function. `EaseOut` animations start fast, then slow down towards the end.
+    EaseOut<native_callable><public>(Value: float)<reads>: float = external {}
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    # Linear interpolation function. `Linear` animations move at a constant speed.
+    Linear<native_callable><public>(Value: float)<reads>: float = external {}
+  }
+
   # Halts the Verse runtime with error `Message`.
   Err<native><public>(Message: string)<computes>: false
 
@@ -2723,6 +3121,10 @@ Verse<public> := module {
 
   # Succeeds if `Val1` and `Val2` are within `AbsoluteTolerance` of each other.
   IsAlmostEqual<public>(Val1: float, Val2: float, AbsoluteTolerance: float)<computes><decides>: void = external {}
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  # Makes a `message` by concatenating `Separator` between the elements of `Messages`.
+  Join<native><public>(Messages: []message, Separator: message)<transacts>: message
 
   # Makes a `string` by concatenating `Separator` between the elements of `Strings`.
   Join<native><public>(Strings: []string, Separator: string)<computes>: string
@@ -2887,7 +3289,7 @@ Verse<public> := module {
     # Temporary function for constraining variance correctly.
     CovarianceConstraint<protected>(): ?element_type = external {}
 
-    (/Verse.org/Verse/classifiable_subset:)Verse_classifiable_subset_Variance<private>(): tuple(element_type) = external {}
+    (/Verse.org/Verse/classifiable_subset:)Verse_classifiable_subset_Variance<private>(): tuple(element_type, element_type, element_type) = external {}
   }
 
   # An opaque diagnostic message that only shows up in diagnostic logs. The format of the diagnostic may change at any time without warning and may not be inspected by Verse code.
@@ -2955,6 +3357,34 @@ Verse<public> := module {
 
   # A localizable text message.
   message<native><public> := class<epic_internal> {}
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Implemented by classes to provide a method for modification evaluation.
+  modifier<public>(t: type) := interface {
+    Evaluate<native_callable><public>(InValue: t)<reads>: t
+
+    (/Verse.org/Verse/modifier:)Verse_modifier_Variance<private>(: t): tuple(t) = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  # Modifier stacks provide an ordered application of modifiers.
+  modifier_stack<native><public>(t: type) := class(modifier(t)) {
+    # Insert a Modifier at Position in the stack.
+    # If multiple modifiers are added at the same position, they are applied such that the most recently added is the last evaluated.
+    # Returns a cancelable which can be used to remove Modifier from the stack.
+    AddModifier<public>(Modifier: modifier(t), Position: rational)<transacts>: cancelable = external {}
+
+    # Returns a t which is the input evaluated against each modifier in the stack, executed in position order.
+    Evaluate<override>(InValue: t)<reads>: t = external {}
+
+    (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance<private>(: t, : t, : t, : t): tuple(t, t, t, t) = external {}
+
+    var<private> FirstPosition<native><public>: rational = external {}
+
+    var<private> LastPosition<native><public>: rational = external {}
+  }
 
   @experimental
   # Returns a new set that is the union of all elements in `InSetL` set and `InSetR`.

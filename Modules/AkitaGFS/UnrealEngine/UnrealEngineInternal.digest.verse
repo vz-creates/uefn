@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-40.41-CL-54326946
+# Generated from build: ++Fortnite+Release-41.00-CL-54618515
 #################################################
 
 AINavigation<public> := module {
@@ -95,15 +95,83 @@ AINavigation<public> := module {
 }
 
 Abilities<public> := module {
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  # Use ability_component and ability_effect_component from Verse Ability API instead
   ability<native><public> := class {
     Activate<native><protected>()<suspends>: void
 
     GameplayAbilityPath<native><epic_internal>: ?string = external {}
   }
 
+  # Use ability_component and ability_effect_component from Verse Ability API instead
+  ability_asset<native><epic_internal> := class<computes>(asset) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Lives in the scene graph and is the high level description of an ability.
+  #  Knows if an ability can run, cooldowns, distance and targeting requirements etc...
+  ability_component<native><epic_internal> := class<abstract><final_super>(component, has_icon) {
+    BeginUseEvent<native><public>: listenable(entity) = external {}
+
+    CanUse<protected>(Owner: entity, AbilityContext: ability_context)<reads><decides>: void = external {}
+
+    @editable
+    EffectPrefabType<public>: concrete_subtype(entity)
+
+    EndUseEvent<native><public>: listenable(entity) = external {}
+
+    Use<final><public>(Owner: entity, AbilityContext: ability_context)<transacts><decides>: entity = external {}
+
+    var<private> ActiveEffects<native><public>: []ability_effect_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Data passed on activation of an ability. Holds who fired, who helped, and what got hit.
+  #  Subclass to provide specific context for custom ability effects
+  ability_context<native><public> := class<castable> {
+    Instigator<native><public>: ?agent
+
+    Participants<native><public>: []entity
+
+    Targets<native><public>: []entity
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Attached to Ability Entity prefabs. Provides a central location for handling desired ability and gameplay logic.
+  ability_effect_component<native><epic_internal> := class<abstract><final_super>(component) {
+    CanCancel<native_callable><protected>(Reason: cancel_reason)<transacts><decides>: void = external {}
+
+    Cancel<final><public>(Reason: cancel_reason)<transacts><decides>: void = external {}
+
+    EndUse<final><protected>()<transacts>: void = external {}
+
+    OnBeginUse<native_callable><protected>()<transacts>: void = external {}
+
+    OnEndUse<native><protected>(Reason: ?cancel_reason)<transacts>: void
+
+    var Ability<native><public>: ?ability_component = external {}
+
+    var Context<native><public>: ?ability_context = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  ability_ended<public> := class<castable>(cancel_reason) {}
+
+  @attribscope_data
+  @customattribhandler
+  ability_link<epic_internal> := class<computes>(attribute) {
+    Name<epic_internal>: string = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Lightweight tag explaining why an effect ended.
+  cancel_reason<native><public> := class<abstract><castable> {}
+
   @experimental
-  ability_component<native><public> := class<final_super>(component) {
+  # Use ability_component and ability_effect_component from Verse Ability API instead
+  old_ability_component<native><public> := class<final_super>(component) {
     ActivateAbility<native><epic_internal>(Ability: ability): void
 
     ActivateAbility<native><public>(ability_type: subtype(ability)): void
@@ -113,10 +181,32 @@ Abilities<public> := module {
     GiveAbility<native><public>(ability_type: subtype(ability))<transacts><decides>: void
   }
 
-  @attribscope_data
-  @customattribhandler
-  ability_link<epic_internal> := class<computes>(attribute) {
-    Name<epic_internal>: string = external {}
+  @available { MinUploadedAtFNVersion := 4000 }
+  # GAS template ability effect component
+  template_ability_effect_component<native><epic_internal> := class(ability_effect_component) {
+    AbilityClass<native><epic_internal>: ability_asset
+
+    CanCancel<override>(Reason: cancel_reason)<transacts><decides>: void = external {}
+
+    OnBeginUse<override><native><final>()<transacts>: void
+
+    OnEndUse<override><native><final>(Reason: ?cancel_reason)<transacts>: void
+  }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  template_cancel_reason_canceled<native><final><public> := class<castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  template_cancel_reason_ended<native><final><public> := class<castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  template_cancel_reason_invalid<native><final><public> := class<castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Template ability specific context so that we play abilities on the owner,
+  #  subclass for template specific dynamic parameters to be passed to the native ability
+  template_context<native><epic_internal> := class<castable>(ability_context) {
+    AbilityOwner<native><public>: ?agent
   }
 }
 
@@ -159,17 +249,13 @@ Abilities<public> := module {
 
 # Module import path: /UnrealEngine.com/BasicShapes
 BasicShapes<public> := module {
-  using { /Verse.org/Assets }
-  using { /Verse.org/SceneGraph }
-  body_part<epic_internal> := class<epic_internal>(mesh_part, has_collision, has_dynamics) {}
-
   cone<public> := class<final><public>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/SceneGraph }
   cube<public> := class<final><public>(mesh_component) {
-    Body<epic_internal>: body_part = external {}
-
     Mesh<override>: mesh = external {}
   }
 
@@ -182,24 +268,8 @@ BasicShapes<public> := module {
   }
 
   sphere<public> := class<final><public>(mesh_component) {
-    Body<epic_internal>: body_part = external {}
-
     Mesh<override>: mesh = external {}
   }
-}
-
-# Module import path: /UnrealEngine.com/ComponentTestSuite
-ComponentTestSuite<public> := module {
-  @hide_in_editor
-  test_component_key_component_a<native><epic_internal> := class(test_component_key_component_base) {}
-
-  @hide_in_editor
-  test_component_key_component_b<native><epic_internal> := class(test_component_key_component_base) {}
-
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  @hide_in_editor
-  test_component_key_component_base<native><epic_internal> := class<final_super>(component) {}
 }
 
 # Module import path: /UnrealEngine.com/ControlInput
@@ -235,8 +305,6 @@ ControlInput<public> := module {
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
     ActivationTriggeredEvent<native><public>: listenable(tuple(player, t)) = external {}
-
-    (/UnrealEngine.com/ControlInput/input_events:)ControlInput_input_events_Variance<private>(): tuple(t) = external {}
 
     # Detection has started for this input e.g. a required key is now held down. Note: ActivationTriggeredEvent may also occur this frame,
     #  but this event will always be fired first. DetectionBegin and DetectionEnd will always fire, regardless of whether the input is
@@ -340,17 +408,6 @@ Conversations<public> := module {
     false
   ) = external {}
 
-  @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
-  # Join the output from multiple prompt providers together
-  aggregate_prompt_slot<native><public> := class(prompt_slot_provider) {
-    # The contents from each slot provider output as a single string.
-    GetSlotContents<native><override>()<allocates><reads>: string
-
-    # The prompt slot providers which have their contents concatenated with a newline.
-    var PromptSlotProviders<native><public>: []prompt_slot_provider = external {}
-  }
-
   ai_prompt_device<epic_internal> := class {}
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -380,15 +437,12 @@ Conversations<public> := module {
     VoiceName<override>: string = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4000 }
+  @available { MinUploadedAtFNVersion := 4100 }
   @experimental
-  # Basic implementation of the prompt slot provider, which just returns a string
-  basic_prompt_slot<native><public> := class(prompt_slot_provider) {
-    # Returns the prompt string
-    GetSlotContents<native><override>()<allocates><reads>: string
-
-    # The content as a string
-    var Contents<native><public>: string = external {}
+  # A basic prompt for carrying out instructions
+  basic_prompt<native><public> := class<final>(prompt) {
+    # What the llm should do
+    var Instructions<native><public>: message
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -443,21 +497,6 @@ Conversations<public> := module {
     # Signals the RemoveConversationTargeterEvent.
     SignalRemoveConversationTargeterEvent<native_callable><epic_internal>(Agent: agent): void = external {}
 
-    # Listenable which is signaled when the player starts prompting the persona.
-    StartHearEvent<public>: listenable(agent)
-
-    # Listenable which is signaled when the persona starts talking.
-    #  1/ The agent (if involved) which prompted the response.
-    #  2/ The message being said.
-    #  3/ Cancelable to stop the target from talking.
-    StartSayEvent<public>: listenable(tuple(?agent, message, cancelable))
-
-    # Listenable which is signaled when the player finishes prompting the persona.
-    StopHearEvent<public>: listenable(agent)
-
-    # Listenable which is signaled when the target stops talking.
-    StopSayEvent<public>: listenable(logic)
-
     # All the agents currently targeting Self for conversation.
     var<private> ConversationTargeters<public>: []agent
   }
@@ -505,7 +544,7 @@ Conversations<public> := module {
   }
 
   internal_response_data<native><epic_internal> := struct {
-    TargetAgent<native><localizes>: message
+    TargetAgent<native>: ?agent
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -520,6 +559,18 @@ Conversations<public> := module {
   # Comic, High, Warm
   lily_voice<final><public> := class(voice_model) {
     VoiceName<override>: string = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  llm_description<constructor><public>(Description: string)<computes>: llm_description_attribute = external {}
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  @experimental
+  @attribscope_data
+  @customattribhandler
+  llm_description_attribute<public> := class<computes><internal>(attribute) {
+    Description<public>: string
   }
 
   llm_fact<native><epic_internal> := class(cancelable) {
@@ -575,13 +626,11 @@ Conversations<public> := module {
       MemberInfo: member_info
     ) where member_info: subtype(has_voice_member_info))<transacts>: void
 
+    @available { MinUploadedAtFNVersion := 4100 }
     # The result will conform to the result type. The result type must be a struct which can contain.
     #  - numeric types, message, bools and enums, as well as structs or arrays which only contain those types, anything else results in an error.
     #  Use the names of the fields and name of the type of the struct to direct the prompt or facts on how to fill out the data structure.
-    Prompt<native><public>(
-      PromptTemplate: prompt_template,
-      response_type: type
-    )<suspends>: result(response_type, llm_prompt_error)
+    Prompt<native><public>((local:)Prompt: prompt, response_type: type)<suspends>: result(response_type, llm_prompt_error)
 
     SubscribeToVoiceChannelMemberAdded<native_callable><epic_internal>(VoiceChannel: voice_channel(member_info) where member_info: subtype(has_voice_member_info))<transacts>: cancelable = external {}
 
@@ -628,17 +677,6 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
-  # Implementation of the prompt slot provider which is able to send encoded messages (output from the LLM) back to the LLM.
-  message_prompt_slot<native><public> := class(prompt_slot_provider) {
-    # If the message is encoded, calls to GetSlotContents from verse will be encoded, yet be clear when the prompt is sent to LLM.
-    GetSlotContents<native><override>()<allocates><reads>: string
-
-    # The content as a message
-    var Contents<native><public>: message = external {}
-  }
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Narrator, Med, Natural
   milo_voice<final><public> := class(voice_model) {
     VoiceName<override>: string = external {}
@@ -651,15 +689,18 @@ Conversations<public> := module {
   @experimental
   # NPC Persona component
   persona_component<native><public> := class<final_super>(component) {
+    # Listenable which is signaled when the spoken message is finalized (after moderation).
+    #  Contains the actual message delivered — either the original or the canned replacement.
+    #  1/ The agent (if involved) that prompted the response.
+    #  2/ The final message that was said.
+    CommitSayEvent<native><public>: listenable(tuple(?agent, message)) = external {}
+
     OnInitialized<override>(): void = external {}
 
     OnPersonaComponentConstructed<native><epic_internal>()<transacts>: void
 
     @available { MinUploadedAtFNVersion := 4000 }
     OnReceive<override>(SceneEvent: scene_event): logic = external {}
-
-    # Defines the persona and what it knows
-    PersonaDefinition<native><public>: persona_definition = external {}
 
     # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
     #  Callback receives:
@@ -668,16 +709,15 @@ Conversations<public> := module {
     PromptFailureEvent<native><public>: listenable(llm_prompt_error) = external {}
 
     # Requests the Persona to talk on the topic provided, requires the persona to be on a channel
-    RequestToTalk<native><public>(RequestInstruction: prompt_slot_provider)<transacts><decides>: void
+    RequestToTalk<native><public>(Instructions: message)<transacts><decides>: void
 
     # Listenable which is signaled when the player starts prompting the persona.
     StartHearEvent<native><public>: listenable(agent) = external {}
 
-    # Listenable which is signaled when the persona starts talking.
-    #  1/ The agent (if involved) which prompted the response
-    #  2/ The message being said.
-    #  3/ Cancelable to stop the target from talking
-    StartSayEvent<native><public>: listenable(tuple(?agent, message, cancelable)) = external {}
+    # Listenable which is signaled when the persona begins speaking (before moderation resolves).
+    #  1/ The agent (if involved) that prompted the response.
+    #  2/ Cancelable to stop the persona from talking.
+    StartSayEvent<native><public>: listenable(tuple(?agent, cancelable)) = external {}
 
     # Listenable which is signaled when the player finishes prompting the persona.
     StopHearEvent<native><public>: listenable(agent) = external {}
@@ -700,6 +740,12 @@ Conversations<public> := module {
 
     # How the persona will handle overlapping prompts.
     var InterruptionRule<public>: persona_interruption_rule = external {}
+
+    # What the persona knows
+    var Knowledge<public>: message = external {}
+
+    # The personality of the persona
+    var Personality<public>: message = external {}
 
     # The session which will process all this persona's prompts
     # When the persona is in a voice channel, every session in that channel will automatically
@@ -736,9 +782,6 @@ Conversations<public> := module {
     # Returns a diagnostic of the Persona facts, both static and dynamic.
     DiagnoseFacts<native><public>()<reads>: diagnostic
 
-    # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
-    PromptFailureEvent<native><public>: listenable(llm_prompt_error) = external {}
-
     # Requests the Persona to talk on the topic provided.
     PromptToTalk<native><public>(Topic: message): void
 
@@ -747,21 +790,6 @@ Conversations<public> := module {
 
     # Stop player from being able to talk to this persona.
     RemovePlayer<native><override>(Player: agent)<transacts><decides>: void
-
-    # Listenable which is signaled when the player starts prompting the persona.
-    StartHearEvent<native><override>: listenable(agent) = external {}
-
-    # Listenable which is signaled when the persona starts talking.
-    #  1/ The agent (if involved) which prompted the response.
-    #  2/ The message being said.
-    #  3/ Cancelable to stop the target from talking.
-    StartSayEvent<native><override>: listenable(tuple(?agent, message, cancelable)) = external {}
-
-    # Listenable which is signaled when the player finishes prompting the persona.
-    StopHearEvent<native><override>: listenable(agent) = external {}
-
-    # Listenable which is signaled when the target stops talking.
-    StopSayEvent<native><override>: listenable(logic) = external {}
 
     # The result will conform to the result type. The result type must be a struct or a concrete class with no private fields which can contain
     # numeric types, messages, bools and enums, as well as structs, concrete classes with no private fields or arrays which only contain those types, anything else results in an error.
@@ -773,21 +801,6 @@ Conversations<public> := module {
 
     # All the agents currently targeting Self for conversation.
     var ConversationTargeters<override>: []agent = external {}
-  }
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
-  # Defines the persona and what it knows.
-  persona_definition<native><public> := class<final> {
-    # What the persona currently knows
-    var KnowledgeSlot<public>: prompt_slot_provider = external {}
-
-    var KnowledgeSlotInternal<native><public>: prompt_slot_provider = external {}
-
-    # Defines the personality
-    var PersonalitySlot<public>: prompt_slot_provider = external {}
-
-    var PersonalitySlotInternal<native><public>: prompt_slot_provider = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -816,6 +829,8 @@ Conversations<public> := module {
 
     # Removes all conversation history from the device.
     ClearHistory<native><public>()<transacts>: void
+
+    GetBPFunctionNamesForValidation<override>(): []string = external {}
 
     # Returns the ID for the player.
     GetPlayerParticipantId<native><public>(Player: player)<reads>: string
@@ -850,6 +865,11 @@ Conversations<public> := module {
     var<private> ResponseEventCriteria<public>: [int][]string = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4100 }
+  @import_as("/Script/AIPrompt.UPersonaPrompt")
+  @experimental
+  persona_editor_prompt<native><epic_internal> := class<concrete><final><epic_internal> {}
+
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Defines the way the persona will handle attempts to prompt it while it is processing.
@@ -864,20 +884,18 @@ Conversations<public> := module {
     InterruptOnResponseStart
   }
 
-  @available { MinUploadedAtFNVersion := 4000 }
-  @import_as("/Script/AIPrompt.UPersonaPrompt")
+  @available { MinUploadedAtFNVersion := 4100 }
   @experimental
-  persona_prompt<native><epic_internal> := class<concrete><final><epic_internal> {}
+  # A prompt which defines a persona and tells it to do something
+  persona_prompt<native><public> := class<final>(prompt) {
+    # What the persona should do
+    var Instructions<native><public>: message
 
-  @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
-  # A prompt definition which is used by persona's - used to build a personality which knows things in the world.
-  persona_prompt_template<native><public> := class<final>(prompt_template) {
-    # Directions to the persona - what should it do
-    InstructionSlot<native><public>: prompt_slot_provider
+    # What the persona knows
+    var Knowledge<native><public>: message
 
-    # Defines the personality
-    PersonaDefinition<native><public>: persona_definition
+    # The personality of the persona
+    var Personality<native><public>: message
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -890,18 +908,10 @@ Conversations<public> := module {
     Cancel<native><override>()<transacts>: void
   }
 
-  @available { MinUploadedAtFNVersion := 4000 }
+  @available { MinUploadedAtFNVersion := 4100 }
   @experimental
-  # Base interface for retrieving the content in a slot on a prompt template at runtime.
-  prompt_slot_provider<native><public> := interface {
-    # Returns the prompt as a string
-    GetSlotContents<native_callable><public>()<allocates><reads>: string
-  }
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
-  # Base class for the abstraction of how prompts are constructed
-  prompt_template<native><public> := class<abstract><castable><epic_internal> {}
+  # Base class for all prompts sent to an llm session
+  prompt<native><public> := class<abstract><castable><epic_internal> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   @experimental
@@ -979,300 +989,6 @@ Conversations<public> := module {
   wyatt_voice<final><public> := class(voice_model) {
     VoiceName<override>: string = external {}
   }
-}
-
-# Module import path: /UnrealEngine.com/EntityRegistryTestSuite
-EntityRegistryTestSuite<public> := module {
-  @hide_in_editor
-  entity_registry_not_used_test_entity<native><epic_internal> := class(entity) {}
-
-  @hide_in_editor
-  entity_registry_other_test_component<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  entity_registry_test_component<native><epic_internal> := class<final_super>(component) {}
-
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  @hide_in_editor
-  entity_registry_test_entity<native><epic_internal> := class(entity) {}
-
-  @hide_in_editor
-  entity_registry_unused_test_component<native><epic_internal> := class<final_super>(component) {}
-}
-
-# Module import path: /UnrealEngine.com/EntityTestSuite
-EntityTestSuite<public> := module {
-  # Module import path: /UnrealEngine.com/EntityTestSuite/TestPhysicsHook
-  TestPhysicsHook<epic_internal> := module {
-    @hide_in_editor
-    left_cube_mesh_part<epic_internal> := class<epic_internal>(mesh_part, has_collision) {}
-
-    @hide_in_editor
-    left_right_cube_mesh_component<epic_internal> := class<final_super><epic_internal>(mesh_component) {
-      Left<epic_internal>: left_cube_mesh_part = external {}
-
-      Mesh<override>: mesh = external {}
-
-      Right<epic_internal>: right_cube_mesh_part = external {}
-    }
-
-    using { /Verse.org/Assets }
-    using { /Verse.org/SceneGraph }
-    using { /Verse.org/Simulation }
-    using { /Verse.org/SpatialMath }
-    physics_test<epic_internal> := enum<open> {
-      Test_ApplyLinearImpulse
-
-      Test_CollisionEvents
-
-      Test_Gravity
-
-      Test_LUF
-
-      Test_MaxAngularVelocity
-
-      Test_SetDynamic
-
-      Test_SleepType
-    }
-
-    @experimental
-    physics_test_visualizer_component<epic_internal> := class<final_super><epic_internal>(component) {
-      OnSimulate<override>()<suspends>: void = external {}
-
-      Run<epic_internal>()<suspends>: void = external {}
-
-      @editable
-      var TestToRun<epic_internal>: physics_test = external {}
-    }
-
-    @hide_in_editor
-    right_cube_mesh_part<epic_internal> := class<epic_internal>(mesh_part, has_collision) {}
-
-    @hide_in_editor
-    test_physics_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-      Init_Ground<native_callable><epic_internal>(
-        Sim: entity,
-        ?Translation: (/Verse.org/SpatialMath:)vector3 = external {},
-        ?Scale: (/Verse.org/SpatialMath:)vector3 = external {}
-      ): test_physics_cube_mesh_component = external {}
-
-      Init_Sphere<native_callable><epic_internal>(
-        Sim: entity,
-        Translation: (/Verse.org/SpatialMath:)vector3,
-        ?Scale: (/Verse.org/SpatialMath:)vector3 = external {}
-      ): test_physics_sphere_mesh_component = external {}
-
-      SetupTestPredicts<native_callable><epic_internal>(Sim: entity): test_physics_predicts_component = external {}
-
-      Test_ApplyLinearImpulse<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      @experimental
-      Test_CollisionEvents<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      Test_Gravity<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      Test_GravityGroupIndex<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      Test_LUF<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      Test_MaxAngularVelocity<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      Test_SetDynamic<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-
-      Test_SleepType<native_callable><epic_internal>()<suspends>: test_physics_result = external {}
-    }
-
-    @hide_in_editor
-    test_physics_cube_mesh_component<native><epic_internal> := class<final_super><epic_internal>(mesh_component) {
-      Body<native><epic_internal>: test_physics_cube_part = external {}
-
-      Mesh<override>: mesh = external {}
-    }
-
-    @hide_in_editor
-    test_physics_cube_part<native><epic_internal> := class<epic_internal>(mesh_part, has_collision) {}
-
-    @hide_in_editor
-    test_physics_predicts_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-      InvokedPredictsFunc<native><epic_internal>()<predicts>: void
-
-      PredictsEvent<native><predicts><epic_internal>: listenable(tuple()) = external {}
-
-      Test_PredictsSetup<native_callable><epic_internal>(): void = external {}
-    }
-
-    test_physics_result<native><epic_internal> := class<final><epic_internal> {
-      var Success<native><epic_internal>: logic
-
-      var What<native><epic_internal>: string = external {}
-    }
-
-    @hide_in_editor
-    test_physics_sphere_mesh_component<native><epic_internal> := class<final_super><epic_internal>(mesh_component) {
-      Body<native><epic_internal>: test_physics_sphere_part = external {}
-
-      Mesh<override>: mesh = external {}
-    }
-
-    @hide_in_editor
-    test_physics_sphere_part<native><epic_internal> := class<epic_internal>(
-      mesh_part,
-      has_dynamics,
-      has_collision,
-      has_ue_physics_properties
-    ) {}
-  }
-
-  @hide_in_editor
-  derived_entity<epic_internal> := class<concrete>(entity) {}
-
-  @hide_in_editor
-  derived_test_component<native><epic_internal> := class(test_component) {}
-
-  @hide_in_editor
-  derived_test_entity<native><epic_internal> := class<concrete>(test_entity) {}
-
-  @hide_in_editor
-  lambda_test_component<native><epic_internal> := class<final_super>(component) {
-    OnAddedToSceneInternal<native><override>(): void
-
-    OnBeginSimulationInternal<native><override>(): void
-
-    OnEndSimulationInternal<native><override>(): void
-
-    OnInitializedInternal<native><override>(): void
-
-    OnRemovingFromSceneInternal<native><override>(): void
-
-    OnSimulate<override>()<suspends>: void = external {}
-
-    OnUninitializingInternal<native><override>(): void
-  }
-
-  @hide_in_editor
-  lambda_test_component_2<native><epic_internal> := class<final_super>(component) {
-    OnAddedToSceneInternal<native><override>(): void
-
-    OnBeginSimulationInternal<native><override>(): void
-
-    OnEndSimulationInternal<native><override>(): void
-
-    OnInitializedInternal<native><override>(): void
-
-    OnRemovingFromSceneInternal<native><override>(): void
-
-    OnSimulate<override>()<suspends>: void = external {}
-
-    OnUninitializingInternal<native><override>(): void
-  }
-
-  @hide_in_editor
-  overridden_test_entity<native><epic_internal> := class<concrete>(test_entity) {}
-
-  @hide_in_editor
-  second_derived_test_component<native><epic_internal> := class(test_component) {}
-
-  @hide_in_editor
-  test_base_replicated_component<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_2<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_creationorder_1<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_creationorder_2<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_creationorder_3<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_dependency_auto<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_dependency_init<native><epic_internal> := class<final_super>(component) {
-    @replicated("")
-    var AutoComponent<native><epic_internal>: ?component = external {}
-  }
-
-  @hide_in_editor
-  test_component_never_replicate_condition<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_component_replication_settings<native><epic_internal> := class<final_super>(component) {}
-
-  using { /Verse.org/Assets }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
-  @hide_in_editor
-  test_contentscope_events_component<native><epic_internal> := class<final_super>(component) {
-    KeyframeReachedEvent<native><public>: listenable(tuple()) = external {}
-
-    OnBeginSimulation<override>(): void = external {}
-  }
-
-  @hide_in_editor
-  test_contentscope_execution_component<native><epic_internal> := class<final_super>(component) {
-    OnBeginSimulation<override>(): void = external {}
-  }
-
-  @hide_in_editor
-  test_different_material_component<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_dynamic_component<native><epic_internal> := class<final_super>(test_base_replicated_component) {}
-
-  @hide_in_editor
-  test_entity<native><epic_internal> := class<concrete>(entity) {}
-
-  @hide_in_editor
-  test_entity_creationorder<native><epic_internal> := class<final_super>(entity) {}
-
-  @hide_in_editor
-  test_entity_with_variables<native><epic_internal> := class<final_super>(entity) {}
-
-  @hide_in_editor
-  test_material<native><epic_internal> := class(material) {
-    ___PropertyInterface_On_BaseColor_Changed<epic_internal>(): void = external {}
-  }
-
-  @hide_in_editor
-  test_material_component<native><epic_internal> := class<final_super>(component) {
-    OnBeginSimulation<override>(): void = external {}
-  }
-
-  @hide_in_editor
-  test_netculldistance<native><epic_internal> := class<final_super>(component) {
-    OnSimulate<override>()<suspends>: void = external {}
-  }
-
-  @hide_in_editor
-  test_not_replicated_component<native><epic_internal> := class<final_super>(component) {}
-
-  @hide_in_editor
-  test_replication_component<native><epic_internal> := class<final_super>(component) {
-    @replicated("")
-    var<private> TestReplicatedSubObject<native><epic_internal>: ?test_replication_object = external {}
-  }
-
-  @hide_in_editor
-  test_replication_object<native><epic_internal> := class {}
-
-  @hide_in_editor
-  test_stable_component<native><epic_internal> := class<final_super>(test_base_replicated_component) {}
-
-  @hide_in_editor
-  test_stable_entity<native><epic_internal> := class<concrete><unique><transacts>(entity) {}
-
-  @hide_in_editor
-  test_stable_subobject<native><epic_internal> := class {}
 }
 
 Itemization<public> := module {
@@ -1370,24 +1086,6 @@ Itemization<public> := module {
     ItemComponent<public>: ?item_component = external {}
   }
 
-  @deprecated
-  @experimental
-  # Deprecated. Please use change_description_component_event instead.
-  change_item_details_component_event<epic_internal> := class(scene_event) {
-    Entity<public>: entity
-
-    ItemDetailsComponent<public>: ?item_details_component = external {}
-  }
-
-  @deprecated
-  @experimental
-  # Deprecated. Please use change_icon_component_event instead.
-  change_item_icon_component_event<epic_internal> := class(scene_event) {
-    Entity<public>: entity
-
-    ItemIconComponent<public>: ?item_icon_component = external {}
-  }
-
   change_items_slot_result<native><epic_internal> := struct<epic_internal> {
     Inventory<native><public>: inventory_component
 
@@ -1397,7 +1095,6 @@ Itemization<public> := module {
   using { /UnrealEngine.com/Abilities }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
-  using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
@@ -1673,6 +1370,7 @@ Itemization<public> := module {
   @class_and_subclass_group_names("item")
   # Anything using this component should be considered an item. Required to interact with inventories.
   item_component<native><public> := class<final_super>(component) {
+    @replicated("")
     @editable
     # Add one or more category instances to help define and organize this item.
     Categories<native><public>: []item_category = external {}
@@ -1730,41 +1428,6 @@ Itemization<public> := module {
 
   @import_as("/Script/ItemizationCoreRuntime.UItemDefinitionBase")
   item_definition_base<native><epic_internal> := class<epic_internal> {}
-
-  @class_and_subclass_group_names("item")
-  @deprecated
-  @experimental
-  # Deprecated. Please use description_component instead.
-  item_details_component<native><public> := class<final_super>(component, has_description) {
-    OnBeginSimulation<override>(): void = external {}
-
-    OnEndSimulation<override>(): void = external {}
-
-    OnItemDetailsChanged<native><epic_internal>()<transacts>: void
-
-    var Description<override>: message = external {}
-
-    var Name<override>: message = external {}
-
-    var ShortDescription<override>: message = external {}
-  }
-
-  @class_and_subclass_group_names("item")
-  @deprecated
-  @experimental
-  # Deprecated. Please use icon_component instead.
-  item_icon_component<native><public> := class<final_super>(component, has_icon) {
-    OnBeginSimulation<override>(): void = external {}
-
-    OnEndSimulation<override>(): void = external {}
-
-    OnInitialized<override>(): void = external {}
-
-    OnUninitializing<override>(): void = external {}
-
-    @editable
-    var Icon<native><override>: texture
-  }
 
   @experimental
   item_mesh_attachment_definition<native><epic_internal> := class<concrete>(item_attachment_definition) {
@@ -1992,63 +1655,139 @@ JSON<public> := module {
 }
 
 Progression<public> := module {
-  (Quest: quest).GetOwner<native><epic_internal>()<reads><decides>: quest_owner
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  (Quest: quest).TransferOwnership<native><epic_internal>(QuestOwner: quest_owner)<transacts>: result(
-    void,
-    []transfer_quest_ownership_error
-  )
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  (QuestGranter: quest_granter).GrantQuests<native><epic_internal>(QuestOwner: quest_owner)<transacts>: result(
-    []quest,
-    []add_quest_error
-  )
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  (QuestOwner: quest_owner).AddQuest<native><epic_internal>(Quest: quest)<transacts>: result(void, []add_quest_error)
-
-  (QuestOwner: quest_owner).GetOwnedQuests<native><epic_internal>()<reads>: []quest
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  (QuestOwner: quest_owner).RemoveQuest<native><epic_internal>(Quest: quest)<transacts>: result(
-    void,
-    []remove_quest_error
-  )
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  (QuestParticipant: quest_participant).AbandonQuest<native><epic_internal>(Quest: quest)<transacts>: result(
-    void,
-    []abandon_quest_error
-  )
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  (QuestParticipant: quest_participant).JoinQuest<native><epic_internal>(Quest: quest)<transacts>: result(
-    void,
-    []join_quest_error
-  )
-
-  @experimental
   BroadcastVerbMessage<native><epic_internal>(Author: entity, SceneEvent: scene_event): void
 
-  @available { MinUploadedAtFNVersion := 4000 }
-  GrantQuest<native><epic_internal>(
-    quest_type: subtype(quest),
-    QuestOwner: quest_owner
-  )<transacts>: result(quest_type, []add_quest_error)
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakeRegisterGameplayConditionalErrorResult<native_callable><epic_internal>(): result(
+    gameplay_conditional_listener_handle,
+    []register_gameplay_conditional_error
+  ) = external {}
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakeRegisterGameplayConditionalSuccessResult<native_callable><epic_internal>(ListenerHandle: gameplay_conditional_listener_handle): result(
+    gameplay_conditional_listener_handle,
+    []register_gameplay_conditional_error
+  ) = external {}
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakeRegisterVerbErrorResult<native_callable><epic_internal>(): result(
+    verb_listener_handle,
+    []register_verb_error
+  ) = external {}
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  MakeRegisterVerbSuccessResult<native_callable><epic_internal>(ListenerHandle: verb_listener_handle): result(
+    verb_listener_handle,
+    []register_verb_error
+  ) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  RegisterGameplayConditional<native><epic_internal>(ContextAnchor: entity, GameplayConditional: gameplay_conditional, Callback: type { _(: gameplay_conditional_context): void })<transacts>: result(gameplay_conditional_listener_handle, []register_gameplay_conditional_error)
+  RegisterGameplayConditional<native><epic_internal>(ContextAnchor: entity, GameplayConditional: subtype(gameplay_conditional), Callback: type { _(: gameplay_conditional_context): void })<transacts>: result(gameplay_conditional_listener_handle, []register_gameplay_conditional_error)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
-  RegisterVerbFilter<native><epic_internal>(VerbFilter: verb_filter, Callback: type { _(: entity, : scene_event, : float): void })<transacts>: result(verb_listener_handle, []register_verb_error)
+  RegisterInstancedGameplayConditional<native><epic_internal>(ContextAnchor: entity, GameplayConditional: gameplay_conditional, Callback: type { _(: gameplay_conditional_context): void })<transacts>: result(gameplay_conditional_listener_handle, []register_gameplay_conditional_error)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  RevokeQuest<native><epic_internal>(Quest: quest)<transacts>: result(void, []remove_quest_error)
+  RegisterInstancedVerbFilter<native><epic_internal>(VerbFilter: verb_filter, Callback: type { _(: entity, : scene_event, : float): void })<transacts>: result(verb_listener_handle, []register_verb_error)
 
-  add_quest_error<native><public> := class<epic_internal> {}
+  @available { MinUploadedAtFNVersion := 4000 }
+  RegisterSharedVerbFilter<native><epic_internal>(VerbFilter: verb_filter, Callback: type { _(: entity, : scene_event, : float): void })<transacts>: result(verb_listener_handle, []register_verb_error)
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  RegisterVerbFilter<native><epic_internal>(VerbFilterType: subtype(verb_filter), Callback: type { _(: entity, : scene_event, : float): void })<transacts>: result(verb_listener_handle, []register_verb_error)
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  RegisterVerbMessage<native><epic_internal>(VerbMessageType: subtype(scene_event), Callback: type { _(: entity, : scene_event): void })<transacts>: result(verb_listener_handle, []register_verb_error)
+
+  RestoreQuestData<native><epic_internal>(Data: quest_progress_data)<transacts><decides>: quest
+
+  SnapshotQuestData<native><epic_internal>(Quest: quest)<reads>: quest_progress_data
+
+  composite_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
+    Children<native><epic_internal>: []objective_snapshot = external {}
+
+    CompletedCount<native><epic_internal>: int = external {}
+
+    ObjectiveId<native><epic_internal>: string = external {}
+
+    ObjectiveVersePath<native><epic_internal>: string = external {}
+
+    RequiredCount<native><epic_internal>: int = external {}
+  }
+
+  using { /Fortnite.com/Marketplace }
+  using { /Verse.org/Native }
+  using { /Verse.org/Progression }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/StateMachine }
+  composite_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
+    GetProgress<override><native>()<reads>: message
+
+    IsComplete<override><native>()<reads><decides>: void
+
+    OnActivate<override><native>(): void
+
+    var Objectives<native><epic_internal>: []quest_objective = external {}
+
+    var<private> RequiredCount<native><epic_internal>: int = external {}
+  }
+
+  conditional_quest_objective<native><epic_internal> := class<epic_internal>(
+    progress_quest_objective,
+    has_gameplay_conditionals
+  ) {
+    OnAbandon<override>(QuestParticipant: quest_participant): void = external {}
+
+    OnActivate<override>(): void = external {}
+
+    OnConditionalExecuted<override>(Context: gameplay_conditional_context): void = external {}
+
+    OnDeactivate<override>(): void = external {}
+
+    OnJoin<override>(QuestParticipant: quest_participant): void = external {}
+
+    var RegisteredHandles<epic_internal>: []gameplay_conditional_listener_handle = external {}
+  }
+
+  contextual_reactions_cache<epic_internal> := class<unique><epic_internal> {
+    Invalidate<epic_internal>(): void = external {}
+
+    OnGameplayConditionalTriggered<epic_internal>(Context: gameplay_conditional_context): void = external {}
+
+    OwningComponent<epic_internal>: contextual_reactions_component
+
+    Reactions<epic_internal>: []gameplay_reaction
+
+    var Handle<epic_internal>: ?gameplay_conditional_listener_handle = external {}
+  }
+
+  contextual_reactions_component<native><epic_internal> := class<final_super><epic_internal>(component) {
+    Events<epic_internal>: []tuple(gameplay_conditional, []gameplay_reaction)
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    var Caches<epic_internal>: []contextual_reactions_cache = external {}
+  }
+
+  ecosystem_entitlement<native><epic_internal> := class<abstract>(entitlement) {
+    PaidArea<override><final>: logic = external {}
+
+    PaidRandomItem<override><final>: logic = external {}
+  }
+
+  entitlement_quest_reward<native><epic_internal> := class<epic_internal>(quest_reward) {
+    @available { MinUploadedAtFNVersion := 4000 }
+    GrantReward<override><native>(EligibleParticipants: []quest_participant)<transacts>: result(
+      void,
+      []grant_quest_reward_error
+    )
+
+    var Entitlement<native><epic_internal>: subtype(entitlement)
+
+    var Quantity<native><epic_internal>: int = external {}
+  }
 
   execute_gameplay_reaction_error<native><public> := class<epic_internal> {}
 
@@ -2057,21 +1796,21 @@ Progression<public> := module {
 
     Execute<native><final><epic_internal>(ContextObject: gameplay_conditional_context): void
 
-    OnInitialization<native><epic_internal>(ContextAnchor: entity): void
+    OnInitialization<native_callable><epic_internal>(ContextAnchor: entity): void
 
-    OnInvalidation<native><epic_internal>(): void
+    OnInvalidation<native_callable><epic_internal>(): void
 
-    OnParticipantAdded<native><epic_internal>(Participant: entity): void
+    OnParticipantAdded<native_callable><epic_internal>(Participant: entity): void
 
-    OnParticipantRemoved<native><epic_internal>(Participant: entity): void
+    OnParticipantRemoved<native_callable><epic_internal>(Participant: entity): void
   }
 
   gameplay_conditional_attribute<native><epic_internal> := class<abstract> {
-    Evaluate<native><epic_internal>()<decides>: void
+    Evaluate<native_callable><epic_internal>()<decides>: void
 
-    OnInitialization<native><epic_internal>(ContextAnchor: entity): void
+    OnInitialization<native_callable><epic_internal>(ContextAnchor: entity): void
 
-    OnInvalidation<native><epic_internal>(): void
+    OnInvalidation<native_callable><epic_internal>(): void
   }
 
   gameplay_conditional_context<native><epic_internal> := class {
@@ -2083,14 +1822,36 @@ Progression<public> := module {
   gameplay_conditional_listener_handle<native><final><epic_internal> := class {
     AddParticipant<native><epic_internal>(Participant: entity): void
 
+    GetParticipants<native><epic_internal>()<reads>: []entity
+
+    IsRegistered<native><epic_internal>()<transacts><decides>: void
+
     RemoveParticipant<native><epic_internal>(Participant: entity): void
 
     Unregister<native><epic_internal>(): void
   }
 
+  gameplay_conditional_verbs<epic_internal> := class(gameplay_conditional) {
+    OnInitialization<override>(ContextAnchor: entity): void = external {}
+
+    OnInvalidation<override>(): void = external {}
+
+    OnParticipantAdded<override>(Participant: entity): void = external {}
+
+    OnParticipantRemoved<override>(Participant: entity): void = external {}
+
+    OnVerbMessageReceived<protected>(Author: entity, SceneEvent: scene_event): void = external {}
+
+    OnVerbMessageReceivedWithDelta<protected>(Author: entity, SceneEvent: scene_event, Delta: float): void = external {}
+
+    VerbFilterTypes<epic_internal>: []subtype(verb_filter)
+
+    VerbMessageTypes<epic_internal>: []subtype(scene_event)
+  }
+
   gameplay_reaction<native><epic_internal> := class<abstract> {
     @available { MinUploadedAtFNVersion := 4000 }
-    Execute<native><epic_internal>(ContextObject: gameplay_reaction_context): result(
+    Execute<native_callable><epic_internal>(ContextObject: gameplay_reaction_context)<transacts>: result(
       void,
       []execute_gameplay_reaction_error
     )
@@ -2102,211 +1863,315 @@ Progression<public> := module {
     Target<native><epic_internal>: entity
   }
 
-  using { /Verse.org/Simulation }
-  modular_quest<native><public> := interface<epic_internal> {
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<epic_internal>(QuestParticipant: quest_participant): result(comparable, []abandon_quest_error) = external {}
+  has_gameplay_conditionals<native><epic_internal> := interface<epic_internal> {
+    Conditionals<epic_internal>: []subtype(gameplay_conditional) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanAdd<epic_internal>(QuestOwner: quest_owner): result(comparable, []add_quest_error) = external {}
-
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<epic_internal>(QuestParticipant: quest_participant): result(comparable, []join_quest_error) = external {}
-
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanRemove<epic_internal>(QuestOwner: quest_owner): result(comparable, []remove_quest_error) = external {}
-
-    Extensions<epic_internal>: []quest_extension
-
-    Initialize<final><epic_internal>(): void = external {}
-
-    OnAbandon<epic_internal>(QuestParticipant: quest_participant): void = external {}
-
-    OnAdd<epic_internal>(QuestOwner: quest_owner): void = external {}
-
-    OnComplete<epic_internal>(): void = external {}
-
-    OnInitialization<epic_internal>(): void = external {}
-
-    OnJoin<epic_internal>(QuestParticipant: quest_participant): void = external {}
-
-    OnRemove<epic_internal>(QuestOwner: quest_owner): void = external {}
-
-    OnUninitialization<epic_internal>(): void = external {}
-
-    Uninitialize<final><epic_internal>(): void = external {}
+    OnConditionalExecuted<native_callable><epic_internal>(Context: gameplay_conditional_context): void
   }
 
-  using { /Verse.org/Progression }
-  progress_quest<native><public> := class<abstract><epic_internal>(quest) {
-    GetProgress<native><final><public>()<reads>: int
+  has_gameplay_reactions<native><epic_internal> := interface<epic_internal> {
+    Reactions<epic_internal>: []gameplay_reaction = external {}
 
-    ProgressEvent<native><final><public>: listenable(tuple(quest, int)) = external {}
-
-    RequiredCount<native><public>: int
-
-    SetProgress<native><final><public>(Amount: int): void
+    TriggerReactions<epic_internal>(Context: gameplay_reaction_context)<transacts>: void = external {}
   }
 
-  quest_extension<native><public> := class<abstract><castable><epic_internal> {
+  locker_entitlement<native><epic_internal> := class(ecosystem_entitlement) {
+    Consumable<override><final>: logic = external {}
+
+    MaxCount<override><final>: int = external {}
+  }
+
+  modular_quest<native><epic_internal> := class<epic_internal>(basic_quest) {
     @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<native><epic_internal>(QuestParticipant: quest_participant): result(void, []abandon_quest_error)
+    CanAbandon<override><native>(QuestParticipant: quest_participant)<reads>: result(void, []abandon_quest_error)
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanAdd<native><epic_internal>(Owner: quest_owner): result(void, []add_quest_error)
+    CanJoin<override><native>(QuestParticipant: quest_participant)<reads>: result(void, []join_quest_error)
+
+    Extensions<native><epic_internal>: []quest_extension
+
+    OnAbandon<override><native>(QuestParticipant: quest_participant): void
+
+    OnActivate<override><native>(): void
+
+    OnComplete<override><native>(): void
+
+    OnDeactivate<override><native>(): void
+
+    OnJoin<override><native>(QuestParticipant: quest_participant): void
+  }
+
+  objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
+    Composite<native><epic_internal>: ?composite_objective_snapshot = external {}
+
+    Progress<native><epic_internal>: ?progress_objective_snapshot = external {}
+
+    Sequential<native><epic_internal>: ?sequential_objective_snapshot = external {}
+
+    StateMachine<native><epic_internal>: ?state_machine_objective_snapshot = external {}
+
+    Timed<native><epic_internal>: ?timed_objective_snapshot = external {}
+  }
+
+  progress_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
+    ObjectiveId<native><epic_internal>: string = external {}
+
+    ObjectiveVersePath<native><epic_internal>: string = external {}
+
+    Progress<native><epic_internal>: float = external {}
+
+    RequiredCount<native><epic_internal>: float = external {}
+  }
+
+  progress_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
+    AddProgress<native><final><epic_internal>(Amount: float)<transacts>: void
+
+    GetProgress<override><native>()<reads>: message
+
+    GetProgressCount<native><final><epic_internal>(): float
+
+    IsComplete<override><native>()<reads><decides>: void
+
+    SetProgress<native><final><epic_internal>(Amount: float)<transacts>: void
+
+    SetRequiredCount<native><final><epic_internal>(Amount: float)<transacts>: void
+
+    var<private> Progress<native><epic_internal>: float
+
+    var<private> RequiredCount<native><epic_internal>: float
+  }
+
+  quest_extension<native><epic_internal> := class<abstract><castable><epic_internal> {
+    @available { MinUploadedAtFNVersion := 4000 }
+    CanAbandon<native><epic_internal>(QuestParticipant: quest_participant)<reads>: result(void, []abandon_quest_error)
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<native><epic_internal>(QuestParticipant: quest_participant): result(void, []join_quest_error)
+    CanJoin<native><epic_internal>(QuestParticipant: quest_participant)<reads>: result(void, []join_quest_error)
 
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanRemove<native><epic_internal>(Owner: quest_owner): result(void, []remove_quest_error)
-
-    GetOwningQuest<native><epic_internal>(): quest
+    GetOwningQuest<native><final><epic_internal>()<reads>: quest
 
     OnAbandon<native><epic_internal>(QuestParticipant: quest_participant): void
 
-    OnAdd<native><epic_internal>(Owner: quest_owner): void
+    OnActivate<native><epic_internal>(): void
 
     OnComplete<native><epic_internal>(): void
 
-    OnInitialization<native><epic_internal>(): void
+    OnDeactivate<native><epic_internal>(): void
 
     OnJoin<native><epic_internal>(QuestParticipant: quest_participant): void
-
-    OnRemove<native><epic_internal>(Owner: quest_owner): void
-
-    OnUninitialization<native><epic_internal>(): void
   }
 
-  quest_granter<native><public> := interface<epic_internal> {
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanGrant<epic_internal>(QuestOwner: quest_owner): result(comparable, []add_quest_error) = external {}
+  quest_objective_state<native><epic_internal> := class<final_super><epic_internal>(state) {
+    OnEnter<override><native>(): void
 
-    GrantEvent<final><epic_internal>: subscribable_event_intrnl(tuple(quest, quest_owner)) = external {}
+    OnExit<override><native>(): void
 
-    OnGrant<epic_internal>(Quest: quest, QuestOwner: quest_owner): void = external {}
-
-    QuestsToGrant<epic_internal>: []subtype(quest)
+    var Objective<native><epic_internal>: quest_objective
   }
 
-  quest_granter_component<native><public> := class<final_super><epic_internal>(component, quest_granter) {}
+  quest_progress_data<native><epic_internal> := class<final><persistable><epic_internal> {
+    Objective<native><epic_internal>: ?objective_snapshot = external {}
 
-  quest_owner<native><public> := interface<epic_internal> {
-    AddEvent<final><epic_internal>: listenable(tuple(quest, quest_owner)) = external {}
+    QuestId<native><epic_internal>: string = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanAdd<epic_internal>(Quest: quest): result(comparable, []add_quest_error) = external {}
+    QuestVersePath<native><epic_internal>: string = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanRemove<epic_internal>(Quest: quest): result(comparable, []remove_quest_error) = external {}
-
-    CompleteEvent<final><epic_internal>: listenable(tuple(quest, quest_owner)) = external {}
-
-    OnAdd<epic_internal>(Quest: quest): void = external {}
-
-    OnRemove<epic_internal>(Quest: quest): void = external {}
-
-    RemoveEvent<final><epic_internal>: listenable(tuple(quest, quest_owner)) = external {}
+    State<native><epic_internal>: quest_state = external {}
   }
-
-  quest_owner_component<native><public> := class<final_super><epic_internal>(component, quest_owner) {}
-
-  quest_participant<native><public> := interface<epic_internal> {
-    AbandonEvent<final><epic_internal>: listenable(tuple(quest, quest_participant)) = external {}
-
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<epic_internal>(Quest: quest): result(comparable, []abandon_quest_error) = external {}
-
-    @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<epic_internal>(Quest: quest): result(comparable, []join_quest_error) = external {}
-
-    CompleteEvent<final><epic_internal>: listenable(tuple(quest, quest_participant)) = external {}
-
-    JoinEvent<final><epic_internal>: listenable(tuple(quest, quest_participant)) = external {}
-
-    OnAbandon<epic_internal>(Quest: quest): void = external {}
-
-    OnJoin<epic_internal>(Quest: quest): void = external {}
-
-    OwningUser<epic_internal>: user
-  }
-
-  quest_participant_component<native><public> := class<final_super><epic_internal>(component, quest_participant) {}
 
   register_gameplay_conditional_error<native><public> := class<epic_internal> {}
 
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
   register_verb_error<native><public> := class<epic_internal> {}
 
-  remove_quest_error<native><public> := class<epic_internal> {}
+  sequential_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
+    Children<native><epic_internal>: []objective_snapshot = external {}
 
-  transfer_quest_ownership_error<native><public> := class<epic_internal> {}
+    CurrentIndex<native><epic_internal>: int = external {}
 
-  @experimental
+    ObjectiveId<native><epic_internal>: string = external {}
+
+    ObjectiveVersePath<native><epic_internal>: string = external {}
+  }
+
+  sequential_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
+    GetProgress<override><native>()<reads>: message
+
+    IsComplete<override><native>()<reads><decides>: void
+
+    OnActivate<override><native>(): void
+
+    var Objectives<native><epic_internal>: []quest_objective
+
+    var<private> CurrentStageIndex<native><epic_internal>: int = external {}
+  }
+
+  state_machine_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
+    CurrentStateId<native><epic_internal>: string = external {}
+
+    ObjectiveId<native><epic_internal>: string = external {}
+
+    ObjectiveVersePath<native><epic_internal>: string = external {}
+  }
+
+  state_machine_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
+    GetProgress<override><native>()<reads>: message
+
+    IsComplete<override><native>()<reads><decides>: void
+
+    UpdateCurrentState<native><epic_internal>(): void
+
+    var (/UnrealEngine.com/Progression/state_machine_quest_objective:)StateMachine<native><epic_internal>: state_machine
+
+    var CompletionStates<native><epic_internal>: []state
+
+    var<private> CurrentState<native><epic_internal>: ?quest_objective_state = external {}
+  }
+
+  timed_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
+    Inner<native><epic_internal>: ?objective_snapshot = external {}
+
+    ObjectiveId<native><epic_internal>: string = external {}
+
+    ObjectiveVersePath<native><epic_internal>: string = external {}
+
+    TimeRemainingMs<native><epic_internal>: int = external {}
+  }
+
+  timed_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
+    GetProgress<override><native>()<reads>: message
+
+    IsComplete<override><native>()<reads><decides>: void
+
+    TimeExpiredEvent<native><final><epic_internal>: listenable(timed_quest_objective) = external {}
+
+    UpdateTimeRemaining<native><epic_internal>(DeltaSeconds: float)<transacts>: void
+
+    var Objective<native><epic_internal>: quest_objective
+
+    var TimeLimit<native><epic_internal>: float
+
+    var<private> TimeRemaining<native><epic_internal>: float
+  }
+
   verb_filter<native><public> := class<abstract><epic_internal> {
-    Evaluate<native><epic_internal>(SceneEvent: scene_event)<decides>: void
+    Evaluate<native_callable><epic_internal>(SceneEvent: scene_event)<decides>: void
 
-    GetDelta<native><epic_internal>(SceneEvent: scene_event): float
+    GetDelta<native_callable><epic_internal>(SceneEvent: scene_event): float
   }
 
   verb_listener_handle<native><final><public> := class<epic_internal> {
     AddParticipant<native><epic_internal>(Entity: entity)<transacts>: void
+
+    GetParticipants<native><epic_internal>()<reads>: []entity
+
+    IsRegistered<native><epic_internal>()<transacts><decides>: void
 
     RemoveParticipant<native><epic_internal>(Entity: entity)<transacts>: void
 
     Unregister<native><epic_internal>(): void
   }
 
-  @experimental
   verb_router_component<native><public> := class<final_super><epic_internal>(component) {
     @available { MinUploadedAtFNVersion := 4000 }
     OnReceive<override>(SceneEvent: scene_event): logic = external {}
   }
+
+  xp_entitlement<native><epic_internal> := class(ecosystem_entitlement) {
+    Consumable<override><final>: logic = external {}
+  }
 }
 
-# Module import path: /UnrealEngine.com/SceneGraph
-(/UnrealEngine.com:)SceneGraph<public> := module {
-  using { /Verse.org/Native }
-  @available { MinUploadedAtFNVersion := 3800 }
-  # Module import path: /UnrealEngine.com/SceneGraph/UI
-  (/UnrealEngine.com/SceneGraph:)UI<public> := module {
-    using { /UnrealEngine.com/Temporary/UI }
-    using { /Verse.org/SceneGraph/UI }
-    @experimental
-    umg_frame_component<native><epic_internal> := class<abstract>(ui_frame_component) {
-      Asset<native><epic_internal>: umg_widget_class_asset
+# Module import path: /UnrealEngine.com/StateMachine
+(/UnrealEngine.com:)StateMachine<public> := module {
+  # Creates a new unique state handle. Each call returns a handle with a unique Id.
+  MakeStateHandle<native><public>(): state_handle
 
-      GetNamedSlotOptional_<native><epic_internal>(NamedSlotName: []char)<transacts>: ?(/UnrealEngine.com/Temporary/UI:)widget
+  using { /Verse.org/StateMachine }
+  # Module import path: /UnrealEngine.com/StateMachine/Patterns
+  Patterns<public> := module {
+    # Makes states from a list of factories.  Try each factory until one succeeds.  Returns the leaf states of the first factory that succeed.  Fails if no factory succeed.
+    LinearSelector<epic_internal>(Factories: []type { _()<transacts><decides>: make_leaves_result })<transacts><decides>: select_leaves_result = external {}
 
-      GetNamedSlot_<native><epic_internal>(NamedSlotName: []char)<transacts>: (/UnrealEngine.com/Temporary/UI:)widget
+    # Makes states from a list of factories.  Try each factory until one succeeds.  Returns the leaf states of the first factory that succeed.  Fails if no factory succeed.  Used when the states can be injected or dynamic.
+    LinearSelectorFrom<epic_internal>((Parent: t, Factories: []type { _(: t)<transacts><decides>: make_leaves_result }) where t: type)<transacts><decides>: select_leaves_result = external {}
 
-      GetViewmodelOptional_<native><epic_internal>(viewmodel_type: type, ViewmodelName: []char)<transacts>: viewmodel_type
+    # Makes states from a list of factories.  Try each factory in order and compare the weighted score of each factory.  The factory with the biggest weighted score wins.  Returns the leaf states of the factory that succeed and has the biggest score.  Fails if no factory succeed.
+    MaxWeightSelector<epic_internal>(Factories: []type { _()<transacts><decides>: scored_leaves_result })<transacts><decides>: select_scored_leaves_result = external {}
 
-      GetViewmodel_<native><epic_internal>(viewmodel_type: type, ViewmodelName: []char)<transacts>: viewmodel_type
+    # Makes states from a list of factories.  Try each factory in order and compare the weighted score of each factory.  The factory with the biggest weighted score wins.  Returns the leaf states of the factory that succeed  and has the biggest score.  Fails if no factory succeed.  Used when the states can be injected or dynamic.
+    MaxWeightSelectorFrom<epic_internal>((Parent: t, Factories: []type { _(: t)<transacts><decides>: scored_leaves_result }) where t: type)<transacts><decides>: select_scored_leaves_result = external {}
 
-      SetNamedSlotOptional_<native><epic_internal>(
-        NamedSlotName: []char,
-        NamedSlotInstance: ?(/UnrealEngine.com/Temporary/UI:)widget
-      )<transacts>: void
+    # Makes states from a list of factories.  Try each factory in a random order until one succeeds.  Returns the leaf states of the first random factory that succeed.  Fails if no factory succeed.
+    RandomSelector<epic_internal>(Factories: []type { _()<transacts><decides>: make_leaves_result })<transacts><decides>: select_leaves_result = external {}
 
-      SetNamedSlot_<native><epic_internal>(
-        NamedSlotName: []char,
-        NamedSlotInstance: (/UnrealEngine.com/Temporary/UI:)widget
-      )<transacts>: void
+    # Makes states from a list of factories.  Try each factory in a random order until one succeeds.  Returns the leaf states of the first random factory that succeed.  Fails if no factory succeed.  Used when the states can be injected or dynamic.
+    RandomSelectorFrom<epic_internal>((Parent: t, Factories: []type { _(: t)<transacts><decides>: make_leaves_result }) where t: type)<transacts><decides>: select_leaves_result = external {}
 
-      SetViewmodelOptional_<native><epic_internal>(
-        viewmodel_type: type,
-        ViewmodelName: []char,
-        ViewmodelInstance: viewmodel_type
-      )<transacts>: void
+    # Makes states from a list of factories.  Try each factory in the sequence from the provided Index.  Returns the leaf states of the first factory that succeed from Index.  Fails if no factory succeed.
+    TrySequencer<epic_internal>(Factories: []type { _()<transacts><decides>: make_leaves_result }, Index: int)<transacts><decides>: select_leaves_result = external {}
 
-      SetViewmodel_<native><epic_internal>(
-        viewmodel_type: type,
-        ViewmodelName: []char,
-        ViewmodelInstance: viewmodel_type
-      )<transacts>: void
-    }
+    # Makes states from a list of factories.  Try each factory in the sequence from the provided Index.  Returns the leaf states of the first factory that succeed from Index.  Fails if no factory succeed.  Used when the states can be injected or dynamic.
+    TrySequencerFrom<epic_internal>((Parent: t, Factories: []type { _(: t)<transacts><decides>: make_leaves_result }, Index: int) where t: type)<transacts><decides>: select_leaves_result = external {}
+  }
+
+  # The result of a MakeLeaves function.  Contains the terminal states of the selection.  It can returns more than one leaf if it contains parallel states.
+  make_leaves_result<epic_internal> := struct {
+    Leaves: []state = external {}
+  }
+
+  make_state_result<epic_internal>(state_type: type) := struct {
+    Leaves: []state
+
+    State: state_type
+  }
+
+  # The result of a MakeLeaves with an heuristic function.  Contains the terminal states of the selection and the index of the selected factory.
+  scored_leaves_result<epic_internal> := struct {
+    Leaves: []state = external {}
+
+    Score: float
+  }
+
+  # The result of a selector pattern such as LinearSelector or RandomSelector.  Contains the terminal states of the selection and the index of the selected factory.
+  select_leaves_result<epic_internal> := struct {
+    Index: int
+
+    Leaves: []state = external {}
+  }
+
+  # The result of a heuristic selector pattern such as UtilitiesWeightedSelector. .  Contains the terminal states of the selection and the index of the selected factory.
+  select_scored_leaves_result<epic_internal> := struct {
+    Index: int
+
+    Leaves: []state = external {}
+
+    Score: float
+  }
+
+  # Event sent via SendUp when a final state completes.  Propagates up the parent chain until a parent handles it in OnReceive.
+  state_completed_event<epic_internal> := class(state_event) {
+    Result<public>: state_completed_result
+  }
+
+  # The result of a state's completion.  Used by final states to signal whether they completed successfully or failed.
+  state_completed_result<epic_internal> := enum {
+    Failure
+
+    Success
+  }
+
+  # A comparable, hashable handle that uniquely identifies a state factory.  Created via MakeStateHandle. Cannot be constructed directly by external code.  Use this to register, unregister, and identify factories.
+  state_handle<native><public> := struct<concrete><computes> {
+    Id<native>: int = external {}
+  }
+
+  # State that starts a suspends task and ends the task when it exits
+  suspended_state<epic_internal> := class<abstract><unique><final_super>(state) {
+    OnEnter<override>(): void = external {}
+
+    OnExit<override>(): void = external {}
+
+    OnSimulate<public>()<suspends>: void = external {}
   }
 }
 
@@ -3062,6 +2927,7 @@ Temporary<public> := module {
     using { /Verse.org/SpatialMath }
     @editable
     @import_as("/Script/EpicGamesTemporary.FVerseRotation_Deprecated")
+    # An abstract representation of an orientation change in 3d-space.
     (/UnrealEngine.com/Temporary/SpatialMath:)rotation<native><public> := struct<concrete> {}
 
     # A combination of scale, rotation, and translation, applied in that order.
@@ -3132,6 +2998,15 @@ Temporary<public> := module {
       # Prints a json summary of test results to the log stream.
       PrintSummaryJson<native><epic_internal>(): void
 
+      # Report a test result of `Blocked`. `Category` and `SubCategory` are used to calculate test result stats as part of printing the summary.
+      ReportTestBlocked<native><epic_internal>(
+        Message: string,
+        ?Category: string = external {},
+        ?SubCategory: string = external {},
+        ?StartTimeSec: float = external {},
+        ?DurationSec: float = external {}
+      ): void
+
       # Report a test result of `Failed`. `Category` and `SubCategory` are used to calculate test result stats as part of printing the summary.
       ReportTestFailed<native><epic_internal>(
         Message: string,
@@ -3176,6 +3051,8 @@ Temporary<public> := module {
     using { /UnrealEngine.com/Temporary/Diagnostics }
     # test result outcomes
     test_result<native><epic_internal> := enum {
+      Blocked
+
       Failed
 
       Passed
@@ -3993,6 +3870,9 @@ Tests<public> := module {
       ForceGarbageCollectionOnAllClients<native><epic_internal>(): void
 
       GetSavedDir<native><epic_internal>(): string
+
+      # Returns true when running on the new Verse VM (VVM); false on legacy Blueprint VM (BPVM). Build-time decision; never changes at runtime.
+      IsVVM<native><epic_internal>()<computes>: logic
 
       PrintEpicAPIFunctionLog<native><public>(): void
 

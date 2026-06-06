@@ -13,7 +13,9 @@
 			"/Script/MetaHumanFaceFittingSolver.MetaHumanFaceFittingSolver":			{ "Rules": ["View","Create"] },
 			"/Script/MetaHumanSequencer.MetaHumanMovieSceneMediaTrack":					{ "Rules": ["View","Create"], "Subclasses": "All" },
 			"/Script/MetaHumanSequencer.MetaHumanAudioTrack":							{ "Rules": ["View","Create"], "Subclasses": "All" },
-			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneAudioTrack":    { "Rules": ["View","Create"] }
+			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneAudioTrack":    { "Rules": ["View","Create"] },
+			"/Script/RigLogicModule.DNA":												{ "Rules": ["View","Create"] },
+			"/Script/RigLogicModule.DNAAssetUserData":									{ "Rules": ["View","Create"] }
 		},
 		"AllowedClasses": {
 			"/Script/MetaHumanSDKRuntime.MetaHumanCustomizableBodyPart": {},
@@ -54,7 +56,9 @@
 			"/Script/MetaHumanFaceFittingSolver.MetaHumanFaceFittingSolver": 	{  },
 			"/Script/MetaHumanSequencer.MetaHumanMovieSceneMediaTrack": 		{ "Visible": true, "Subclasses": "All" },
 			"/Script/MetaHumanSequencer.MetaHumanAudioTrack": 					{ "Visible": true, "Subclasses": "All" },
-			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneAudioTrack": { "Visible": true, "Subclasses": "All" }
+			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneAudioTrack": { "Visible": true, "Subclasses": "All" },
+			"/Script/RigLogicModule.DNA": 										{  },
+			"/Script/RigLogicModule.DNAAssetUserData": 							{  }
 		},
 		"AllowedMenus": {
 			"LevelEditor.MainMenu.Window": {

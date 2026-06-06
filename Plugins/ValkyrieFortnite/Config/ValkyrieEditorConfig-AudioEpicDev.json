@@ -8,6 +8,8 @@
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View", "Create", "ModuleAPI"] },
 			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent": 		{ "Rules": ["View","Create"] },
 			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Rules": [ "View", "Create" ] },
+			"/Script/AudioMixer.SubmixEffectSubmixEQPreset":		{ "Rules": [ "View", "Create" ] },
+			"/Script/Synthesis.SubmixEffectFilterPreset":		{ "Rules": [ "View", "Create" ] },
 			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create" ] },
 			"/Script/Engine.SoundBase":							{ "Rules": ["View","Create","Import"] },
 			"/Script/Engine.SoundConcurrency":					{ "Rules": ["View","Create","ModuleAPI"] },
@@ -28,6 +30,8 @@
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 				{ "Visible": true },
 			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent":{ "Visible": true },
 			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Visible": true },
+			"/Script/AudioMixer.SubmixEffectSubmixEQPreset":		{ "Visible": true },
+			"/Script/Synthesis.SubmixEffectFilterPreset":		{ "Visible": true },
 			"/Script/Engine.SoundEffectSubmixPreset":		{ "Visible": true },
 			"/Script/FortniteGame.FortAmbientAudioVolume":				{ "Visible": true },
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Visible": true },
@@ -35,11 +39,13 @@
 			"/Script/HarmonixMetasound.MusicClockComponent":            {  },
 			"/Script/Engine.SubtitleAssetData":										{ "Visible": true },
 			"/Script/Engine.SubtitleAssetUserData":									{ "Visible": true },
-			"/Script/SubtitlesAndClosedCaptions.MovieSceneSubtitleSection":			{ "Visible": true },
+			"/Script/SubtitlesAndClosedCaptions.MovieSceneSubtitleSection":			{ },
 			"/Script/SubtitlesAndClosedCaptions.MovieSceneSubtitlesTrack":			{ "Visible": true },
 			"/Script/Engine.AudioBus": 										{ "Visible": true },
 			"/Script/AudioModulation.SoundModulationGenerator": 					{ "Visible": true },
 			"/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower": 					{ "Visible": true },
+			"/Script/AudioModulation.MovieSceneAudioControlBusSection":			{},
+			"/Script/AudioModulation.MovieSceneAudioControlBusTrack":			{ "Visible": true },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleFactory":				{  },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetDefinitions":	{  },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetActionUtility":	{ "Visible": true }
@@ -109,7 +115,11 @@
 					"NonFocusVolumeAttenuation",
 					"bEnableFocusInterpolation",
 					"FocusAttackInterpSpeed",
-					"FocusReleaseInterpSpeed"
+					"FocusReleaseInterpSpeed",
+					"NonSpatializedRadiusStart",
+					"NonSpatializedRadiusEnd",
+					"CustomAttenuationCurve",
+					"NonSpatializedRadiusMode"
 				]
 			},
 			{

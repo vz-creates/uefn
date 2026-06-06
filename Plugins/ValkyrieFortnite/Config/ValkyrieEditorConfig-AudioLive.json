@@ -61,14 +61,19 @@
       "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObject":							{ "Visible": true },
       "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultObjectArray":						{ "Visible": true },
       "/Script/MetasoundEditor.MetasoundEditorGraphMemberDefaultLiteral":							{ "Visible": true },
-      "/Script/MetasoundFrontend.MetaSoundFrontendPresetConfigurationVertexMetadata":					{ "Visible": true },
-      "/Script/MetasoundFrontend.MetaSoundFrontendPresetDocumentConfiguration":							{ "Visible": true },
+      "/Script/MetasoundFrontend.MetaSoundFrontendPresetVertexMetadata":						{ "Visible": true },
+      "/Script/MetasoundFrontend.MetaSoundFrontendPresetTemplate":							{ "Visible": true },
       "/Script/SoundLibrary.SoundLibraryComponent":												{  }
     },
     "AllowedMenus": {
       "ContentBrowser.AssetContextMenu.SoundWave": {
         "DenyList": {
           "+": [ "SoundWave_CreateImpulseResponse", "SoundWave_CreateTimeSynthClip", "SoundWave_CreateTimeSynthClipSet", "TimeSynthSoundWaveAsset", "SoundWave_CreateMotoSynthSource", "SoundWave_CreateSoundCueTemplate", "SoundWave_CreateWaveformEditor", "SoundWave_CreateDialogue" ]
+        }
+      },
+      "ContentBrowser.AssetContextMenu.SoundWave.ImportedAssetActions": {
+        "DenyList": {
+          "+": [ "SoundWave_ReimportAndOverwriteTransformations" ]
         }
       }
     }
@@ -147,7 +152,7 @@
 			},
       {
 				"Type": "/Script/MetasoundEngine.MetaSoundSource",
-				"AllowList": [ "RootMetasoundDocument", "ReferencedAssetClassKeys", "ReferencedAssetClassObjects", "QualitySetting", "QualitySettingGuid", "AssetImportData", "MaxDistance", "bLooping" ],
+				"AllowList": [ "RootMetasoundDocument", "ReferencedAssetClassKeys", "ReferencedAssetClassObjects", "QualitySetting", "QualitySettingGuid", "AssetImportData", "MaxDistance", "bLooping", "OutputFormat", "AssetClassID", "RegistryInputTypes", "RegistryOutputTypes", "RegistryVersionMajor", "RegistryVersionMinor", "bIsPreset" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			}
@@ -157,7 +162,7 @@
 		"+": [
       {
 				"Type": "/Script/Engine.SoundAttenuationSettings",
-				"AllowList": [ "bEnableReverbSend", "bEnableSendToAudioLink", "StereoSpread", "SubmixSendSettings", "NonSpatializedRadiusStart", "CustomAttenuationCurve", "AttenuationShape", "bEnableSubmixSends" ],
+				"AllowList": [ "bEnableReverbSend", "bEnableSendToAudioLink", "StereoSpread", "SubmixSendSettings", "NonSpatializedRadiusStart", "CustomAttenuationCurve", "AttenuationShape", "bEnableSubmixSends", "bEnableOcclusion", "LPFRadiusMin", "LPFRadiusMax" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			}

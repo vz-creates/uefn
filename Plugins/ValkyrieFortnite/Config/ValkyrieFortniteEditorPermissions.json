@@ -145,6 +145,7 @@
 			"/Script/ControlRig.RigControlLimitEnabled",
 			"/Script/ControlRig.RigPose",
 			"/Script/ControlRig.CachedRigElement",
+			"/Script/ControlRig.CachedRigComponent",
 			"/Script/ControlRig.ConstraintParent",
 			"/Script/ControlRig.ControlRigShapeDefinition",
 			"/Script/ControlRig.ControlRigComponentMappedElement",
@@ -197,18 +198,45 @@
 			"/Script/ControlRig.CRSimPointForce",
 			"/Script/ControlRig.CRSimSoftCollision",
 			"/Script/ControlRig.RigUnit_SpringIK_DebugSettings",
+			"/Script/ControlRigDynamics.ParticleChainCurves",
+			"/Script/ControlRigDynamics.RigDynamicsForceFieldCurves",
+			"/Script/ControlRigDynamics.RigDynamicsInertialForceSettings",
+			"/Script/ControlRigDynamics.RigDynamicsParticleForce",
+			"/Script/ControlRigDynamics.RigDynamicsParticleProperties",
+			"/Script/ControlRigDynamics.RigDynamicsShapeBox",
+			"/Script/ControlRigDynamics.RigDynamicsShapeCapsule",
+			"/Script/ControlRigDynamics.RigDynamicsShapeCollection",
+			"/Script/ControlRigDynamics.RigDynamicsShapeCollectionWithKey",
+			"/Script/ControlRigDynamics.RigDynamicsShapePlane",
+			"/Script/ControlRigDynamics.RigDynamicsSimulationDragSettings",
+			"/Script/ControlRigDynamics.RigDynamicsSimulationSpaceMotion",
+			"/Script/ControlRigDynamics.RigDynamicsSimulationSpaceSettings",
+			"/Script/ControlRigDynamics.RigDynamicsSolverCreationSettings",
+			"/Script/ControlRigDynamics.RigDynamicsSolverSettings",
+			"/Script/ControlRigDynamics.RigDynamicsTeleportDetectionSettings",
+			"/Script/ControlRigDynamics.RigDynamicsVisualizationSettings",
 			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings",
 			"/Script/ControlRigPhysics.RigPhysicsCollision",
 			"/Script/ControlRigPhysics.RigPhysicsCollisionBox",
 			"/Script/ControlRigPhysics.RigPhysicsCollisionCapsule",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionConvex",
+			"/Script/ControlRigPhysics.RigPhysicsCollisionShape",
 			"/Script/ControlRigPhysics.RigPhysicsCollisionSphere",
+			"/Script/ControlRigPhysics.RigPhysicsConeLimit",
 			"/Script/ControlRigPhysics.RigPhysicsDriveData",
 			"/Script/ControlRigPhysics.RigPhysicsDynamics",
+			"/Script/ControlRigPhysics.RigPhysicsInertialForceSettings",
 			"/Script/ControlRigPhysics.RigPhysicsJointData",
+			"/Script/ControlRigPhysics.RigPhysicsLinearLimit",
 			"/Script/ControlRigPhysics.RigPhysicsMaterial",
+			"/Script/ControlRigPhysics.RigPhysicsSimulationDragSettings",
+			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceMotion",
 			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceSettings",
 			"/Script/ControlRigPhysics.RigPhysicsSolverSettings",
+			"/Script/ControlRigPhysics.RigPhysicsTeleportDetectionSettings",
+			"/Script/ControlRigPhysics.RigPhysicsTwistLimit",
 			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings",
+			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings1",
 			"/Script/ControlRigSpline.ControlRigSpline",
 			"/Script/FortniteAI.NPCCustomEffect",
 			"/Script/IKRig.IKRigInputSkeleton",
@@ -243,9 +271,11 @@
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluteFrameTransform",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluateInputDeviceValue",
 			"/Script/PhysicsControl.PhysicsControlData",
+			"/Script/PhysicsControl.PhysicsControlForceAndTorqueData",
 			"/Script/PhysicsControl.PhysicsControlModifierData",
 			"/Script/PhysicsControl.PhysicsControlModifierSparseData",
 			"/Script/PhysicsControl.PhysicsControlMultiplier",
+			"/Script/PhysicsControl.PhysicsControlNamedForceAndTorqueData",
 			"/Script/PhysicsControl.PhysicsControlTarget",
 			"/Script/RigLogicModule.BoneIndexControlAttributeMapping",
 			"/Script/RigLogicModule.RigUnit_RigLogic_Data",
@@ -317,7 +347,8 @@
 			"/Game/Valkyrie/UMG/UEFN_Slider.UEFN_Slider_C",
 			"/Game/Valkyrie/UMG/UEFN_TextBlock.UEFN_TextBlock_C",
 			"/Script/UIFramework.UIFrameworkCustomButtonWidget",
-			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget"
+			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget",
+			"/Script/CRD_HUDController.DeveloperLayoutButtonProxy"
 		],
 		"FavoriteWidgetParentClasses": [
 			"/Script/UMG.UserWidget",
@@ -362,6 +393,7 @@
 	"_comment_ValkyrieEditorSettings": "Properties related to core editor functionality, restricting editor views/controls, allow lists for assets and classes, etc.",
 	"ValkyrieEditorSettings": {
 		"bShowConsole": false,
+		"bEnableContextAwareness": false,
 		"bShowValidateProjectMenuEntry": true,
 		"ReadOnlyAssetsPermission" : "All",
 		"_comment_AllowedEditorModes": "The FName defining each editor mode that appears in the toolbar of the level editor",
@@ -383,6 +415,7 @@
 			"EM_ActorPicker",
 			"EM_SceneDepthPicker",
 			"SequencerToolsEditMode",
+			"StaticMeshEditorEdMode",
 			"PhysicsAssetEditor",
 			"EditMode.SubTrackEditMode",
 			"ValkyrieFortniteScriptableToolsEditorMode"
@@ -448,13 +481,18 @@
 					"Settings"
 				]
 			},
+			"Shortcuts": {
+				"Names": [
+					"InputBindings"
+				]
+			},
 			"General": {
 				"Names": [
 					"Appearance",
 					"BuildingActorEditorPerProjectUserSettings",
 					"BuildingActorEditorSettings",
 					"CaptureManagerEditorSettings",
-					"InputBindings",
+					"TransformGizmoEditorSettings",
 					"Internationalization",
 					"LoadingSaving",
 					"EditorPerformanceSettings",
@@ -499,9 +537,10 @@
 		"AllowedAssetTypes": {
 			"/Script/CameraCalibrationCore.LensFile":			{ "Rules": ["View","Create"] },
 			"/Script/ControlRig.ControlRigBlueprintGeneratedClass": { "Rules": ["View"] },
+			"/Script/ControlRigDeveloper.ControlRigBlueprint":	{ "Rules": ["View","Create"] },
+			"/Script/ControlRig.ControlRigRuntimeAsset":		{ "Rules": ["View","Create"] },
 			"/Script/ControlRig.ControlRigPoseAsset":			{ "Rules": ["View","Create"] },
 			"/Script/ControlRig.ControlRigShapeLibrary":		{ "Rules": ["View","Create"] },
-			"/Script/ControlRigDeveloper.ControlRigBlueprint":	{ "Rules": ["View","Create"] },
 			"/Script/OptimusCore.OptimusDeformer":            	{ "Rules": ["View"] },
 			"/Script/ChaosClothAssetEngine.ChaosClothAsset":	{ "Rules": ["View"] },
 			"/Script/CoreUObject.ObjectRedirector":				{ "Rules": ["View","Create"] },
@@ -589,6 +628,7 @@
 			"/Script/Niagara.NiagaraScript":					{ "Rules": ["View","Create"] },
 			"/Script/Niagara.NiagaraSystem":					{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/Niagara.NiagaraAssetTagDefinitions": { "Rules": [ "View" ] },
+			"/Script/PhysicsCore.PhysicalMaterial":				{ "Rules": ["View"] },
 			"/Script/CoreUObject.VerseClass":						{ "Rules": ["View"] },
 			"/Script/TakesCore.TakePreset":				{ "Rules": ["View","Create"] },
 			"/Script/UMG.WidgetBlueprintGeneratedClass":		{ "Rules": ["View","Create"] },
@@ -630,6 +670,7 @@
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeSpawn.CharacterModifier_WildlifeSpawn_C":					{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeVerseBehavior.CharacterModifier_WildlifeVerseBehavior_C":	{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Sequencer.CharacterModifier_Sequencer_C":							{ "Visible": true },
+			"/NPCDefault/Types/Modifiers/CharacterModifier_Scale.CharacterModifier_Scale_C":												{ "Visible": true },
 			"/CRD_Analytic/BP_Creative_Analytic_Manager.BP_Creative_Analytic_Manager_C":								{  },
 			"/CRD_Ascender/Device_Ascender.Device_Ascender_C":															{  },
 			"/CRD_Bouncer/BouncerComponent.BouncerComponent_C":															{  },
@@ -668,6 +709,8 @@
 			"/CreativeCoreDevices/Beacon/UEFN_BeaconBadge_ViewModel.UEFN_BeaconBadge_ViewModel_C":						{ "Visible": true },
 			"/CreativeCoreDevices/PowerUp/LastActiveCustomPlayerFXComponent.LastActiveCustomPlayerFXComponent_C":		{  },
 			"/CreativeCoreDevices/Timer/CreativeTimerViewModel.CreativeTimerViewModel_C": 								{ "Visible": true },
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_Quad_v01.MR_Sidekick_Quad_v01_C":                            { "Visible": true },
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_SmallDog_v01.MR_Sidekick_SmallDog_v01_C":                    { "Visible": true },
 			"/FeralCorgiGameplay/Components/BP_ServerConfig_Component.BP_ServerConfig_Component_C":{  },
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricNoteLabelComponent.BP_FabricNoteLabelComponent_C":			{  },
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricPageInfoComponent.BP_FabricPageInfoComponent_C":				{  },
@@ -888,10 +931,16 @@
 			"/Script/Constraints.TransformableComponentHandle":					{  },
 			"/Script/ControlRig.AdditiveControlRig":							{ "Visible": true },
 			"/Script/ControlRig.CachedRigElement":								{  },
+			"/Script/ControlRig.CachedRigComponent":							{  },
 			"/Script/ControlRig.ConstraintParent":								{  },
 			"/Script/ControlRig.ControlRig":									{ "Visible": true },
 			"/Script/ControlRig.ModularRig":									{ "Visible": true },
+			"/Script/ControlRig.ControlRigAssetSoftReference":					{ "Visible": true},
+			"/Script/ControlRig.ControlRigAssetStrongReference":				{ "Visible": true},
 			"/Script/ControlRig.ControlRigBlueprintGeneratedClass":				{ "Visible": true },
+			"/Script/ControlRigDeveloper.ControlRigBlueprint":					{ "Visible": true },
+			"/Script/ControlRig.ControlRigRuntimeAsset":						{ "Visible": true },
+			"/Script/ControlRigDeveloper.ControlRigEditorAsset":				{  },
 			"/Script/ControlRig.ControlRigComponent":							{ "Visible": true },
 			"/Script/ControlRig.ControlRigComponentMappedElement":				{  },
 			"/Script/ControlRig.ControlRigExecuteContext":						{  },
@@ -984,23 +1033,55 @@
 			"/Script/ControlRig.RigUnit_PoseAssetApplyAllPoses":				{  },		
 			"/Script/ControlRig.SphericalPoseReaderDebugSettings":				{  },
 			"/Script/ControlRig.TransformableControlHandle":					{  },
+			"/Script/ControlRigDynamics.ParticleChainCurves":					{  },
+			"/Script/ControlRigDynamics.RigDynamicsForceFieldCurves":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsInertialForceSettings":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsParticleForce":				{  },
+			"/Script/ControlRigDynamics.RigDynamicsParticleProperties":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsShapeBox":					{  },
+			"/Script/ControlRigDynamics.RigDynamicsShapeCapsule":				{  },
+			"/Script/ControlRigDynamics.RigDynamicsShapeCollection":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsShapeCollectionWithKey":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsShapePlane":					{  },
+			"/Script/ControlRigDynamics.RigDynamicsSimulationDragSettings":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsSimulationSpaceMotion":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsSimulationSpaceSettings":	{  },
+			"/Script/ControlRigDynamics.RigDynamicsSolverCreationSettings":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsSolverSettings":				{  },
+			"/Script/ControlRigDynamics.RigDynamicsTeleportDetectionSettings":	{  },
+			"/Script/ControlRigDynamics.RigDynamicsVisualizationSettings":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsColliderComponent":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsConeLimitComponent":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsConfinerComponent":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsConstraintComponent":		{  },
+			"/Script/ControlRigDynamics.RigDynamicsParticleComponent":			{  },
+			"/Script/ControlRigDynamics.RigDynamicsSolverComponent":			{  },
 			"/Script/ControlRigPhysics.RigPhysicsBodySolverSettings":			{  },
 			"/Script/ControlRigPhysics.RigPhysicsCollision":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsCollisionBox":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsCollisionCapsule":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsCollisionConvex":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsCollisionShape":				{  },
 			"/Script/ControlRigPhysics.RigPhysicsCollisionSphere":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsConeLimit":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsDriveData":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsDynamics":						{  },
+			"/Script/ControlRigPhysics.RigPhysicsInertialForceSettings":		{  },
 			"/Script/ControlRigPhysics.RigPhysicsJointData":					{  },
+			"/Script/ControlRigPhysics.RigPhysicsLinearLimit":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsMaterial":						{  },
+			"/Script/ControlRigPhysics.RigPhysicsSimulationDragSettings":		{  },
+			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceMotion":		{  },
 			"/Script/ControlRigPhysics.RigPhysicsSimulationSpaceSettings":		{  },
 			"/Script/ControlRigPhysics.RigPhysicsSolverSettings":				{  },
+			"/Script/ControlRigPhysics.RigPhysicsTeleportDetectionSettings":	{  },
+			"/Script/ControlRigPhysics.RigPhysicsTwistLimit":					{  },
 			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings":		{  },
-			"/Script/ControlRigPhysics.RigPhysicsControlComponent":				{  }, 
+			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings1":		{  },
+			"/Script/ControlRigPhysics.RigPhysicsControlComponent":				{  },
 			"/Script/ControlRigPhysics.RigPhysicsJointComponent":				{  },
 			"/Script/ControlRigPhysics.RigPhysicsSolverComponent":				{  },
 			"/Script/ControlRigPhysics.RigPhysicsBodyComponent":				{  },
-			"/Script/ControlRigDeveloper.ControlRigBlueprint":					{ "Visible": true },
 			"/Script/ControlRigDeveloper.ControlRigGraph":						{  },
 			"/Script/ControlRigDeveloper.ControlRigGraphNode":					{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/ControlRigSpline.ControlRigSpline":						{  },
@@ -1371,7 +1452,7 @@
 			"/Script/InterchangeImport.MaterialExpressionMaterialXDifference":					{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXDisjointOver":				{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXDodge":						{ "Visible": true,	"Subclasses": "NativeOnly" },
-			"/Script/InterchangeImport.MaterialExpressionMaterialXFractal3D":					{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/InterchangeImport.MaterialExpressionMaterialXFractal":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXIn":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXLuminance":					{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXMask":						{ "Visible": true,	"Subclasses": "NativeOnly" },
@@ -1887,6 +1968,7 @@
 			"/Script/FortniteAI.UEFNNavMeshBoundsVolume":						{  },
 			"/Script/FortniteAI.UEFNNavMesh_Medium":							{  },
 			"/Script/FortniteAI.UEFNNavSystemConfigOverride":					{  },
+			"/Script/AINavigation.AutomaticNavigationActor":					{  },
 			"/Script/NavigationSystem.NavLinkCustomComponent":					{  },
 			"/Script/NavigationSystem.NavLinkRenderingComponent":				{  },
 			"/Script/NavigationSystem.NavigationSystemModuleConfig":			{  },
@@ -1933,6 +2015,7 @@
 			"/Script/Niagara.NiagaraDataInterfaceSimpleCounter":				{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceSocketReader":					{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceSkeletalMesh":					{ "Visible": true },
+			"/Script/Niagara.NiagaraDataInterfaceSpline":						{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceSpriteRendererInfo":			{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceStaticMesh":					{ "Visible": true },
 			"/Script/Niagara.NiagaraDataInterfaceTexture":						{ "Visible": true },
@@ -2064,9 +2147,11 @@
 			"/Script/Persona.AnimAssetFindReplaceCurves":						{ "Visible": true },
 			"/Script/Persona.AnimAssetFindReplaceSyncMarkers":					{ "Visible": true },
 			"/Script/PhysicsControl.PhysicsControlData":						{  },
+			"/Script/PhysicsControl.PhysicsControlForceAndTorqueData":			{  },
 			"/Script/PhysicsControl.PhysicsControlModifierData":				{  },
 			"/Script/PhysicsControl.PhysicsControlModifierSparseData":			{  },
 			"/Script/PhysicsControl.PhysicsControlMultiplier":					{  },
+			"/Script/PhysicsControl.PhysicsControlNamedForceAndTorqueData":		{  },
 			"/Script/PhysicsControl.PhysicsControlTarget":						{  },
 			"/Script/RigLogicModule.BoneIndexControlAttributeMapping":			{  },
 			"/Script/RigLogicModule.RigUnit_RigLogic_Data":						{  },
@@ -2082,9 +2167,11 @@
 			"/Script/RigVM.RigVMExecuteContext":								{  },
 			"/Script/RigVM.RigVMExecutePin":									{  },
 			"/Script/RigVM.RigVMMemoryStorage":									{  },
+			"/Script/RigVM.RigVMRuntimeAsset":									{ "Visible": true, "Subclasses": "NativeOnly"  },
 			"/Script/RigVM.RigVMUnknownType":									{  },
 			"/Script/RigVM.RigVMInstructionSetExecuteState":					{  },
 			"/Script/RigVM.RigVMSimPoint":										{  },
+			"/Script/RigVMDeveloper.RigVMEditorAsset":							{ "Visible": true, "Subclasses": "NativeOnly"  },
 			"/Script/RigVMDeveloper.RigVMFunctionLibrary":						{  },
 			"/Script/RigVMDeveloper.RigVMGraph":								{  },
 			"/Script/RigVMDeveloper.RigVMInjectionInfo":						{  },
@@ -2112,11 +2199,6 @@
 			"/Script/TakeRecorderSources.TakeRecorderPlayerSource":             {  },
 			"/Script/TakeRecorderSources.TakeRecorderWorldSource":              {  },
 			"/Script/TakeTrackRecorders.MovieSceneAnimationTrackRecorderSettings": {  },
-			"/Script/UAFAnimGraphUncookedOnly.AnimNextTraitStackUnitNode":      { "Deny": true },
-			"/Script/UAFUncookedOnly.AnimNextEdGraphNode":                      { "Deny": true },
-			"/Script/UAFUncookedOnly.AnimNextUnitNode":                         { "Deny": true },
-			"/Script/UAFUncookedOnly.UAFSharedVariableNode":                    { "Deny": true },
-			"/Script/UAF.RigUnit_AnimNextBase":									{ "Deny": true },
 			"/Script/UMG.CanvasPanel":											{ "Visible": true },
 			"/Script/UMG.CanvasPanelSlot":										{  },
 			"/Script/UMG.GridPanel":											{ "Visible": true },
@@ -2209,6 +2291,7 @@
 			"/Script/ExperienceSettings.Newton_UserOptionFilterComponent":		{  },
 			"/Script/DataRegistry.DataRegistryID":								{  },
 			"/Script/UIFramework.UIFrameworkCustomButtonWidget":		{ "Visible": true },
+			"/Script/CRD_HUDController.DeveloperLayoutButtonProxy":		{ "Visible": true },
 			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget":		{ "Visible": true },
 			"/Script/UMG.ButtonSlot":											{  }
 		},
@@ -2393,6 +2476,7 @@
 					"TransformSubMenu",
 					"PivotSubMenu",
 					"PilotSelectedActor",
+					"EjectPilotActor",
 					"GroupMenu",
 					"RegroupActors",
 					"meshPerfEntry",
@@ -2413,6 +2497,43 @@
 					"EditPrefabInplace_Exit",
 					"BrowseToPrefab",
 					"PushPrefabOverrides"
+				]
+			},
+			"LevelEditor.ElementContextMenu": {
+				"AllowList": [
+					"AddEntityMenu",
+					"SaveAsPrefab",
+					"LogOverrides",
+					"GroupEntities",
+					"AttachToEntityMenu",
+					"DetachEntities",
+
+					"EditPrefab",
+					"EditPrefabInplace_Start",
+					"EditPrefabInplace_StepOut",
+					"EditPrefabInplace_Exit",
+					"BrowseToPrefab",
+					"PushPrefabOverrides",
+
+					"FocusViewportToSelection",
+					"GoHere",
+					"SnapCameraToObject",
+					"SnapObjectToCamera",
+					"PilotSelectedActor",
+					"EjectPilotActor",
+
+					"EditSubMenu",
+					"VisibilitySubMenu",
+					"TransformSubMenu",
+					"SnapAlignSubMenu",
+					"PivotSubMenu",
+
+					"StartGameFromHere",
+					"Teleport",
+
+					"OpenUVEditor",
+					"AddAnchoredNote",
+					"AddCameraNote"
 				]
 			},
 			"LevelEditor.ActorContextMenu.AddActor": {
@@ -2463,7 +2584,7 @@
 				"AllowList": [ "BlockingVolume", "FortUndergroundVolume", "FortWaterBodyExclusionVolume", "PostProcessVolume" ]
 			},
 			"LevelEditor.LevelEditorToolBar.AssetsToolBar": {
-				"AllowList": [ "SaveAllLevels", "Create", "Content", "AddContent", "OpenInVerseButton", "BuildScriptsButton", "ValkyrieProjectMenu", "ToggleFeatureLevelPreview", "ValkyriePlay", "LaunchCombo", "ValkyrieStartGame", "PlayCombo", "ValkyrieStopGame", "StopCombo", "UploadSpinner", "ValkyrieRefresh", "ValkyrieRefreshVerse", "ValkyrieOpenGameView" ]
+				"AllowList": [ "SaveAllLevels", "Create", "Content", "AddContent", "OpenInVerseButton", "BuildScriptsButton", "ValkyrieProjectMenu", "TogglePreviewPlatform", "ValkyriePlay", "LaunchCombo", "ValkyrieStartGame", "PlayCombo", "ValkyrieStopGame", "StopCombo", "UploadSpinner", "ValkyrieRefresh", "ValkyrieRefreshVerse", "ValkyrieOpenGameView" ]
 			},
 			"LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": {
 				"AllowList": [ "AllowTranslucentSelection", "AllowGroupSelection", "StrictBoxSelect", "TransparentBoxSelect", "ShowTransformWidget", "Scalability", "ToggleHideViewportUI", "FeatureLevelPreview" ]
@@ -2511,7 +2632,7 @@
 				"AllowList": [ "SelectAll", "SelectNone", "InvertSelection", "Hierarchy", "Advanced", "SelectAllActorsOfSameClass", "ByTypeSection", "Lights", "Material", "SkeletalMeshes", "StaticMeshes" ]
 			},
 			"LevelEditor.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectAuroraEntitlementCatalog", "DataRecoveryToolDialog", "ValkyrieProjectOfferLog", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler", "OpenPython", "RecentPythonsSubMenu", "EnablePythonLocally" ]
+				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectAuroraEntitlementCatalog", "ValkyrieProjectOfferLog", "ValkyriePublishingReport", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler", "OpenPython", "RecentPythonsSubMenu", "EnablePythonLocally", "ValkyrieSessionInspector" ]
 			},
 			"LevelEditor.MainMenu.Verse": {
 				"AllowList": [ "VisualVerseTab", "VerseLog", "OpenVSCode", "BuildVerse" ]
@@ -2520,7 +2641,7 @@
 				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "EnableMenuEditing", "ToggleValkyrieMode", "ToggleValkyrieRestrictiveMode", "OpenAIAssistantTab" ]
 			},
 			"LevelEditor.StatusBar.ToolBar": {
-				"AllowList": [ "SourceControl", "ActivityTrackerStatus", "LiveLinkHubStatusBar" ]
+				"AllowList": [ "SourceControl", "ActivityTrackerStatus", "LiveLinkHubStatusBar", "PerformanceStatus" ]
 			},
 			"MainFrame.MainMenu.Asset": {
 				"AllowList": [ "FindInContentBrowser", "ViewReferences", "Reimport", "Reimport_0", "Reimport_1", "Reimport_2", "Reimport_3" ]
@@ -2556,6 +2677,9 @@
 				"AllowList": [ "AnimNotifyContextMenuFrameWidget", "AnimNotifyContextMenuTimeWidget", "AddSyncMarker", "CopyNotifies", "PasteNotifies", "DeleteNotify", "PasteAtOriginalTime", "PasteMultipleRelative" ],
 				"AllowExtenders": false
 			},
+			"ObjectProfiler.MainToolBar": {
+				"DenyList": [ "File" ]
+			},
 			"Sequencer.MainToolBar": {
 				"AllowList": [ "Save", "FindInContentBrowser", "CreateCamera", "Actions", "ViewOptions", "PlaybackOptions", "KeyGroup", "AutoChange", "ToggleAutoKeyEnabled", "AllowEditsMode", "ToggleIsSnapEnabled", "SnapOptions", "PlayRate", "ToggleLimitViewportSelection", "ToggleShowCurveEditor", "ToggleForceWholeFrames" ]
 			},
@@ -2572,7 +2696,7 @@
 				"AllowList": [ "ToggleTimingViewVisibility", "ToggleTimersViewVisibility", "ToggleCallersTreeViewVisibility", "ToggleCalleesTreeViewVisibility" ]
 			},
 			"UnrealEd.ViewportToolbar.View": {
-				"AllowList": [ "LitMode", "UnlitMode", "WireframeMode", "DetailLightingMode", "LightingOnlyMode", "ReflectionOverrideMode", "CollisionPawn", "CollisionVisibility", "VisualizeBufferViewMode", "VisualizeNaniteViewMode", "VisualizeLumenViewMode", "LandscapeVisualizers", "LandscapeLOD", "OptimizationSubMenu" ]
+				"AllowList": [ "LitMode", "UnlitMode", "WireframeMode", "DetailLightingMode", "LightingOnlyMode", "ReflectionOverrideMode", "CollisionPawn", "CollisionVisibility", "VisualizeBufferViewMode", "VisualizeNaniteViewMode", "VisualizeLumenViewMode", "LandscapeVisualizers", "LandscapeLOD", "OptimizationSubMenu", "MeshEdgesSubMenu" ]
 			},
 			"UnrealEd.ViewportToolbar.View.OptimizationSubMenu": {
 				"AllowList": [ "LightComplexityMode", "ShaderComplexityMode", "QuadOverdrawMode", "ShaderComplexityWithQuadOverdrawMode", "VisualizeLWCComplexity" ]
@@ -2581,7 +2705,7 @@
 				"AllowList": [ "Common_AntiAliasing", "Common_Atmosphere", "Common_BSP", "Common_Collision", "Common_Decals", "Common_Fog", "Common_Grid", "Common_Landscape", "Common_MediaPlanes", "Common_Navigation", "Common_Particles", "Common_SkeletalMeshes", "Common_StaticMeshes", "Common_Translucency", "ShowHLODsMenu", "ShowRevisionControlMenu", "ShowCoopNotes" ]
 			},
 			"SpatialProfiler.SettingsToolBar.SettingsMenu": {
-				"AllowList": [ "ShowHistogram" ]
+				"AllowList": [ "SessionTabs" ]
 			},
 			"SpatialProfiler.Grid.ContextualMenu": {
 				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
@@ -2672,7 +2796,10 @@
 					"ModularRigModel",
 					"RigModuleAssetBrowser",
 					"Event Queue",
-					"AdvancedPreviewTab"
+					"AdvancedPreviewTab",
+					"RigVM Details",
+					"RigVM Compiler Results",
+					"RigVM Graph Editor"
 				]
 			},
 			"Global": {
@@ -2686,7 +2813,9 @@
 					"EditorSettings",
 					"FortDelMarTrackStyleEditor",
 					"HomeScreen",
+					"InputBindingSettings",
 					"LevelEditor",
+					"LiveEditHistory",
 					"MessageLog",
 					"OutputLog",
 					"PromptEditorTool",
@@ -2705,14 +2834,20 @@
 					"ValkyrieProjectAuroraEntitlementCatalog",
 					"ValkyrieProjectOfferLog",
 					"ValkyrieSessionInspector",
+					"ValkyriePublishingReport",
 					"MemoryProfiler",
 					"TimingProfiler",
 					"InsightsQuickFind",
 					"InsightsFilterConfigurator",
+					"ObjectProfiler",
 					"VerseExplorerTab",
 					"NiagaraDebugger",
-					"DataRecoveryToolDialog",
-					"ChaosVisualDebuggerTab"
+					"ChaosVisualDebuggerTab",
+					"ControlRigDynamicsDebug",
+					"ControlRigPhysicsDebug",
+					"RewindDebugger",
+					"RewindDebugger2",
+					"RewindDebuggerDetails2"
 				]
 			},
 			"LevelEditor": {
@@ -2737,6 +2872,7 @@
 					"LevelEditorViewport_Clone1",
 					"LevelEditorViewport_Clone2",
 					"LevelEditorViewport_Clone3",
+					"LiveEditHistory",
 					"MessageLog",
 					"OutputLog",
 					"PlacementBrowser",
@@ -2758,10 +2894,12 @@
 					"ValkyrieProjectAuroraEntitlementCatalog",
 					"ValkyrieProjectOfferLog",
 					"ValkyrieSessionInspector",
+					"ValkyriePublishingReport",
 					"MemoryProfiler",
 					"TimingProfiler",
 					"InsightsQuickFind",
 					"InsightsFilterConfigurator",
+					"ObjectProfiler",
 					"VerseExplorerTab",
 					"WorldBrowserPartitionEditor",
 					"WorldBrowserComposition",
@@ -2782,7 +2920,12 @@
 					"SkeinSourceControlBranchExplorer",
 					"NiagaraDebugger",
 					"ChaosVisualDebuggerTab",
-					"DataRecoveryToolDialog"
+					"ControlRigDynamicsDebug",
+					"ControlRigPhysicsDebug",
+					"DataRecoveryToolDialog",
+					"RewindDebugger",
+					"RewindDebugger2",
+					"RewindDebuggerDetails2"
 				]
 			},
 			"MaterialInstanceEditor": {
@@ -3127,7 +3270,8 @@
 			"Nevarro_Starter",
 			"Space_Starter",
 			"Tatooine_Starter",
-			"LEGO_NinjagoStarterTemplate"
+			"LEGO_NinjagoStarterTemplate",
+			"Plumpton_Starter_Island"
 		]
 	},
 	"PropertyEditorClassPermissionList": {
@@ -3157,6 +3301,10 @@
 				"AllowList": [ "DefaultHLODLayer", "DataLayersLogicOperator", "bAllowShowingHLODsInEditor" ]
 			},
 			{
+				"Type": "/Script/Engine.WorldPartitionHLOD",
+				"AllowList": [ "HLOD_Tools" ]
+			},
+			{
 				"Type": "/Script/Engine.WorldPartitionStreamingSourceComponent",
 				"DenyList": [ "TargetGrids", "Priority", "TargetState", "TargetBehavior" ]
 			},
@@ -3170,11 +3318,11 @@
 			},
 			{
 				"Type": "/Script/Landscape.Landscape",
-				"AllowList": [ "PivotOffset", "Layers", "ActorGuid", "Tags", "DefaultPhysMaterial", "LandscapeMaterial", "LandscapeHoleMaterial", "LandscapeComponentResolution", "LandscapeComponentCount", "LandscapeComponentSubsections", "LandscapeResolution", "LandscapeCount", "TotalLandscapeComponentCount", "LandscapeOverallResolution", "CastShadow", "HLODTextureSizePolicy", "HLODTextureSize", "HLODMeshSourceLODPolicy", "HLODMeshSourceLOD", "bAreNewLandscapeActorsSpatiallyLoaded" ]
+				"AllowList": [ "PivotOffset", "Layers", "ActorGuid", "Tags", "DefaultPhysMaterial", "LandscapeMaterial", "LandscapeHoleMaterial", "LandscapeComponentResolution", "LandscapeComponentCount", "LandscapeComponentSubsections", "LandscapeResolution", "LandscapeCount", "TotalLandscapeComponentCount", "LandscapeOverallResolution", "CastShadow", "HLODTextureSizePolicy", "HLODTextureSize", "HLODMeshSourceLODPolicy", "HLODMeshSourceLOD", "bAreNewLandscapeActorsSpatiallyLoaded", "GrassTypesOverrides" ]
 			},
 			{
 				"Type": "/Script/Landscape.LandscapeStreamingProxy",
-				"AllowList": [ "PivotOffset", "Layers", "ActorGuid", "Tags", "DefaultPhysMaterial", "LandscapeMaterial", "LandscapeHoleMaterial", "LandscapeComponentResolution", "LandscapeComponentCount", "LandscapeComponentSubsections", "LandscapeResolution", "LandscapeCount", "TotalLandscapeComponentCount", "LandscapeOverallResolution", "CastShadow", "HLODTextureSizePolicy", "HLODTextureSize", "HLODMeshSourceLODPolicy", "HLODMeshSourceLOD" ]
+				"AllowList": [ "PivotOffset", "Layers", "ActorGuid", "Tags", "DefaultPhysMaterial", "LandscapeMaterial", "LandscapeHoleMaterial", "LandscapeComponentResolution", "LandscapeComponentCount", "LandscapeComponentSubsections", "LandscapeResolution", "LandscapeCount", "TotalLandscapeComponentCount", "LandscapeOverallResolution", "CastShadow", "HLODTextureSizePolicy", "HLODTextureSize", "HLODMeshSourceLODPolicy", "HLODMeshSourceLOD", "GrassTypesOverrides" ]
 			},
 			{
 				"Type": "/Script/Engine.PrimitiveComponent",
@@ -3454,6 +3602,10 @@
 				"AllowList": [ "OnButtonClicked", "OnButtonHighlight", "OnButtonUnhighlight", "TriggeringInputAction"]
 			},
 			{
+				"Type": "/Script/CRD_HUDController.DeveloperLayoutButtonProxy",
+				"AllowList": [ "Action", "bHideFromLayout", "bOverrideIcon", "IconBrush"]
+			},
+			{
 				"Type": "/Script/UIFramework.UIFrameworkTouchActionWrapperWidget",
 				"AllowList": [ "TriggeringInputAction"]
 			},
@@ -3463,7 +3615,7 @@
 			},
 			{
 				"Type": "/Script/UMG.Image",
-				"AllowList": [ "Brush", "bFlipForRightToLeftFlowDirection" ]
+				"AllowList": [ "Brush", "bFlipForRightToLeftFlowDirection", "ColorAndOpacity" ]
 			},
 			{
 				"Type": "/Script/UMG.TextBlock",
@@ -3849,6 +4001,10 @@
 				"AllowList": [ "bShowFrameRateAndMemory", "bThrottleCPUWhenNotForeground", "bMonitorEditorPerformance", "bEnableScalabilityWarningIndicator", "bEnableVSync" ]
 			},
 			{
+				"Type": "/Script/EditorInteractiveToolsFramework.TransformGizmoEditorSettings",
+				"bAllowListAllProperties": true
+			},
+			{
 				"Type": "/Script/PCGEditor.PCGEditorSettings",
 				"AllowList": [ "bDisableCPUThrottlingDuringGraphExecution" ]
 			},
@@ -3870,7 +4026,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement", "bKeepSessionOnProjectChange", "bReturnClientToMainMenu" ]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorPythonConfig",
@@ -3921,7 +4077,7 @@
 			},
 			{
 				"Type": "/Script/ControlRig.ControlRigComponent",
-				"AllowList": [ "ControlRigClass", "UserDefinedElements", "MappedElements", "bResetTransformBeforeTick", "bResetInitialsBeforeSetup", "bUpdateRigOnTick", "bUpdateInEditor", "bDrawBones", "bShowDebugDrawing" ]
+				"AllowList": [ "ControlRigAssetReference", "UserDefinedElements", "MappedElements", "bResetTransformBeforeTick", "bResetInitialsBeforeSetup", "bUpdateRigOnTick", "bUpdateInEditor", "bDrawBones", "bShowDebugDrawing" ]
 			},
 			{
 				"Type": "/Script/UnrealEd.FbxStaticMeshImportData",
@@ -4151,6 +4307,11 @@
 				"DenyList": [ "SelectedAI" ]
 			},
 			{
+				"Type": "/NPCDefault/Types/Modifiers/CharacterModifier_Scale.CharacterModifier_Scale_C",
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
+			},
+			{
 				"Type": "/CRD_AIPrompt/Modifiers/CharacterModifierPersona.CharacterModifierPersona_C",
 				"bAllowListAllProperties": true,
 				"bAllowListAllSubclassProperties": true
@@ -4189,7 +4350,7 @@
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_CosmeticSpawn.CharacterModifier_CosmeticSpawn_C",
 				"DenyList": [ "CharacterCosmeticAssetId", "CompanionCosmeticAssetId", "AICompanionProxyToApply" ],
-				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook", "SidekickCosmetic", "CompanionVariantChannels" ]
+				"AllowList": [ "AnimPreset", "CharacterCosmetic", "CharacterBlueprint", "IKRetargeter", "CharacterMovement", "CharacterLook", "SidekickCosmetic", "CompanionVariantChannels", "CharacterVariantChannels" ]
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_DefaultBehavior.CharacterModifier_DefaultBehavior_C",
@@ -4481,6 +4642,18 @@
 			{
 				"Type": "/Script/FortniteGame.ThresholdMesh",
 				"AllowList": [ "Threshold", "StaticMesh", "TransitionVFX", "TransitionSoundCue", "FillMaterialIndex" ]
+			},
+			{
+				"Type": "/Script/EditorTRSGizmo.GizmoElementScaleInteraction",
+				"AllowList": [ "ScaleType" ]
+			},
+			{
+				"Type": "/Script/EditorInteractiveToolsFramework.GizmosParameters",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/EditorInteractiveToolsFramework.TransformGizmoStyle",
+				"bAllowListAllProperties": true
 			}
 		]
 	},
@@ -4493,6 +4666,10 @@
 			{
 				"Type": "/Script/CreativeCompanionRuntime.ESidekickVisibilityUserOptionValues",
 				"AllowList": ["Owner", "Everyone"]
+			},
+			{
+				"Type": "/Script/CRD_HUDController.EVerseSubscribableInputAction",
+				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint"]
 			}
 		]
 	},
@@ -4512,7 +4689,7 @@
 			},
 			{
 				"Type": "/Script/Engine.BodySetup",
-				"AllowList": [ "bGenerateMirroredCollision", "bNeverNeedsCookedCollisionData", "BuildScale3D" ],
+				"AllowList": [ "bGenerateMirroredCollision", "bGenerateNonMirroredCollision", "bNeverNeedsCookedCollisionData", "BuildScale3D" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4696,7 +4873,7 @@
 			},
 			{
 				"Type": "/Script/Engine.SkinnedMeshComponent",
-				"AllowList": [ "bSetMeshDeformer", "SkinnedAsset", "VisibilityBasedAnimTickOption", "LeaderPoseComponent", "ForcedLodModel", "MeshDeformerInstanceSettings" ],
+				"AllowList": [ "bSetMeshDeformer", "SkinnedAsset", "VisibilityBasedAnimTickOption", "LeaderPoseComponent", "ForcedLodModel", "MeshDeformerInstanceSettings", "PhysicsAssetOverride", "bComponentUseFixedSkelBounds" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4744,7 +4921,7 @@
 			},
 			{
 				"Type": "/Script/UMG.Button",
-				"AllowList": [ "WidgetStyle" ],
+				"AllowList": [ "WidgetStyle", "BackgroundColor" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4756,7 +4933,7 @@
 			},
 			{
 				"Type": "/Script/UMG.EditableTextBox",
-				"AllowList": [ "Text" ],
+				"AllowList": [ "Text", "WidgetStyle" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4769,6 +4946,12 @@
 			{
 				"Type": "/Script/UMG.MultilineEditableTextBox",
 				"AllowList": [ "HintText", "WidgetStyle", "Text" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/Script/UMG.RichTextBlock",
+				"AllowList": [ "Text", "TextStyleSet" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4791,6 +4974,12 @@
 				"bWarnForDisallowedProperties": true
 			},
 			{
+				"Type": "/Script/UMG.TextLayoutWidget",
+				"AllowList": [ "AutoWrapText" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
 				"Type": "/Script/UMG.NamedSlot",
 				"AllowList": [ "SlotGuid" ],
 				"DenyList": [],
@@ -4804,19 +4993,19 @@
 			},
 			{
 				"Type": "/Script/UMG.SizeBox",
-				"AllowList": [ "bOverride_WidthOverride", "bOverride_HeightOverride", "bOverride_MinDesiredWidth", "bOverride_MinDesiredHeight", "bOverride_MaxDesiredWidth", "bOverride_MaxDesiredHeight" ],
+				"AllowList": [ "bOverride_WidthOverride", "bOverride_HeightOverride", "bOverride_MinDesiredWidth", "bOverride_MinDesiredHeight", "bOverride_MaxDesiredWidth", "bOverride_MaxDesiredHeight", "bOverride_MinAspectRatio", "bOverride_MaxAspectRatio", "MinAspectRatio", "MaxAspectRatio" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
 			{
 				"Type": "/Script/UMG.UserWidget",
-				"AllowList": [ "bHasScriptImplementedTick", "bHasScriptImplementedPaint", "DesignSizeMode", "DesignTimeSize", "NamedSlotBindings", "Extensions" ],
+				"AllowList": [ "bHasScriptImplementedTick", "bHasScriptImplementedPaint", "DesignSizeMode", "DesignTimeSize", "NamedSlotBindings", "Extensions", "PaletteCategory" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
 			{
 				"Type": "/Script/UMG.Widget",
-				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior", "VisibilityDelegate", "ToolTipText" ],
+				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior", "VisibilityDelegate", "ToolTipText", "CategoryName" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -4852,7 +5041,7 @@
 			},
 			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterDefinition",
-				"AllowList": [ "FortReleaseVersion", "AnimPreset", "CharacterBlueprint", "IKRetargeter" ],
+				"AllowList": [ "FortReleaseVersion", "AnimPreset", "CharacterBlueprint", "IKRetargeter", "SkeletalMesh", "AnimationBP" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -5363,19 +5552,25 @@
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_ConversationPanel.EUW_ConversationPanel_C",
-				"AllowList": [ "PromptText", "PromptButton", "LogEntryScrollBox", "BulkResponseCount", "PersonaPrompt", "PromptModeToggle", "PromptModeConversationText", "PromptModeBulkResponseText", "CurrentlySelectedLogEntryWidget" ],
+				"AllowList": [ "PromptText", "PromptButton", "LogEntryScrollBox", "BulkResponseCount", "PersonaPrompt", "PromptModeToggle", "CurrentlySelectedLogEntryWidget" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PETPanel.EUW_PETPanel_C",
-				"AllowList": [ "Title", "FooterWidget", "EmptyContentWidget", "EmptyContentMessage", "ContentSwitcher", "ContentBorder", "Content", "TitleText", "EmptyContentMessageText" ],
+				"AllowList": [ "Title", "FooterWidget", "EmptyContentWidget", "EmptyContentMessage", "ContentSwitcher", "ContentBorder", "Content", "TitleText", "EmptyContentMessageText", "HeaderWidget", "HeaderSwitcher", "ContentPadding" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PromptFactsPanel.EUW_PromptFactsPanel_C",
-				"AllowList": [ "CategorizedFactList", "VM_PersonaPromptEditor", "FactBoxToVSlotMap" ],
+				"AllowList": [ "CategorizedFactList", "VM_PersonaPromptEditor", "FactBoxToVSlotMap", "ModeToggle", "StructuredOutputEditor", "ContentSwitcher" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PropertyEntry.EUW_PropertyEntry_C",
+				"AllowList": [ "PropertyTypeSelector", "PropertyNameTextInput", "PropertyDescriptionTextInput", "DeleteStructButton", "PersonaPrompt", "StructName", "PropertyName" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -5387,7 +5582,25 @@
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_ResponseDetialsPanel.EUW_ResponseDetialsPanel_C",
-				"AllowList": [ "EUW_PETPanel" ],
+				"AllowList": [ "PETPanel" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_StructEntry.EUW_StructEntry_C",
+				"AllowList": [ "StructPropertiesStackBox", "StructNameTextInput", "DeleteStructButton", "AddPropertyButton", "PersonaPrompt", "StructName", "SetAsDefaultCheckBox" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_StructuredOutputEditor.EUW_StructuredOutputEditor_C",
+				"AllowList": [ "StructListScrollBox", "AddStructButton", "PersonaPrompt", "DefaultStructEntry" ],
+				"DenyList": [],
+				"bWarnForDisallowedProperties": true
+			},
+			{
+				"Type":  "/Script/AIPromptEditor.PersonaPromptSegmentedControl",
+				"AllowList": [ "LeftModeContent", "RightModeContent", "SelectedIndex" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			}
@@ -5413,7 +5626,7 @@
 			},
 			{
 				"Type": "/Script/Engine.MaterialProxySettings",
-				"AllowList": [ "TextureSizingType", "MeshMinDrawDistance", "SpecularTextureSize" ],
+				"AllowList": [ "TextureSizingType", "MeshMinDrawDistance", "SpecularTextureSize", "bMetallicMap", "bRoughnessMap", "bSpecularMap" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -5438,13 +5651,13 @@
 					"bOverride_DepthOfFieldVignetteSize", "bOverride_ReflectionMethod", "bOverride_AutoExposureBiasBackup", "bOverride_AmbientOcclusionQuality", "bOverride_DepthOfFieldScale", "bOverride_BloomConvolutionTexture", "bOverride_BloomConvolutionPreFilterMin", 
 					"bOverride_BloomConvolutionPreFilterMax", "bOverride_BloomConvolutionPreFilterMult", "bOverride_LumenSkylightLeakingTint", "bOverride_IndirectLightingIntensity", "bOverride_FilmGrainIntensityHighlights", "bOverride_FilmGrainIntensityMidtones", 
 					"bOverride_FilmGrainIntensityShadows", "bOverride_LocalExposureShadowThreshold", "bOverride_LocalExposureHighlightThreshold", "bOverride_DepthOfFieldSensorWidth", "bOverride_BloomConvolutionSize", "bOverride_ScreenSpaceReflectionQuality", 
-					"bOverride_ScreenSpaceReflectionMaxRoughness", "bOverride_FilmGrainTexture", 
+					"bOverride_ScreenSpaceReflectionMaxRoughness", "bOverride_FilmGrainTexture", "bOverride_FilmGrainScale", "bOverride_FilmGrainShadowsMax", "bOverride_DepthOfFieldDepthBlurRadius", "bOverride_DepthOfFieldAspectRatioScalar", "bOverride_DepthOfFieldDepthBlurAmount",  
 					"AutoExposureBiasBackup", "AmbientOcclusionIntensity", "AmbientOcclusionRadius", "FilmSlope", "ColorGain", "ExpandGamut", "BloomSizeScale", "Bloom1Size", "Bloom1Tint", "Bloom2Size", "Bloom2Tint", "Bloom3Size", "Bloom3Tint", "Bloom4Size", "Bloom4Tint", 
 					"Bloom5Size", "Bloom5Tint", "Bloom6Size", "Bloom6Tint", "ReflectionMethod", "AmbientCubemapIntensity", "AmbientOcclusionFadeDistance", "AmbientOcclusionFadeRadius", "AmbientOcclusionPower", "RayTracingAOIntensity", "RayTracingAORadius", "ColorGradingIntensity", 
 					"DepthOfFieldDepthBlurRadius", "DepthOfFieldNearTransitionRegion", "DepthOfFieldFarTransitionRegion", "DepthOfFieldNearBlurSize", "DepthOfFieldFarBlurSize", "DepthOfFieldOcclusion", "DepthOfFieldSkyFocusDistance", "DepthOfFieldVignetteSize", "LensFlareTints", 
 					"AmbientOcclusionBias", "BloomConvolutionScatterDispersion", "BloomConvolutionPreFilterMin", "BloomConvolutionPreFilterMax", "BloomConvolutionPreFilterMult", "FilmToe", "FilmShoulder", "FilmWhiteClip", "FilmGrainShadowsMax", "LumenSkylightLeakingTint", 
 					"BloomConvolutionTexture", "FilmGrainIntensityHighlights", "FilmGrainIntensityMidtones", "LocalExposureShadowThreshold", "LocalExposureHighlightThreshold", "IndirectLightingIntensity", "ColorOffset", "DepthOfFieldSensorWidth", "DepthOfFieldFocalDistance", 
-					"ScreenSpaceReflectionQuality", "ScreenSpaceReflectionMaxRoughness", "FilmGrainTexture" ],
+					"ScreenSpaceReflectionQuality", "ScreenSpaceReflectionMaxRoughness", "FilmGrainTexture", "FilmGrainScale", "FilmGrainShadowsMax", "DepthOfFieldDepthBlurRadius", "DepthOfFieldAspectRatioScalar", "DepthOfFieldDepthBlurAmount" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},
@@ -5463,7 +5676,7 @@
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshOptimizationSettings",
-				"AllowList": [ "NumOfVertPercentage", "MaxBonesPerVertex", "TerminationCriterion", "WeldingThreshold", "bEnforceBoneBoundaries", "bLockEdges" ],
+				"AllowList": [ "TerminationCriterion", "NumOfVertPercentage", "MaxNumOfTriangles", "MaxNumOfTrianglesPercentage", "MaxNumOfVertsPercentage", "bEnforceBoneBoundaries", "bMergeCoincidentVertBones", "VolumeImportance", "WeldingThreshold", "MaxBonesPerVertex", "bLockEdges", "bLockColorBounaries" ],
 				"DenyList": [],
 				"bWarnForDisallowedProperties": true
 			},

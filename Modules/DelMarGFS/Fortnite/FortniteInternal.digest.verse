@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.00-CL-54618515
+# Generated from build: ++Fortnite+Release-41.10-CL-55335788
 #################################################
 
 AI<public> := module {
@@ -1013,6 +1013,8 @@ Armory<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
+    ItemComponent<override>: ?item_component = external {}
+
     ItemDefinitionID<override>: string = external {}
 
     MeshComponent<override>: ?mesh_component = external {}
@@ -1132,25 +1134,25 @@ Armory<public> := module {
     # The multiplier that affects the weapon spread while aiming down sights
     var<private> AimDownSightSpreadMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when ending aiming down sights
     var<private> AimingDownSightsEndSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when starting aiming down sights
     var<private> AimingDownSightsStartSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Visuals")
     @replicated("RepNotify")
     # The particle system to use for weapon bullet shells
     var<private> BulletShells<native><public>: ?particle_system = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Visuals")
     @replicated("RepNotify")
     # The particle system to use for weapon bullet tracers. The FX system's HitDistance parameter will update with impact distance or max range of the weapon.
@@ -1174,7 +1176,7 @@ Armory<public> := module {
     # The damage dealt by the weapon
     var<private> Damage<native><public>: float = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Visuals")
     @replicated("RepNotify")
     # The transform by which to offset the bullet shell ejection FX
@@ -1186,7 +1188,7 @@ Armory<public> := module {
     # The damage multiplier for the environment
     var<private> EnvironmentalDamageMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when equipping the weapon
@@ -1228,25 +1230,25 @@ Armory<public> := module {
     # The multiplier that affects the weapon spread while moving
     var<private> MovingSpreadMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Visuals")
     @replicated("RepNotify")
     # The particle system to use for weapon muzzle flash
     var<private> MuzzleFlash<native><public>: ?particle_system = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Visuals")
     @replicated("RepNotify")
     # The transform by which to offset the weapon muzzle
     var<private> MuzzleOffset<native><public>: (/Verse.org/SpatialMath:)transform = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when the weapon is out of ammo
     var<private> OutOfAmmoSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Damage")
     @replicated("RepNotify")
     # Range based damage multiplier
@@ -1258,19 +1260,19 @@ Armory<public> := module {
     # The multiplier that affects the recoil of the weapon
     var<private> RecoilMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when finishing a reload
     var<private> ReloadEndSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when inserting a magazine during reload
     var<private> ReloadInsertSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when starting a reload
@@ -1300,7 +1302,7 @@ Armory<public> := module {
     # The multiplier that affects the weapon spread while sprinting
     var<private> SprintingSpreadMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     @category("Weapon Sounds")
     @replicated("RepNotify")
     # The sounds to use when firing the weapon
@@ -1340,6 +1342,8 @@ Armory<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
+    ItemComponent<override>: ?item_component = external {}
+
     ItemDefinitionID<override>: string = external {}
 
     MeshComponent<override>: ?mesh_component = external {}
@@ -1361,6 +1365,8 @@ Armory<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
+
+    ItemComponent<override>: ?item_component = external {}
 
     ItemDefinitionID<override>: string = external {}
 
@@ -1384,6 +1390,8 @@ Armory<public> := module {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
+    ItemComponent<override>: ?item_component = external {}
+
     ItemDefinitionID<override>: string = external {}
 
     MeshComponent<override>: ?mesh_component = external {}
@@ -1394,6 +1402,7 @@ Armory<public> := module {
     WeaponComponent<override>: ?fort_weapon_component = external {}
   }
 
+  @hide_in_editor
   weapon_entity<native><epic_internal> := class<concrete><internal>(fort_item_definition_entity_base) {
     @field("Components")
     @available { MinUploadedAtFNVersion := 4000 }
@@ -1442,7 +1451,7 @@ Armory<public> := module {
   using { /Verse.org/Simulation }
   emote<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
-  npc_character_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {
+  npc_character_definition<native><public> := class<computes><final><epic_internal>(asset) {
     IsSameType<native><epic_internal>(NPCCharacterDefinition: npc_character_definition)<reads><decides>: void
   }
 
@@ -6239,7 +6248,7 @@ Devices<public> := module {
     (/Fortnite.com/Devices/npc_spawner_device:)Reset<public>(): void = external {}
 
     # Set the NPC character definition to use. Fails if the character type is different from one in the current definition.
-    SetNPCCharacterDefinition<epic_internal>(CharacterDefinition: npc_character_definition)<transacts><decides>: void = external {}
+    SetNPCCharacterDefinition<public>(CharacterDefinition: npc_character_definition)<transacts><decides>: void = external {}
 
     # Tries to spawn a character.
     Spawn<public>(): void = external {}
@@ -11299,6 +11308,24 @@ Framework<public> := module {
       WonWithVictoryCrownCount<native>: int = external {}
     }
   }
+
+  # Module import path: /Fortnite.com/Framework/Spectating
+  Spectating<epic_internal> := module {
+    (InEntity: entity).GetSpectatorManager<native><epic_internal>()<transacts><decides>: spectator_manager
+
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
+    spectator_manager<native><epic_internal> := class<internal> {
+      # Get all live spectators that are part of the session
+      GetLiveSpectators<native><epic_internal>()<transacts>: []player
+
+      # Signaled when a live spectator joins the session.
+      LiveSpectatorAddedEvent<native><epic_internal>: subscribable_event_intrnl(player) = external {}
+
+      # Signaled when a live spectator leaves the session.
+      LiveSpectatorRemovedEvent<native><epic_internal>: subscribable_event_intrnl(player) = external {}
+    }
+  }
 }
 
 # Module import path: /Fortnite.com/Game
@@ -11363,7 +11390,6 @@ Game<public> := module {
   }
 
   using { /Fortnite.com/Characters }
-  using { /UnrealEngine.com/Abilities }
   using { /UnrealEngine.com/Temporary/Diagnostics }
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/SceneGraph }
@@ -11379,7 +11405,7 @@ Game<public> := module {
   }
 
   @experimental
-  fort_ability_component<native><epic_internal> := class(old_ability_component) {
+  fort_ability_component<native><epic_internal> := class<final_super>(component) {
     OnBeginSimulation<native><override>(): void
 
     OnEndSimulation<native><override>(): void
@@ -11677,21 +11703,6 @@ Itemization<public> := module {
     WorldItem<public>: item_category = external {}
   }
 
-  # Module import path: /Fortnite.com/Itemization/FortniteItemDefinitionUtils
-  FortniteItemDefinitionUtils<epic_internal> := module {
-    @experimental
-    AddItemComponents<native><epic_internal>(InEntity: entity, InItemDefinitionID: string)<converges>: void
-
-    using { /UnrealEngine.com/Itemization }
-    using { /Verse.org/SceneGraph }
-    @experimental
-    AddItemComponents<native><epic_internal>(
-      InEntity: entity,
-      InItemDefinitionID: string,
-      InItemComponentType: subtype(item_component)
-    )<converges>: void
-  }
-
   @available { MinUploadedAtFNVersion := 4000 }
   # Module import path: /Fortnite.com/Itemization/FortniteRarities
   FortniteRarities<public> := module {
@@ -11909,6 +11920,7 @@ Itemization<public> := module {
     TeamChangedEvent<native><final><epic_internal>: listenable(tuple()) = external {}
   }
 
+  @hide_in_editor
   fort_item_definition_entity<native><epic_internal> := class<concrete>(fort_item_definition_entity_base) {
     @field("Components")
     @available { MinUploadedAtFNVersion := 4020 }
@@ -11927,6 +11939,7 @@ Itemization<public> := module {
     StackableComponent<native><protected>: ?basic_stackable_component = external {}
   }
 
+  @hide_in_editor
   fort_item_definition_entity_base<native><epic_internal> := class<concrete>(entity) {
     ItemDefinitionID<native><protected>: string = external {}
   }
@@ -12105,14 +12118,10 @@ Itemization<public> := module {
     DropExcess
   }
 
-  using { /UnrealEngine.com/Abilities }
-  play_animation_on_self<epic_internal> := class(ability) {
-    GameplayAbilityPath<override>: ?string = external {}
-  }
+  play_animation_on_self<epic_internal> := class {}
 }
 
 Items<public> := module {
-  using { /UnrealEngine.com/Itemization }
   @preload
   Acorn_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
@@ -16706,6 +16715,9 @@ Items<public> := module {
   }
 
   Telekineticon_Creative_V1_Common<native><public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
     ItemDefinitionID<override>: string = external {}
 
     @field("Components")
@@ -17290,6 +17302,7 @@ Items<public> := module {
 
   using { /Fortnite.com/Devices }
   using { /Fortnite.com/Itemization }
+  using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
@@ -17507,15 +17520,11 @@ SceneGraphCameras<public> := module {
   FortSceneGraphCameras<public> := module {
     @available { MinUploadedAtFNVersion := 4110 }
     @experimental
+    MakeFirstPersonCamera<constructor><epic_internal>(TargetEntityIn: entity): fort_first_person_camera_modifier = external {}
+
+    @available { MinUploadedAtFNVersion := 4110 }
+    @experimental
     MakeFixedAngleCamera<constructor><epic_internal>(TargetEntityIn: entity): fort_fixed_angle_camera_modifier = external {}
-
-    @available { MinUploadedAtFNVersion := 4110 }
-    @experimental
-    MakeFixedPointCamera<constructor><epic_internal>(TargetEntityIn: entity): fort_fixed_angle_camera_modifier = external {}
-
-    @available { MinUploadedAtFNVersion := 4110 }
-    @experimental
-    MakeOrbitCamera<constructor><epic_internal>(TargetEntityIn: entity): fort_orbit_camera_modifier = external {}
 
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
@@ -17524,48 +17533,326 @@ SceneGraphCameras<public> := module {
     using { /Verse.org/Temporary/EpicGamesRestricted/Network }
     @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that implements a fixed angle camera.
-    fort_fixed_angle_camera_modifier<native><epic_internal> := class(camera_modifier) {
+    # Base class for nodes that frame a target
+    fort_base_framing_camera_modifier<native><epic_internal> := class<abstract>(camera_modifier) {
+      @experimental
+      @replicated("")
+      # The size of the dead zone, i.e. the zone inside which the target can freely move.
+      # Sizes are expressed screen percentages around the desired framing location.
+      var DeadZoneScreenSpaceBottom<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The size of the dead zone, i.e. the zone inside which the target can freely move.
+      # Sizes are expressed screen percentages around the desired framing location.
+      var DeadZoneScreenSpaceLeft<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The size of the dead zone, i.e. the zone inside which the target can freely move.
+      # Sizes are expressed screen percentages around the desired framing location.
+      var DeadZoneScreenSpaceRight<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The size of the dead zone, i.e. the zone inside which the target can freely move.
+      # Sizes are expressed screen percentages around the desired framing location.
+      var DeadZoneScreenSpaceTop<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The time spent ramping down the reframing after entering the dead zone. If set to zero or a negative value, reframing will immediately stop once the target has entered the dead zone. Otherwise, the ReframeDampingFactor will interpolate towards zero over the specified amount of seconds.
+      var DisengageTimeSeconds<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The ideal horizontal screen-space position of the target.
+      var IdealFramingLocationScreenSpaceLeft<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The ideal vertical screen-space position of the target.
+      var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # If valid, the recentering damping factor will interpolate between LowReframeDampingFactor and ReframeDampingFactor as the target moves between the ideal target position and the boundaries of the hard-zone.
+      # If invalid, no interpolation occurs and the damping factor is always equal to ReframeDampingFactor.
+      var LowReframeDampingFactor<native><public>: ?float = external {}
+
+      @experimental
+      @replicated("")
+      # The time spent ramping up the reframing after exiting the dead zone. If set to zero or a negative value, reframing will immediately restart once the target has exited the dead zone. Otherwise the ReframeDampingFactor will interpolate from zero to its desired value over the specified amount of seconds.
+      var ReengageTimeSeconds<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The damping factor for how fast the framing recenters on the target.
+      var ReframeDampingFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+      var SoftZoneScreenSpaceBottom<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+      var SoftZoneScreenSpaceLeft<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+      var SoftZoneScreenSpaceRight<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+      var SoftZoneScreenSpaceTop<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var TargetMovementAnticipationTimeSeconds<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Targets to frame
+      var Targets<native><public>: [entity]float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4110 }
+    @experimental
+    # Camera modifier that frames a target by moving along a sideways rail (left/right relative to the camera transform) and optionally also up and down..
+    fort_dolly_framing_camera_modifier<native><epic_internal> := class<concrete>(fort_base_framing_camera_modifier) {}
+
+    @available { MinUploadedAtFNVersion := 4110 }
+    @experimental
+    # Camera modifier that implements a first person camera.
+    fort_first_person_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
       NativeCameraRigAsset<override>: camera_rig_asset = external {}
 
       @experimental
       @replicated("")
-      TargetEntity<native><public>: entity
+      # Optional entity the camera is attached to. If empty, falls back to the parent entity of the camera component.
+      TargetEntity<native><public>: ?entity = external {}
 
       @experimental
       @replicated("")
-      var LookAtOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+      # Maximum backward interpolation factor for the boom arm.
+      var BoomarmMaxBackwardInterpolationFactor<native><public>: float = external {}
 
       @experimental
       @replicated("")
-      var RotationAroundTarget<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+      # Maximum forward interpolation factor for the boom arm.
+      var BoomarmMaxForwardInterpolationFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Rotation applied to the camera
+      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+      @experimental
+      @replicated("")
+      # Translation offset applied to the camera relative to the attached entity.
+      var TranslationOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4110 }
     @experimental
     # Camera modifier that implements a fixed angle camera.
-    fort_fixed_point_camera_modifier<native><epic_internal> := class(camera_modifier) {
+    fort_fixed_angle_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
       NativeCameraRigAsset<override>: camera_rig_asset = external {}
 
       @experimental
       @replicated("")
-      TargetEntity<native><public>: entity
+      # Optional entity the camera is attached to. If empty, falls back to the parent entity of the camera component.
+      TargetEntity<native><public>: ?entity = external {}
 
       @experimental
       @replicated("")
-      var LookAtOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+      # Distance from the camera to the focus point along its forward axis.
+      var CameraDistance<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Translation offset applied to the collision safe position.
+      var CollisionSafePositionOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      @experimental
+      @replicated("")
+      # Radius of the sphere used for collision queries
+      var CollisionSphereRadius<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Whether camera-to-world collision avoidance is enabled.
+      var EnableCollision<native><public>: logic = external {}
+
+      @experimental
+      @replicated("")
+      # Damping factor applied along the forward axis
+      var ForwardDampingFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Damping factor applied along the lateral axis
+      var LateralDampingFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Rotation offset applied to the camera's orientation. Defaults to Pitch=-45 (look down 45 degrees).
+      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+      @experimental
+      @replicated("")
+      # Translation offset applied on top of the calculated offset.
+      var TranslationOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      @experimental
+      @replicated("")
+      # Damping factor applied along the vertical axis.
+      var VerticalDampingFactor<native><public>: float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4110 }
+    @experimental
+    # Camera modifier that implements a fixed point camera.
+    fort_fixed_point_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
+      @experimental
+      @replicated("")
+      var DeadZoneScreenSpaceBottom<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var DeadZoneScreenSpaceLeft<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var DeadZoneScreenSpaceRight<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var DeadZoneScreenSpaceTop<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The ideal horizontal screen-space position of the target.
+      var IdealFramingLocationScreenSpaceLeft<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # The ideal vertical screen-space position of the target.
+      var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # If valid, the recentering damping factor will interpolate between LowReframeDampingFactor and ReframeDampingFactor as the target moves between the ideal target position and the boundaries of the hard-zone.
+      # If invalid, no interpolation occurs and the damping factor is always equal to ReframeDampingFactor.
+      var LowReframeDampingFactor<native><public>: ?float = external {}
+
+      @experimental
+      @replicated("")
+      # Rotation offset applied to the camera's orientation.
+      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+      @experimental
+      @replicated("")
+      var SoftZoneScreenSpaceBottom<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var SoftZoneScreenSpaceLeft<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var SoftZoneScreenSpaceRight<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      var SoftZoneScreenSpaceTop<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Entities to frame in the camera. Empty array uses the rig's fallback (typically the camera component's parent entity.)
+      var TargetEntities<native><public>: []entity = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4110 }
     @experimental
     # Camera modifier that implements an orbit camera.
-    fort_orbit_camera_modifier<native><epic_internal> := class(camera_modifier) {
+    fort_orbit_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
       NativeCameraRigAsset<override>: camera_rig_asset = external {}
 
       @experimental
       @replicated("")
-      TargetEntity<native><public>: entity
+      # Optional entity the camera is attached to. If empty, falls back to the parent entity of the camera component.
+      TargetEntity<native><public>: ?entity = external {}
+
+      @experimental
+      @replicated("")
+      # Maximum backward interpolation factor for the boom arm
+      var BoomArmMaxBackwardInterpolationFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Maximum forward interpolation factor for the boom arm
+      var BoomArmMaxForwardInterpolationFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Boom arm offset relative to the attached entity
+      var BoomArmOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      @experimental
+      @replicated("")
+      # Distance from the camera to the orbit pivot along the camera's forward axis.
+      var CameraDistance<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Height of the orbit pivot above the attached entity's root, in world units.
+      var CameraHeight<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Radius of the sphere used for collision queries
+      var CollisionSphereRadius<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Whether camera-to-world collision avoidance is enabled
+      var EnableCollision<native><public>: logic = external {}
+
+      @experimental
+      @replicated("")
+      # Damping factor applied along the forward axis
+      var ForwardDampingFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Damping factor applied along the lateral axis
+      var LateralDampingFactor<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # Position offset applied to the camera relative to the orbit pivot, after the boom arm.
+      var PositionOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      @experimental
+      @replicated("")
+      # Rotation offset applied to the camera's orientation.
+      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+      @experimental
+      @replicated("")
+      # Damping factor applied along the vertical axis
+      var VerticalDampingFactor<native><public>: float = external {}
     }
+
+    @available { MinUploadedAtFNVersion := 4110 }
+    @experimental
+    # Camera modifier that frames a target by rotating in place.
+    fort_panning_framing_camera_modifier<native><epic_internal> := class<concrete>(fort_base_framing_camera_modifier) {}
   }
 }
 

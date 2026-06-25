@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.00-CL-54618515
+# Generated from build: ++Fortnite+Release-41.10-CL-55335788
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -691,6 +691,119 @@ JSON<public> := module {
 
     # Retrieve an object value or fail if value is not a string
     AsString<native><public>()<transacts><decides>: string
+  }
+}
+
+Progression<public> := module {
+  using { /Verse.org/Assets }
+  using { /Verse.org/Presentation }
+  @experimental
+  # Standard quest that follows the "do x, get y" paradigm.
+  # Auto-completion: when Objective.IsComplete() succeeds, calls Complete() automatically.
+  # Auto-rewarding: on completion, rewards are granted to eligible participants
+  # via GetRecipients() then GrantReward().
+  basic_quest<native><public> := class<abstract>(quest, has_icon, has_description) {
+    # Replaces the progression model on a live quest. Auto-completes if the new objective is
+    # already completed.
+    SetObjective<native><final><public>(InObjective: quest_objective)<transacts>: void
+
+    # Rewards granted to eligible participants on completion.
+    var Rewards<native><public>: []quest_reward = external {}
+
+    # Progression model for the quest.
+    var<private> Objective<native><public>: quest_objective
+  }
+
+  using { /Fortnite.com/Marketplace }
+  using { /Verse.org/Native }
+  using { /Verse.org/Progression }
+  @experimental
+  # Grants an entitlement to each eligible participant.
+  entitlement_quest_reward<native><public> := class(quest_reward) {
+    @available { MinUploadedAtFNVersion := 4000 }
+    # Iterates EligibleParticipants, resolves each participant's agent as a player,
+    # and grants the entitlement via the platform entitlement service.
+    GrantReward<override><native><final>(EligibleParticipants: []quest_participant)<transacts>: result(
+      void,
+      []grant_quest_reward_error
+    )
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    # The entitlement type to grant.
+    var Entitlement<native><public>: concrete_subtype(entitlement)
+
+    # Quantity per participant.
+    var Quantity<native><public>: int = external {}
+  }
+
+  @experimental
+  # Returned when a reward cannot be granted.
+  grant_quest_reward_error<native><public> := class {}
+
+  @experimental
+  # Tracks numeric progress toward a required count.
+  # Complete when Progress >= RequiredCount.
+  progress_quest_objective<native><public> := class(quest_objective) {
+    # Returns progress in "X / Y" format.
+    GetProgress<override><native><final>()<reads>: message
+
+    # Succeeds if Progress >= RequiredCount.
+    IsComplete<override><native><final>()<reads><decides>: void
+
+    # Sets current progress. Clamped to [0, RequiredCount].
+    SetProgress<native><final><public>(Amount: float)<transacts>: void
+
+    # Sets the target count. Clamped to [1, MaxFloat].
+    SetRequiredCount<native><final><public>(Amount: float)<transacts>: void
+
+    # Current progress toward RequiredCount.
+    var<private> Progress<native><public>: float = external {}
+
+    # Target count for completion.
+    var<private> RequiredCount<native><public>: float
+  }
+
+  @experimental
+  # Abstract base class for all quest objectives.
+  quest_objective<native><public> := class<abstract>(has_icon, has_description) {
+    # Signaled when this objective is considered complete.
+    CompleteEvent<native><final><public>: listenable(quest_objective) = external {}
+
+    # Determines which participants can contribute to this objective.
+    # Override to customize contributor selection.
+    # Default: all participants where Info.Contributes = true.
+    GetContributors<native><native_callable><public>(Memberships: []quest_membership)<reads>: []quest_participant
+
+    # Returns a progress message (e.g. "3 / 10").
+    GetProgress<native><native_callable><public>()<reads>: message
+
+    # Succeeds if this objective is currently complete.
+    IsComplete<native><native_callable><public>()<reads><decides>: void
+
+    # Signaled when this objective's progress changes. Payload: this objective.
+    ProgressEvent<native><final><public>: listenable(quest_objective) = external {}
+
+    # Signals ProgressEvent. Call from a subclass to notify progress subscribers.
+    SignalProgressEvent<native><final><protected>()<transacts>: void
+  }
+
+  @experimental
+  # Abstract base class for all quest rewards.
+  quest_reward<native><public> := class<abstract>(has_icon, has_description) {
+    # Determines which participants should receive this reward.
+    # Override to customize recipient selection.
+    # Default: all participants where Info.Receives = true.
+    GetRecipients<native><native_callable><public>(Memberships: []quest_membership)<reads>: []quest_participant
+
+    # Signaled after this reward has been granted to recipients.
+    GrantEvent<native><final><public>: listenable(tuple(quest_reward, []quest_participant)) = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    # Grants this reward to the eligible participants.
+    GrantReward<native><native_callable><public>(EligibleParticipants: []quest_participant)<transacts>: result(
+      void,
+      []grant_quest_reward_error
+    )
   }
 }
 

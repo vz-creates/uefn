@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.00-CL-54618515
+# Generated from build: ++Fortnite+Release-41.10-CL-55335788
 #################################################
 
 AINavigation<public> := module {
@@ -95,52 +95,63 @@ AINavigation<public> := module {
 }
 
 Abilities<public> := module {
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Lives in the scene graph and is the high level description of an ability.
+  #  Knows if an ability can run, cooldowns, distance and targeting requirements etc...
+  ability<native><epic_internal>(
+    context_type: subtype(ability_context),
+    ability_effect_type: subtype(ability_effect)
+  ) := class<abstract>(has_icon) {
+    (/UnrealEngine.com/Abilities/ability:)Abilities_ability_Variance<private>(
+      : context_type,
+      : ability_effect_type,
+      : context_type,
+      : context_type
+    ): tuple(ability_effect_type, context_type, ability_effect_type) = external {}
+
+    BeginUseEvent<native><public>: listenable(entity) = external {}
+
+    CanUse<epic_internal>(AbilityEffectParent: entity, AbilityContext: context_type)<reads><decides>: void = external {}
+
+    EndUseEvent<native><public>: listenable(entity) = external {}
+
+    MakeAbility<epic_internal>()<transacts>: ability_effect_type
+
+    MakeContext<epic_internal>()<transacts>: context_type
+
+    Use<final><public>(AbilityEffectParent: entity, AbilityContext: context_type): ?ability_effect_type = external {}
+
+    var (/UnrealEngine.com/Abilities/ability:)Abilities_ability_VarVariance<private>: ?tuple(ability_effect_type) = external {}
+
+    var<private> ActiveEffects<native><public>: []ability_effect_type
+  }
+
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  # Use ability_component and ability_effect_component from Verse Ability API instead
-  ability<native><public> := class {
-    Activate<native><protected>()<suspends>: void
-
-    GameplayAbilityPath<native><epic_internal>: ?string = external {}
-  }
-
-  # Use ability_component and ability_effect_component from Verse Ability API instead
-  ability_asset<native><epic_internal> := class<computes>(asset) {}
-
   @available { MinUploadedAtFNVersion := 4000 }
-  # Lives in the scene graph and is the high level description of an ability.
-  #  Knows if an ability can run, cooldowns, distance and targeting requirements etc...
-  ability_component<native><epic_internal> := class<abstract><final_super>(component, has_icon) {
-    BeginUseEvent<native><public>: listenable(entity) = external {}
-
-    CanUse<protected>(Owner: entity, AbilityContext: ability_context)<reads><decides>: void = external {}
-
-    @editable
-    EffectPrefabType<public>: concrete_subtype(entity)
-
-    EndUseEvent<native><public>: listenable(entity) = external {}
-
-    Use<final><public>(Owner: entity, AbilityContext: ability_context)<transacts><decides>: entity = external {}
-
-    var<private> ActiveEffects<native><public>: []ability_effect_component = external {}
-  }
-
-  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   # Data passed on activation of an ability. Holds who fired, who helped, and what got hit.
   #  Subclass to provide specific context for custom ability effects
-  ability_context<native><public> := class<castable> {
-    Instigator<native><public>: ?agent
+  ability_context<native><public> := class<concrete> {
+    var Instigator<native><public>: ?agent = external {}
 
-    Participants<native><public>: []entity
+    var Participants<native><public>: []entity = external {}
 
-    Targets<native><public>: []entity
+    var Targets<native><public>: []entity = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  # Attached to Ability Entity prefabs. Provides a central location for handling desired ability and gameplay logic.
-  ability_effect_component<native><epic_internal> := class<abstract><final_super>(component) {
+  @experimental
+  # Prefab to provide a central location for handling desired ability and gameplay logic.
+  ability_effect<native><epic_internal> := class<concrete>(entity) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Guaranteed Ability component on Ability prefab entities. Handles Ability lifecycle.
+  ability_effect_component<native><epic_internal> := class<final_super>(component) {
     CanCancel<native_callable><protected>(Reason: cancel_reason)<transacts><decides>: void = external {}
 
     Cancel<final><public>(Reason: cancel_reason)<transacts><decides>: void = external {}
@@ -151,63 +162,19 @@ Abilities<public> := module {
 
     OnEndUse<native><protected>(Reason: ?cancel_reason)<transacts>: void
 
-    var Ability<native><public>: ?ability_component = external {}
+    var<protected> Ability<native><public>: ?ability(ability_context, ability_effect) = external {}
 
-    var Context<native><public>: ?ability_context = external {}
+    var<protected> Context<native><public>: ?ability_context = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   ability_ended<public> := class<castable>(cancel_reason) {}
 
-  @attribscope_data
-  @customattribhandler
-  ability_link<epic_internal> := class<computes>(attribute) {
-    Name<epic_internal>: string = external {}
-  }
-
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   # Lightweight tag explaining why an effect ended.
   cancel_reason<native><public> := class<abstract><castable> {}
-
-  @experimental
-  # Use ability_component and ability_effect_component from Verse Ability API instead
-  old_ability_component<native><public> := class<final_super>(component) {
-    ActivateAbility<native><epic_internal>(Ability: ability): void
-
-    ActivateAbility<native><public>(ability_type: subtype(ability)): void
-
-    GiveAbility<native><epic_internal>(Ability: ability)<transacts><decides>: void
-
-    GiveAbility<native><public>(ability_type: subtype(ability))<transacts><decides>: void
-  }
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  # GAS template ability effect component
-  template_ability_effect_component<native><epic_internal> := class(ability_effect_component) {
-    AbilityClass<native><epic_internal>: ability_asset
-
-    CanCancel<override>(Reason: cancel_reason)<transacts><decides>: void = external {}
-
-    OnBeginUse<override><native><final>()<transacts>: void
-
-    OnEndUse<override><native><final>(Reason: ?cancel_reason)<transacts>: void
-  }
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  template_cancel_reason_canceled<native><final><public> := class<castable>(cancel_reason) {}
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  template_cancel_reason_ended<native><final><public> := class<castable>(cancel_reason) {}
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  template_cancel_reason_invalid<native><final><public> := class<castable>(cancel_reason) {}
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  # Template ability specific context so that we play abilities on the owner,
-  #  subclass for template specific dynamic parameters to be passed to the native ability
-  template_context<native><epic_internal> := class<castable>(ability_context) {
-    AbilityOwner<native><public>: ?agent
-  }
 }
 
 # Module import path: /UnrealEngine.com/Assets
@@ -543,7 +510,9 @@ Conversations<public> := module {
     VoiceName<override>: string = external {}
   }
 
+  @experimental
   internal_response_data<native><epic_internal> := struct {
+    @llm_description("Use this to output the name of the targeted conversation participant")
     TargetAgent<native>: ?agent
   }
 
@@ -1092,7 +1061,6 @@ Itemization<public> := module {
     SlotChangedItems<native><public>: []item_slot_change
   }
 
-  using { /UnrealEngine.com/Abilities }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
@@ -1305,9 +1273,6 @@ Itemization<public> := module {
   @experimental
   item_ability_binding<native><final><epic_internal> := class<concrete> {
     @editable
-    var<private> Ability<native><public>: ?ability = external {}
-
-    @editable
     var<private> ActiveWhenItemEquipped<native><public>: logic = external {}
 
     @editable
@@ -1396,6 +1361,8 @@ Itemization<public> := module {
     # Succeeds if this item is considered currently within an inventory and equipped.
     IsEquipped<native><final><public>()<reads><decides>: void
 
+    ItemDefinitionAsset<native><epic_internal>: ?item_definition = external {}
+
     @available { MinUploadedAtFNVersion := 3800 }
     MakeEquipResultInternal<final><native_callable><epic_internal>(IsSuccess: logic): result(
       comparable,
@@ -1425,6 +1392,8 @@ Itemization<public> := module {
     @replicated("")
     var<private> ItemDefinition<native><epic_internal>: ?item_definition_base = external {}
   }
+
+  item_definition<native><epic_internal> := class<epic_internal>(asset) {}
 
   @import_as("/Script/ItemizationCoreRuntime.UItemDefinitionBase")
   item_definition_base<native><epic_internal> := class<epic_internal> {}
@@ -1614,6 +1583,15 @@ Itemization<public> := module {
     RemovedItems<native><public>: []entity
   }
 
+  @hide_in_editor
+  subscribable_inventory_event<native><epic_internal>(t: type) := class(subscribable_event_intrnl(t)) {
+    Await<native><override>()<suspends>: t
+
+    (/UnrealEngine.com/Itemization/subscribable_inventory_event:)Itemization_subscribable_inventory_event_Variance<private>(): tuple(t, t) = external {}
+
+    Subscribe<native><override>(Callback: type { _(: t): void })<transacts>: cancelable
+  }
+
   unequip_item_error<native><public> := class<computes> {}
 
   unequip_item_query_event<native><public> := class(scene_event) {
@@ -1657,6 +1635,17 @@ JSON<public> := module {
 Progression<public> := module {
   BroadcastVerbMessage<native><epic_internal>(Author: entity, SceneEvent: scene_event): void
 
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  MakeGrantRewardErrorResult<native_callable><epic_internal>(): result(void, []grant_quest_reward_error) = external {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  MakeGrantRewardSuccessResult<native_callable><epic_internal>(): result(
+    comparable,
+    []grant_quest_reward_error
+  ) = external {}
+
   @available { MinUploadedAtFNVersion := 3800 }
   MakeRegisterGameplayConditionalErrorResult<native_callable><epic_internal>(): result(
     gameplay_conditional_listener_handle,
@@ -1699,10 +1688,48 @@ Progression<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   RegisterVerbMessage<native><epic_internal>(VerbMessageType: subtype(scene_event), Callback: type { _(: entity, : scene_event): void })<transacts>: result(verb_listener_handle, []register_verb_error)
 
+  @experimental
   RestoreQuestData<native><epic_internal>(Data: quest_progress_data)<transacts><decides>: quest
 
+  @experimental
   SnapshotQuestData<native><epic_internal>(Quest: quest)<reads>: quest_progress_data
 
+  already_claimed_error<native><epic_internal> := class<epic_internal>(claim_reward_error) {}
+
+  using { /Verse.org/Assets }
+  using { /Verse.org/Presentation }
+  @experimental
+  # Standard quest that follows the "do x, get y" paradigm.
+  # Auto-completion: when Objective.IsComplete() succeeds, calls Complete() automatically.
+  # Auto-rewarding: on completion, rewards are granted to eligible participants
+  # via GetRecipients() then GrantReward().
+  basic_quest<native><public> := class<abstract>(quest, has_icon, has_description) {
+    CanGrantRewards<native><native_callable><epic_internal>()<reads><decides>: void
+
+    GrantRewardsToParticipants<native><native_callable><final><epic_internal>(): void
+
+    OnAbandon<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    OnActivate<override><native><native_callable>(): void
+
+    OnDeactivate<override><native><native_callable>(): void
+
+    OnJoin<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    # Replaces the progression model on a live quest. Auto-completes if the new objective is
+    # already completed.
+    SetObjective<native><final><public>(InObjective: quest_objective)<transacts>: void
+
+    # Rewards granted to eligible participants on completion.
+    var Rewards<native><public>: []quest_reward = external {}
+
+    # Progression model for the quest.
+    var<private> Objective<native><public>: quest_objective
+  }
+
+  claim_reward_error<native><epic_internal> := class<epic_internal> {}
+
+  @experimental
   composite_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
     Children<native><epic_internal>: []objective_snapshot = external {}
 
@@ -1720,18 +1747,26 @@ Progression<public> := module {
   using { /Verse.org/Progression }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/StateMachine }
+  @experimental
   composite_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
-    GetProgress<override><native>()<reads>: message
+    GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<reads><decides>: void
 
-    OnActivate<override><native>(): void
+    OnAbandon<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    OnActivate<override><native><native_callable>(): void
+
+    OnDeactivate<override><native><native_callable>(): void
+
+    OnJoin<override><native><native_callable>(QuestParticipant: quest_participant): void
 
     var Objectives<native><epic_internal>: []quest_objective = external {}
 
     var<private> RequiredCount<native><epic_internal>: int = external {}
   }
 
+  @experimental
   conditional_quest_objective<native><epic_internal> := class<epic_internal>(
     progress_quest_objective,
     has_gameplay_conditionals
@@ -1771,22 +1806,29 @@ Progression<public> := module {
     var Caches<epic_internal>: []contextual_reactions_cache = external {}
   }
 
-  ecosystem_entitlement<native><epic_internal> := class<abstract>(entitlement) {
+  ecosystem_entitlement<native><epic_internal> := class(entitlement) {
     PaidArea<override><final>: logic = external {}
 
     PaidRandomItem<override><final>: logic = external {}
   }
 
-  entitlement_quest_reward<native><epic_internal> := class<epic_internal>(quest_reward) {
+  @experimental
+  # Grants an entitlement to each eligible participant.
+  entitlement_quest_reward<native><public> := class(quest_reward) {
     @available { MinUploadedAtFNVersion := 4000 }
-    GrantReward<override><native>(EligibleParticipants: []quest_participant)<transacts>: result(
+    # Iterates EligibleParticipants, resolves each participant's agent as a player,
+    # and grants the entitlement via the platform entitlement service.
+    GrantReward<override><native><final>(EligibleParticipants: []quest_participant)<transacts>: result(
       void,
       []grant_quest_reward_error
     )
 
-    var Entitlement<native><epic_internal>: subtype(entitlement)
+    @available { MinUploadedAtFNVersion := 4000 }
+    # The entitlement type to grant.
+    var Entitlement<native><public>: concrete_subtype(entitlement)
 
-    var Quantity<native><epic_internal>: int = external {}
+    # Quantity per participant.
+    var Quantity<native><public>: int = external {}
   }
 
   execute_gameplay_reaction_error<native><public> := class<epic_internal> {}
@@ -1863,6 +1905,10 @@ Progression<public> := module {
     Target<native><epic_internal>: entity
   }
 
+  @experimental
+  # Returned when a reward cannot be granted.
+  grant_quest_reward_error<native><public> := class {}
+
   has_gameplay_conditionals<native><epic_internal> := interface<epic_internal> {
     Conditionals<epic_internal>: []subtype(gameplay_conditional) = external {}
 
@@ -1881,26 +1927,35 @@ Progression<public> := module {
     MaxCount<override><final>: int = external {}
   }
 
+  @experimental
   modular_quest<native><epic_internal> := class<epic_internal>(basic_quest) {
     @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<override><native>(QuestParticipant: quest_participant)<reads>: result(void, []abandon_quest_error)
+    CanAbandon<override><native><native_callable>(QuestParticipant: quest_participant)<reads>: result(
+      void,
+      []abandon_quest_error
+    )
+
+    CanGrantRewards<override><native><native_callable>()<reads><decides>: void
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<override><native>(QuestParticipant: quest_participant)<reads>: result(void, []join_quest_error)
+    CanJoin<override><native><native_callable>(QuestParticipant: quest_participant)<reads>: result(void, []join_quest_error)
 
     Extensions<native><epic_internal>: []quest_extension
 
-    OnAbandon<override><native>(QuestParticipant: quest_participant): void
+    OnAbandon<override><native><native_callable>(QuestParticipant: quest_participant): void
 
-    OnActivate<override><native>(): void
+    OnActivate<override><native><native_callable>(): void
 
-    OnComplete<override><native>(): void
+    OnComplete<override><native><native_callable>(): void
 
-    OnDeactivate<override><native>(): void
+    OnDeactivate<override><native><native_callable>(): void
 
-    OnJoin<override><native>(QuestParticipant: quest_participant): void
+    OnJoin<override><native><native_callable>(QuestParticipant: quest_participant): void
   }
 
+  not_ready_to_claim_error<native><epic_internal> := class<epic_internal>(claim_reward_error) {}
+
+  @experimental
   objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
     Composite<native><epic_internal>: ?composite_objective_snapshot = external {}
 
@@ -1913,6 +1968,7 @@ Progression<public> := module {
     Timed<native><epic_internal>: ?timed_objective_snapshot = external {}
   }
 
+  @experimental
   progress_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
     ObjectiveId<native><epic_internal>: string = external {}
 
@@ -1923,52 +1979,116 @@ Progression<public> := module {
     RequiredCount<native><epic_internal>: float = external {}
   }
 
-  progress_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
+  @experimental
+  # Tracks numeric progress toward a required count.
+  # Complete when Progress >= RequiredCount.
+  progress_quest_objective<native><public> := class(quest_objective) {
     AddProgress<native><final><epic_internal>(Amount: float)<transacts>: void
 
-    GetProgress<override><native>()<reads>: message
+    # Returns progress in "X / Y" format.
+    GetProgress<override><native><final>()<reads>: message
 
-    GetProgressCount<native><final><epic_internal>(): float
+    # Succeeds if Progress >= RequiredCount.
+    IsComplete<override><native><final>()<reads><decides>: void
 
-    IsComplete<override><native>()<reads><decides>: void
+    # Sets current progress. Clamped to [0, RequiredCount].
+    SetProgress<native><final><public>(Amount: float)<transacts>: void
 
-    SetProgress<native><final><epic_internal>(Amount: float)<transacts>: void
+    # Sets the target count. Clamped to [1, MaxFloat].
+    SetRequiredCount<native><final><public>(Amount: float)<transacts>: void
 
-    SetRequiredCount<native><final><epic_internal>(Amount: float)<transacts>: void
+    # Current progress toward RequiredCount.
+    var<private> Progress<native><public>: float = external {}
 
-    var<private> Progress<native><epic_internal>: float
-
-    var<private> RequiredCount<native><epic_internal>: float
+    # Target count for completion.
+    var<private> RequiredCount<native><public>: float
   }
 
+  @experimental
   quest_extension<native><epic_internal> := class<abstract><castable><epic_internal> {
     @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<native><epic_internal>(QuestParticipant: quest_participant)<reads>: result(void, []abandon_quest_error)
+    CanAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
+      void,
+      []abandon_quest_error
+    )
+
+    CanGrantRewards<native><native_callable><epic_internal>()<reads><decides>: void
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<native><epic_internal>(QuestParticipant: quest_participant)<reads>: result(void, []join_quest_error)
+    CanJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
+      void,
+      []join_quest_error
+    )
 
     GetOwningQuest<native><final><epic_internal>()<reads>: quest
 
-    OnAbandon<native><epic_internal>(QuestParticipant: quest_participant): void
+    OnAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
 
-    OnActivate<native><epic_internal>(): void
+    OnActivate<native><native_callable><epic_internal>(): void
 
-    OnComplete<native><epic_internal>(): void
+    OnComplete<native><native_callable><epic_internal>(): void
 
-    OnDeactivate<native><epic_internal>(): void
+    OnDeactivate<native><native_callable><epic_internal>(): void
 
-    OnJoin<native><epic_internal>(QuestParticipant: quest_participant): void
+    OnJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
   }
 
-  quest_objective_state<native><epic_internal> := class<final_super><epic_internal>(state) {
-    OnEnter<override><native>(): void
+  @experimental
+  # Abstract base class for all quest objectives.
+  quest_objective<native><public> := class<abstract>(has_icon, has_description) {
+    AbandonEvent<native><final><epic_internal>: listenable(tuple(quest_objective, quest_membership)) = external {}
 
-    OnExit<override><native>(): void
+    ActivateEvent<native><final><epic_internal>: listenable(quest_objective) = external {}
+
+    CanProgress<native><native_callable><epic_internal>()<reads><decides>: void
+
+    # Signaled when this objective is considered complete.
+    CompleteEvent<native><final><public>: listenable(quest_objective) = external {}
+
+    DeactivateEvent<native><final><epic_internal>: listenable(quest_objective) = external {}
+
+    # Determines which participants can contribute to this objective.
+    # Override to customize contributor selection.
+    # Default: all participants where Info.Contributes = true.
+    GetContributors<native><native_callable><public>(Memberships: []quest_membership)<reads>: []quest_participant
+
+    GetOwningQuest<native><final><epic_internal>()<reads>: quest
+
+    # Returns a progress message (e.g. "3 / 10").
+    GetProgress<native><native_callable><public>()<reads>: message
+
+    # Succeeds if this objective is currently complete.
+    IsComplete<native><native_callable><public>()<reads><decides>: void
+
+    JoinEvent<native><final><epic_internal>: listenable(tuple(quest_objective, quest_membership)) = external {}
+
+    OnAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
+
+    OnActivate<native><native_callable><epic_internal>(): void
+
+    OnComplete<native><native_callable><epic_internal>(): void
+
+    OnDeactivate<native><native_callable><epic_internal>(): void
+
+    OnJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
+
+    # Signaled when this objective's progress changes. Payload: this objective.
+    ProgressEvent<native><final><public>: listenable(quest_objective) = external {}
+
+    # Signals ProgressEvent. Call from a subclass to notify progress subscribers.
+    SignalProgressEvent<native><final><protected>()<transacts>: void
+  }
+
+  @experimental
+  quest_objective_state<native><epic_internal> := class<final_super><epic_internal>(state) {
+    OnEnter<override><native><native_callable>(): void
+
+    OnExit<override><native><native_callable>(): void
 
     var Objective<native><epic_internal>: quest_objective
   }
 
+  @experimental
   quest_progress_data<native><epic_internal> := class<final><persistable><epic_internal> {
     Objective<native><epic_internal>: ?objective_snapshot = external {}
 
@@ -1979,10 +2099,48 @@ Progression<public> := module {
     State<native><epic_internal>: quest_state = external {}
   }
 
+  @experimental
+  # Abstract base class for all quest rewards.
+  quest_reward<native><public> := class<abstract>(has_icon, has_description) {
+    # Determines which participants should receive this reward.
+    # Override to customize recipient selection.
+    # Default: all participants where Info.Receives = true.
+    GetRecipients<native><native_callable><public>(Memberships: []quest_membership)<reads>: []quest_participant
+
+    # Signaled after this reward has been granted to recipients.
+    GrantEvent<native><final><public>: listenable(tuple(quest_reward, []quest_participant)) = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    # Grants this reward to the eligible participants.
+    GrantReward<native><native_callable><public>(EligibleParticipants: []quest_participant)<transacts>: result(
+      void,
+      []grant_quest_reward_error
+    )
+  }
+
   register_gameplay_conditional_error<native><public> := class<epic_internal> {}
 
   register_verb_error<native><public> := class<epic_internal> {}
 
+  @experimental
+  reward_claim_quest_extension<native><epic_internal> := class<epic_internal>(quest_extension) {
+    CanGrantRewards<override><native><native_callable>()<reads><decides>: void
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ClaimRewards<native><native_callable><epic_internal>()<transacts>: result(void, []claim_reward_error)
+
+    IsReadyToClaim<native><native_callable><epic_internal>()<reads><decides>: void
+
+    RewardsClaimedEvent<native><final><epic_internal>: listenable(reward_claim_quest_extension) = external {}
+
+    RewardsReadyEvent<native><final><epic_internal>: listenable(reward_claim_quest_extension) = external {}
+
+    var<private> Claimed<native><epic_internal>: logic = external {}
+
+    var<private> PendingClaim<native><epic_internal>: logic = external {}
+  }
+
+  @experimental
   sequential_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
     Children<native><epic_internal>: []objective_snapshot = external {}
 
@@ -1993,18 +2151,26 @@ Progression<public> := module {
     ObjectiveVersePath<native><epic_internal>: string = external {}
   }
 
+  @experimental
   sequential_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
-    GetProgress<override><native>()<reads>: message
+    GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<reads><decides>: void
 
-    OnActivate<override><native>(): void
+    OnAbandon<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    OnActivate<override><native><native_callable>(): void
+
+    OnDeactivate<override><native><native_callable>(): void
+
+    OnJoin<override><native><native_callable>(QuestParticipant: quest_participant): void
 
     var Objectives<native><epic_internal>: []quest_objective
 
     var<private> CurrentStageIndex<native><epic_internal>: int = external {}
   }
 
+  @experimental
   state_machine_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
     CurrentStateId<native><epic_internal>: string = external {}
 
@@ -2013,12 +2179,17 @@ Progression<public> := module {
     ObjectiveVersePath<native><epic_internal>: string = external {}
   }
 
+  @experimental
   state_machine_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
-    GetProgress<override><native>()<reads>: message
+    GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<reads><decides>: void
 
-    UpdateCurrentState<native><epic_internal>(): void
+    OnAbandon<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    OnJoin<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    UpdateCurrentState<native><final><epic_internal>(): void
 
     var (/UnrealEngine.com/Progression/state_machine_quest_objective:)StateMachine<native><epic_internal>: state_machine
 
@@ -2027,6 +2198,7 @@ Progression<public> := module {
     var<private> CurrentState<native><epic_internal>: ?quest_objective_state = external {}
   }
 
+  @experimental
   timed_objective_snapshot<native><epic_internal> := class<final><persistable><epic_internal> {
     Inner<native><epic_internal>: ?objective_snapshot = external {}
 
@@ -2037,14 +2209,19 @@ Progression<public> := module {
     TimeRemainingMs<native><epic_internal>: int = external {}
   }
 
+  @experimental
   timed_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
-    GetProgress<override><native>()<reads>: message
+    GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<reads><decides>: void
+
+    OnAbandon<override><native><native_callable>(QuestParticipant: quest_participant): void
+
+    OnJoin<override><native><native_callable>(QuestParticipant: quest_participant): void
 
     TimeExpiredEvent<native><final><epic_internal>: listenable(timed_quest_objective) = external {}
 
-    UpdateTimeRemaining<native><epic_internal>(DeltaSeconds: float)<transacts>: void
+    UpdateTimeRemaining<native><final><epic_internal>(DeltaSeconds: float)<transacts>: void
 
     var Objective<native><epic_internal>: quest_objective
 

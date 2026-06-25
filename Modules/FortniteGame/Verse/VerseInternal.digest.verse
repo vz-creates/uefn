@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.00-CL-54618515
+# Generated from build: ++Fortnite+Release-41.10-CL-55335788
 #################################################
 
 AgentGroup<public> := module {
@@ -158,6 +158,7 @@ Assets<public> := module {
   level<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   material<native><public> := class<epic_internal>(asset, property_changed_interface, material_like) {
+    @transient
     MaterialPath<native><epic_internal>: string = external {}
 
     OnPropertyChangedFromVerse<native><override>(PropertyName: string)<transacts>: void
@@ -804,6 +805,20 @@ Input<public> := module {
   # Transforms a 3D world position to viewport space coordinates in centimeters. Returns a vector3 where `Left` is the horizontal viewport coordinate (positive is rightward from the screen's top-left corner) and `Up` is the vertical viewport coordinate (positive is upward, so a point below the top of the screen has a negative `Up`). `Forward` is always 0 because viewport coordinates are 2D. Fails if the world position is behind the camera.
   (Player: player).ProjectWorldToViewport<native><public>(WorldPosition: (/Verse.org/SpatialMath:)vector3)<reads><decides>: (/Verse.org/SpatialMath:)vector3
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  @available { MinUploadedAtFNVersion := 4110 }
+  # Module import path: /Verse.org/Input/Gameplay
+  # The module contains input mappings that are available during gameplay.
+  Gameplay<public> := module {
+    using { /Verse.org/Assets }
+    using { /Verse.org/Native }
+    @available { MinUploadedAtFNVersion := 4110 }
+    HotbarMapping<public>: input_mapping = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
   # Access input-related data and settings for a player.
   GetPlayerInput<native><public>(Player: player)<transacts><decides>: player_input
@@ -971,10 +986,6 @@ Input<public> := module {
   @import_as("/Script/VerseInput.UVerseInputEventsBase")
   input_events_base<native><epic_internal> := class<abstract> {}
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
-  using { /Verse.org/SpatialMath }
   # Represents the player's current preferred input method.
   input_method<native><public> := enum<open> {
     Gamepad
@@ -1183,67 +1194,59 @@ Presentation<public> := module {
 
 Progression<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   MakeAbandonQuestErrorResult<native_callable><epic_internal>(): result(void, []abandon_quest_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   MakeAbandonQuestSuccessResult<native_callable><epic_internal>(): result(comparable, []abandon_quest_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  MakeGrantRewardErrorResult<native_callable><epic_internal>(): result(void, []grant_quest_reward_error) = external {}
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  MakeGrantRewardSuccessResult<native_callable><epic_internal>(): result(
-    comparable,
-    []grant_quest_reward_error
-  ) = external {}
-
-  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   MakeJoinQuestErrorResult<native_callable><epic_internal>(): result(void, []join_quest_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   MakeJoinQuestSuccessResult<native_callable><epic_internal>(): result(comparable, []join_quest_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   MakeRevokeQuestErrorResult<native_callable><epic_internal>(): result(void, []remove_quest_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
   MakeRevokeQuestSuccessResult<native_callable><epic_internal>(): result(comparable, []remove_quest_error) = external {}
 
-  abandon_quest_error<native><epic_internal> := class<epic_internal> {}
+  @experimental
+  # Returned when a participant cannot abandon a quest.
+  abandon_quest_error<native><public> := class {}
 
+  @experimental
   abandon_quest_not_joined_error<native><epic_internal> := class<epic_internal>(abandon_quest_error) {}
 
+  @experimental
   abandon_quest_vetoed_error<native><epic_internal> := class<epic_internal>(abandon_quest_error) {}
 
+  @experimental
   add_quest_error<native><epic_internal> := class<epic_internal> {}
 
+  @experimental
   add_quest_vetoed_error<native><epic_internal> := class<epic_internal>(add_quest_error) {}
 
-  agent_quest_participant<native><epic_internal> := class<final>(quest_participant) {
-    Agent<native><epic_internal>: agent
+  @experimental
+  # A quest participant backed by an agent (player, NPC, AI, etc.).
+  agent_quest_participant<native><public> := class<final>(quest_participant) {
+    # The agent this participant represents.
+    Agent<native><public>: agent
   }
 
+  using { /Verse.org/AgentGroup }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/Presentation }
-  basic_quest<native><epic_internal> := class<abstract><epic_internal>(quest, has_icon, has_description) {
-    OnAbandon<override><native>(QuestParticipant: quest_participant): void
-
-    OnActivate<override><native>(): void
-
-    OnDeactivate<override><native>(): void
-
-    OnJoin<override><native>(QuestParticipant: quest_participant): void
-
-    SetObjective<native><final><epic_internal>(InObjective: quest_objective)<transacts>: void
-
-    var Rewards<native><epic_internal>: []quest_reward = external {}
-
-    var<private> Objective<native><epic_internal>: quest_objective
-  }
-
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
+  @experimental
   epic_quest_participant_component<native><epic_internal> := class<epic_internal>(quest_participant_component) {
     ClearTrackedQuests<native><final><epic_internal>()<transacts>: void
 
@@ -1258,36 +1261,53 @@ Progression<public> := module {
     var<private> TrackedQuests<native><epic_internal>: []quest = external {}
   }
 
+  @experimental
   failed_quest_completion<native><epic_internal> := class(quest_completion_context) {}
 
-  grant_quest_reward_error<native><epic_internal> := class<epic_internal> {}
-
+  @experimental
   join_quest_already_joined_error<native><epic_internal> := class<epic_internal>(join_quest_error) {}
 
-  join_quest_error<native><epic_internal> := class<epic_internal> {}
+  @experimental
+  # Returned when a participant cannot join a quest.
+  join_quest_error<native><public> := class {}
 
+  @experimental
   join_quest_invalid_state_error<native><epic_internal> := class<epic_internal>(join_quest_error) {}
 
+  @experimental
   join_quest_vetoed_error<native><epic_internal> := class<epic_internal>(join_quest_error) {}
 
-  quest<native><epic_internal> := class<abstract><castable><unique><epic_internal> {
-    AbandonEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+  @experimental
+  # A completable goal.
+  # Call Complete() to mark the quest as done and fire CompleteEvent.
+  quest<native><public> := class<abstract><castable><unique> {
+    # Signaled when a participant abandons this quest.
+    AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
 
     Activate<native><final><epic_internal>()<transacts>: void
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<native><epic_internal>(QuestParticipant: quest_participant)<reads>: result(void, []abandon_quest_error)
+    CanAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
+      void,
+      []abandon_quest_error
+    )
 
-    CanAdd<native><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
+    CanAdd<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<native><epic_internal>(QuestParticipant: quest_participant)<reads>: result(void, []join_quest_error)
+    CanJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
+      void,
+      []join_quest_error
+    )
 
-    CanRemove<native><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
+    CanRemove<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
 
-    Complete<native><final><epic_internal>()<transacts>: void
+    # Marks this quest as completed. Fires CompleteEvent.
+    # Idempotent — no-op if already completed.
+    Complete<native><final><public>()<transacts>: void
 
-    CompleteEvent<native><final><epic_internal>: listenable(quest) = external {}
+    # Signaled when this quest completes.
+    CompleteEvent<native><final><public>: listenable(quest) = external {}
 
     Deactivate<native><final><epic_internal>()<transacts>: void
 
@@ -1299,23 +1319,25 @@ Progression<public> := module {
 
     IsActive<native><final><epic_internal>()<reads><decides>: void
 
-    IsComplete<native><final><epic_internal>()<reads><decides>: void
+    # Succeeds if this quest is completed.
+    IsComplete<native><final><public>()<reads><decides>: void
 
-    JoinEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+    # Signaled when a participant joins this quest.
+    JoinEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    OnAbandon<native><epic_internal>(QuestParticipant: quest_participant): void
+    OnAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
 
-    OnActivate<native><epic_internal>(): void
+    OnActivate<native><native_callable><epic_internal>(): void
 
-    OnAdd<native><epic_internal>(Manager: quest_manager_component): void
+    OnAdd<native><native_callable><epic_internal>(Manager: quest_manager_component): void
 
-    OnComplete<native><epic_internal>(): void
+    OnComplete<native><native_callable><epic_internal>(): void
 
-    OnDeactivate<native><epic_internal>(): void
+    OnDeactivate<native><native_callable><epic_internal>(): void
 
-    OnJoin<native><epic_internal>(QuestParticipant: quest_participant): void
+    OnJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
 
-    OnRemove<native><epic_internal>(Manager: quest_manager_component): void
+    OnRemove<native><native_callable><epic_internal>(Manager: quest_manager_component): void
 
     StateChangedEvent<native><final><epic_internal>: listenable(tuple(quest, quest_state, quest_state)) = external {}
 
@@ -1324,6 +1346,7 @@ Progression<public> := module {
     var<private> OwningManager<native><epic_internal>: ?quest_manager_component = external {}
   }
 
+  @experimental
   quest_bundle<native><epic_internal> := class<unique><epic_internal>(has_icon, has_description) {
     GetCompletedCount<native><final><epic_internal>()<reads>: int
 
@@ -1334,174 +1357,174 @@ Progression<public> := module {
     var Quests<native><epic_internal>: []quest
   }
 
-  quest_collection<native><epic_internal> := class<unique><epic_internal> {
-    AbandonEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+  @experimental
+  # The source of truth for quest participation.
+  quest_collection<native><public> := class<unique> {
+    # Signaled when a participant abandons any quest in this collection.
+    AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
-    AbandonQuest<native><final><epic_internal>(
+    # Removes 'Participant' from 'Quest'.
+    AbandonQuest<native><final><public>(
       Quest: quest,
       Participant: quest_participant
     )<transacts>: result(void, []abandon_quest_error)
 
     ActivateEvent<native><final><epic_internal>: listenable(quest) = external {}
 
-    CompleteEvent<native><final><epic_internal>: listenable(quest) = external {}
+    # Signaled when any quest in this collection completes.
+    CompleteEvent<native><final><public>: listenable(quest) = external {}
 
     DeactivateEvent<native><final><epic_internal>: listenable(quest) = external {}
 
-    JoinEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+    # Signaled when a participant joins any quest in this collection.
+    JoinEvent<native><final><public>: listenable(quest_membership) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
-    JoinQuest<native><final><epic_internal>(
+    # Adds 'Participant' to 'Quest' with the given participation info.
+    JoinQuest<native><final><public>(
       Quest: quest,
       Participant: quest_participant,
       Info: quest_participant_info
     )<transacts>: result(void, []join_quest_error)
 
-    OnComplete<epic_internal>(Quest: quest): void = external {}
+    OnComplete<native><native_callable><epic_internal>(Quest: quest): void
 
-    var<private> Participants<native><epic_internal>: [quest_participant][]quest_membership = external {}
+    # All memberships indexed by participant.
+    var<private> Participants<native><public>: [quest_participant][]quest_membership = external {}
 
-    var<private> Quests<native><epic_internal>: [quest][]quest_membership = external {}
+    # All memberships indexed by quest.
+    var<private> Quests<native><public>: [quest][]quest_membership = external {}
   }
 
+  @experimental
   quest_completion_context<native><epic_internal> := class {}
 
+  @experimental
   quest_granter_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    CanGrant<native><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
+    CanGrant<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
 
     GrantEvent<native><final><epic_internal>: listenable(quest) = external {}
 
     GrantQuests<native><final><epic_internal>(Manager: quest_manager_component)<transacts>: []quest
 
-    OnGrant<native><epic_internal>(Manager: quest_manager_component, Quest: quest): void
+    OnGrant<native><native_callable><epic_internal>(Manager: quest_manager_component, Quest: quest): void
 
     QuestsToGrant<native><epic_internal>: []subtype(quest)
   }
 
+  @experimental
   quest_manager_component<native><epic_internal> := class<final_super><epic_internal>(component) {
     @available { MinUploadedAtFNVersion := 4000 }
-    AbandonQuest<native><epic_internal>(
+    AbandonQuest<native><native_callable><epic_internal>(
       Quest: quest,
       Participant: quest_participant
     )<transacts>: result(void, []abandon_quest_error)
 
-    AddQuest<native><epic_internal>(Quest: quest): void
+    AddQuest<native><native_callable><epic_internal>(Quest: quest): void
 
-    CanAdd<native><epic_internal>(Quest: quest)<reads><decides>: void
+    CanAdd<native><native_callable><epic_internal>(Quest: quest)<reads><decides>: void
 
-    CanRemove<native><epic_internal>(Quest: quest)<reads><decides>: void
+    CanRemove<native><native_callable><epic_internal>(Quest: quest)<reads><decides>: void
 
     Collection<native><epic_internal>: quest_collection
 
     GrantEvent<native><final><epic_internal>: listenable(quest) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
-    GrantQuest<native><epic_internal>(quest_type: subtype(quest))<transacts>: result(quest_type, []add_quest_error)
+    GrantQuest<native><native_callable><epic_internal>(quest_type: subtype(quest))<transacts>: result(
+      quest_type,
+      []add_quest_error
+    )
 
     @available { MinUploadedAtFNVersion := 4000 }
-    JoinQuest<native><epic_internal>(
+    JoinQuest<native><native_callable><epic_internal>(
       Quest: quest,
       Participant: quest_participant,
       Info: quest_participant_info
     )<transacts>: result(void, []join_quest_error)
 
-    OnAdd<native><epic_internal>(Quest: quest): void
+    OnAdd<native><native_callable><epic_internal>(Quest: quest): void
 
-    OnRemove<native><epic_internal>(Quest: quest): void
+    OnRemove<native><native_callable><epic_internal>(Quest: quest): void
 
-    RemoveQuest<native><epic_internal>(Quest: quest): void
+    RemoveQuest<native><native_callable><epic_internal>(Quest: quest): void
 
     RevokeEvent<native><final><epic_internal>: listenable(quest) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
-    RevokeQuest<native><epic_internal>(Quest: quest)<transacts>: result(void, []remove_quest_error)
+    RevokeQuest<native><native_callable><epic_internal>(Quest: quest)<transacts>: result(void, []remove_quest_error)
 
     var<private> Quests<native><epic_internal>: []quest = external {}
   }
 
-  quest_membership<native><epic_internal> := class<epic_internal> {
-    Info<native><epic_internal>: quest_participant_info
+  @experimental
+  # Record binding a quest to a participant with participation info.
+  quest_membership<native><public> := class {
+    @available { MinUploadedAtFNVersion := 4000 }
+    # The participation info describing this participant's role.
+    Info<native><public>: quest_participant_info
 
-    Participant<native><epic_internal>: quest_participant
+    # The participant in this membership.
+    Participant<native><public>: quest_participant
 
-    Quest<native><epic_internal>: quest
+    # The quest this membership belongs to.
+    Quest<native><public>: quest
   }
 
-  quest_objective<native><epic_internal> := class<abstract><epic_internal>(has_icon, has_description) {
-    CompleteEvent<native><final><epic_internal>: listenable(quest_objective) = external {}
-
-    GetContributors<native><epic_internal>(Memberships: []quest_membership)<reads>: []quest_participant
-
-    GetOwningQuest<native><final><epic_internal>()<reads>: quest
-
-    GetProgress<native><epic_internal>()<reads>: message
-
-    IsComplete<native><epic_internal>()<reads><decides>: void
-
-    OnAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
-
-    OnActivate<native><native_callable><epic_internal>(): void
-
-    OnComplete<native><native_callable><epic_internal>(): void
-
-    OnDeactivate<native><native_callable><epic_internal>(): void
-
-    OnJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant): void
-  }
-
-  quest_participant<native><epic_internal> := class<abstract><unique><epic_internal> {
-    AbandonEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+  @experimental
+  # Abstract base class for quest participants.
+  quest_participant<native><public> := class<abstract><unique> {
+    # Signaled when this participant abandons a quest.
+    AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanAbandon<native><epic_internal>(Quest: quest)<reads>: result(void, []abandon_quest_error)
+    CanAbandon<native><native_callable><epic_internal>(Quest: quest)<reads>: result(void, []abandon_quest_error)
 
     @available { MinUploadedAtFNVersion := 4000 }
-    CanJoin<native><epic_internal>(Quest: quest)<reads>: result(void, []join_quest_error)
+    CanJoin<native><native_callable><epic_internal>(Quest: quest)<reads>: result(void, []join_quest_error)
 
-    CompleteEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+    # Signaled when a quest this participant is in completes.
+    CompleteEvent<native><final><public>: listenable(quest_membership) = external {}
 
     GetParticipatingQuests<native><final><epic_internal>()<reads>: []quest
 
-    JoinEvent<native><final><epic_internal>: listenable(quest_membership) = external {}
+    # Signaled when this participant joins a quest.
+    JoinEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    OnAbandon<native><epic_internal>(Quest: quest): void
+    OnAbandon<native><native_callable><epic_internal>(Quest: quest): void
 
-    OnActivate<native><epic_internal>(Quest: quest): void
+    OnActivate<native><native_callable><epic_internal>(Quest: quest): void
 
-    OnComplete<native><epic_internal>(Quest: quest): void
+    OnComplete<native><native_callable><epic_internal>(Quest: quest): void
 
-    OnDeactivate<native><epic_internal>(Quest: quest): void
+    OnDeactivate<native><native_callable><epic_internal>(Quest: quest): void
 
-    OnJoin<native><epic_internal>(Quest: quest): void
+    OnJoin<native><native_callable><epic_internal>(Quest: quest): void
 
     var<private> Memberships<native><epic_internal>: []quest_membership = external {}
   }
 
+  @experimental
   quest_participant_component<native><epic_internal> := class<final_super><epic_internal>(component) {
     Participant<native><epic_internal>: agent_quest_participant
   }
 
-  quest_participant_info<native><epic_internal> := class<epic_internal> {
-    var Contributes<native><epic_internal>: logic = external {}
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Describes how a participant relates to a quest.
+  quest_participant_info<native><public> := class(member_info_interface) {
+    # Can this participant make progress on the quest.
+    var Contributes<native><public>: logic = external {}
 
-    var Observes<native><epic_internal>: logic = external {}
+    # Can this participant observe quest state.
+    var Observes<native><public>: logic = external {}
 
-    var Receives<native><epic_internal>: logic = external {}
+    # Can this participant receive rewards on quest completion.
+    var Receives<native><public>: logic = external {}
   }
 
-  quest_reward<native><epic_internal> := class<abstract><epic_internal>(has_icon, has_description) {
-    GetRecipients<native><epic_internal>(Memberships: []quest_membership)<reads>: []quest_participant
-
-    GrantEvent<native><final><epic_internal>: listenable(tuple(quest_reward, []quest_participant)) = external {}
-
-    @available { MinUploadedAtFNVersion := 4000 }
-    GrantReward<native><epic_internal>(EligibleParticipants: []quest_participant)<transacts>: result(
-      void,
-      []grant_quest_reward_error
-    )
-  }
-
+  @experimental
   quest_state<native><epic_internal> := enum<open><persistable> {
     Active
 
@@ -1510,8 +1533,10 @@ Progression<public> := module {
     Inactive
   }
 
+  @experimental
   remove_quest_error<native><epic_internal> := class<epic_internal> {}
 
+  @experimental
   remove_quest_vetoed_error<native><epic_internal> := class<epic_internal>(remove_quest_error) {}
 }
 
@@ -1596,6 +1621,25 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   # Assign the players that this entity will be presented to. False = presentable to everyone, array = presentable to no one.
   (Entity: entity).SetPresentableToPlayers<native><public>(Players: ?[]player): void
+
+  # Possess an entity. Fails if PossessableComponent.CanBePossessedBy[Self] fails.
+  (InAgent: agent).BeginPossess<epic_internal>(PossessableComponent: possessable_component)<transacts><decides>: void = external {}
+
+  # Unpossess an entity.
+  (InAgent: agent).EndPossess<epic_internal>(PossessableComponent: possessable_component)<transacts>: void = external {}
+
+  # Event that will fire when a new entity is possessed.
+  (InAgent: agent).GetBeginPossessEvent<epic_internal>(): listenable(possessable_component) = external {}
+
+  # Event that will fire when an entity is unpossessed.
+  #  Entities are automatically unpossessed when removed from the scene
+  (InAgent: agent).GetEndPossessEvent<epic_internal>(): listenable(possessable_component) = external {}
+
+  # All entities possessed by this agent.
+  (InAgent: agent).GetPossessedEntities<public>()<reads>: []possessable_component = external {}
+
+  # Checks if an entity is possessed.
+  (InAgent: agent).IsEntityPossessed<public>(PossessableComponent: possessable_component)<reads><decides>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all components attached to ancestor entities to `InEntity` of type `component_type`.
@@ -2356,6 +2400,13 @@ SceneGraph<public> := module {
     Actor<native><epic_internal>: actor
 
     GetTransform<native><override>()<transacts>: (/Verse.org/SpatialMath:)transform
+  }
+
+  # Payload of the AgentChangeEvent. Contains the previous and the current possessing agent.
+  agent_changed_result<native><epic_internal> := struct {
+    CurrentAgent<native>: ?agent = external {}
+
+    PreviousAgent<native>: ?agent = external {}
   }
 
   @import_as("/Script/Entity.UBaseEntity")
@@ -3163,13 +3214,11 @@ SceneGraph<public> := module {
   ) {
     Cancel<override>()<transacts>: void = external {}
 
-    @replicated("")
     # Easing to apply when easing in (i.e. 'towards' the target).
     EaseInWindow<native><epic_internal>: easing_window = external {}
 
     (/Verse.org/SceneGraph/easeable:)EaseOut<native><override>((local:)EaseOutWindow: ?easing_window)<transacts>: void
 
-    @replicated("")
     # Easing to apply when easing out (i.e. 'away from' the target).
     EaseOutWindow<native><epic_internal>: easing_window = external {}
 
@@ -3191,7 +3240,6 @@ SceneGraph<public> := module {
   # An easing function combined with a relative time window
   easing_window<native><public> := struct<concrete> {
     @editable
-    @replicated("")
     # Duration of the easing window in seconds
     Duration<native>: float = external {}
 
@@ -3199,7 +3247,6 @@ SceneGraph<public> := module {
     (/Verse.org/SceneGraph/easing_window:)Easing<native>: type { _(: float)<reads>: float } = external {}
 
     @editable
-    @replicated("")
     # Offset of the easing window in seconds
     # The offset allows the window to be moved later or earlier relative to the easing modifier’s internal timeline.
     # For example, moving the ease-in window later (ie +Offset) would cause the blend to happen later - ie delay it.
@@ -3414,7 +3461,7 @@ SceneGraph<public> := module {
   @experimental
   has_collision<native><epic_internal> := interface<epic_internal>(has_mesh_part_support) {
     # True if any associated physics objects are physically collidable
-    GetCollidable<final><native_callable><public>()<reads>: logic = external {}
+    GetCollidable<final><native_callable><epic_internal>()<reads>: logic = external {}
 
     @experimental
     GetCollisionEnteredEvent<final><native_callable><epic_internal>(): listenable(generator(collision_hit)) = external {}
@@ -3434,7 +3481,7 @@ SceneGraph<public> := module {
     GetOverlapExitedEvent<final><native_callable><epic_internal>(): listenable(generator(overlap_hit)) = external {}
 
     # Set the physics collidability for all associated physics objects
-    SetCollidable<final><native_callable><public>(In: logic): void = external {}
+    SetCollidable<final><native_callable><epic_internal>(In: logic): void = external {}
 
     SetCollisionMaterial<final><native_callable><epic_internal>(In: collision_material): void = external {}
   }
@@ -4077,6 +4124,11 @@ SceneGraph<public> := module {
     # Get an array of the materials assigned to this mesh's slots.
     GetMaterials<native><epic_internal>()<transacts>: generator(material)
 
+    @available { MinUploadedAtFNVersion := 4110 }
+    @experimental
+    # Get mesh_part's on this mesh_component.
+    GetMeshParts<native><epic_internal>(): []mesh_part
+
     @experimental
     GetRigidBody<native><epic_internal>()<transacts>: rigid_body
 
@@ -4595,6 +4647,33 @@ SceneGraph<public> := module {
 
     # An easable interface used to control blending
     Easeable: easeable
+  }
+
+  # Marks an entity that can be possessed by an agent.
+  possessable_component<native><public> := class<final_super><epic_internal>(component) {
+    # Notify when the possessing agent changes.
+    AgentChangeEvent<native><final><epic_internal>: listenable(agent_changed_result) = external {}
+
+    # Internal function to call when possessing for updating status and triggering the AgentChangeEvent.
+    BeginPossess<final><epic_internal>(NewPossessingAgent: agent)<transacts>: void = external {}
+
+    # Entity's opinion on whether it can be possessed by a specific agent.
+    #  By default it fails if the entity is already possessed.
+    CanBePossessedBy<native_callable><epic_internal>(AgentToCheck: agent)<reads><decides>: void = external {}
+
+    # Internal function to call when unpossessing for updating status and triggering the AgentChangeEvent.
+    EndPossess<final><epic_internal>()<transacts>: void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    # Signals the AgentChangeEvent.
+    SignalAgentChangeEvent<final><epic_internal>(PreviousAgent: ?agent)<transacts>: void = external {}
+
+    # Internal function that signals the AgentChangeEvent.
+    SignalAgentChangeEventInternal<native><final><epic_internal>(AgentChangedResult: agent_changed_result)<transacts>: void
+
+    # Which agent is this entity currently possessed by.
+    var<private> Agent<native><final><public>: ?agent = external {}
   }
 
   presentation_component<native><epic_internal> := class<final_super>(component) {}
@@ -5432,39 +5511,7 @@ Simulation<public> := module {
 
   @hide_in_editor
   agent<native><public> := class<unique><epic_internal>(entity) {
-    # Possess an entity. Fails if PossessableComponent.CanBePossessedBy[Self] fails.
-    BeginPossess<native_callable><epic_internal>(PossessableComponent: possessable_component)<transacts><decides>: void = external {}
-
-    # Event that will fire when a new entity is possessed.
-    BeginPossessEvent<native><epic_internal>: listenable(possessable_component) = external {}
-
-    # Unpossesses an entity.
-    EndPossess<native_callable><epic_internal>(PossessableComponent: possessable_component)<transacts>: void = external {}
-
-    # Event that will fire when an entity is unpossessed.
-    #  Entities are automatically unpossessed when removed from the scene
-    EndPossessEvent<native><epic_internal>: listenable(possessable_component) = external {}
-
-    # Checks if an entity is possessed.
-    IsEntityPossessed<native_callable><epic_internal>(PossessableComponent: possessable_component)<reads><decides>: void = external {}
-
-    # Signals the BeginPossessEvent.
-    SignalBeginPossessEvent<native><epic_internal>(PossessableComponent: possessable_component)<transacts>: void
-
-    # Signals the EndPossessEvent.
-    SignalEndPossessEvent<native><epic_internal>(PossessableComponent: possessable_component)<transacts>: void
-
     User<native><epic_internal>: ?user = external {}
-
-    # All entities possessed by this agent.
-    var<private> PossessedEntities<native><epic_internal>: []possessable_component = external {}
-  }
-
-  # Payload of the AgentChangeEvent. Contains the previous and the current possessing agent.
-  agent_changed_result<native><epic_internal> := struct {
-    CurrentAgent<native>: ?agent = external {}
-
-    PreviousAgent<native>: ?agent = external {}
   }
 
   @attribscope_class
@@ -5711,33 +5758,6 @@ Simulation<public> := module {
   player<native><public> := class<unique><persistent><module_scoped_var_weak_map_key><epic_internal>(agent) {
     # Succeeds when this `player` may be used as a module-scoped `var` `weak_map` key. This coincides with the corresponding player having joined the game and not yet left. Using a `player` as a module-scope `var` `weak_map` key when this method fails results in a runtime error.
     IsActive<native><public>()<reads><decides>: void
-  }
-
-  # Marks an entity that can be possessed by an agent.
-  possessable_component<native><epic_internal> := class<final_super>(component) {
-    # Notify when the possessing agent changes.
-    AgentChangeEvent<native><final><epic_internal>: listenable(agent_changed_result) = external {}
-
-    # Internal function to call when possessing for updating status and triggering the AgentChangeEvent.
-    BeginPossess<final><epic_internal>(NewPossessingAgent: agent)<transacts>: void = external {}
-
-    # Entity's opinion on whether it can be possessed by a specific agent.
-    #  By default it fails if the entity is already possessed.
-    CanBePossessedBy<native_callable><epic_internal>(AgentToCheck: agent)<reads><decides>: void = external {}
-
-    # Internal function to call when unpossessing for updating status and triggering the AgentChangeEvent.
-    EndPossess<final><epic_internal>()<transacts>: void = external {}
-
-    OnEndSimulation<override>(): void = external {}
-
-    # Signals the AgentChangeEvent.
-    SignalAgentChangeEvent<final><epic_internal>(PreviousAgent: ?agent)<transacts>: void = external {}
-
-    # Internal function that signals the AgentChangeEvent.
-    SignalAgentChangeEventInternal<native><final><epic_internal>(AgentChangedResult: agent_changed_result)<transacts>: void
-
-    # Which agent is this entity currently possessed by.
-    var<private> Agent<native><final><epic_internal>: ?agent = external {}
   }
 
   using { /Verse.org/Native }

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.00-CL-54618515
+# Generated from build: ++Fortnite+Release-41.10-CL-55335788
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -674,19 +674,19 @@ Armory<public> := module {
     # The multiplier that affects the weapon spread while aiming down sights
     var<private> AimDownSightSpreadMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when ending aiming down sights
     var<private> AimingDownSightsEndSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when starting aiming down sights
     var<private> AimingDownSightsStartSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     # The particle system to use for weapon bullet shells
     var<private> BulletShells<native><public>: ?particle_system = external {}
 
-    @editable
+    @editable {}
     # The particle system to use for weapon bullet tracers. The FX system's HitDistance parameter will update with impact distance or max range of the weapon.
     var<private> BulletTracer<native><public>: ?particle_system = external {}
 
@@ -702,7 +702,7 @@ Armory<public> := module {
     # The damage dealt by the weapon
     var<private> Damage<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The transform by which to offset the bullet shell ejection FX
     var<private> EjectionPortOffset<native><public>: (/Verse.org/SpatialMath:)transform = external {}
 
@@ -710,7 +710,7 @@ Armory<public> := module {
     # The damage multiplier for the environment
     var<private> EnvironmentalDamageMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when equipping the weapon
     var<private> EquipSound<native><public>: []sound_wave = external {}
 
@@ -738,19 +738,19 @@ Armory<public> := module {
     # The multiplier that affects the weapon spread while moving
     var<private> MovingSpreadMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The particle system to use for weapon muzzle flash
     var<private> MuzzleFlash<native><public>: ?particle_system = external {}
 
-    @editable
+    @editable {}
     # The transform by which to offset the weapon muzzle
     var<private> MuzzleOffset<native><public>: (/Verse.org/SpatialMath:)transform = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when the weapon is out of ammo
     var<private> OutOfAmmoSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     # Range based damage multiplier
     var<private> RangeDamageMultiplier<native><public>: []fort_range_damage_multiplier = external {}
 
@@ -758,15 +758,15 @@ Armory<public> := module {
     # The multiplier that affects the recoil of the weapon
     var<private> RecoilMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when finishing a reload
     var<private> ReloadEndSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when inserting a magazine during reload
     var<private> ReloadInsertSound<native><public>: []sound_wave = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when starting a reload
     var<private> ReloadStartSound<native><public>: []sound_wave = external {}
 
@@ -786,7 +786,7 @@ Armory<public> := module {
     # The multiplier that affects the weapon spread while sprinting
     var<private> SprintingSpreadMultiplier<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The sounds to use when firing the weapon
     var<private> WeaponFireSound<native><public>: []sound_wave = external {}
   }
@@ -816,6 +816,11 @@ Armory<public> := module {
 
   # The entity prefab for a creator customizable SMG
   sub_machine_gun_template<public> := class<concrete><final>(entity) {}
+}
+
+# Module import path: /Fortnite.com/Assets
+(/Fortnite.com:)Assets<public> := module {
+  npc_character_definition<native><public> := class<computes><final><epic_internal> {}
 }
 
 # Module import path: /Fortnite.com/Characters
@@ -4329,6 +4334,7 @@ Devices<public> := module {
     VehicleTriggeredEvent<public>: listenable(?agent) = external {}
   }
 
+  using { /Fortnite.com/Assets }
   # Used to spawn NPCs made with Character Definition asset.
   npc_spawner_device<public> := class<concrete><final>(creative_device_base) {
     # Despawns all characters. If set, `Instigator` will be considered as the eliminator of those characters.
@@ -4350,6 +4356,9 @@ Devices<public> := module {
 
     # Resets the spawn count allowing spawning of a new batch of characters.
     (/Fortnite.com/Devices/npc_spawner_device:)Reset<public>(): void = external {}
+
+    # Set the NPC character definition to use. Fails if the character type is different from one in the current definition.
+    SetNPCCharacterDefinition<public>(CharacterDefinition: npc_character_definition)<transacts><decides>: void = external {}
 
     # Tries to spawn a character.
     Spawn<public>(): void = external {}

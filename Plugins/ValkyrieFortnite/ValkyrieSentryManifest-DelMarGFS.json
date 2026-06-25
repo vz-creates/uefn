@@ -519,7 +519,7 @@
 		"A7C3E2915F8B4D063E1A9C74D20F68B5":
 		{
 			"FriendlyName": "Dev-RigDynamics",
-			"Version": 31
+			"Version": 33
 		},
 		"AAFE32BD53954C14B66A5E251032D1DD":
 		{
@@ -709,7 +709,7 @@
 		"E51B74659F7B40D18A48E425E5F7A828":
 		{
 			"FriendlyName": "FortProceduralMotionDataAssetVersion",
-			"Version": 1
+			"Version": 2
 		},
 		"E68A5C1A42C3CA0DB01441B228C1F2DD":
 		{
@@ -799,6 +799,7 @@
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Navigation.CharacterModifier_Navigation_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_PatrolPath.CharacterModifier_PatrolPath_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Perception.CharacterModifier_Perception_C",
+			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Physics.CharacterModifier_Physics_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Sequencer.CharacterModifier_Sequencer_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Taming.CharacterModifier_Taming_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Team.CharacterModifier_Team_C",
@@ -814,8 +815,8 @@
 			"/CreativeCoreDevices/Beacon/UEFN_BeaconBadge_ViewModel.UEFN_BeaconBadge_ViewModel_C",
 			"/CreativeCoreDevices/HUDMessage/MVVM_UEFN_HUDMessage.MVVM_UEFN_HUDMessage_C",
 			"/CreativeCoreDevices/Timer/CreativeTimerViewModel.CreativeTimerViewModel_C",
-			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_Quad_v01.MR_Sidekick_Quad_v01_C",
-			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_SmallDog_v01.MR_Sidekick_SmallDog_v01_C",
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogLarge_v01.MR_Sidekick_DogLarge_v01_C",
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogSmall_v01.MR_Sidekick_DogSmall_v01_C",
 			"/Game/Creative/Devices/Quests/MVVM_UEFN_Tracker.MVVM_UEFN_Tracker_C",
 			"/Game/Creative/PostProcess/PP_70sPrint.PP_70sPrint_C",
 			"/Game/Creative/PostProcess/PP_80sCartoon.PP_80sCartoon_C",
@@ -1801,13 +1802,22 @@
 			"/Script/MediaCompositing.MovieSceneMediaTrack",
 			"/Script/MetaHumanCaptureSource.MetaHumanCaptureSource",
 			"/Script/MetaHumanConfig.MetaHumanConfig",
+			"/Script/MetaHumanCore.MetaHumanContourData",
+			"/Script/MetaHumanCore.MetaHumanViewportSettings",
 			"/Script/MetaHumanFaceAnimationSolver.MetaHumanFaceAnimationSolver",
 			"/Script/MetaHumanFaceContourTracker.MetaHumanFaceContourTrackerAsset",
 			"/Script/MetaHumanFaceFittingSolver.MetaHumanFaceFittingSolver",
 			"/Script/MetaHumanIdentity.MetaHumanIdentity",
+			"/Script/MetaHumanIdentity.MetaHumanIdentityFace",
+			"/Script/MetaHumanIdentity.MetaHumanIdentityFootageFrame",
+			"/Script/MetaHumanIdentity.MetaHumanIdentityPose",
+			"/Script/MetaHumanIdentity.MetaHumanIdentityViewportSettings",
+			"/Script/MetaHumanIdentity.MetaHumanTemplateMeshComponent",
+			"/Script/MetaHumanImageViewerEditor.MetaHumanFootageComponent",
 			"/Script/MetaHumanPerformance.MetaHumanPerformance",
 			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneAudioTrack",
 			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneMediaTrack",
+			"/Script/MetaHumanPerformance.MetaHumanPerformanceViewportSettings",
 			"/Script/MetaHumanSDKRuntime.MetaHumanComponentBase",
 			"/Script/MetaHumanSequencer.MetaHumanAudioTrack",
 			"/Script/MetaHumanSequencer.MetaHumanMovieSceneMediaTrack",
@@ -2081,6 +2091,7 @@
 			"/Script/OptimusCore.OptimusDeformerInstanceSettings",
 			"/Script/Paper2D.MaterialExpressionSpriteTextureSampler",
 			"/Script/Paper2D.PaperSprite",
+			"/Script/PartnerAccountLinkerRuntime.PartnerAccountLinkComponent",
 			"/Script/PerformanceCaptureCore.CaptureCharacter",
 			"/Script/PerformanceCaptureCore.CapturePerformer",
 			"/Script/PerformanceCaptureCore.PerformerComponent",
@@ -2440,6 +2451,8 @@
 			"/Script/EntitySequencer.MovieSceneVerseEventSection",
 			"/Script/EntitySequencer.MovieSceneVerseEventTrack",
 			"/Script/FMJamPlayspaceRuntime.JamPlayspaceVolumeComponent_ProvideTransforms",
+			"/Script/FMJamSessionRuntime.JamSessionComponent_SpecialLocationMarkerManager",
+			"/Script/FMJamSessionRuntime.JamSessionSpecialLocationMarker",
 			"/Script/FortniteGame.BaseUEFNAnimInstance",
 			"/Script/FortniteGame.FortAmbientAudioVolume",
 			"/Script/FortniteGame.FortGameFeatureAction_AlwaysGenerateExternallyReferencablePackages",
@@ -3648,6 +3661,7 @@
 			"/Script/PhysicsControl.PhysicsControlMultiplier",
 			"/Script/PhysicsControl.PhysicsControlNamedForceAndTorqueData",
 			"/Script/PhysicsControl.PhysicsControlTarget",
+			"/Script/PoseBuilder.RigUnit_PoseBuilder",
 			"/Script/PreviewPropOp.IKRetargetPreviewPropOp",
 			"/Script/PreviewPropOp.IKRetargetPreviewPropOpSettings",
 			"/Script/RelativeIKOp.IKRetargetPelvicMotionOp",
@@ -15331,6 +15345,7 @@
 			"/Water/Meshes/S_WaterPlane_FarPlane.S_WaterPlane_FarPlane",
 			"/Water/Textures/Black.Black",
 			"/Water/Textures/BlackTexture2DArray.BlackTexture2DArray",
+			"/Water/Textures/BlackVT4x4.BlackVT4x4",
 			"/Water/Textures/Flowmaps/RiverFlowmap_Diffuse.RiverFlowmap_Diffuse",
 			"/Water/Textures/Flowmaps/RiverFlowmap_Normal.RiverFlowmap_Normal"
 		],
@@ -15435,6 +15450,7 @@
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Navigation.CharacterModifier_Navigation_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_PatrolPath.CharacterModifier_PatrolPath_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Perception.CharacterModifier_Perception_C",
+			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Physics.CharacterModifier_Physics_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Sequencer.CharacterModifier_Sequencer_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Taming.CharacterModifier_Taming_C",
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Team.CharacterModifier_Team_C",
@@ -15509,6 +15525,7 @@
 			"/CreativeCoreDevices/Device_ItemSpawner_Parent_V2.Device_ItemSpawner_Parent_V2_C",
 			"/CreativeCoreDevices/Device_Trigger_Parent_V2.Device_Trigger_Parent_V2_C",
 			"/CreativeCoreDevices/ExperienceSettings/BP_UserOptionComponent_Cosmetic.BP_UserOptionComponent_Cosmetic_C",
+			"/CreativeCoreDevices/ExperienceSettings/BP_UserOptionComponent_Music.BP_UserOptionComponent_Music_C",
 			"/CreativeCoreDevices/ExperienceSettings/BP_UserOptionComponent_VoiceChat.BP_UserOptionComponent_VoiceChat_C",
 			"/CreativeCoreDevices/ExperienceSettings/TestPlayerDefinitionComponent.TestPlayerDefinitionComponent_C",
 			"/CreativeCoreDevices/HUDMessage/MVVM_UEFN_HUDMessage.MVVM_UEFN_HUDMessage_C",
@@ -17215,8 +17232,8 @@
 			"/DelMarTrack/Blueprints/DelMarTrack_ActiveTrigger.DelMarTrack_ActiveTrigger_C",
 			"/DelMarTrack/Blueprints/DelMarTrack_ActiveTrigger_Box.DelMarTrack_ActiveTrigger_Box_C",
 			"/EnergyProps/BGAs/EnergyBarrel/BGA_Asteria_Prop_SlapsKeg.BGA_Asteria_Prop_SlapsKeg_C",
-			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_Quad_v01.MR_Sidekick_Quad_v01_C",
-			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_SmallDog_v01.MR_Sidekick_SmallDog_v01_C",
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogLarge_v01.MR_Sidekick_DogLarge_v01_C",
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogSmall_v01.MR_Sidekick_DogSmall_v01_C",
 			"/FeralCorgiGameplay/Components/BP_ServerConfig_Component.BP_ServerConfig_Component_C",
 			"/FMDeviceCables/Gameplay/BP_FMMusicManagerRandomizer.BP_FMMusicManagerRandomizer_C",
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricNoteLabelComponent.BP_FabricNoteLabelComponent_C",
@@ -27526,6 +27543,7 @@
 			"/Lab_Assets/Building/ActorBlueprints/Lab/Walls/Lab_Wall_4.Lab_Wall_4_C",
 			"/Lab_Assets/Building/ActorBlueprints/Lab/Walls/Lab_Wall_4_Vents.Lab_Wall_4_Vents_C",
 			"/Lab_Assets/Building/ActorBlueprints/Lab/Walls/Lab_Window1.Lab_Window1_C",
+			"/MetaHuman/IdentityTemplate/Face_ControlBoard_CtrlRig.Face_ControlBoard_CtrlRig_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_ControlRig_Template.MetaHuman_ControlRig_Template_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_ControlRigRigidBody_Template.MetaHuman_ControlRigRigidBody_Template_C",
 			"/MetaHumanUEFN/AnimBPs/MetaHuman_DummyControlRig.MetaHuman_DummyControlRig_C",

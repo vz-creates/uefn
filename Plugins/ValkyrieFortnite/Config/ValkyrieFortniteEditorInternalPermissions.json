@@ -1080,6 +1080,8 @@
 			"/Script/EnhancedInput.InputTrigger":						{ "Visible": true },
 			"/Script/EnhancedInput.InputTriggerPressed": 				{ "Visible": true },
 			"/Script/FMJamPlayspaceRuntime.JamPlayspaceVolumeComponent_ProvideTransforms": { "Visible": true },
+			"/Script/FMJamSessionRuntime.JamSessionComponent_SpecialLocationMarkerManager": { "Visible": true },
+			"/Script/FMJamSessionRuntime.JamSessionSpecialLocationMarker": { "Visible": true },
 			"/Script/FortniteGame.FortInputMappingContext": 			{ "Visible": true },
 			"/Script/FortniteGame.FortPlayerMappableKeySettings":		{ "Visible": true },
 			"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros_C":{ "Visible": true },
@@ -1238,6 +1240,11 @@
 				}
 			}, 
 			"SpatialMetricsToolBar.OptionsMenu": {
+				"DenyList":  {
+					"=": []
+				}
+			},
+			"SpatialMetrics.ViewportToolbar": {
 				"DenyList":  {
 					"=": []
 				}

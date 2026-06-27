@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.00-CL-54618515
+# Generated from build: ++Fortnite+Release-41.10-CL-55335788
 #################################################
 
 AgentGroup<public> := module {
@@ -607,6 +607,20 @@ Input<public> := module {
   # Transforms a 3D world position to viewport space coordinates in centimeters. Returns a vector3 where `Left` is the horizontal viewport coordinate (positive is rightward from the screen's top-left corner) and `Up` is the vertical viewport coordinate (positive is upward, so a point below the top of the screen has a negative `Up`). `Forward` is always 0 because viewport coordinates are 2D. Fails if the world position is behind the camera.
   (Player: player).ProjectWorldToViewport<native><public>(WorldPosition: (/Verse.org/SpatialMath:)vector3)<reads><decides>: (/Verse.org/SpatialMath:)vector3
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  @available { MinUploadedAtFNVersion := 4110 }
+  # Module import path: /Verse.org/Input/Gameplay
+  # The module contains input mappings that are available during gameplay.
+  Gameplay<public> := module {
+    using { /Verse.org/Assets }
+    using { /Verse.org/Native }
+    @available { MinUploadedAtFNVersion := 4110 }
+    HotbarMapping<public>: input_mapping = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
   # Access input-related data and settings for a player.
   GetPlayerInput<native><public>(Player: player)<transacts><decides>: player_input
@@ -768,10 +782,6 @@ Input<public> := module {
     TriggerActivationEvent<native><public>: listenable(tuple(player, t)) = external {}
   }
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
-  using { /Verse.org/SpatialMath }
   # Represents the player's current preferred input method.
   input_method<native><public> := enum<open> {
     Gamepad
@@ -849,6 +859,122 @@ Presentation<public> := module {
   }
 }
 
+Progression<public> := module {
+  @experimental
+  # Returned when a participant cannot abandon a quest.
+  abandon_quest_error<native><public> := class {}
+
+  @experimental
+  # A quest participant backed by an agent (player, NPC, AI, etc.).
+  agent_quest_participant<native><public> := class<final>(quest_participant) {
+    # The agent this participant represents.
+    Agent<native><public>: agent
+  }
+
+  @experimental
+  # Returned when a participant cannot join a quest.
+  join_quest_error<native><public> := class {}
+
+  @experimental
+  # A completable goal.
+  # Call Complete() to mark the quest as done and fire CompleteEvent.
+  quest<native><public> := class<abstract><castable><unique> {
+    # Signaled when a participant abandons this quest.
+    AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
+
+    # Marks this quest as completed. Fires CompleteEvent.
+    # Idempotent — no-op if already completed.
+    Complete<native><final><public>()<transacts>: void
+
+    # Signaled when this quest completes.
+    CompleteEvent<native><final><public>: listenable(quest) = external {}
+
+    # Succeeds if this quest is completed.
+    IsComplete<native><final><public>()<reads><decides>: void
+
+    # Signaled when a participant joins this quest.
+    JoinEvent<native><final><public>: listenable(quest_membership) = external {}
+  }
+
+  @experimental
+  # The source of truth for quest participation.
+  quest_collection<native><public> := class<unique> {
+    # Signaled when a participant abandons any quest in this collection.
+    AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    # Removes 'Participant' from 'Quest'.
+    AbandonQuest<native><final><public>(
+      Quest: quest,
+      Participant: quest_participant
+    )<transacts>: result(void, []abandon_quest_error)
+
+    # Signaled when any quest in this collection completes.
+    CompleteEvent<native><final><public>: listenable(quest) = external {}
+
+    # Signaled when a participant joins any quest in this collection.
+    JoinEvent<native><final><public>: listenable(quest_membership) = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    # Adds 'Participant' to 'Quest' with the given participation info.
+    JoinQuest<native><final><public>(
+      Quest: quest,
+      Participant: quest_participant,
+      Info: quest_participant_info
+    )<transacts>: result(void, []join_quest_error)
+
+    # All memberships indexed by participant.
+    var<private> Participants<native><public>: [quest_participant][]quest_membership = external {}
+
+    # All memberships indexed by quest.
+    var<private> Quests<native><public>: [quest][]quest_membership = external {}
+  }
+
+  @experimental
+  # Record binding a quest to a participant with participation info.
+  quest_membership<native><public> := class {
+    @available { MinUploadedAtFNVersion := 4000 }
+    # The participation info describing this participant's role.
+    Info<native><public>: quest_participant_info
+
+    # The participant in this membership.
+    Participant<native><public>: quest_participant
+
+    # The quest this membership belongs to.
+    Quest<native><public>: quest
+  }
+
+  @experimental
+  # Abstract base class for quest participants.
+  quest_participant<native><public> := class<abstract><unique> {
+    # Signaled when this participant abandons a quest.
+    AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
+
+    # Signaled when a quest this participant is in completes.
+    CompleteEvent<native><final><public>: listenable(quest_membership) = external {}
+
+    # Signaled when this participant joins a quest.
+    JoinEvent<native><final><public>: listenable(quest_membership) = external {}
+  }
+
+  using { /Verse.org/AgentGroup }
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4000 }
+  @experimental
+  # Describes how a participant relates to a quest.
+  quest_participant_info<native><public> := class(member_info_interface) {
+    # Can this participant make progress on the quest.
+    var Contributes<native><public>: logic = external {}
+
+    # Can this participant observe quest state.
+    var Observes<native><public>: logic = external {}
+
+    # Can this participant receive rewards on quest completion.
+    var Receives<native><public>: logic = external {}
+  }
+}
+
 # Module import path: /Verse.org/Random
 Random<public> := module {
   # Returns a random `float` between `Low` and `High`, inclusive.
@@ -912,6 +1038,12 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   # Assign the players that this entity will be presented to. False = presentable to everyone, array = presentable to no one.
   (Entity: entity).SetPresentableToPlayers<native><public>(Players: ?[]player): void
+
+  # All entities possessed by this agent.
+  (InAgent: agent).GetPossessedEntities<public>()<reads>: []possessable_component = external {}
+
+  # Checks if an entity is possessed.
+  (InAgent: agent).IsEntityPossessed<public>(PossessableComponent: possessable_component)<reads><decides>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3200 }
   # Finds all components attached to ancestor entities to `InEntity` of type `component_type`.
@@ -2135,6 +2267,14 @@ SceneGraph<public> := module {
 
     # An easable interface used to control blending
     Easeable: easeable
+  }
+
+  # Marks an entity that can be possessed by an agent.
+  possessable_component<native><public> := class<final_super><epic_internal>(component) {
+    OnEndSimulation<override>(): void = external {}
+
+    # Which agent is this entity currently possessed by.
+    var<private> Agent<native><final><public>: ?agent = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }

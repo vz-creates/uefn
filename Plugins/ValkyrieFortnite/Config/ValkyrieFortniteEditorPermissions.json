@@ -98,6 +98,18 @@
 			"/Script/ControlRig.EControlRigAnimEasingType",
 			"/Script/ControlRig.ECRSimPointIntegrateType",
 			"/Script/ControlRig.EPoseAssetGetPoseForItemsMode",
+			"/Script/PoseBuilder.EPoseBuilderAlphaBlendType",
+			"/Script/PoseBuilder.EPoseBuilderAxisProjectionAxis",
+			"/Script/PoseBuilder.EPoseBuilderConstraintInterpolation",
+			"/Script/PoseBuilder.EPoseBuilderCurveMathOpType",
+			"/Script/PoseBuilder.EPoseBuilderDeltaComponent",
+			"/Script/PoseBuilder.EPoseBuilderDrivenBoneMode",
+			"/Script/PoseBuilder.EPoseBuilderDriverCurveOp",
+			"/Script/PoseBuilder.EPoseBuilderDriverMode",
+			"/Script/PoseBuilder.EPoseBuilderManifoldMode",
+			"/Script/PoseBuilder.EPoseBuilderOperationType",
+			"/Script/PoseBuilder.EPoseBuilderPoseState",
+			"/Script/PoseBuilder.EPoseBuilderRotationOrder",
 			"/Script/UMG.EUMGSequencePlayMode"
 		],
 		"AllowedStructs": [
@@ -277,6 +289,26 @@
 			"/Script/PhysicsControl.PhysicsControlMultiplier",
 			"/Script/PhysicsControl.PhysicsControlNamedForceAndTorqueData",
 			"/Script/PhysicsControl.PhysicsControlTarget",
+			"/Script/PoseBuilder.PoseBuilderAimMathDrivenConfig",
+			"/Script/PoseBuilder.PoseBuilderAimMathTarget",
+			"/Script/PoseBuilder.PoseBuilderAimOperation",
+			"/Script/PoseBuilder.PoseBuilderAlphaInterpConfig",
+			"/Script/PoseBuilder.PoseBuilderAxisProjectionOperation",
+			"/Script/PoseBuilder.PoseBuilderCurveMathOp",
+			"/Script/PoseBuilder.PoseBuilderDeltaRefDriverConfig",
+			"/Script/PoseBuilder.PoseBuilderDistanceOperation",
+			"/Script/PoseBuilder.PoseBuilderDrivenBone",
+			"/Script/PoseBuilder.PoseBuilderDriverCurveEntry",
+			"/Script/PoseBuilder.PoseBuilderDriverEntry",
+			"/Script/PoseBuilder.PoseBuilderKeyPose",
+			"/Script/PoseBuilder.PoseBuilderOperation",
+			"/Script/PoseBuilder.PoseBuilderParentBoneEntry",
+			"/Script/PoseBuilder.PoseBuilderParentConstraintConfig",
+			"/Script/PoseBuilder.PoseBuilderReferenceOperation",
+			"/Script/PoseBuilder.PoseBuilderSPRDriverConfig",
+			"/Script/PoseBuilder.PoseBuilderScaleFactors",
+			"/Script/PoseBuilder.RigUnit_PoseBuilder",
+			"/Script/PoseBuilder.RigUnit_PoseBuilder_WorkData",
 			"/Script/RigLogicModule.BoneIndexControlAttributeMapping",
 			"/Script/RigLogicModule.RigUnit_RigLogic_Data",
 			"/Script/RigLogicModule.RigUnit_RigLogic_IntArray",
@@ -347,7 +379,6 @@
 			"/Game/Valkyrie/UMG/UEFN_Slider.UEFN_Slider_C",
 			"/Game/Valkyrie/UMG/UEFN_TextBlock.UEFN_TextBlock_C",
 			"/Script/UIFramework.UIFrameworkCustomButtonWidget",
-			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget",
 			"/Script/CRD_HUDController.DeveloperLayoutButtonProxy"
 		],
 		"FavoriteWidgetParentClasses": [
@@ -670,6 +701,7 @@
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeSpawn.CharacterModifier_WildlifeSpawn_C":					{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_WildlifeVerseBehavior.CharacterModifier_WildlifeVerseBehavior_C":	{ "Visible": true },
 			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Sequencer.CharacterModifier_Sequencer_C":							{ "Visible": true },
+			"/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_Physics.CharacterModifier_Physics_C":								{ "Visible": true },
 			"/NPCDefault/Types/Modifiers/CharacterModifier_Scale.CharacterModifier_Scale_C":												{ "Visible": true },
 			"/CRD_Analytic/BP_Creative_Analytic_Manager.BP_Creative_Analytic_Manager_C":								{  },
 			"/CRD_Ascender/Device_Ascender.Device_Ascender_C":															{  },
@@ -709,8 +741,8 @@
 			"/CreativeCoreDevices/Beacon/UEFN_BeaconBadge_ViewModel.UEFN_BeaconBadge_ViewModel_C":						{ "Visible": true },
 			"/CreativeCoreDevices/PowerUp/LastActiveCustomPlayerFXComponent.LastActiveCustomPlayerFXComponent_C":		{  },
 			"/CreativeCoreDevices/Timer/CreativeTimerViewModel.CreativeTimerViewModel_C": 								{ "Visible": true },
-			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_Quad_v01.MR_Sidekick_Quad_v01_C":                            { "Visible": true },
-			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_SmallDog_v01.MR_Sidekick_SmallDog_v01_C":                    { "Visible": true },
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogLarge_v01.MR_Sidekick_DogLarge_v01_C":                    { "Visible": true },
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogSmall_v01.MR_Sidekick_DogSmall_v01_C":                    { "Visible": true },
 			"/FeralCorgiGameplay/Components/BP_ServerConfig_Component.BP_ServerConfig_Component_C":{  },
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricNoteLabelComponent.BP_FabricNoteLabelComponent_C":			{  },
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricPageInfoComponent.BP_FabricPageInfoComponent_C":				{  },
@@ -2293,9 +2325,13 @@
 			"/Script/UIFramework.UIFrameworkCustomButtonWidget":		{ "Visible": true },
 			"/Script/CRD_HUDController.DeveloperLayoutButtonProxy":		{ "Visible": true },
 			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget":		{ "Visible": true },
-			"/Script/UMG.ButtonSlot":											{  }
+			"/Script/UMG.ButtonSlot":											{  },
+			"/Script/PartnerAccountLinkerRuntime.PartnerAccountLinkComponent":	{  }
 		},
 		"AllowedMenus": {
+			"PropertyEditor.RowContextMenu": {
+				"DenyList": [ "CopyCvarName" ]
+			},
 			"AssetEditor.IKRetargetEditor.MainMenu.CreateMenu": {
 				"DenyList": [ "ExportRetargetPose" ]
 			},
@@ -2496,7 +2532,8 @@
 					"EditPrefabInplace_StepOut",
 					"EditPrefabInplace_Exit",
 					"BrowseToPrefab",
-					"PushPrefabOverrides"
+					"PushPrefabOverrides",
+					"ResetEntityPrefab"
 				]
 			},
 			"LevelEditor.ElementContextMenu": {
@@ -2514,6 +2551,7 @@
 					"EditPrefabInplace_Exit",
 					"BrowseToPrefab",
 					"PushPrefabOverrides",
+					"ResetEntityPrefab",
 
 					"FocusViewportToSelection",
 					"GoHere",
@@ -2719,6 +2757,9 @@
 			"SpatialMetricsToolBar.OptionsMenu": {
 				"DenyList": [ "StreamingRadius" ]
 			},
+			"SpatialMetrics.ViewportToolbar": {
+				"DenyList": [ "StreamingSimulation" ]
+			},
 			"ChaosVD.SolverTracks.MenuToolbar": {
 				"DenyList": [ "SyncModeButton" ]
 			},
@@ -2842,12 +2883,8 @@
 					"ObjectProfiler",
 					"VerseExplorerTab",
 					"NiagaraDebugger",
-					"ChaosVisualDebuggerTab",
 					"ControlRigDynamicsDebug",
-					"ControlRigPhysicsDebug",
-					"RewindDebugger",
-					"RewindDebugger2",
-					"RewindDebuggerDetails2"
+					"ControlRigPhysicsDebug"
 				]
 			},
 			"LevelEditor": {
@@ -2919,13 +2956,9 @@
 					"SkeinSourceControlSnapshotHistory",
 					"SkeinSourceControlBranchExplorer",
 					"NiagaraDebugger",
-					"ChaosVisualDebuggerTab",
 					"ControlRigDynamicsDebug",
 					"ControlRigPhysicsDebug",
-					"DataRecoveryToolDialog",
-					"RewindDebugger",
-					"RewindDebugger2",
-					"RewindDebuggerDetails2"
+					"DataRecoveryToolDialog"
 				]
 			},
 			"MaterialInstanceEditor": {

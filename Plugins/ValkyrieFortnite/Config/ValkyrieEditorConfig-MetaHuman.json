@@ -44,6 +44,8 @@
 			"/MetaHumanUEFN/Male/Tall/NormalWeight/Body/m_tal_nrw_animbp.m_tal_nrw_animbp_C": {},
 			"/MetaHumanUEFN/Male/Tall/OverWeight/Body/m_tal_ovw_animbp.m_tal_ovw_animbp_C": {},
 			"/MetaHumanUEFN/Male/Tall/UnderWeight/Body/m_tal_unw_animbp.m_tal_unw_animbp_C": {},
+			"/MetaHuman/IdentityTemplate/Face_ControlBoard_CtrlRig.Face_ControlBoard_CtrlRig_C": {},
+			"/Script/MetaHumanCore.MetaHumanViewportSettings": 					{ "Subclasses": "All" },
 			"/Script/MetaHumanConfig.MetaHumanConfig":							{  },
 			"/Script/CaptureDataCore.CameraCalibration":						{  },
 			"/Script/CaptureDataCore.MeshCaptureData": 							{  },
@@ -58,7 +60,13 @@
 			"/Script/MetaHumanSequencer.MetaHumanAudioTrack": 					{ "Visible": true, "Subclasses": "All" },
 			"/Script/MetaHumanPerformance.MetaHumanPerformanceMovieSceneAudioTrack": { "Visible": true, "Subclasses": "All" },
 			"/Script/RigLogicModule.DNA": 										{  },
-			"/Script/RigLogicModule.DNAAssetUserData": 							{  }
+			"/Script/RigLogicModule.DNAAssetUserData": 							{  },
+			"/Script/MetaHumanCore.MetaHumanContourData":						{  },
+			"/Script/MetaHumanImageViewerEditor.MetaHumanFootageComponent":		{  },
+			"/Script/MetaHumanIdentity.MetaHumanIdentityFace":					{  },
+			"/Script/MetaHumanIdentity.MetaHumanIdentityFootageFrame":			{  },
+			"/Script/MetaHumanIdentity.MetaHumanIdentityPose":					{  },
+			"/Script/MetaHumanIdentity.MetaHumanTemplateMeshComponent":			{  }
 		},
 		"AllowedMenus": {
 			"LevelEditor.MainMenu.Window": {

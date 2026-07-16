@@ -1459,7 +1459,8 @@
 			},
 			{
 				"Type": "/Script/Engine.AnimNode_LinkedAnimGraph",
-				"DenyList": [ "bReceiveNotifiesFromLinkedInstances", "bPropagateNotifiesToLinkedInstances" ]
+				"DenyList": [ "bReceiveNotifiesFromLinkedInstances", "bPropagateNotifiesToLinkedInstances" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/Engine.AnimInstance",
@@ -1484,7 +1485,8 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.BaseUEFNAnimInstance",
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset",
@@ -1503,7 +1505,8 @@
 			{
 				"Type": "/Script/ItemizationCoreRuntime.ItemDefinitionBase",
 				"AllowList": [],
-				"DenyList": [ "EditorTemplateId" ]
+				"DenyList": [ "EditorTemplateId" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/ValkyrieCommon.ValkyrieContentWorkerDebugManager",
@@ -1551,7 +1554,8 @@
 			},
 			{
 				"Type": "/Script/FN1UEFNFrameworkRuntime.FortUserOptionComponent_TickRate",
-				"DenyList": [ "DesiredTickRate", "DesiredPhysicsTickRate" ]
+				"DenyList": [ "DesiredTickRate", "DesiredPhysicsTickRate" ],
+				"bAllowListAllSubclassProperties": true
 			}
 		]
 	},
@@ -1566,6 +1570,15 @@
 			{
 				"Type": "/Script/FabricLevelSequencer.MidiSource",
 				"DenyList": [ "MidiSourceType" ]
+			}
+		]
+	},
+	"HiddenPropertyClassPermissionList" : {
+		"+": [
+			{
+				"Type": "/Script/Landscape.LandscapeProxy",
+				"AllowList": [ "NaniteComponents", "bUseGeneratedLandscapeSplineMeshesActors" ],
+				"WarnForDisallowedPropertiesPhase": 2
 			}
 		]
 	}

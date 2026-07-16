@@ -82,7 +82,8 @@
     "+": [
       {
         "Type": "/Script/Engine.AudioComponent",
-        "DenyList": [ "bCanEverAffectNavigation" ]
+        "DenyList": [ "bCanEverAffectNavigation" ],
+        "bAllowListAllSubclassProperties": true
       },
       {
         "Type": "/Script/Engine.SoundBase",
@@ -130,31 +131,31 @@
 				"Type": "/Script/AudioModulation.SoundControlBus",
 				"AllowList": [ "Address" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
       {
 				"Type": "/Script/Engine.SoundBase",
 				"AllowList": [ "bHasDelayNode", "bHasConcatenatorNode", "bOverrideConcurrency", "ConcurrencyOverrides", "MaxDistance" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SoundCue",
 				"AllowList": [ "FirstNode", "AttenuationOverrides", "AllNodes", "Duration", "MaxDistance", "bHasPlayWhenSilent", "VolumeMultiplier", "PitchMultiplier" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SoundWave",
 				"AllowList": [ "TimecodeInfo", "TimecodeOffset", "AssetImportData", "CuePoints", "LUFS", "SamplePeakDB", "ChannelOffsets", "ChannelSizes", "CuePointOrigin", "Volume", "CompressionQuality", "bLooping" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
       {
 				"Type": "/Script/MetasoundEngine.MetaSoundSource",
 				"AllowList": [ "RootMetasoundDocument", "ReferencedAssetClassKeys", "ReferencedAssetClassObjects", "QualitySetting", "QualitySettingGuid", "AssetImportData", "MaxDistance", "bLooping", "OutputFormat", "AssetClassID", "RegistryInputTypes", "RegistryOutputTypes", "RegistryVersionMajor", "RegistryVersionMinor", "bIsPreset" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			}
     ]
   },
@@ -164,7 +165,7 @@
 				"Type": "/Script/Engine.SoundAttenuationSettings",
 				"AllowList": [ "bEnableReverbSend", "bEnableSendToAudioLink", "StereoSpread", "SubmixSendSettings", "NonSpatializedRadiusStart", "CustomAttenuationCurve", "AttenuationShape", "bEnableSubmixSends", "bEnableOcclusion", "LPFRadiusMin", "LPFRadiusMax" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			}
     ]
   }

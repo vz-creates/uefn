@@ -142,7 +142,9 @@
 			"/Script/CoreUObject.Matrix",
 			"/Script/CoreUObject.Plane",
 			"/Script/CoreUObject.Quat",
+			"/Script/CoreUObject.QualifiedFrameTime",
 			"/Script/CoreUObject.RandomStream",
+			"/Script/CoreUObject.Ray",
 			"/Script/CoreUObject.Rotator",
 			"/Script/CoreUObject.Timespan",
 			"/Script/CoreUObject.Transform",
@@ -177,8 +179,28 @@
 			"/Script/ControlRig.RigUnit_AimConstraint_AdvancedSettings",
 			"/Script/ControlRig.RigUnit_AimConstraint_WorldUp",
 			"/Script/ControlRig.RigUnit_AimItem_Target",
+			"/Script/ControlRig.RigElementWeight",
+			"/Script/ControlRig.RigElementKeyWithLabel",
+			"/Script/ControlRig.RigUnit_HierarchyCreatePoseItemArray_Entry",
+			"/Script/ControlRig.RigUnit_ChainInfo_SegmentInfo",
+			"/Script/ControlRig.SphericalRegion",
+			"/Script/RigVM.MathRBFInterpolateQuatColor_Target",
+			"/Script/RigVM.MathRBFInterpolateQuatFloat_Target",
+			"/Script/RigVM.MathRBFInterpolateQuatQuat_Target",
+			"/Script/RigVM.MathRBFInterpolateQuatVector_Target",
+			"/Script/RigVM.MathRBFInterpolateQuatXform_Target",
+			"/Script/RigVM.MathRBFInterpolateVectorColor_Target",
+			"/Script/RigVM.MathRBFInterpolateVectorFloat_Target",
+			"/Script/RigVM.MathRBFInterpolateVectorQuat_Target",
+			"/Script/RigVM.MathRBFInterpolateVectorVector_Target",
+			"/Script/RigVM.MathRBFInterpolateVectorXform_Target",
+			"/Script/RigVM.RigVMFunction_MathRBFInterpolateQuatWorkData",
+			"/Script/RigVM.RigVMFunction_MathRBFInterpolateVectorWorkData",
 			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannelEmptyLimitSettings",
 			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannelSingleLimitSettings",
+			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannel2DLimitSettings",
+			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannelRotatorLimitSettings",
+			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannelVectorLimitSettings",
 			"/Script/ControlRig.RigUnit_HierarchyAddControlFloat_Settings",
 			"/Script/ControlRig.RigUnit_HierarchyAddControlFloat_LimitSettings",
 			"/Script/ControlRig.RigUnit_HierarchyAddControlInteger_Settings",
@@ -282,6 +304,10 @@
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkGetParameterValueByName",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluteFrameTransform",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluateInputDeviceValue",
+			"/Script/LiveLinkInterface.LiveLinkGamepadInputDeviceFrameData",
+			"/Script/LiveLinkInterface.LiveLinkMetaData",
+			"/Script/LiveLinkInterface.LiveLinkWorldTime",
+			"/Script/LiveLinkInterface.SubjectFrameHandle",
 			"/Script/PhysicsControl.PhysicsControlData",
 			"/Script/PhysicsControl.PhysicsControlForceAndTorqueData",
 			"/Script/PhysicsControl.PhysicsControlModifierData",
@@ -743,6 +769,7 @@
 			"/CreativeCoreDevices/Timer/CreativeTimerViewModel.CreativeTimerViewModel_C": 								{ "Visible": true },
 			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogLarge_v01.MR_Sidekick_DogLarge_v01_C":                    { "Visible": true },
 			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_DogSmall_v01.MR_Sidekick_DogSmall_v01_C":                    { "Visible": true },
+			"/EpicControlRigPub/v5_8/Templates/MR_Sidekick_CatSmall_v01.MR_Sidekick_CatSmall_v01_C":                    { "Visible": true },
 			"/FeralCorgiGameplay/Components/BP_ServerConfig_Component.BP_ServerConfig_Component_C":{  },
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricNoteLabelComponent.BP_FabricNoteLabelComponent_C":			{  },
 			"/FMInWorldKnobs/Gameplay/Components/BP_FabricPageInfoComponent.BP_FabricPageInfoComponent_C":				{  },
@@ -1156,10 +1183,13 @@
 			"/Script/CameraCalibrationCore.LensFile": 							{  },
 			"/Script/CoreUObject.Int64Vector2":									{  },
 			"/Script/CoreUObject.LinearColor":									{  },
+			"/Script/CoreUObject.FrameRate":									{  },
+			"/Script/CoreUObject.FrameTime":									{  },
 			"/Script/CoreUObject.Matrix":										{  },
 			"/Script/CoreUObject.MetaData":										{  },
 			"/Script/CoreUObject.Plane":										{  },
 			"/Script/CoreUObject.Quat":											{  },
+			"/Script/CoreUObject.QualifiedFrameTime":							{  },
 			"/Script/CoreUObject.Quat4f":										{  },
 			"/Script/CoreUObject.Rotator":										{  },
 			"/Script/CoreUObject.Transform":									{  },
@@ -1876,6 +1906,10 @@
 			"/Script/LevelSequence.LevelSequenceAnimSequenceLink":				{  },
 			"/Script/LiveLink.LiveLinkComponent":								{ "Visible": true },
 			"/Script/LiveLinkComponents.LiveLinkComponentController":			{ "Visible": true },
+			"/Script/LiveLinkInterface.LiveLinkGamepadInputDeviceFrameData":	{  },
+			"/Script/LiveLinkInterface.LiveLinkMetaData":						{  },
+			"/Script/LiveLinkInterface.LiveLinkWorldTime":						{  },
+			"/Script/LiveLinkInterface.SubjectFrameHandle":						{  },
 			"/Script/LiveLinkMovieScene.MovieSceneLiveLinkSection":				{  },
 			"/Script/LiveLinkMovieScene.MovieSceneLiveLinkTrack":				{ "Visible": true },
 			"/Script/LiveLinkSequencer.TakeRecorderLiveLinkSource":             {  },
@@ -2324,7 +2358,6 @@
 			"/Script/DataRegistry.DataRegistryID":								{  },
 			"/Script/UIFramework.UIFrameworkCustomButtonWidget":		{ "Visible": true },
 			"/Script/CRD_HUDController.DeveloperLayoutButtonProxy":		{ "Visible": true },
-			"/Script/UIFramework.UIFrameworkTouchActionWrapperWidget":		{ "Visible": true },
 			"/Script/UMG.ButtonSlot":											{  },
 			"/Script/PartnerAccountLinkerRuntime.PartnerAccountLinkComponent":	{  }
 		},
@@ -2746,10 +2779,10 @@
 				"AllowList": [ "SessionTabs" ]
 			},
 			"SpatialProfiler.Grid.ContextualMenu": {
-				"DenyList": [ "UniqueMeshesReport", "DetailsOptionsSeparator" ]
+				"DenyList": [ "DetailsOptionsSeparator" ]
 			},
 			"SpatialProfiler.MainToolBar": {
-				"DenyList": [ "HeatmapsPresetCombo", "GenerateHeatmap", "UpdateMemReport", "StaticProfilerData" ]
+				"DenyList": [ "UpdateMemReport", "StaticProfilerData" ]
 			},
 			"SpatialMetricsToolBar.ShowMenu": {
 				"DenyList": [ "ShowStreamingRadius" ]
@@ -3311,7 +3344,8 @@
 		"=": [
 			{
 				"Type": "/Script/Engine.Blueprint",
-				"DenyList": [ "Default Namespaces", "Imported Namespaces", "BlueprintNamespace" ]
+				"DenyList": [ "Default Namespaces", "Imported Namespaces", "BlueprintNamespace" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/Engine.AnimationAsset",
@@ -3639,10 +3673,6 @@
 				"AllowList": [ "Action", "bHideFromLayout", "bOverrideIcon", "IconBrush"]
 			},
 			{
-				"Type": "/Script/UIFramework.UIFrameworkTouchActionWrapperWidget",
-				"AllowList": [ "TriggeringInputAction"]
-			},
-			{
 				"Type": "/Script/UMG.GridPanel",
 				"AllowList": [ "ColumnFill", "RowFill" ]
 			},
@@ -3774,19 +3804,17 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingTrap",
-				"DenyList": [ "TextureData", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bVisible", "bCanEverAffectNavigation", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "SavedHealthPct", "PlayerPlaced", "ForceDamagePing", "bCanEverAffectNavigation", "Can Ever Affect Navigation", "Visible" ]
+				"DenyList": [ "TextureData", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bVisible", "bCanEverAffectNavigation", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "SavedHealthPct", "PlayerPlaced", "ForceDamagePing", "bCanEverAffectNavigation", "Can Ever Affect Navigation", "Visible" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeDeviceProp",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "OnDeleteActorBegin", "OnDeleteActorEnd" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "OnDeleteActorBegin", "OnDeleteActorEnd" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Game/Creative/Items/Sword/BP_SwordPedestal_CP.BP_SwordPedestal_CP_C",
 				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
-			},
-			{
-				"Type": "/Script/FortniteGame.BuildingContainer",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
 			},
 			{
 				"Type": "/CreativeCoreDevices/Device_FuelPump_V2.Device_FuelPump_V2_C",
@@ -3794,7 +3822,8 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingGameplayActorConsumable",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortniteEditorSettings",
@@ -3802,7 +3831,8 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.FortHidingProp",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "FixedEntranceDirection", "MaxInteractAngle", "InteractBelowPropDistance", "SetEntranceRotation", "EnterAnimMontage" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "FixedEntranceDirection", "MaxInteractAngle", "InteractBelowPropDistance", "SetEntranceRotation", "EnterAnimMontage" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_Ascender/Device_Ascender.Device_Ascender_C",
@@ -3826,7 +3856,8 @@
 			},
 			{
 				"Type": "/CreativeCoreDevices/Creative_Powerup_V2.Creative_Powerup_V2_C",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CreativeCoreDevices/Device_ColorChangingTiles_V2.Device_ColorChangingTiles_V2_C",
@@ -3838,87 +3869,108 @@
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_SwitchDevice",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_CaptureArea",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_CaptureItemSpawner",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_ClassSelector",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeItemProp",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_LockDevice",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeLockDevice",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_CreatureManager",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_CreaturePlacer",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "CreativeRiftClass" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "CreativeRiftClass" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_DeimosSpawner",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "CreativeRiftClass" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "CreativeRiftClass" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeExplosiveBarrelDevice",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_DestructionObject",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeRoundSettings",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.FortCreativeTimerObjective",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingProp_VendingMachine",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "Description", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingGameplayActor",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingContainer",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "PotentialRandomUpgrades", "SearchLootTierGroup", "ContainerLootTierKey", "AdditionalPickupTags", "SpawnSourceOverride" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct", "PotentialRandomUpgrades", "SearchLootTierGroup", "ContainerLootTierKey", "AdditionalPickupTags", "SpawnSourceOverride", "Description" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Game/Athena/Items/Consumables/SneakySnowman/Version2/Athena_Prop_SneakySnowmanV2.Athena_Prop_SneakySnowmanV2_C",
-				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ]
+				"DenyList": [ "TextureData", "bMirrored", "bPlayBounce", "bPropagateBounce", "bPropagatesBounceEffects", "bForciblyStructurallySupported", "bRegisterWithStructuralGrid", "bAllowWeakSpots", "bUseComplexForWeakSpots", "BuildingAttachmentPointOffset", "BuildingAttachmentRadius", "BuildingAttachmentSlot", "BuildingAttachmentType", "BuildingPlacementType", "ParentActorToAttachTo", "StaticMesh", "bNoPhysicsCollision", "bNoCameraCollision", "bNoPawnCollision", "bNoAIPawnCollision", "bBlocksCeilingPlacement", "bBlocksAttachmentPlacement", "bUsePhysicalSurfaceForFootstep", "bRandomYawOnPlacement", "bRandomScaleOnPlacement", "RandomScaleRange", "bNoCollision", "bCameraOnlyCollision", "bNoWeaponCollision", "bNoRangedWeaponCollision", "bNoProjectileCollision", "bDoNotBlockInteract", "bAllowCustomMaterial", "BuildingPlacementDistance", "ResourceType", "bAllowResourceDrop", "BuildingResourceAmountOverride", "BreakEffect", "DeathParticles", "DeathNiagaraSystemAsset", "DeathParticleSocketName", "DeathSound", "ConstructedEffect", "PlayerGridSnapSize", "bHideOnDeath", "bSuppressSimpleInteractionWidgetForTouch", "bCanBeMarked", "bBlockMarking", "MarkerDisplay", "MarkerPositionOffset", "bDoNotBlockMarkerTraceWhenOverlappingPlayer", "bCanBeDamaged", "DynamicBuildingPlacementType", "IncomingDamageFilterQuery", "bPlayerPlaced", "bForceDamagePing", "bIsNavigationIndestructible", "bAllowInteract", "bShowFirstInteractPrompt", "bShowSecondInteractPrompt", "bAllowHostileBlueprintInteraction", "DisplayName", "InteractionText", "InteractionSpeed", "Definitions", "Team", "bAllowTeamDamage", "bSuppressInteractionWidget", "bShouldClearMarkerOnInteract", "bIsPlayerBuildable", "PlayHitSound", "bSurpressHealthBar", "PrimarySurfaceType", "WeaponResponseType", "HealthBarIndicatorWidth", "HealthBarIndicatorVerticalOffset", "HealthBarIndicatorSocketName", "bUseFortHealthBarIndicator", "bDestroyOnPlayerBuildingPlacement", "bUseCentroidForBlockBuildingsCheck", "bIgnoreCollisionWithCriticalActors", "bDoNotBlockBuildings", "bForceBlockBuildings", "BuildingType", "bStructurallySupportOverlappingActors", "bDestroyFoliageWhenPlaced", "AttributeInitKeys", "AttributeInitLevelSource", "bActorHiddenInGame", "NetCullDistanceSquared", "bActorEnableCollision", "bIsSpatiallyLoaded", "bEnableAutoLODGeneration", "LODSyncComponent", "bHidden", "SavedHealthPct" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_Creatures/Device_CreatureManager_V2.Device_CreatureManager_V2_C",
-				"DenyList": [ "AITypeOptions", "CreatureAIDiedTriggerComponent" ]
+				"DenyList": [ "AITypeOptions", "CreatureAIDiedTriggerComponent" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_Creatures/Device_CreaturePlacer_V2.Device_CreaturePlacer_V2_C",
-				"DenyList": [ "CreatureSkeletalMeshComponent", "SpawnGroupVisuals", "SelectedSpawnLimit", "CreatureKilledTransmitComponent", "DeimosSpawnerOptions", "PawnNumberCapOptions", "SpawnGroupOptions", "SpawnTimingOptions", "SpawnLimitOptions", "EQSQueryOptions", "TurnOnReceiverComponent", "TurnOffReceiverComponent", "KillAllAIReceiverComponent", "KillSpawnerReceiverComponent", "OnKilledMessagerComponent" ]
+				"DenyList": [ "CreatureSkeletalMeshComponent", "SpawnGroupVisuals", "SelectedSpawnLimit", "CreatureKilledTransmitComponent", "DeimosSpawnerOptions", "PawnNumberCapOptions", "SpawnGroupOptions", "SpawnTimingOptions", "SpawnLimitOptions", "EQSQueryOptions", "TurnOnReceiverComponent", "TurnOffReceiverComponent", "KillAllAIReceiverComponent", "KillSpawnerReceiverComponent", "OnKilledMessagerComponent" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_Creatures/Device_CreatureSpawner_V2.Device_CreatureSpawner_V2_C",
-				"DenyList": [ "DeimosSpawnerOptions", "PawnNumberCapOptions", "SpawnGroupOptions", "SpawnTimingOptions", "SpawnLimitOptions", "EQSQueryOptions", "TurnOnReceiverComponent", "TurnOffReceiverComponent", "KillAllAIReceiverComponent", "KillSpawnerReceiverComponent", "OnKilledMessagerComponent" ]
+				"DenyList": [ "DeimosSpawnerOptions", "PawnNumberCapOptions", "SpawnGroupOptions", "SpawnTimingOptions", "SpawnLimitOptions", "EQSQueryOptions", "TurnOnReceiverComponent", "TurnOffReceiverComponent", "KillAllAIReceiverComponent", "KillSpawnerReceiverComponent", "OnKilledMessagerComponent" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/Game/Athena/Items/EnvironmentalItems/Sentry/Turret/BGA_Athena_Sentry_Turret.BGA_Athena_Sentry_Turret_C",
@@ -4059,7 +4111,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement", "bKeepSessionOnProjectChange", "bReturnClientToMainMenu" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement", "bKeepSessionOnProjectChange", "ClientExitSessionBehavior" ]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorPythonConfig",
@@ -4266,6 +4318,7 @@
 			{
 				"Type": "/Game/Athena/Items/EnvironmentalItems/HidingProps/B_HidingProp.B_HidingProp_C",
 				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true,
 				"DenyList": [ "EnterGameplayCue", "ExitGameplayCue", "LandedOnGameplayCue", "RustleGameplayCue", "ExitGameplayCue_Player", "WhileEnteringGameplayCue", "TeleporterEnterGameplayCue", "TeleporterExitGameplayCue", "LoopingTeleportingCue", "TeleportingStateGC" ]
 			},
 			{
@@ -4290,7 +4343,8 @@
 			},
 			{
 				"Type": "/Script/MovieSceneTracks.MovieSceneAudioSection",
-				"DenyList": [ "bSuppressSubtitles" ]
+				"DenyList": [ "bSuppressSubtitles" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CorruptionItems/Gameplay/Items/ReinforcedTrap/Actors/B_Wall_Reinforced_Athena.B_Wall_Reinforced_Athena_C",
@@ -4393,12 +4447,14 @@
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_GuardBehavior.CharacterModifier_GuardBehavior_C",
 				"DenyList": [ "bCanUseDiving", "bCanUseGliding" ],
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_GuardVerseBehavior.CharacterModifier_GuardVerseBehavior_C",
 				"DenyList": [ "bKeepDefaultBehavior", "bCanUseDiving", "bCanUseGliding" ],
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_GuardSpawn.CharacterModifier_GuardSpawn_C",
@@ -4408,7 +4464,8 @@
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_GuardInventory.CharacterModifier_GuardInventory_C",
 				"DenyList": [ "SupportedItemTags" ],
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_AISpawner/SpawnDefinitions/Modifiers/CharacterModifier_UI.CharacterModifier_UI_C",
@@ -4532,7 +4589,8 @@
 			},
 			{
 				"Type": "/Script/FN1UEFNFrameworkRuntime.FortUserOptionComponent_TickRate",
-				"DenyList": [ "DesiredTickRate", "DesiredPhysicsTickRate" ]
+				"DenyList": [ "DesiredTickRate", "DesiredPhysicsTickRate" ],
+				"bAllowListAllSubclassProperties": true
 			},
 			{
 				"Type": "/CRD_EarthSprite/Device_EarthSprite.Device_EarthSprite_C",
@@ -4712,25 +4770,28 @@
 				"Type": "/Script/Engine.Actor",
 				"AllowList": [],
 				"DenyList": [],
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/Engine.ActorComponent",
 				"AllowList": [],
 				"DenyList": [],
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/Engine.BodySetup",
 				"AllowList": [ "bGenerateMirroredCollision", "bGenerateNonMirroredCollision", "bNeverNeedsCookedCollisionData", "BuildScale3D" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SceneComponent",
 				"AllowList": [],
 				"DenyList": [ "Mobility" ],
-				"bAllowListAllProperties": true
+				"bAllowListAllProperties": true,
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/Engine.PrimitiveComponent",
@@ -4845,20 +4906,20 @@
 				"Type": "/Script/Engine.AnimationAsset",
 				"AllowList": [ "ThumbnailInfo", "AssetUserData", "PreviewSkeletalMesh" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.AnimSequence",
 				"AllowList": [ "AssetImportData", "ImportFileFramerate", "ImportResampleFramerate", "RawDataGuid", "SequenceLength", "AnimNotifyTracks", "RawCurveData", "BoneCompressionSettings", "CurveCompressionSettings", "VariableFrameStrippingSettings", "DataModelInterface", 
 					"RefPoseType", "RetargetSourceAssetReferencePose", "PlatformTargetFrameRate", "AttributeCurves", "NumFrames", "NumberOfKeys", "SamplingFrameRate", "AnimationTrackNames" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.BrushBuilder",
 				"AllowList": [ "Vertices", "Polys", "Layer" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.ChildActorComponent",
@@ -4870,7 +4931,7 @@
 				"Type": "/Script/Engine.HLODLayer",
 				"AllowList": [ "LayerType", "bIsSpatiallyLoaded", "HLODModifierClass" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.PlayerStart",
@@ -4884,42 +4945,58 @@
 					"ExtendedBounds", "EditorCameraPosition", "AssetUserData", "NaniteSettings", "MinQualityLevelLOD", "bGenerateMeshDistanceField", "bHasNavigationData", "bSupportRayTracing", "ThumbnailInfo", "LightMapCoordinateIndex", "NeverStream", "Sockets", "bAllowCPUAccess",
 					"bSupportGpuUniformlyDistributedSampling", "MaterialRemapIndexPerImportVersion", "DistanceFieldSelfShadowBias", "ComplexCollisionMesh" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMesh",
 				"AllowList": [ "AssetImportData", "AssetUserData", "SourceModels", "MinQualityLevelLOD", "ThumbnailInfo", "SamplingInfo", "PostProcessAnimBlueprint", "bHasVertexColors", "VertexColorGuid", "PostProcessAnimBPLODThreshold", "ForwardAxis", "MorphTargets", "Sockets", "NaniteSettings" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshComponent",
 				"AllowList": [ "ClothingSimulationFactory", "bUpdateOverlapsOnAnimationFinalize" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshLODInfo",
 				"AllowList": [ "bHasBeenSimplified" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkinnedMeshComponent",
 				"AllowList": [ "bSetMeshDeformer", "SkinnedAsset", "VisibilityBasedAnimTickOption", "LeaderPoseComponent", "ForcedLodModel", "MeshDeformerInstanceSettings", "PhysicsAssetOverride", "bComponentUseFixedSkelBounds" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.WorldPartition",
 				"AllowList": [ "EditorHash", "bStreamingWasEnabled", "RuntimeHash", "bEnableStreaming" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/ItemizationRuntime.ItemDefinition",
 				"bAllowListAllProperties": true,
 				"bAllowListAllSubclassProperties": true
+			},
+			{
+				"Type": "/Script/Landscape.Landscape",
+				"AllowList": [ "bIncludeGridSizeInNameForLandscapeActors", "TargetDisplayOrderList", "TargetDisplayOrder", "LandscapeEditLayers" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Landscape.LandscapeProxy",
+				"AllowList": [ "LandscapeGuid", "ComponentSizeQuads", "SubsectionSizeQuads", "NumSubsections", "TargetLayers", "LandscapeComponents", "CollisionComponents", "SectionBase", "ReimportDestinationLayerGuid", "ReimportHeightmapFilePath", "MaxLODLevel", "GrassTypesMaxDiscardDistance",
+					"SplineComponent", "BodyInstance", "RuntimeVirtualTextures", "VirtualTextureRenderPassType", "VirtualTextureLodBias", "bFillCollisionUnderLandscapeForNavmesh", "MaxPaintedLayersPerComponent" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Landscape.LandscapeStreamingProxy",
+				"AllowList": [ "LandscapeActorRef", "OverriddenSharedProperties" ],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/Niagara.NiagaraComponent",
@@ -4938,145 +5015,145 @@
 				"Type": "/Script/Niagara.NiagaraDataInterfaceAudioPlayer",
 				"AllowList": [ "Attenuation" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/PhysicsCore.BodySetupCore",
 				"AllowList": [ "PhysicsType", "BoneName" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.Border",
 				"AllowList": [ "Padding", "BrushColor", "Background", "VerticalAlignment" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.Button",
 				"AllowList": [ "WidgetStyle", "BackgroundColor" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.CheckBox",
 				"AllowList": [ "WidgetStyle", "CheckedState" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.EditableTextBox",
 				"AllowList": [ "Text", "WidgetStyle" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.ExpandableArea",
 				"AllowList": [ "BorderBrush", "BorderColor", "bIsExpanded", "HeaderPadding", "AreaPadding", "HeaderContent", "BodyContent" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.MultilineEditableTextBox",
 				"AllowList": [ "HintText", "WidgetStyle", "Text" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.RichTextBlock",
 				"AllowList": [ "Text", "TextStyleSet" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.ScrollBox",
 				"AllowList": [ "ScrollbarThickness", "ScrollbarPadding", "ScrollWhenFocusChanges" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.SpinBox",
 				"AllowList": [ "Value", "MinFractionalDigits", "MaxFractionalDigits", "Delta", "ForegroundColor", "bOverride_MinValue", "bOverride_MaxValue", "MinValue", "MaxValue", "Font" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.TextBlock",
 				"AllowList": [ "TextDelegate" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.TextLayoutWidget",
 				"AllowList": [ "AutoWrapText" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.NamedSlot",
 				"AllowList": [ "SlotGuid" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.PanelWidget",
 				"AllowList": [ "Slots" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.SizeBox",
 				"AllowList": [ "bOverride_WidthOverride", "bOverride_HeightOverride", "bOverride_MinDesiredWidth", "bOverride_MinDesiredHeight", "bOverride_MaxDesiredWidth", "bOverride_MaxDesiredHeight", "bOverride_MinAspectRatio", "bOverride_MaxAspectRatio", "MinAspectRatio", "MaxAspectRatio" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.UserWidget",
 				"AllowList": [ "bHasScriptImplementedTick", "bHasScriptImplementedPaint", "DesignSizeMode", "DesignTimeSize", "NamedSlotBindings", "Extensions", "PaletteCategory" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UMG.Widget",
 				"AllowList": [ "bExpandedInDesigner", "bHiddenInDesigner", "bLockedInDesigner", "DisplayLabel", "bOverride_Cursor", "bIsVariable", "bCanChildrenBeAccessible", "AccessibleBehavior", "VisibilityDelegate", "ToolTipText", "CategoryName" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/CommonUI.CommonButtonBase",
 				"AllowList": [ "NormalStyle", "SelectedStyle", "DisabledStyle", "LockedStyle" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/FortniteUI.UIKitModularButton",
 				"AllowList": [ "ModularBlocks" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/FortUILibrary/UGC/Widgets/Buttons/CTA/WBP_UEFN_ButtonCTA_Base.WBP_UEFN_ButtonCTA_Base_C",
 				"AllowList": [ "SingleText", "Corner Radius" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UnrealEd.CylinderBuilder",
 				"AllowList": [ "OuterRadius" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/UnrealEd.FbxStaticMeshImportData",
 				"AllowList": [ "bBuildNanite" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterDefinition",
 				"AllowList": [ "FortReleaseVersion", "AnimPreset", "CharacterBlueprint", "IKRetargeter", "SkeletalMesh", "AnimationBP" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterModifier",
@@ -5084,7 +5161,7 @@
 				"DenyList": [],
 				"bAllowListAllProperties": true,
 				"bAllowListAllSubclassProperties": true,
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Water.WaterBody",
@@ -5132,7 +5209,7 @@
 				"Type": "/Script/WorldPartitionHLODUtilities.HLODBuilderMeshMergeSettings",
 				"AllowList": [ "HLODMaterial" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/FortniteGame.FortEventResponderComponent",
@@ -5246,6 +5323,24 @@
 				"bAllowListAllProperties": true
 			},
 			{
+				"Type": "/Game/Creative/Devices/Common/Components/CreativeEditOnlyBase.CreativeEditOnlyBase_C",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Creative/Devices/Common/Components/CreativeEditOnlyBeam.CreativeEditOnlyBeam_C",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Creative/Devices/Common/Components/CreativeVolumeFrame.CreativeVolumeFrame_C",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
 				"Type": "/Script/FortniteGame.CreativeMiniMapComponent",
 				"AllowList": [],
 				"DenyList": [],
@@ -5340,6 +5435,18 @@
 				"bAllowListAllProperties": true
 			},
 			{
+				"Type": "/Script/FortniteGame.FortGameplayReceiverMessageComponent",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/FortniteGame.FortGameplayTriggerMessageComponent",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
 				"Type": "/Script/FortniteGame.FortMinigameItemListComponent",
 				"AllowList": ["BaseInstigatorData"],
 				"DenyList": [],
@@ -5358,7 +5465,49 @@
 				"bAllowListAllProperties": true
 			},
 			{
+				"Type": "/Script/FortniteAI.FortCreativeCreatureManagerInfoComponent",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/FortniteGame.FortMinigameObjectiveComponent",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/FortniteGame.FortMinigamePlayerStartComponent",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/FortniteGame.FortMinigameProgressComponent",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
 				"Type": "/Script/FortniteGame.FortMinigameSettingsBuilding",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/CreativeCoreDevices/Device_ExperienceSettings_V2.Device_ExperienceSettings_V2_C",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/CreativeCoreDevices/Device_ExperienceSettings_V2_UEFN.Device_ExperienceSettings_V2_UEFN_C",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Athena/Items/Gameplay/MinigameSettingsControl/MinigameSettingsMachine.MinigameSettingsMachine_C",
 				"AllowList": [],
 				"DenyList": [],
 				"bAllowListAllProperties": true
@@ -5468,6 +5617,12 @@
 				"bAllowListAllProperties": true
 			},
 			{
+				"Type": "/CRD_ItemContainer/ItemContainer_PreviewComponent.ItemContainer_PreviewComponent_C",
+				"AllowList": [],
+				"DenyList": [],
+				"bAllowListAllProperties": true
+			},
+			{
 				"Type": "/Game/Creative/Devices/Common/Components/Creative_MeshZone_Component.Creative_MeshZone_Component_C",
 				"AllowList": [],
 				"DenyList": [],
@@ -5534,12 +5689,6 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
-				"Type": "/Game/Creative/Devices/MapMarker/CreativeMapMarkerComponent.CreativeMapMarkerComponent_C",
-				"AllowList": [],
-				"DenyList": [],
-				"bAllowListAllProperties": true
-			},
-			{
 				"Type": "/Game/Creative/Devices/Common/Components/CreativePreviewOnlyMesh.CreativePreviewOnlyMesh_C",
 				"AllowList": [],
 				"DenyList": [],
@@ -5575,67 +5724,67 @@
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_CategorizedFactEntry.EUW_CategorizedFactEntry_C",
 				"AllowList": [ "CategorizedFactEntryViewModel", "FactExpandableArea" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type":  "/CRD_AIPrompt/PromptEditorTool/EUW_ConversationLogEntry.EUW_ConversationLogEntry_C",
 				"AllowList": [ "WarningIndicatorIcon", "LLMMessage", "VM_ConversationLogEntry" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_ConversationPanel.EUW_ConversationPanel_C",
 				"AllowList": [ "PromptText", "PromptButton", "LogEntryScrollBox", "BulkResponseCount", "PersonaPrompt", "PromptModeToggle", "CurrentlySelectedLogEntryWidget" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PETPanel.EUW_PETPanel_C",
 				"AllowList": [ "Title", "FooterWidget", "EmptyContentWidget", "EmptyContentMessage", "ContentSwitcher", "ContentBorder", "Content", "TitleText", "EmptyContentMessageText", "HeaderWidget", "HeaderSwitcher", "ContentPadding" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PromptFactsPanel.EUW_PromptFactsPanel_C",
 				"AllowList": [ "CategorizedFactList", "VM_PersonaPromptEditor", "FactBoxToVSlotMap", "ModeToggle", "StructuredOutputEditor", "ContentSwitcher" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_PropertyEntry.EUW_PropertyEntry_C",
 				"AllowList": [ "PropertyTypeSelector", "PropertyNameTextInput", "PropertyDescriptionTextInput", "DeleteStructButton", "PersonaPrompt", "StructName", "PropertyName" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type":  "/CRD_AIPrompt/PromptEditorTool/EUW_ResponseDetailEntry.EUW_ResponseDetailEntry_C",
 				"AllowList": [ "PromptTranscriptionText", "PersonaResponseText", "PersonaNameText", "ModerationDetailsText", "ModerationDetails", "VM_PromptResponseDetailEntry" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_ResponseDetialsPanel.EUW_ResponseDetialsPanel_C",
 				"AllowList": [ "PETPanel" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_StructEntry.EUW_StructEntry_C",
 				"AllowList": [ "StructPropertiesStackBox", "StructNameTextInput", "DeleteStructButton", "AddPropertyButton", "PersonaPrompt", "StructName", "SetAsDefaultCheckBox" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/CRD_AIPrompt/PromptEditorTool/EUW_StructuredOutputEditor.EUW_StructuredOutputEditor_C",
 				"AllowList": [ "StructListScrollBox", "AddStructButton", "PersonaPrompt", "DefaultStructEntry" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type":  "/Script/AIPromptEditor.PersonaPromptSegmentedControl",
 				"AllowList": [ "LeftModeContent", "RightModeContent", "SelectedIndex" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			}
 		]
 	},
@@ -5655,13 +5804,13 @@
 				"Type": "/Script/Engine.MeshMergingSettings",
 				"AllowList": [ "OutputUVs", "LODSelectionType", "bGenerateLightMapUV", "bMergeMaterials", "bReuseMeshLightmapUVs", "bIncludeImposters", "bSupportRayTracing", "NaniteSettings" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.MaterialProxySettings",
 				"AllowList": [ "TextureSizingType", "MeshMinDrawDistance", "SpecularTextureSize", "bMetallicMap", "bRoughnessMap", "bSpecularMap" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.PostProcessSettings",
@@ -5692,38 +5841,38 @@
 					"BloomConvolutionTexture", "FilmGrainIntensityHighlights", "FilmGrainIntensityMidtones", "LocalExposureShadowThreshold", "LocalExposureHighlightThreshold", "IndirectLightingIntensity", "ColorOffset", "DepthOfFieldSensorWidth", "DepthOfFieldFocalDistance", 
 					"ScreenSpaceReflectionQuality", "ScreenSpaceReflectionMaxRoughness", "FilmGrainTexture", "FilmGrainScale", "FilmGrainShadowsMax", "DepthOfFieldDepthBlurRadius", "DepthOfFieldAspectRatioScalar", "DepthOfFieldDepthBlurAmount" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshLODGroupSettings",
 				"AllowList": [ "BoneList", "BoneFilterActionOption", "LODHysteresis" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshSourceModel",
 				"AllowList": [ "MeshDescriptionBulkData", "BuildSettings", "ReductionSettings", "LODMaterialMap", "SourceImportFilename", "TriangleCount", "VertexCount", "Bounds", "BakePoseOverride", "SkinCacheUsage", "bBuildHalfEdgeBuffers", "CachedSkinWeightProfileNames",
 					"CachedMorphTargetNames", "CachedHasVertexColors", "CachedVertexColorGuid", "bAllowCPUAccess", "bImportWithBaseMesh" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SkeletalMeshOptimizationSettings",
 				"AllowList": [ "TerminationCriterion", "NumOfVertPercentage", "MaxNumOfTriangles", "MaxNumOfTrianglesPercentage", "MaxNumOfVertsPercentage", "bEnforceBoneBoundaries", "bMergeCoincidentVertBones", "VolumeImportance", "WeldingThreshold", "MaxBonesPerVertex", "bLockEdges", "bLockColorBounaries" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/Engine.SpatialHashRuntimeGrid",
 				"AllowList": [ "GridName", "DebugColor", "Priority", "bClientOnlyVisible" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
 				"Type": "/Script/HairStrandsCore.HairSolverSettings",
 				"AllowList": [ "CustomSystem" ],
 				"DenyList": [],
-				"bWarnForDisallowedProperties": true
+				"WarnForDisallowedPropertiesPhase": 1
 			}
 		]
 	}

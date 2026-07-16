@@ -2,17 +2,15 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.10-CL-55335788
+# Generated from build: ++Fortnite+Release-41.20-CL-55550516
 #################################################
 
 AgentGroup<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Base class for all errors returned from agent_group.AddMember.
   add_member_error<native><public> := class<computes> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # An agent group is defined as a set of agents that share a common ownership.This class stores agents and specific information about each member via the member_info type provided.
   agent_group<native><public>(member_info: subtype(member_info_interface)) := class<unique>(agent_group_interface(member_info)) {
     # Attempt to add the given agent to this agent group.This function returns a result that will either succeed or return an error.
@@ -37,9 +35,8 @@ AgentGroup<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Interface that defines a class as providing an agent group.
-  agent_group_interface<public>(member_info: subtype(member_info_interface)) := interface {
+  agent_group_interface<public>(member_info: subtype(member_info_interface)) := interface<unique> {
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<public>: listenable(tuple(agent, member_info))
 
@@ -58,12 +55,10 @@ AgentGroup<public> := module {
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Interface that defines a class as being usable as member info in an agent group
   member_info_interface<native><public> := interface {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Base class for all errors returned from agent_group.RemoveMember.
   remove_member_error<native><public> := class<computes> {}
 }
@@ -99,7 +94,6 @@ Assets<public> := module {
 
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
   # Fails if the `MaxSize` of the channel's `agent_group` is undefined or larger than the channel type's limit.
   # * Voice Chat Max Size = 80 participants.
@@ -110,7 +104,6 @@ Chat<public> := module {
   )
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Deregisters a `voice_channel` or `text channel` from the `simulation_entity`.
   (Entity: entity where MemberInfo: subtype(member_info_interface)).RemoveChatChannel<native><public>(Channel: chat_channel(MemberInfo)): result(
     void,
@@ -118,12 +111,10 @@ Chat<public> := module {
   )
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Returns the registered voice channels on the `simulation_entity`
   (Entity: entity).GetVoiceChannels<native><public>()<reads>: []voice_channel(has_voice_member_info)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Error returned when a channel cannot be added via the `AddChatChannel` function.
   add_channel_error<public> := class<computes> {}
 
@@ -131,7 +122,6 @@ Chat<public> := module {
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
     (/Verse.org/Chat/chat_channel:)Chat_chat_channel_Variance<private>(): tuple(member_info) = external {}
 
@@ -142,7 +132,6 @@ Chat<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Used to specify permissions and other settings for a voice_channel.
   has_voice_member_info<native><public> := interface(member_info_interface) {
     # Determines if the participant can send voice messages to the channel.
@@ -151,12 +140,10 @@ Chat<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Error returned when a channel cannot be removed via the `RemoveChatChannel` function.
   remove_channel_error<public> := class<computes> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
   voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {

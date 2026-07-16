@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.10-CL-55335788
+# Generated from build: ++Fortnite+Release-41.20-CL-55550516
 #################################################
 
 AI<public> := module {
@@ -3049,6 +3049,23 @@ Devices<public> := module {
     UpdateDisplay<public>(): void = external {}
   }
 
+  # A boost pad that applies speed to Rocket Racing Vehicles driving over it.
+  boost_pad_rocketracing_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Disable this device. While disabled, this will not affect Rocket Racing Vehicles driving over it.
+    Disable<override>(): void = external {}
+
+    # Enable this device. While enabled, this applies speed to Rocket Racing Vehicles driving over it.
+    Enable<override>(): void = external {}
+
+    GetBPFunctionNamesForValidation<override>(): []string = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Signals when a Rocket Racing Vehicle triggers this device, returning the `agent` driving the instigating vehicle, if applicable.
+    TriggerEvent<public>: listenable(?agent) = external {}
+  }
+
   # Used to create a bouncer that can launch players, vehicles, and more into the air with optional effects.
   bouncer_device<public> := class<concrete><final>(creative_device_base) {
     # Signaled when the condition in the *On Bounced Trigger* option is met and someone or something is launched.
@@ -4842,6 +4859,23 @@ Devices<public> := module {
     GrantEmoteItemAll<public>(): void = external {}
   }
 
+  # A configurable EMP Volume Hazard that slows Rocket Racing Vehicles.
+  emp_volume_hazard_rocketracing_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Disable this device. While disabled, this has no effect on Rocket Racing Vehicles.
+    Disable<override>(): void = external {}
+
+    # Enable this device. While enabled, this slows Rocket Racing Vehicles.
+    Enable<override>(): void = external {}
+
+    GetBPFunctionNamesForValidation<override>(): []string = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Signals when a Rocket Racing Vehicle triggers this device, returning the `agent` driving the instigating vehicle, if applicable.
+    TriggerEvent<public>: listenable(?agent) = external {}
+  }
+
   # Used to configure rules that can end the current round or game.
   end_game_device<public> := class<concrete><final>(creative_device_base) {
     # Ends the round/game. Uses `Agent`'s team to determine if the round/game ends when *Activating Team* is enabled.
@@ -6130,6 +6164,12 @@ Devices<public> := module {
     # Sends the `agent` that activated this device.
     ActivationEvent<public>: listenable(agent) = external {}
 
+    # Removes the movement effect from `Agent`.
+    Deactivate<public>(Agent: agent)<transacts>: void = external {}
+
+    # Removes the movement effect from all Agents.
+    DeactivateForAll<public>()<transacts>: void = external {}
+
     # Disables this device.
     Disable<public>(): void = external {}
 
@@ -7137,6 +7177,14 @@ Devices<public> := module {
 
   # Base class for various powerup devices offering common events like `ItemPickedUpEvent`.
   powerup_device<public> := class<abstract><epic_internal>(creative_device_base) {
+    @available { MinUploadedAtFNVersion := 4120 }
+    # Removes the powerup effect from `Agent`.
+    Clear<public>(Agent: agent): void = external {}
+
+    # Removes the powerup effect without an agent reference.
+    # Requires *Apply To* set to *All Players*.
+    ClearForAll<public>(): void = external {}
+
     # Despawns this powerup from the experience.
     Despawn<public>(): void = external {}
 
@@ -7943,6 +7991,9 @@ Devices<public> := module {
 
     # Toggles between `EnableMatchmaking` and `DisableMatchmaking`.
     ToggleMatchmaking<public>(): void = external {}
+
+    # The current round number.
+    var<internal> RoundNumber<public>: int = external {}
   }
 
   # Gives the ability to save player progress, location, resources and stats persistently across games.
@@ -10156,7 +10207,12 @@ Devices<public> := module {
   vehicle_spawner_quadcrasher_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
   # Specialized `vehicle_spawner_device` that allows a Rocket Racing Vehicle to be configured and spawned.
-  vehicle_spawner_rocketracing_device<public> := class<concrete><final>(vehicle_spawner_device) {}
+  vehicle_spawner_rocketracing_device<public> := class<concrete><final>(vehicle_spawner_device) {
+    GetBPFunctionNamesForValidation<override>(): []string = external {}
+
+    # Whether players can manually exit the vehicle. If `false`, the normal exit input will not remove a player from the vehicle. `true` by default.
+    var AllowVehicleExitInput<public>: logic = external {}
+  }
 
   # Specialized `vehicle_spawner_device` that allows a Prevalent sedan to be configured and spawned.
   vehicle_spawner_sedan_device<public> := class<concrete><final>(vehicle_spawner_device) {}
@@ -11498,6 +11554,8 @@ Game<public> := module {
     #  - If a round is ongoing, your callback will be invoked immediately
     #  Upon the round ending, all callbacks will be canceled
     SubscribeRoundStarted<override>(Callback: type { _()<suspends>: void }): cancelable = external {}
+
+    var RoundNumber<override><native>: int = external {}
   }
 
   # This interface is implemented by the round manager living on the simulation entity.
@@ -11510,6 +11568,15 @@ Game<public> := module {
     #  - If a round is ongoing, your callback will be invoked immediately
     # Upon the round ending, all callbacks will be canceled
     SubscribeRoundStarted<public>(Callback: type { _()<suspends>: void }): cancelable
+
+    # The current round number.
+    #  - Starts at 0 before the first round begins.
+    #   - Increments by 1 when a round starts, the value is already updated
+    #  when SubscribeRoundStarted callbacks are invoked.
+    #   - Retains its value between rounds - it is not reset when a round ends.
+    #  - Resets to 0 when the game ends (after the final RoundEndEvent fires
+    #   and before the EndGameEvent fires).
+    var RoundNumber<public>: int
   }
 
   # Implemented by Fortnite objects that can be passed through game action events, such as damage and heal.
@@ -11992,7 +12059,6 @@ Itemization<public> := module {
   }
 
   @class_and_subclass_group_names("item")
-  @experimental
   @hide_in_editor
   fort_item_pickup_component<native><final><epic_internal> := class<final_super>(component, copy_from_item) {
     CopyFromItem<override><final><native>(SourceItem: entity)<transacts>: void
@@ -12015,7 +12081,9 @@ Itemization<public> := module {
   @available { MinUploadedAtFNVersion := 4040 }
   @class_and_subclass_group_names("item")
   # Place this component onto an entity to allow it to be added to an agent inventory on interaction. The owning entity should have an item_component and a mesh_component. This component expects the interacting agent to have a subentity with an inventory_component.
-  fort_item_pickup_interactable_component<public> := class(basic_interactable_component) {
+  fort_item_pickup_interactable_component<native><public> := class(basic_interactable_component) {
+    CanInteract<native><override>(Agent: agent)<reads><decides>: void
+
     Disable<override>(): void = external {}
 
     DisableItemInteraction<protected>(): void = external {}
@@ -12158,7 +12226,6 @@ Itemization<public> := module {
     ShowMagazineAsPercentage<native><public>()<reads>: logic
   }
 
-  @experimental
   pickup_overflow_behavior<native><epic_internal> := enum {
     DestroyExcess
 
@@ -12976,7 +13043,9 @@ Items<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -12995,8 +13064,25 @@ Items<public> := module {
 
   @deprecated
   @preload
-  # Deprecated. Please use CeilingZapper_BR_CH1S1_Rare instead.
+  # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  CeilingZapper_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13809,6 +13895,20 @@ Items<public> := module {
   }
 
   @preload
+  FriendZoneBubble_BR_CH7S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   FrozenIcecreamCone_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -13997,7 +14097,9 @@ Items<public> := module {
     StackableComponent<override>: ?basic_stackable_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use Grenade_OG_CH1S1_Common instead.
   Grenade_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -14033,6 +14135,23 @@ Items<public> := module {
 
   @preload
   Grenade_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  Grenade_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15917,6 +16036,23 @@ Items<public> := module {
   }
 
   @preload
+  ShockRock_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
   ShockwaveGrenade_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -16316,6 +16452,23 @@ Items<public> := module {
 
   @preload
   SmallShieldPotion_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  SmokeCloud_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16978,7 +17131,9 @@ Items<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -16997,8 +17152,25 @@ Items<public> := module {
 
   @deprecated
   @preload
-  # Deprecated. Please use WallDynamo_BR_CH1S1_Rare instead.
+  # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
+  WallDynamo_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17747,13 +17919,13 @@ SceneGraphCameras<public> := module {
 
       @experimental
       @replicated("")
-      # Rotation offset applied to the camera's orientation. Defaults to Pitch=-45 (look down 45 degrees).
-      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+      # Translation offset applied on top of the calculated offset.
+      var PositionOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
 
       @experimental
       @replicated("")
-      # Translation offset applied on top of the calculated offset.
-      var TranslationOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+      # Rotation offset applied to the camera's orientation. Defaults to Pitch=-45 (look down 45 degrees).
+      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
 
       @experimental
       @replicated("")
@@ -17765,6 +17937,8 @@ SceneGraphCameras<public> := module {
     @experimental
     # Camera modifier that implements a fixed point camera.
     fort_fixed_point_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
+      NativeCameraRigAsset<override>: camera_rig_asset = external {}
+
       @experimental
       @replicated("")
       var DeadZoneScreenSpaceBottom<native><public>: float = external {}
@@ -17790,6 +17964,11 @@ SceneGraphCameras<public> := module {
       @replicated("")
       # The ideal vertical screen-space position of the target.
       var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
+
+      @experimental
+      @replicated("")
+      # On first activation of this camera, snap the framing so the target is already at the ideal location instead of easing into it. Set to false for a pop-free entry from a wider blend.
+      var InitializeWithIdealFraming<native><public>: logic = external {}
 
       @experimental
       @replicated("")
@@ -20158,6 +20337,76 @@ Weapons<public> := module {
   }
 
   @preload
+  BankShotPistol_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BankShotPistol_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BankShotPistol_BR_CH7S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BankShotPistol_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BankShotPistol_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   BaronsDoubleDownPistol_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -20465,7 +20714,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Common instead.
   BurstAssaultRifle_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -20479,7 +20730,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Epic instead.
   BurstAssaultRifle_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -20493,7 +20746,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Legendary instead.
   BurstAssaultRifle_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -20507,7 +20762,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Rare instead.
   BurstAssaultRifle_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -20521,7 +20778,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Uncommon instead.
   BurstAssaultRifle_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -20565,6 +20824,76 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BurstAssaultRifle_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BurstAssaultRifle_OG_CH1S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BurstAssaultRifle_OG_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BurstAssaultRifle_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BurstAssaultRifle_OG_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23237,7 +23566,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use ReconBow_BR_CH7S2_Exotic instead.
   ExoticReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -29583,7 +29914,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use PumpShotgun_OG_CH1S1_Common instead.
   PumpShotgun_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -29597,7 +29930,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use PumpShotgun_OG_CH1S6_Epic instead.
   PumpShotgun_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -29611,7 +29946,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use PumpShotgun_OG_CH1S6_Legendary instead.
   PumpShotgun_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -29625,7 +29962,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use PumpShotgun_OG_CH1S3_Rare instead.
   PumpShotgun_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -29639,7 +29978,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use PumpShotgun_OG_CH1S1_Uncommon instead.
   PumpShotgun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -29669,6 +30010,76 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_OG_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_OG_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_OG_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_OG_CH1S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30201,6 +30612,20 @@ Weapons<public> := module {
 
   @preload
   ReaperSniperRifle_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  ReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32932,6 +33357,76 @@ Weapons<public> := module {
   }
 
   @preload
+  SurgicalBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  SurgicalBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  SurgicalBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  SurgicalBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  SurgicalBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    ItemDefinitionID<override>: string = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   Swarmstrike_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -34429,7 +34924,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Common instead.
   VanguardBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -34443,7 +34940,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Epic instead.
   VanguardBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -34457,7 +34956,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Legendary instead.
   VanguardBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -34471,7 +34972,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Rare instead.
   VanguardBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -34485,7 +34988,9 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @deprecated
   @preload
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Uncommon instead.
   VanguardBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}

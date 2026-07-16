@@ -2,17 +2,15 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.10-CL-55335788
+# Generated from build: ++Fortnite+Release-41.20-CL-55550516
 #################################################
 
 AgentGroup<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Base class for all errors returned from agent_group.AddMember.
   add_member_error<native><public> := class<computes> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # An agent group is defined as a set of agents that share a common ownership.This class stores agents and specific information about each member via the member_info type provided.
   agent_group<native><public>(member_info: subtype(member_info_interface)) := class<unique>(agent_group_interface(member_info)) {
     # Attempt to add the given agent to this agent group.This function returns a result that will either succeed or return an error.
@@ -54,9 +52,8 @@ AgentGroup<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Interface that defines a class as providing an agent group.
-  agent_group_interface<public>(member_info: subtype(member_info_interface)) := interface {
+  agent_group_interface<public>(member_info: subtype(member_info_interface)) := interface<unique> {
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<public>: listenable(tuple(agent, member_info))
 
@@ -75,12 +72,10 @@ AgentGroup<public> := module {
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Interface that defines a class as being usable as member info in an agent group
   member_info_interface<native><public> := interface {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Base class for all errors returned from agent_group.RemoveMember.
   remove_member_error<native><public> := class<computes> {}
 }
@@ -89,6 +84,9 @@ AgentGroup<public> := module {
 Assets<public> := module {
   # Create an asset reference to the given internal asset path
   MakeAsset<native><epic_internal>(asset_type: subtype(asset), AssetPath: string)<converges>: asset_type
+
+  # Create a texture asset reference with dimensions sourced at manifest-generation time
+  MakeTextureAsset<native><epic_internal>(AssetPath: string, Width: float, Height: float)<converges>: texture
 
   WriteToDataChannelFromVerseInternal<native><epic_internal>((
     Asset: particle_data_channel,
@@ -134,6 +132,12 @@ Assets<public> := module {
 
   client_asset<native><epic_internal> := class<abstract><computes><epic_internal>(asset) {}
 
+  @available { MinUploadedAtFNVersion := 4100 }
+  control_rig<native><epic_internal> := class<final><epic_internal>(asset, animation_asset) {}
+
+  @available { MinUploadedAtFNVersion := 4100 }
+  control_rig_blueprint<native><epic_internal> := class<final><epic_internal>(asset, animation_asset) {}
+
   font<native><epic_internal> := class<computes><final><epic_internal>(client_asset) {}
 
   # Interface that provides an icon.
@@ -141,6 +145,12 @@ Assets<public> := module {
     @editable
     # A texture used as the 2D visual representation of this entity (e.g. an icon or portrait).
     var Icon<public>: texture
+  }
+
+  image_dimensions<native><epic_internal> := interface<computes> {
+    Height<epic_internal>: float
+
+    Width<epic_internal>: float
   }
 
   input_action<native><public>(t: type) := class<allocates><unique><computes><epic_internal>(asset) {
@@ -200,14 +210,17 @@ Assets<public> := module {
 
   sound_wave<native><public> := class<computes><final><epic_internal>(client_asset) {}
 
-  texture<native><public> := class<computes><final><epic_internal>(texture_base, material_like) {}
+  texture<native><public> := class<computes><final><epic_internal>(texture_base, material_like, image_dimensions) {
+    Height<native><override>: float = external {}
+
+    Width<native><override>: float = external {}
+  }
 
   texture_base<native><epic_internal> := class<computes><epic_internal>(asset) {}
 }
 
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
   # Fails if the `MaxSize` of the channel's `agent_group` is undefined or larger than the channel type's limit.
   # * Voice Chat Max Size = 80 participants.
@@ -218,7 +231,6 @@ Chat<public> := module {
   )
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Deregisters a `voice_channel` or `text channel` from the `simulation_entity`.
   (Entity: entity where MemberInfo: subtype(member_info_interface)).RemoveChatChannel<native><public>(Channel: chat_channel(MemberInfo)): result(
     void,
@@ -226,22 +238,18 @@ Chat<public> := module {
   )
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Unregisters and removes all members from all voice channels currently on the simulation.
   (Entity: entity).ClearChatChannels<native><epic_internal>(): void
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Returns the registered voice channels on the `simulation_entity`
   (Entity: entity).GetVoiceChannels<native><public>()<reads>: []voice_channel(has_voice_member_info)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Returns all the voice channels where the agent is part of the agent_group.
   (Entity: simulation_entity).GetVoiceChannelsForAgent<native><epic_internal>(Agent: agent): []voice_channel(has_voice_member_info)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Used in native to create a channel result when registering a channel.
   MakeAddChannelResult<native_callable><epic_internal>(IsSuccess: logic): result(
     comparable,
@@ -249,7 +257,6 @@ Chat<public> := module {
   ) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Used in native to create a channel result when unregistering a channel.
   MakeRemoveChannelResult<native_callable><epic_internal>(IsSuccess: logic): result(
     comparable,
@@ -257,7 +264,6 @@ Chat<public> := module {
   ) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Error returned when a channel cannot be added via the `AddChatChannel` function.
   add_channel_error<public> := class<computes> {}
 
@@ -266,7 +272,6 @@ Chat<public> := module {
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
     (/Verse.org/Chat/chat_channel:)Chat_chat_channel_Variance<private>(): tuple(member_info) = external {}
 
@@ -283,7 +288,6 @@ Chat<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Used to specify permissions and other settings for a voice_channel.
   has_voice_member_info<native><public> := interface(member_info_interface) {
     # Determines if the participant can send voice messages to the channel.
@@ -292,12 +296,10 @@ Chat<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # Error returned when a channel cannot be removed via the `RemoveChatChannel` function.
   remove_channel_error<public> := class<computes> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
   voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
@@ -326,7 +328,6 @@ Chat<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  @experimental
   voice_manager_component<native><epic_internal> := class<final_super>(component) {
     AddVoiceChannel<native_callable><epic_internal>(VoiceChannel: voice_channel(has_voice_member_info))<decides>: void = external {}
 
@@ -788,6 +789,22 @@ Concurrency<public> := module {
     Uninterrupted<native><epic_internal>()<transacts><decides>: void
 
     Unsettled<native><epic_internal>()<transacts><decides>: void
+  }
+}
+
+# Module import path: /Verse.org/Diagnostics
+Diagnostics<public> := module {
+  @attribscope_class
+  @attribscope_struct
+  @attribscope_data
+  @attribscope_function
+  @attribscope_interface
+  export_metadata<epic_internal> := class<computes>(attribute) {
+    Category<epic_internal>: string
+
+    Key<epic_internal>: string
+
+    Value<epic_internal>: string
   }
 }
 
@@ -1859,7 +1876,7 @@ SceneGraph<public> := module {
 
   GetPhysicsSceneForEntity<native><epic_internal>(Entity: entity)<transacts><decides>: physics_scene_component
 
-  @available { MinUploadedAtFNVersion := 4100 }
+  @available { MinUploadedAtFNVersion := 4000 }
   # Helper function to aide in initializing the Entity pointer for components during component field construction inside a verse class
   GetSelfEntityForComponentInitialization<native><epic_internal>()<converges>: entity
 
@@ -2278,32 +2295,6 @@ SceneGraph<public> := module {
     }
 
     @available { MinUploadedAtFNVersion := 4000 }
-    @hide_in_editor
-    # UI element that renders text.
-    text_widget_component<native><epic_internal> := class(widget_component) {
-      OnBeginSimulationInternal<native><override>(): void
-
-      OnInitializedInternal<native><override>(): void
-
-      OnUninitializingInternal<native><override>(): void
-
-      # How the text should be horizontally aligned within the text frame.
-      var HorizontalAlignment<public>: horizontal_text_alignment = external {}
-
-      # The policy that determines what happens when the text is larger than the frame.
-      var OverflowPolicy<public>: text_frame_overflow_policy = external {}
-
-      # The style to apply to the rendered text.
-      var Style<public>: text_style = external {}
-
-      # The text to render.
-      var Text<public>: message = external {}
-
-      # How the text should be vertically aligned within the text frame.
-      var VerticalAlignment<public>: vertical_text_alignment = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4000 }
     @cpp_name("umg_widget_entity")
     @hide_in_editor
     (/Verse.org/SceneGraph/UI:)umg_widget<native><epic_internal> := class((/Verse.org/SceneGraph/UI:)widget) {
@@ -2323,7 +2314,8 @@ SceneGraph<public> := module {
     }
 
     @available { MinUploadedAtFNVersion := 4000 }
-    umg_widget_component<native><epic_internal> := class<final_super>(widget_component) {}
+    @hide_in_editor
+    umg_widget_component<native><epic_internal> := class<final_super>(component) {}
 
     # Alignment mode for `text_widget`.
     vertical_text_alignment<native><epic_internal> := enum {
@@ -2339,24 +2331,7 @@ SceneGraph<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     @cpp_name("widget_entity")
-    (/Verse.org/SceneGraph/UI:)widget<native><epic_internal> := class(entity, showable) {
-      var IsFocusable<public>: logic = external {}
-
-      var Show<override>: logic = external {}
-
-      var Size<public>: (/Verse.org/SpatialMath:)vector3 = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4000 }
-    widget_component<native><epic_internal> := class<final_super>(component) {
-      @replicated("RepNotify")
-      var IsFocusable<native><public>: logic = external {}
-
-      @replicated("RepNotify")
-      var Show<native><public>: logic = external {}
-
-      var Size<public>: (/Verse.org/SpatialMath:)vector3 = external {}
-    }
+    (/Verse.org/SceneGraph/UI:)widget<native><epic_internal> := class(entity) {}
   }
 
   VerseRepMovement<native><epic_internal> := struct {
@@ -3460,23 +3435,39 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   has_collision<native><epic_internal> := interface<epic_internal>(has_mesh_part_support) {
+    @experimental
+    GetBeginCollideEvent<final><native_callable><epic_internal>(): listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    GetBeginOverlapEvent<final><native_callable><epic_internal>(): listenable(generator(overlap_hit)) = external {}
+
     # True if any associated physics objects are physically collidable
     GetCollidable<final><native_callable><epic_internal>()<reads>: logic = external {}
 
+    @deprecated
     @experimental
     GetCollisionEnteredEvent<final><native_callable><epic_internal>(): listenable(generator(collision_hit)) = external {}
 
     @experimental
     GetCollisionEvent<final><native_callable><epic_internal>(): listenable(generator(collision_hit)) = external {}
 
+    @deprecated
     @experimental
     GetCollisionExitedEvent<final><native_callable><epic_internal>(): listenable(generator(collision_hit)) = external {}
 
     GetCollisionMaterial<final><native_callable><epic_internal>()<reads>: collision_material = external {}
 
     @experimental
+    GetEndCollideEvent<final><native_callable><epic_internal>(): listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    GetEndOverlapEvent<final><native_callable><epic_internal>(): listenable(generator(overlap_hit)) = external {}
+
+    @deprecated
+    @experimental
     GetOverlapEnteredEvent<final><native_callable><epic_internal>(): listenable(generator(overlap_hit)) = external {}
 
+    @deprecated
     @experimental
     GetOverlapExitedEvent<final><native_callable><epic_internal>(): listenable(generator(overlap_hit)) = external {}
 
@@ -4248,7 +4239,7 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
-  mesh_part<native><epic_internal> := class<abstract><epic_internal>(diagnosable) {
+  mesh_part<native><epic_internal> := class<abstract><unique><epic_internal>(diagnosable) {
     GetDiagnostic<override><native>()<reads>: diagnostic
 
     HasCollisionImpl<native><epic_internal>: has_collision_impl = external {}
@@ -4649,6 +4640,7 @@ SceneGraph<public> := module {
     Easeable: easeable
   }
 
+  @hide_in_editor
   # Marks an entity that can be possessed by an agent.
   possessable_component<native><public> := class<final_super><epic_internal>(component) {
     # Notify when the possessing agent changes.
@@ -4847,6 +4839,8 @@ SceneGraph<public> := module {
     Evaluate<native><override>(InValue: skeleton)<reads>: skeleton
 
     InternalAsset<native><epic_internal>: animation_asset = external {}
+
+    SetProperty<native><epic_internal>(PropertyName: string, NewValue: any, MarkDirty: logic)<transacts>: void
   }
 
   @import_as("/Script/EntitySkeletalAnimation.UEntitySkeletalAnimationBase")
@@ -6190,6 +6184,39 @@ StateMachine<public> := module {
     Children<native><public>: []state
 
     State<native><public>: state_container
+  }
+}
+
+Systems<public> := module {
+  # Abstract definition of any element that can be added to a timeline.See timeline_element_point and timeline_element_span.
+  timeline_element<native><epic_internal> := class(timeline_element_base_cancelable) {}
+
+  using { /Verse.org/Native }
+  @import_as("/Script/VerseTimeline.UVerseTimelineElementBase")
+  timeline_element_base<native><epic_internal> := class<epic_internal> {}
+
+  timeline_element_base_cancelable<native><epic_internal> := class(timeline_element_base, cancelable) {
+    Cancel<override>()<transacts>: void = external {}
+  }
+
+  # A timeline element that occupies a single point in time.
+  timeline_element_point<native><epic_internal> := class<abstract>(timeline_element) {
+    SetTime<native><public>(NewTime: float)<transacts>: void
+
+    # The time of this point. May be +/-Inf.NaN will never be updated or queried.
+    var<private> Time<native><public>: float = external {}
+  }
+
+  # A timeline element that spans a range of time.
+  timeline_element_span<native><epic_internal> := class<abstract>(timeline_element) {
+    # Called to modify the timeline's range by assigning its begin and end times.
+    SetRange<native><public>(NewBeginTime: float, NewEndTime: float)<transacts>: void
+
+    # The time this span begins. Defaults to 0.0.Must be <> NaN and <= EndTime in order for it to be updated or queriedMay be +/- Inf
+    var<private> BeginTime<native><public>: float = external {}
+
+    # The time this span ends. Defaults to Inf.Must be <> NaN and >= BeginTime in order for it to be updated or queriedMay be +/- Inf.
+    var<private> EndTime<native><public>: float = external {}
   }
 }
 

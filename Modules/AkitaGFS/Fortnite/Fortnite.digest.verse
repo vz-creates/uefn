@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.10-CL-55335788
+# Generated from build: ++Fortnite+Release-41.20-CL-55550516
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -1749,6 +1749,21 @@ Devices<public> := module {
     UpdateDisplay<public>(): void = external {}
   }
 
+  # A boost pad that applies speed to Rocket Racing Vehicles driving over it.
+  boost_pad_rocketracing_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Disable this device. While disabled, this will not affect Rocket Racing Vehicles driving over it.
+    Disable<override>(): void = external {}
+
+    # Enable this device. While enabled, this applies speed to Rocket Racing Vehicles driving over it.
+    Enable<override>(): void = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Signals when a Rocket Racing Vehicle triggers this device, returning the `agent` driving the instigating vehicle, if applicable.
+    TriggerEvent<public>: listenable(?agent) = external {}
+  }
+
   # Used to create a bouncer that can launch players, vehicles, and more into the air with optional effects.
   bouncer_device<public> := class<concrete><final>(creative_device_base) {
     # Signaled when the condition in the *On Bounced Trigger* option is met and someone or something is launched.
@@ -3100,6 +3115,21 @@ Devices<public> := module {
     EliminationEvent<public>: listenable(?agent) = external {}
   }
 
+  # A configurable EMP Volume Hazard that slows Rocket Racing Vehicles.
+  emp_volume_hazard_rocketracing_device<public> := class<concrete><final>(creative_device_base, enableable) {
+    # Disable this device. While disabled, this has no effect on Rocket Racing Vehicles.
+    Disable<override>(): void = external {}
+
+    # Enable this device. While enabled, this slows Rocket Racing Vehicles.
+    Enable<override>(): void = external {}
+
+    # Succeeds if the device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Signals when a Rocket Racing Vehicle triggers this device, returning the `agent` driving the instigating vehicle, if applicable.
+    TriggerEvent<public>: listenable(?agent) = external {}
+  }
+
   # Used to configure rules that can end the current round or game.
   end_game_device<public> := class<concrete><final>(creative_device_base) {
     # Ends the round/game. Uses `Agent`'s team to determine if the round/game ends when *Activating Team* is enabled.
@@ -4203,6 +4233,12 @@ Devices<public> := module {
     # Sends the `agent` that activated this device.
     ActivationEvent<public>: listenable(agent) = external {}
 
+    # Removes the movement effect from `Agent`.
+    Deactivate<public>(Agent: agent)<transacts>: void = external {}
+
+    # Removes the movement effect from all Agents.
+    DeactivateForAll<public>()<transacts>: void = external {}
+
     # Disables this device.
     Disable<public>(): void = external {}
 
@@ -5147,6 +5183,14 @@ Devices<public> := module {
 
   # Base class for various powerup devices offering common events like `ItemPickedUpEvent`.
   powerup_device<public> := class<abstract><epic_internal>(creative_device_base) {
+    @available { MinUploadedAtFNVersion := 4120 }
+    # Removes the powerup effect from `Agent`.
+    Clear<public>(Agent: agent): void = external {}
+
+    # Removes the powerup effect without an agent reference.
+    # Requires *Apply To* set to *All Players*.
+    ClearForAll<public>(): void = external {}
+
     # Despawns this powerup from the experience.
     Despawn<public>(): void = external {}
 
@@ -5915,6 +5959,9 @@ Devices<public> := module {
 
     # Toggles between `EnableMatchmaking` and `DisableMatchmaking`.
     ToggleMatchmaking<public>(): void = external {}
+
+    # The current round number.
+    var<internal> RoundNumber<public>: int = external {}
   }
 
   # Used to manipulate scores using in-experience triggers. If *Activating Team* is set to a specific team, then you should use the `agent` overloads of each function. The `agent`'s team will be used to determine if that `agent` is allowed to affect the state of the device.
@@ -7820,7 +7867,10 @@ Devices<public> := module {
   vehicle_spawner_quadcrasher_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
   # Specialized `vehicle_spawner_device` that allows a Rocket Racing Vehicle to be configured and spawned.
-  vehicle_spawner_rocketracing_device<public> := class<concrete><final>(vehicle_spawner_device) {}
+  vehicle_spawner_rocketracing_device<public> := class<concrete><final>(vehicle_spawner_device) {
+    # Whether players can manually exit the vehicle. If `false`, the normal exit input will not remove a player from the vehicle. `true` by default.
+    var AllowVehicleExitInput<public>: logic = external {}
+  }
 
   # Specialized `vehicle_spawner_device` that allows a Prevalent sedan to be configured and spawned.
   vehicle_spawner_sedan_device<public> := class<concrete><final>(vehicle_spawner_device) {}
@@ -8486,6 +8536,15 @@ Game<public> := module {
     #  - If a round is ongoing, your callback will be invoked immediately
     # Upon the round ending, all callbacks will be canceled
     SubscribeRoundStarted<public>(Callback: type { _()<suspends>: void }): cancelable
+
+    # The current round number.
+    #  - Starts at 0 before the first round begins.
+    #   - Increments by 1 when a round starts, the value is already updated
+    #  when SubscribeRoundStarted callbacks are invoked.
+    #   - Retains its value between rounds - it is not reset when a round ends.
+    #  - Resets to 0 when the game ends (after the final RoundEndEvent fires
+    #   and before the EndGameEvent fires).
+    var RoundNumber<public>: int
   }
 
   # Implemented by Fortnite objects that can be passed through game action events, such as damage and heal.
@@ -8702,7 +8761,9 @@ Itemization<public> := module {
 
   @available { MinUploadedAtFNVersion := 4040 }
   # Place this component onto an entity to allow it to be added to an agent inventory on interaction. The owning entity should have an item_component and a mesh_component. This component expects the interacting agent to have a subentity with an inventory_component.
-  fort_item_pickup_interactable_component<public> := class(basic_interactable_component) {
+  fort_item_pickup_interactable_component<native><public> := class(basic_interactable_component) {
+    CanInteract<native><override>(Agent: agent)<reads><decides>: void
+
     Disable<override>(): void = external {}
 
     DisableItemInteraction<protected>(): void = external {}
@@ -8820,11 +8881,15 @@ Items<public> := module {
 
   CattyCornerKeycard_BR_CH2S3_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH1S1_Rare<public> := class<final><concrete>(entity) {}
 
   @deprecated
-  # Deprecated. Please use CeilingZapper_BR_CH1S1_Rare instead.
+  # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
+
+  CeilingZapper_OG_CH1S1_Rare<public> := class<final><concrete>(entity) {}
 
   CharBlackMineralPowder_Creative_V1_Common<public> := class<final><concrete>(entity) {}
 
@@ -8924,6 +8989,8 @@ Items<public> := module {
 
   FragGrenade_Ballistic_V1_Common<public> := class<final><concrete>(entity) {}
 
+  FriendZoneBubble_BR_CH7S3_Exotic<public> := class<final><concrete>(entity) {}
+
   FrozenIcecreamCone_BR_CH3S3_Common<public> := class<final><concrete>(entity) {}
 
   GasCan_BR_CH2S3_Common<public> := class<final><concrete>(entity) {}
@@ -8948,11 +9015,15 @@ Items<public> := module {
 
   GreenMarbledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use Grenade_OG_CH1S1_Common instead.
   Grenade_BR_CH4MS1_Common<public> := class<final><concrete>(entity) {}
 
   Grenade_BR_CH7S1_Common<public> := class<final><concrete>(entity) {}
 
   Grenade_BR_PreSeason_Common<public> := class<final><concrete>(entity) {}
+
+  Grenade_OG_CH1S1_Common<public> := class<final><concrete>(entity) {}
 
   GrottoKeycard_BR_CH2S2_Legendary<public> := class<final><concrete>(entity) {}
 
@@ -9178,6 +9249,8 @@ Items<public> := module {
 
   ShieldPotion_BR_PreSeason_Rare<public> := class<final><concrete>(entity) {}
 
+  ShockRock_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
   ShockwaveGrenade_BR_CH1S5_Epic<public> := class<final><concrete>(entity) {}
 
   Shove_Creative_V1_Common<public> := class<final><concrete>(entity) {}
@@ -9229,6 +9302,8 @@ Items<public> := module {
   SmallShieldPotion_BR_CH1S2_Uncommon<public> := class<final><concrete>(entity) {}
 
   SmallShieldPotion_BR_CH5S1_Uncommon<public> := class<final><concrete>(entity) {}
+
+  SmokeCloud_BR_CH7S3_Common<public> := class<final><concrete>(entity) {}
 
   SmokeGrenade_BR_CH1S1_Uncommon<public> := class<final><concrete>(entity) {}
 
@@ -9358,11 +9433,15 @@ Items<public> := module {
 
   VoidOniMask_BR_CH6S1_Epic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH1S1_Rare<public> := class<final><concrete>(entity) {}
 
   @deprecated
-  # Deprecated. Please use WallDynamo_BR_CH1S1_Rare instead.
+  # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
+
+  WallDynamo_OG_CH1S1_Rare<public> := class<final><concrete>(entity) {}
 
   Wheat_Creative_V1_Common<public> := class<final><concrete>(entity) {}
 
@@ -10190,6 +10269,16 @@ Weapons<public> := module {
 
   BallisticShield_BR_CH5S1_Epic<public> := class<final><concrete>(entity) {}
 
+  BankShotPistol_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
+  BankShotPistol_BR_CH7S3_Legendary<public> := class<final><concrete>(entity) {}
+
+  BankShotPistol_BR_CH7S3_Mythic<public> := class<final><concrete>(entity) {}
+
+  BankShotPistol_BR_CH7S3_Rare<public> := class<final><concrete>(entity) {}
+
+  BankShotPistol_BR_CH7S3_Uncommon<public> := class<final><concrete>(entity) {}
+
   BaronsDoubleDownPistol_BR_CH6S2_Mythic<public> := class<final><concrete>(entity) {}
 
   BasicHammer_Creative_V1_Common<public> := class<final><concrete>(entity) {}
@@ -10234,14 +10323,24 @@ Weapons<public> := module {
 
   BurstAssaultRifle_BR_CH1S4_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Common instead.
   BurstAssaultRifle_BR_CH4MS1_Common<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Epic instead.
   BurstAssaultRifle_BR_CH4MS1_Epic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Legendary instead.
   BurstAssaultRifle_BR_CH4MS1_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Rare instead.
   BurstAssaultRifle_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Uncommon instead.
   BurstAssaultRifle_BR_CH4MS1_Uncommon<public> := class<final><concrete>(entity) {}
 
   BurstAssaultRifle_BR_PreSeason_Common<public> := class<final><concrete>(entity) {}
@@ -10249,6 +10348,16 @@ Weapons<public> := module {
   BurstAssaultRifle_BR_PreSeason_Rare<public> := class<final><concrete>(entity) {}
 
   BurstAssaultRifle_BR_PreSeason_Uncommon<public> := class<final><concrete>(entity) {}
+
+  BurstAssaultRifle_OG_CH1S1_Common<public> := class<final><concrete>(entity) {}
+
+  BurstAssaultRifle_OG_CH1S1_Epic<public> := class<final><concrete>(entity) {}
+
+  BurstAssaultRifle_OG_CH1S1_Legendary<public> := class<final><concrete>(entity) {}
+
+  BurstAssaultRifle_OG_CH1S1_Rare<public> := class<final><concrete>(entity) {}
+
+  BurstAssaultRifle_OG_CH1S1_Uncommon<public> := class<final><concrete>(entity) {}
 
   BurstPulseRifle_BR_CH2S7_Exotic<public> := class<final><concrete>(entity) {}
 
@@ -10630,6 +10739,8 @@ Weapons<public> := module {
 
   ExoticLeapingLightningGun_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use ReconBow_BR_CH7S2_Exotic instead.
   ExoticReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
 
   ExplosiveGooGun_BR_CH3S4_Rare<public> := class<final><concrete>(entity) {}
@@ -11540,19 +11651,39 @@ Weapons<public> := module {
 
   PumpShotgun_BR_CH2S1_Common<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use PumpShotgun_OG_CH1S1_Common instead.
   PumpShotgun_BR_CH4MS1_Common<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use PumpShotgun_OG_CH1S6_Epic instead.
   PumpShotgun_BR_CH4MS1_Epic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use PumpShotgun_OG_CH1S6_Legendary instead.
   PumpShotgun_BR_CH4MS1_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use PumpShotgun_OG_CH1S3_Rare instead.
   PumpShotgun_BR_CH4MS1_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use PumpShotgun_OG_CH1S1_Uncommon instead.
   PumpShotgun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(entity) {}
 
   PumpShotgun_BR_PreSeason_Rare<public> := class<final><concrete>(entity) {}
 
   PumpShotgun_BR_PreSeason_Uncommon<public> := class<final><concrete>(entity) {}
+
+  PumpShotgun_OG_CH1S1_Common<public> := class<final><concrete>(entity) {}
+
+  PumpShotgun_OG_CH1S1_Uncommon<public> := class<final><concrete>(entity) {}
+
+  PumpShotgun_OG_CH1S3_Rare<public> := class<final><concrete>(entity) {}
+
+  PumpShotgun_OG_CH1S6_Epic<public> := class<final><concrete>(entity) {}
+
+  PumpShotgun_OG_CH1S6_Legendary<public> := class<final><concrete>(entity) {}
 
   PumpkinLauncher_BR_CH1S1_Epic<public> := class<final><concrete>(entity) {}
 
@@ -11629,6 +11760,8 @@ Weapons<public> := module {
   ReaperModularSniperRifle_BR_CH5S1_Uncommon<public> := class<final><concrete>(entity) {}
 
   ReaperSniperRifle_Ballistic_V1_Common<public> := class<final><concrete>(entity) {}
+
+  ReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
 
   ReconScanner_BR_CH2S7_Rare<public> := class<final><concrete>(entity) {}
 
@@ -12323,6 +12456,16 @@ Weapons<public> := module {
 
   SurgefireSMG_BR_CH6S1_Uncommon<public> := class<final><concrete>(entity) {}
 
+  SurgicalBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(entity) {}
+
+  SurgicalBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
+
+  SurgicalBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(entity) {}
+
+  SurgicalBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(entity) {}
+
+  SurgicalBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(entity) {}
+
   Swarmstrike_BR_CH6S4_Epic<public> := class<final><concrete>(entity) {}
 
   Swarmstrike_BR_CH6S4_Legendary<public> := class<final><concrete>(entity) {}
@@ -12537,14 +12680,24 @@ Weapons<public> := module {
 
   ValeriasModularHyperSMG_BR_CH5S1_Mythic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Common instead.
   VanguardBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Epic instead.
   VanguardBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Legendary instead.
   VanguardBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Rare instead.
   VanguardBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(entity) {}
 
+  @deprecated
+  # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Uncommon instead.
   VanguardBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(entity) {}
 
   Vector7DMR_BR_CH7S2_Epic<public> := class<final><concrete>(entity) {}

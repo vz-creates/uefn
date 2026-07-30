@@ -122,6 +122,12 @@
   "HiddenPropertyClassPermissionList" : {
     "+": [
       {
+        "Type": "/Script/Engine.AmbientSound",
+        "AllowList": [ "AudioComponent" ],
+        "DenyList": [],
+        "WarnForDisallowedPropertiesPhase": 2
+      },
+      {
         "Type": "/Script/Engine.AudioComponent",
         "AllowList": [ "bAllowSpatialization", "bOverrideAttenuation", "AttenuationOverrides", "Sound", "VolumeMultiplier", "PitchMultiplier" ],
         "DenyList": [],

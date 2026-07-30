@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.20-CL-55550516
+# Generated from build: ++Fortnite+Release-41.30-CL-55979764
 #################################################
 
 # Module import path: /Fortnite.com/AI
@@ -9871,7 +9871,13 @@ Vehicles<public> := module {
   (InCharacter: fort_character).GetVehicle<native><public>()<transacts><decides>: fort_vehicle
 
   # Main API implemented by Fortnite vehicles.
-  fort_vehicle<native><public> := interface<unique><epic_internal>(positional, healthful, damageable, game_action_causer) {
+  fort_vehicle<native><public> := interface<unique><epic_internal>(
+    positional,
+    healthful,
+    damageable,
+    game_action_causer,
+    showable
+  ) {
     # Attempts to add the agent to the `fort_vehicle`. If there are no empty seats, or the agent cannot otherwise be placed in the vehicle, the operation fails.
     AddAgent<public>(InAgent: agent)<transacts><decides>: void
 

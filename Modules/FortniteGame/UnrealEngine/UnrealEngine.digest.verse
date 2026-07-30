@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.20-CL-55550516
+# Generated from build: ++Fortnite+Release-41.30-CL-55979764
 #################################################
 
 # Module import path: /UnrealEngine.com/Assets
@@ -182,7 +182,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Comic, High, Warm
-  brite_bomber_voice<final><public> := class(voice_model) {}
+  brite_bomber_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Natural
@@ -197,7 +197,7 @@ Conversations<public> := module {
   clover_swift_voice<final><public> := class(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  cuddle_team_leader_voice<final><public> := class(voice_model) {}
+  cuddle_team_leader_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Warm
@@ -209,7 +209,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Natural
-  fishstick_voice<final><public> := class(voice_model) {}
+  fishstick_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Warm
@@ -221,21 +221,21 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, Med, Natural
-  haylee_skye_voice<final><public> := class(voice_model) {}
+  haylee_skye_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Glamorous, Animated, warm
   helsie_midnight_voice<final><public> := class(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  hope_voice<final><public> := class(voice_model) {}
+  hope_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  jonesy_voice<final><public> := class(voice_model) {}
+  jonesy_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Low, Warm
-  kor_voice<final><public> := class(voice_model) {}
+  kor_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, High, Warm
@@ -247,13 +247,13 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, Low, Gravelly
-  mancake_voice<final><public> := class(voice_model) {}
+  mancake_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  mecha_team_leader_voice<final><public> := class(voice_model) {}
+  mecha_team_leader_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  midas_voice<final><public> := class(voice_model) {}
+  midas_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Med, Warm
@@ -273,7 +273,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Natural
-  peely_voice<final><public> := class(voice_model) {}
+  peely_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # NPC Persona component
@@ -315,6 +315,10 @@ Conversations<public> := module {
       Channel: voice_channel(member_info)
     ) where member_info: subtype(has_voice_member_info))<transacts><decides>: void
 
+    SetPersonality<native><public>(NewPersonality: message)<transacts><decides>: void
+
+    SetVoice<native><public>(NewVoice: voice_model)<transacts><decides>: void
+
     # Listenable which is signaled when the player starts prompting the persona.
     StartHearEvent<native><public>: listenable(agent) = external {}
 
@@ -330,14 +334,14 @@ Conversations<public> := module {
     #  1/ logic that is true when interrupted
     StopSayEvent<native><public>: listenable(logic) = external {}
 
-    # The personality of the persona
-    var Personality<public>: message = external {}
-
     # How the persona will handle overlapping prompts.
     var PromptInterruptionRule<public>: persona_interruption_rule = external {}
 
+    # The personality of the persona
+    var<private> Personality<public>: message = external {}
+
     # The voice assigned to this persona.
-    var Voice<public>: voice_model = external {}
+    var<private> Voice<public>: voice_model = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -364,11 +368,11 @@ Conversations<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  raven_voice<final><public> := class(voice_model) {}
+  raven_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, High, Natural
-  red_ruin_joni_voice<final><public> := class(voice_model) {}
+  red_ruin_joni_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   revolt_voice<final><public> := class(voice_model) {}
@@ -383,10 +387,10 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, High, Warm
-  the_imagined_voice<final><public> := class(voice_model) {}
+  the_imagined_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  tomatohead_voice<final><public> := class(voice_model) {}
+  tomatohead_voice<final><public> := class<epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # The persona voice used when converting text-to-voice
@@ -394,7 +398,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, High, Natural
-  ziggy_voice<final><public> := class(voice_model) {}
+  ziggy_voice<final><public> := class<epic_internal>(voice_model) {}
 }
 
 Itemization<public> := module {
@@ -655,7 +659,10 @@ JSON<public> := module {
   }
 }
 
-Progression<public> := module {
+using { /Verse.org/Native }
+@available { MinUploadedAtFNVersion := 4110 }
+# Module import path: /UnrealEngine.com/Progression
+(/UnrealEngine.com:)Progression<public> := module {
   using { /Verse.org/Assets }
   using { /Verse.org/Presentation }
   @experimental
@@ -663,7 +670,7 @@ Progression<public> := module {
   # Auto-completion: when Objective.IsComplete() succeeds, calls Complete() automatically.
   # Auto-rewarding: on completion, rewards are granted to eligible participants
   # via GetRecipients() then GrantReward().
-  basic_quest<native><public> := class<abstract>(quest, has_icon, has_description) {
+  basic_quest<native><public> := class<abstract>((/Verse.org:)Progression.quest, has_icon, has_description) {
     # Replaces the progression model on a live quest. Auto-completes if the new objective is
     # already completed.
     SetObjective<native><final><public>(InObjective: quest_objective)<transacts>: void
@@ -676,20 +683,17 @@ Progression<public> := module {
   }
 
   using { /Fortnite.com/Marketplace }
-  using { /Verse.org/Native }
-  using { /Verse.org/Progression }
+  using { /Verse.org }
   @experimental
   # Grants an entitlement to each eligible participant.
   entitlement_quest_reward<native><public> := class(quest_reward) {
-    @available { MinUploadedAtFNVersion := 4000 }
     # Iterates EligibleParticipants, resolves each participant's agent as a player,
     # and grants the entitlement via the platform entitlement service.
-    GrantReward<override><native><final>(EligibleParticipants: []quest_participant)<transacts>: result(
+    GrantReward<override><native><final>(EligibleParticipants: [](/Verse.org:)Progression.quest_participant)<transacts>: result(
       void,
       []grant_quest_reward_error
     )
 
-    @available { MinUploadedAtFNVersion := 4000 }
     # The entitlement type to grant.
     var Entitlement<native><public>: concrete_subtype(entitlement)
 
@@ -733,7 +737,7 @@ Progression<public> := module {
     # Determines which participants can contribute to this objective.
     # Override to customize contributor selection.
     # Default: all participants where Info.Contributes = true.
-    GetContributors<native><native_callable><public>(Memberships: []quest_membership)<reads>: []quest_participant
+    GetContributors<native><native_callable><public>(Memberships: [](/Verse.org:)Progression.quest_membership)<reads>: [](/Verse.org:)Progression.quest_participant
 
     # Returns a progress message (e.g. "3 / 10").
     GetProgress<native><native_callable><public>()<reads>: message
@@ -754,14 +758,16 @@ Progression<public> := module {
     # Determines which participants should receive this reward.
     # Override to customize recipient selection.
     # Default: all participants where Info.Receives = true.
-    GetRecipients<native><native_callable><public>(Memberships: []quest_membership)<reads>: []quest_participant
+    GetRecipients<native><native_callable><public>(Memberships: [](/Verse.org:)Progression.quest_membership)<reads>: [](/Verse.org:)Progression.quest_participant
 
     # Signaled after this reward has been granted to recipients.
-    GrantEvent<native><final><public>: listenable(tuple(quest_reward, []quest_participant)) = external {}
+    GrantEvent<native><final><public>: listenable(tuple(
+      quest_reward,
+      [](/Verse.org:)Progression.quest_participant
+    )) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     # Grants this reward to the eligible participants.
-    GrantReward<native><native_callable><public>(EligibleParticipants: []quest_participant)<transacts>: result(
+    GrantReward<native><native_callable><public>(EligibleParticipants: [](/Verse.org:)Progression.quest_participant)<transacts>: result(
       void,
       []grant_quest_reward_error
     )

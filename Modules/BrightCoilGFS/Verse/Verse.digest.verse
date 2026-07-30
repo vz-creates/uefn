@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.20-CL-55550516
+# Generated from build: ++Fortnite+Release-41.30-CL-55979764
 #################################################
 
 AgentGroup<public> := module {
@@ -580,7 +580,6 @@ Concurrency<public> := module {
   }
 }
 
-using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 4000 }
 # Module import path: /Verse.org/Input
 Input<public> := module {
@@ -682,6 +681,10 @@ Input<public> := module {
     @experimental
     PointerSelect<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
+    @available { MinUploadedAtFNVersion := 4120 }
+    @experimental
+    PointerZoom<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
+
     @available { MinUploadedAtFNVersion := 4000 }
     PreviousPage<public>: input_action(logic) = external {}
 
@@ -715,6 +718,17 @@ Input<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ZoomOut<public>: input_action(logic) = external {}
+  }
+
+  # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
+  available_input_devices<native><public> := struct {
+    Gamepad<native><public>: logic = external {}
+
+    Keyboard<native><public>: logic = external {}
+
+    Mouse<native><public>: logic = external {}
+
+    Touch<native><public>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
@@ -790,6 +804,9 @@ Input<public> := module {
     # Removes the given input_mapping from the player, which will disable the input_actions within it from being processed and prevent them from executing events.
     RemoveInputMapping<native><public>(InputMapping: input_mapping): void
 
+    # The set of input device capabilities currently available to the player, updated at runtime as devices connect or disconnect.
+    var<internal> AvailableInputDevices<native><public>: available_input_devices = external {}
+
     # The player's current preferred input method, updated when the player switches between keyboard/mouse, gamepad, or touch.
     var<internal> PreferredInputMethod<native><public>: input_method = external {}
   }
@@ -846,6 +863,9 @@ Presentation<public> := module {
   }
 }
 
+using { /Verse.org/Native }
+@available { MinUploadedAtFNVersion := 4110 }
+# Module import path: /Verse.org/Progression
 Progression<public> := module {
   @experimental
   # Returned when a participant cannot abandon a quest.
@@ -889,7 +909,6 @@ Progression<public> := module {
     # Signaled when a participant abandons any quest in this collection.
     AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     # Removes 'Participant' from 'Quest'.
     AbandonQuest<native><final><public>(
       Quest: quest,
@@ -902,7 +921,6 @@ Progression<public> := module {
     # Signaled when a participant joins any quest in this collection.
     JoinEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     # Adds 'Participant' to 'Quest' with the given participation info.
     JoinQuest<native><final><public>(
       Quest: quest,
@@ -920,7 +938,6 @@ Progression<public> := module {
   @experimental
   # Record binding a quest to a participant with participation info.
   quest_membership<native><public> := class {
-    @available { MinUploadedAtFNVersion := 4000 }
     # The participation info describing this participant's role.
     Info<native><public>: quest_participant_info
 
@@ -945,9 +962,7 @@ Progression<public> := module {
   }
 
   using { /Verse.org/AgentGroup }
-  using { /Verse.org/Native }
   using { /Verse.org/Simulation }
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Describes how a participant relates to a quest.
   quest_participant_info<native><public> := class(member_info_interface) {
@@ -3541,7 +3556,6 @@ Verse<public> := module {
     (/Verse.org/Verse/result:)Verse_result_Variance<private>(): tuple(success_type, error_type) = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 3800 }
   # Implemented by classes whose instances can change visibility to be shown or hidden.
   showable<native><public> := interface {
     # Set this value to hide or show the class.

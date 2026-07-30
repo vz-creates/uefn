@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.20-CL-55550516
+# Generated from build: ++Fortnite+Release-41.30-CL-55979764
 #################################################
 
 AgentGroup<public> := module {
@@ -808,7 +808,6 @@ Diagnostics<public> := module {
   }
 }
 
-using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 4000 }
 # Module import path: /Verse.org/Input
 Input<public> := module {
@@ -910,8 +909,9 @@ Input<public> := module {
     @experimental
     PointerSelect<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
+    @available { MinUploadedAtFNVersion := 4120 }
     @experimental
-    PointerZoom<epic_internal>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
+    PointerZoom<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
     PreviousPage<public>: input_action(logic) = external {}
@@ -946,6 +946,17 @@ Input<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ZoomOut<public>: input_action(logic) = external {}
+  }
+
+  # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
+  available_input_devices<native><public> := struct {
+    Gamepad<native><public>: logic = external {}
+
+    Keyboard<native><public>: logic = external {}
+
+    Mouse<native><public>: logic = external {}
+
+    Touch<native><public>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
@@ -1029,6 +1040,9 @@ Input<public> := module {
 
     # Removes the given input_mapping from the player, which will disable the input_actions within it from being processed and prevent them from executing events.
     RemoveInputMapping<native><public>(InputMapping: input_mapping): void
+
+    # The set of input device capabilities currently available to the player, updated at runtime as devices connect or disconnect.
+    var<internal> AvailableInputDevices<native><public>: available_input_devices = external {}
 
     # The player's current preferred input method, updated when the player switches between keyboard/mouse, gamepad, or touch.
     var<internal> PreferredInputMethod<native><public>: input_method = external {}
@@ -1182,7 +1196,7 @@ Presentation<public> := module {
   description_component<native><public> := class<final_super>(component, has_description) {
     OnBeginSimulation<override>(): void = external {}
 
-    OnDescriptionChanged<native><epic_internal>()<transacts>: void
+    OnDescriptionChanged<native_callable><epic_internal>(): void = external {}
 
     OnEndSimulation<override>(): void = external {}
 
@@ -1209,28 +1223,25 @@ Presentation<public> := module {
   }
 }
 
+using { /Verse.org/Native }
+@available { MinUploadedAtFNVersion := 4110 }
+# Module import path: /Verse.org/Progression
 Progression<public> := module {
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   MakeAbandonQuestErrorResult<native_callable><epic_internal>(): result(void, []abandon_quest_error) = external {}
 
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   MakeAbandonQuestSuccessResult<native_callable><epic_internal>(): result(comparable, []abandon_quest_error) = external {}
 
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   MakeJoinQuestErrorResult<native_callable><epic_internal>(): result(void, []join_quest_error) = external {}
 
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   MakeJoinQuestSuccessResult<native_callable><epic_internal>(): result(comparable, []join_quest_error) = external {}
 
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   MakeRevokeQuestErrorResult<native_callable><epic_internal>(): result(void, []remove_quest_error) = external {}
 
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   MakeRevokeQuestSuccessResult<native_callable><epic_internal>(): result(comparable, []remove_quest_error) = external {}
 
@@ -1259,7 +1270,6 @@ Progression<public> := module {
 
   using { /Verse.org/AgentGroup }
   using { /Verse.org/Assets }
-  using { /Verse.org/Native }
   using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
@@ -1303,7 +1313,6 @@ Progression<public> := module {
 
     Activate<native><final><epic_internal>()<transacts>: void
 
-    @available { MinUploadedAtFNVersion := 4000 }
     CanAbandon<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
       void,
       []abandon_quest_error
@@ -1311,7 +1320,6 @@ Progression<public> := module {
 
     CanAdd<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
 
-    @available { MinUploadedAtFNVersion := 4000 }
     CanJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
       void,
       []join_quest_error
@@ -1380,7 +1388,6 @@ Progression<public> := module {
     # Signaled when a participant abandons any quest in this collection.
     AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     # Removes 'Participant' from 'Quest'.
     AbandonQuest<native><final><public>(
       Quest: quest,
@@ -1397,7 +1404,6 @@ Progression<public> := module {
     # Signaled when a participant joins any quest in this collection.
     JoinEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     # Adds 'Participant' to 'Quest' with the given participation info.
     JoinQuest<native><final><public>(
       Quest: quest,
@@ -1432,7 +1438,6 @@ Progression<public> := module {
 
   @experimental
   quest_manager_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    @available { MinUploadedAtFNVersion := 4000 }
     AbandonQuest<native><native_callable><epic_internal>(
       Quest: quest,
       Participant: quest_participant
@@ -1448,13 +1453,11 @@ Progression<public> := module {
 
     GrantEvent<native><final><epic_internal>: listenable(quest) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     GrantQuest<native><native_callable><epic_internal>(quest_type: subtype(quest))<transacts>: result(
       quest_type,
       []add_quest_error
     )
 
-    @available { MinUploadedAtFNVersion := 4000 }
     JoinQuest<native><native_callable><epic_internal>(
       Quest: quest,
       Participant: quest_participant,
@@ -1469,7 +1472,6 @@ Progression<public> := module {
 
     RevokeEvent<native><final><epic_internal>: listenable(quest) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     RevokeQuest<native><native_callable><epic_internal>(Quest: quest)<transacts>: result(void, []remove_quest_error)
 
     var<private> Quests<native><epic_internal>: []quest = external {}
@@ -1478,7 +1480,6 @@ Progression<public> := module {
   @experimental
   # Record binding a quest to a participant with participation info.
   quest_membership<native><public> := class {
-    @available { MinUploadedAtFNVersion := 4000 }
     # The participation info describing this participant's role.
     Info<native><public>: quest_participant_info
 
@@ -1495,10 +1496,8 @@ Progression<public> := module {
     # Signaled when this participant abandons a quest.
     AbandonEvent<native><final><public>: listenable(quest_membership) = external {}
 
-    @available { MinUploadedAtFNVersion := 4000 }
     CanAbandon<native><native_callable><epic_internal>(Quest: quest)<reads>: result(void, []abandon_quest_error)
 
-    @available { MinUploadedAtFNVersion := 4000 }
     CanJoin<native><native_callable><epic_internal>(Quest: quest)<reads>: result(void, []join_quest_error)
 
     # Signaled when a quest this participant is in completes.
@@ -1527,7 +1526,6 @@ Progression<public> := module {
     Participant<native><epic_internal>: agent_quest_participant
   }
 
-  @available { MinUploadedAtFNVersion := 4000 }
   @experimental
   # Describes how a participant relates to a quest.
   quest_participant_info<native><public> := class(member_info_interface) {
@@ -3707,7 +3705,7 @@ SceneGraph<public> := module {
 
     OnEndSimulation<override>(): void = external {}
 
-    OnIconChanged<native><epic_internal>()<transacts>: void
+    OnIconChanged<native_callable><epic_internal>(): void = external {}
 
     var Icon<override>: texture = external {}
 
@@ -6204,7 +6202,7 @@ Systems<public> := module {
     SetTime<native><public>(NewTime: float)<transacts>: void
 
     # The time of this point. May be +/-Inf.NaN will never be updated or queried.
-    var<private> Time<native><public>: float = external {}
+    var<private> Time<native><public>: float
   }
 
   # A timeline element that spans a range of time.
@@ -6890,7 +6888,6 @@ Verse<public> := module {
     (/Verse.org/Verse/result:)Verse_result_Variance<private>(): tuple(success_type, error_type) = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 3800 }
   # Implemented by classes whose instances can change visibility to be shown or hidden.
   showable<native><public> := interface {
     # Set this value to hide or show the class.

@@ -2,7 +2,7 @@
 #################################################
 # Generated Digest of Verse API
 # DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.20-CL-55550516
+# Generated from build: ++Fortnite+Release-41.30-CL-55979764
 #################################################
 
 AI<public> := module {
@@ -1015,8 +1015,6 @@ Armory<public> := module {
 
     ItemComponent<override>: ?item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     MeshComponent<override>: ?mesh_component = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -1344,8 +1342,6 @@ Armory<public> := module {
 
     ItemComponent<override>: ?item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     MeshComponent<override>: ?mesh_component = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -1368,8 +1364,6 @@ Armory<public> := module {
 
     ItemComponent<override>: ?item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     MeshComponent<override>: ?mesh_component = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -1391,8 +1385,6 @@ Armory<public> := module {
     IconComponent<override>: ?icon_component = external {}
 
     ItemComponent<override>: ?item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     MeshComponent<override>: ?mesh_component = external {}
 
@@ -11271,8 +11263,12 @@ Framework<public> := module {
   # Module import path: /Fortnite.com/Framework/Competitive
   Competitive<epic_internal> := module {
     using { /Verse.org/Simulation }
+    @deprecated
     # Sends tournaments stats for this player to the Events Service
     (InPlayer: player).SendTournamentStats<native><epic_internal>(GameId: string, StatsMap: [string]int): void
+
+    # Sends tournaments stats for this team to the Events Service
+    (InTeam: team).SendTournamentStats<native><epic_internal>(GameId: string, StatsMap: [string]int): void
   }
 
   # Module import path: /Fortnite.com/Framework/Matchmaking
@@ -12007,9 +12003,7 @@ Itemization<public> := module {
   }
 
   @hide_in_editor
-  fort_item_definition_entity_base<native><epic_internal> := class<concrete>(entity) {
-    ItemDefinitionID<native><protected>: string = external {}
-  }
+  fort_item_definition_entity_base<native><epic_internal> := class<concrete>(entity) {}
 
   @class_and_subclass_group_names("item")
   @hide_in_editor
@@ -12197,8 +12191,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12213,8 +12205,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12231,8 +12221,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12247,8 +12235,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12265,8 +12251,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12281,8 +12265,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12299,8 +12281,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12315,8 +12295,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12333,8 +12311,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12349,8 +12325,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12367,8 +12341,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12383,8 +12355,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12401,8 +12371,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12417,8 +12385,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12435,8 +12401,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -12448,8 +12412,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12466,8 +12428,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12482,8 +12442,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12500,8 +12458,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12517,8 +12473,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -12530,8 +12484,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12548,8 +12500,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12564,8 +12514,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12582,8 +12530,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12598,8 +12544,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12616,8 +12560,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12632,8 +12574,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12650,8 +12590,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12666,8 +12604,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12684,8 +12620,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12700,8 +12634,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12718,8 +12650,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12734,8 +12664,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12752,8 +12680,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12768,8 +12694,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12786,8 +12710,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12802,8 +12724,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12820,8 +12740,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12836,8 +12754,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12854,8 +12770,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12870,8 +12784,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12888,8 +12800,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12904,8 +12814,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12922,8 +12830,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12938,8 +12844,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12956,8 +12860,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -12972,8 +12874,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -12990,8 +12890,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13005,8 +12903,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13025,8 +12921,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13041,8 +12935,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13059,8 +12951,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13075,8 +12965,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13093,8 +12981,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13109,8 +12995,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13127,8 +13011,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13140,8 +13022,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13155,8 +13035,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13168,8 +13046,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13186,8 +13062,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13203,8 +13077,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13216,8 +13088,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13234,8 +13104,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13250,8 +13118,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13268,8 +13134,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13281,8 +13145,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13299,8 +13161,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13315,8 +13175,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13333,8 +13191,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13349,8 +13205,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13367,8 +13221,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13380,8 +13232,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13395,8 +13245,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13408,8 +13256,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13426,8 +13272,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13442,8 +13286,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13460,8 +13302,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13477,8 +13317,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13490,8 +13328,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13508,8 +13344,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13524,8 +13358,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13542,8 +13374,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13559,8 +13389,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13572,8 +13400,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13587,8 +13413,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13601,8 +13425,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13614,8 +13436,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13632,8 +13452,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13649,8 +13467,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13662,8 +13478,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13680,8 +13494,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13697,8 +13509,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13710,8 +13520,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13728,8 +13536,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13741,8 +13547,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13759,8 +13563,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13772,8 +13574,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13790,8 +13590,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13806,8 +13604,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13824,8 +13620,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13837,8 +13631,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13855,8 +13647,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13868,8 +13658,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13886,8 +13674,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13900,8 +13686,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13913,8 +13697,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13931,8 +13713,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -13948,8 +13728,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13961,8 +13739,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -13976,8 +13752,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -13989,8 +13763,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14007,8 +13779,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14024,8 +13794,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14040,8 +13808,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14060,8 +13826,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14076,8 +13840,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14094,8 +13856,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14110,8 +13870,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14128,8 +13886,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14141,8 +13897,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14159,8 +13913,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14172,8 +13924,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14190,8 +13940,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14207,8 +13955,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14220,8 +13966,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14238,8 +13982,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14254,8 +13996,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14272,8 +14012,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14288,8 +14026,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14306,8 +14042,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14322,8 +14056,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14340,8 +14072,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14357,8 +14087,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14370,8 +14098,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14388,8 +14114,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14405,8 +14129,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14418,8 +14140,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14436,8 +14156,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14449,8 +14167,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14467,8 +14183,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14484,8 +14198,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14497,8 +14209,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14512,8 +14222,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14525,8 +14233,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14543,8 +14249,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14559,8 +14263,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14577,8 +14279,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14590,8 +14290,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14605,8 +14303,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14618,8 +14314,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14636,8 +14330,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14649,8 +14341,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14667,8 +14357,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14680,8 +14368,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14698,8 +14384,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14714,8 +14398,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14732,8 +14414,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14748,8 +14428,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14766,8 +14444,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14782,8 +14458,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14800,8 +14474,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14816,8 +14488,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14834,8 +14504,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14847,8 +14515,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14865,8 +14531,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14881,8 +14545,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14899,8 +14561,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14916,8 +14576,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14929,8 +14587,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14944,8 +14600,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -14957,8 +14611,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -14975,8 +14627,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -14992,8 +14642,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15005,8 +14653,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15023,8 +14669,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15039,8 +14683,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15057,8 +14699,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15074,8 +14714,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15087,8 +14725,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15105,8 +14741,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15121,8 +14755,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15139,8 +14771,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15155,8 +14785,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15173,8 +14801,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15186,8 +14812,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15204,8 +14828,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15220,8 +14842,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15238,8 +14858,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15254,8 +14872,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15272,8 +14888,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15289,8 +14903,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15303,8 +14915,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15316,8 +14926,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15334,8 +14942,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15347,8 +14953,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15365,8 +14969,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15381,8 +14983,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15399,8 +14999,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15415,8 +15013,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15433,8 +15029,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15449,8 +15043,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15467,8 +15059,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15483,8 +15073,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15501,8 +15089,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15517,8 +15103,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15535,8 +15119,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15551,8 +15133,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15569,8 +15149,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15586,8 +15164,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15599,8 +15175,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15617,8 +15191,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15630,8 +15202,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15648,8 +15218,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15661,8 +15229,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15679,8 +15245,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15695,8 +15259,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15713,8 +15275,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15729,8 +15289,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15747,8 +15305,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15764,8 +15320,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15777,8 +15331,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15795,8 +15347,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15811,8 +15361,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15829,8 +15377,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -15842,8 +15388,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15860,8 +15404,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15876,8 +15418,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15894,8 +15434,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15910,8 +15448,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15928,8 +15464,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15944,8 +15478,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15962,8 +15494,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -15978,8 +15508,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -15996,8 +15524,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16012,8 +15538,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16030,8 +15554,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16043,8 +15565,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16058,8 +15578,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16071,8 +15589,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16086,8 +15602,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16100,8 +15614,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16113,8 +15625,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16131,8 +15641,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16147,8 +15655,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16165,8 +15671,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16182,8 +15686,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16196,8 +15698,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16209,8 +15709,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16227,8 +15725,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16243,8 +15739,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16261,8 +15755,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16274,8 +15766,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16292,8 +15782,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16308,8 +15796,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16326,8 +15812,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16342,8 +15826,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16360,8 +15842,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16376,8 +15856,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16394,8 +15872,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16410,8 +15886,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16428,8 +15902,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16444,8 +15916,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16462,8 +15932,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16479,8 +15947,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16492,8 +15958,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16510,8 +15974,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16526,8 +15988,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16544,8 +16004,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16560,8 +16018,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16578,8 +16034,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16594,8 +16048,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16612,8 +16064,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16628,8 +16078,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16646,8 +16094,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16659,8 +16105,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16677,8 +16121,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16693,8 +16135,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16711,8 +16151,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16727,8 +16165,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16745,8 +16181,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16758,8 +16192,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16776,8 +16208,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16792,8 +16222,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16810,8 +16238,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16826,8 +16252,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16844,8 +16268,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16861,8 +16283,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16870,8 +16290,6 @@ Items<public> := module {
   Telekineticon_Creative_V1_Common<native><public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @field("Components")
     @available { MinUploadedAtFNVersion := 4100 }
@@ -16885,8 +16303,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16903,8 +16319,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16919,8 +16333,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16937,8 +16349,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -16954,8 +16364,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16967,8 +16375,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -16982,8 +16388,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -16995,8 +16399,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17013,8 +16415,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17030,8 +16430,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -17043,8 +16441,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17061,8 +16457,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17078,8 +16472,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -17093,8 +16485,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17113,8 +16503,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17129,8 +16517,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17147,8 +16533,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17163,8 +16547,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17181,8 +16563,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17197,8 +16577,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17215,8 +16593,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17231,8 +16607,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17249,8 +16623,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -17262,8 +16634,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17280,8 +16650,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -17293,8 +16661,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17308,8 +16674,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -17321,8 +16685,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17339,8 +16701,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17355,8 +16715,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17373,8 +16731,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17390,8 +16746,6 @@ Items<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -17406,8 +16760,6 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -17690,14 +17042,6 @@ QuestUtilities<public> := module {
 SceneGraphCameras<public> := module {
   # Module import path: /Fortnite.com/SceneGraphCameras/FortSceneGraphCameras
   FortSceneGraphCameras<public> := module {
-    @available { MinUploadedAtFNVersion := 4110 }
-    @experimental
-    MakeFirstPersonCamera<constructor><epic_internal>(TargetEntityIn: entity): fort_first_person_camera_modifier = external {}
-
-    @available { MinUploadedAtFNVersion := 4110 }
-    @experimental
-    MakeFixedAngleCamera<constructor><epic_internal>(TargetEntityIn: entity): fort_fixed_angle_camera_modifier = external {}
-
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
     using { /Verse.org/SceneGraph }
@@ -17805,8 +17149,8 @@ SceneGraphCameras<public> := module {
 
       @experimental
       @replicated("")
-      # Optional entity the camera is attached to. If empty, falls back to the parent entity of the camera component.
-      TargetEntity<native><public>: ?entity = external {}
+      # Entity the camera is attached to
+      TargetEntity<native><public>: entity = external {}
 
       @experimental
       @replicated("")
@@ -17837,8 +17181,8 @@ SceneGraphCameras<public> := module {
 
       @experimental
       @replicated("")
-      # Optional entity the camera is attached to. If empty, falls back to the parent entity of the camera component.
-      TargetEntity<native><public>: ?entity = external {}
+      # Entity the camera is attached to.
+      TargetEntity<native><public>: entity = external {}
 
       @experimental
       @replicated("")
@@ -17952,7 +17296,7 @@ SceneGraphCameras<public> := module {
 
       @experimental
       @replicated("")
-      # Entities to frame in the camera. Empty array uses the rig's fallback (typically the camera component's parent entity.)
+      # Entities to frame in the camera.
       var TargetEntities<native><public>: []entity = external {}
     }
 
@@ -17964,8 +17308,8 @@ SceneGraphCameras<public> := module {
 
       @experimental
       @replicated("")
-      # Optional entity the camera is attached to. If empty, falls back to the parent entity of the camera component.
-      TargetEntity<native><public>: ?entity = external {}
+      # Entity the camera is attached to
+      TargetEntity<native><public>: entity = external {}
 
       @experimental
       @replicated("")
@@ -18789,7 +18133,13 @@ Vehicles<public> := module {
   (InCharacter: fort_character).GetVehicle<native><public>()<transacts><decides>: fort_vehicle
 
   # Main API implemented by Fortnite vehicles.
-  fort_vehicle<native><public> := interface<unique><epic_internal>(positional, healthful, damageable, game_action_causer) {
+  fort_vehicle<native><public> := interface<unique><epic_internal>(
+    positional,
+    healthful,
+    damageable,
+    game_action_causer,
+    showable
+  ) {
     # Attempts to add the agent to the `fort_vehicle`. If there are no empty seats, or the agent cannot otherwise be placed in the vehicle, the operation fails.
     AddAgent<public>(InAgent: agent)<transacts><decides>: void
 
@@ -18899,6 +18249,8 @@ Vehicles<public> := module {
       Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<transacts><decides>: void = external {}
+
+    var Show<override>: logic = external {}
   }
 
   # Represents a seat in a `fort_vehicle`.
@@ -19275,6 +18627,8 @@ VerseInternalTesting<public> := module {
       Pending
 
       Skipped
+
+      Warned
     }
 
     test_case<public> := struct {
@@ -19755,6 +19109,8 @@ VerseInternalTesting<public> := module {
 
       var EnableVerboseOutput<public>: logic = external {}
 
+      var FlakeyAsWarning<public>: logic = external {}
+
       var FlakinessRunCount<public>: int = external {}
 
       var LastTestErrors<public>: []string = external {}
@@ -19901,8 +19257,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -19914,8 +19268,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -19933,8 +19285,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -19946,8 +19296,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -19961,8 +19309,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -19974,8 +19320,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -19989,8 +19333,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20002,8 +19344,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20017,8 +19357,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20030,8 +19368,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20045,8 +19381,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20058,8 +19392,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20073,8 +19405,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20086,8 +19416,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20101,8 +19429,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20114,8 +19440,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20129,8 +19453,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20142,8 +19464,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20157,8 +19477,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20170,8 +19488,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20185,8 +19501,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20198,8 +19512,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20213,8 +19525,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20226,8 +19536,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20241,8 +19549,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20254,8 +19560,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20269,8 +19573,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20282,8 +19584,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20297,8 +19597,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20310,8 +19608,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20325,8 +19621,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20338,8 +19632,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20353,8 +19645,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20366,8 +19656,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20381,8 +19669,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20394,8 +19680,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20409,8 +19693,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20422,8 +19704,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20437,8 +19717,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20450,8 +19728,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20465,8 +19741,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20478,8 +19752,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20493,8 +19765,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20506,8 +19776,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20521,8 +19789,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20534,8 +19800,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20549,8 +19813,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20562,8 +19824,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20577,8 +19837,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20590,8 +19848,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20605,8 +19861,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20618,8 +19872,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20633,8 +19885,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20647,8 +19897,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20660,8 +19908,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20677,8 +19923,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20692,8 +19936,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20709,8 +19951,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20724,8 +19964,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20741,8 +19979,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20754,8 +19990,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20769,8 +20003,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20782,8 +20014,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20797,8 +20027,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20810,8 +20038,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20825,8 +20051,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20838,8 +20062,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20853,8 +20075,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20866,8 +20086,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20881,8 +20099,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20894,8 +20110,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20909,8 +20123,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20922,8 +20134,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20937,8 +20147,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20950,8 +20158,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20965,8 +20171,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -20978,8 +20182,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -20993,8 +20195,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21006,8 +20206,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21021,8 +20219,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21034,8 +20230,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21049,8 +20243,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21062,8 +20254,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21077,8 +20267,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21090,8 +20278,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21105,8 +20291,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21118,8 +20302,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21133,8 +20315,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21146,8 +20326,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21161,8 +20339,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21174,8 +20350,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21189,8 +20363,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21202,8 +20374,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21217,8 +20387,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21230,8 +20398,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21245,8 +20411,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21258,8 +20422,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21273,8 +20435,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21286,8 +20446,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21301,8 +20459,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21314,8 +20470,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21329,8 +20483,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21342,8 +20494,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21357,8 +20507,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21370,8 +20518,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21385,8 +20531,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21398,8 +20542,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21413,8 +20555,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21426,8 +20566,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21441,8 +20579,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21454,8 +20590,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21469,8 +20603,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21482,8 +20614,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21497,8 +20627,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21510,8 +20638,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21525,8 +20651,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21538,8 +20662,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21553,8 +20675,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21566,8 +20686,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21581,8 +20699,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21594,8 +20710,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21609,8 +20723,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21622,8 +20734,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21637,8 +20747,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21650,8 +20758,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21665,8 +20771,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21678,8 +20782,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21693,8 +20795,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21706,8 +20806,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21721,8 +20819,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21734,8 +20830,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21749,8 +20843,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21762,8 +20854,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21777,8 +20867,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21790,8 +20878,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21805,8 +20891,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21818,8 +20902,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21833,8 +20915,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21846,8 +20926,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21861,8 +20939,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21874,8 +20950,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21889,8 +20963,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21902,8 +20974,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21917,8 +20987,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21930,8 +20998,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21945,8 +21011,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21958,8 +21022,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -21973,8 +21035,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -21986,8 +21046,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22001,8 +21059,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22014,8 +21070,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22029,8 +21083,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22042,8 +21094,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22057,8 +21107,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22070,8 +21118,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22085,8 +21131,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22098,8 +21142,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22113,8 +21155,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22126,8 +21166,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22141,8 +21179,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22154,8 +21190,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22169,8 +21203,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22182,8 +21214,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22197,8 +21227,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22210,8 +21238,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22225,8 +21251,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22238,8 +21262,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22253,8 +21275,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22266,8 +21286,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22281,8 +21299,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22294,8 +21310,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22309,8 +21323,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22322,8 +21334,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22337,8 +21347,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22350,8 +21358,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22365,8 +21371,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22378,8 +21382,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22393,8 +21395,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22406,8 +21406,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22421,8 +21419,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22434,8 +21430,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22449,8 +21443,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22462,8 +21454,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22477,8 +21467,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22490,8 +21478,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22505,8 +21491,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22518,8 +21502,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22533,8 +21515,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22546,8 +21526,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22561,8 +21539,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22574,8 +21550,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22589,8 +21563,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22602,8 +21574,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22617,8 +21587,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22630,8 +21598,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22645,8 +21611,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22658,8 +21622,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22673,8 +21635,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22686,8 +21646,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22701,8 +21659,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22714,8 +21670,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22729,8 +21683,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22742,8 +21694,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22757,8 +21707,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22770,8 +21718,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22785,8 +21731,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22798,8 +21742,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22813,8 +21755,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22826,8 +21766,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22841,8 +21779,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22854,8 +21790,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22869,8 +21803,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22882,8 +21814,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22897,8 +21827,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22910,8 +21838,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22925,8 +21851,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22938,8 +21862,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22953,8 +21875,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22966,8 +21886,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -22981,8 +21899,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -22994,8 +21910,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23009,8 +21923,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23022,8 +21934,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23037,8 +21947,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23050,8 +21958,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23065,8 +21971,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23078,8 +21982,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23093,8 +21995,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23106,8 +22006,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23121,8 +22019,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23134,8 +22030,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23149,8 +22043,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23162,8 +22054,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23177,8 +22067,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23190,8 +22078,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23205,8 +22091,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23218,8 +22102,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23233,8 +22115,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23246,8 +22126,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23261,8 +22139,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23274,8 +22150,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23289,8 +22163,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23302,8 +22174,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23317,8 +22187,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23330,8 +22198,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23345,8 +22211,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23358,8 +22222,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23373,8 +22235,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23386,8 +22246,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23401,8 +22259,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23414,8 +22270,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23429,8 +22283,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23442,8 +22294,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23457,8 +22307,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23470,8 +22318,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23485,8 +22331,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23499,8 +22343,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23512,8 +22354,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23529,8 +22369,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23542,8 +22380,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23557,8 +22393,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23570,8 +22404,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23585,8 +22417,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23598,8 +22428,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23613,8 +22441,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23626,8 +22452,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23641,8 +22465,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23654,8 +22476,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23669,8 +22489,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23682,8 +22500,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23697,8 +22513,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23710,8 +22524,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23725,8 +22537,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23738,8 +22548,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23753,8 +22561,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23766,8 +22572,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23781,8 +22585,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23794,8 +22596,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23809,8 +22609,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23822,8 +22620,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23837,8 +22633,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23850,8 +22644,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23865,8 +22657,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23878,8 +22668,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23893,8 +22681,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23906,8 +22692,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23921,8 +22705,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23934,8 +22716,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23949,8 +22729,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23962,8 +22740,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -23977,8 +22753,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -23990,8 +22764,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24005,8 +22777,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24018,8 +22788,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24033,8 +22801,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24046,8 +22812,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24061,8 +22825,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24074,8 +22836,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24089,8 +22849,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24102,8 +22860,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24117,8 +22873,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24130,8 +22884,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24145,8 +22897,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24159,8 +22909,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24172,8 +22920,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24189,8 +22935,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24205,8 +22949,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24218,8 +22960,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24233,8 +22973,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24246,8 +22984,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24261,8 +22997,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24274,8 +23008,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24289,8 +23021,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24302,8 +23032,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24317,8 +23045,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24330,8 +23056,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24345,8 +23069,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24358,8 +23080,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24373,8 +23093,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24386,8 +23104,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24401,8 +23117,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24414,8 +23128,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24429,8 +23141,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24442,8 +23152,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24457,8 +23165,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24470,8 +23176,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24485,8 +23189,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24498,8 +23200,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24513,8 +23213,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24526,8 +23224,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24541,8 +23237,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24554,8 +23248,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24569,8 +23261,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24582,8 +23272,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24597,8 +23285,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24610,8 +23296,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24625,8 +23309,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24638,8 +23320,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24653,8 +23333,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24666,8 +23344,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24681,8 +23357,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24694,8 +23368,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24709,8 +23381,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24722,8 +23392,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24737,8 +23405,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24750,8 +23416,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24765,8 +23429,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24778,8 +23440,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24793,8 +23453,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24806,8 +23464,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24821,8 +23477,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24834,8 +23488,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24849,8 +23501,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24862,8 +23512,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24877,8 +23525,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24890,8 +23536,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24905,8 +23549,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24918,8 +23560,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24933,8 +23573,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24946,8 +23584,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24961,8 +23597,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -24974,8 +23608,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -24989,8 +23621,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25002,8 +23632,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25017,8 +23645,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25030,8 +23656,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25045,8 +23669,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25058,8 +23680,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25073,8 +23693,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25086,8 +23704,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25101,8 +23717,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25114,8 +23728,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25129,8 +23741,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25142,8 +23752,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25157,8 +23765,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25170,8 +23776,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25185,8 +23789,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25198,8 +23800,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25213,8 +23813,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25226,8 +23824,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25241,8 +23837,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25254,8 +23848,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25269,8 +23861,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25282,8 +23872,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25297,8 +23885,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25310,8 +23896,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25325,8 +23909,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25338,8 +23920,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25353,8 +23933,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25366,8 +23944,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25381,8 +23957,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25394,8 +23968,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25409,8 +23981,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25422,8 +23992,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25437,8 +24005,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25450,8 +24016,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25465,8 +24029,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25478,8 +24040,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25493,8 +24053,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25506,8 +24064,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25521,8 +24077,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25534,8 +24088,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25549,8 +24101,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25562,8 +24112,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25577,8 +24125,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25590,8 +24136,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25605,8 +24149,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25618,8 +24160,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25633,8 +24173,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25646,8 +24184,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25661,8 +24197,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25674,8 +24208,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25689,8 +24221,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25702,8 +24232,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25717,8 +24245,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25730,8 +24256,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25745,8 +24269,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25758,8 +24280,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25773,8 +24293,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25786,8 +24304,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25801,8 +24317,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25814,8 +24328,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25829,8 +24341,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25842,8 +24352,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25857,8 +24365,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25870,8 +24376,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25885,8 +24389,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25898,8 +24400,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25913,8 +24413,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25926,8 +24424,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25941,8 +24437,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25954,8 +24448,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25969,8 +24461,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -25982,8 +24472,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -25997,8 +24485,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26010,8 +24496,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26025,8 +24509,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26038,8 +24520,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26053,8 +24533,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26066,8 +24544,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26081,8 +24557,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26094,8 +24568,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26109,8 +24581,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26122,8 +24592,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26137,8 +24605,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26150,8 +24616,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26165,8 +24629,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26178,8 +24640,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26193,8 +24653,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26206,8 +24664,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26221,8 +24677,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26234,8 +24688,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26249,8 +24701,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26262,8 +24712,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26277,8 +24725,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26290,8 +24736,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26305,8 +24749,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26318,8 +24760,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26333,8 +24773,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26346,8 +24784,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26361,8 +24797,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26374,8 +24808,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26389,8 +24821,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26402,8 +24832,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26417,8 +24845,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26430,8 +24856,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26445,8 +24869,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26458,8 +24880,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26473,8 +24893,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26486,8 +24904,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26501,8 +24917,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26514,8 +24928,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26529,8 +24941,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26542,8 +24952,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26557,8 +24965,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26570,8 +24976,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26585,8 +24989,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26598,8 +25000,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26613,8 +25013,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26626,8 +25024,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26641,8 +25037,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26654,8 +25048,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26669,8 +25061,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26682,8 +25072,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26697,8 +25085,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26710,8 +25096,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26725,8 +25109,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26738,8 +25120,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26753,8 +25133,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26766,8 +25144,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26781,8 +25157,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26794,8 +25168,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26809,8 +25181,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26822,8 +25192,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26837,8 +25205,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26850,8 +25216,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26865,8 +25229,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26878,8 +25240,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26893,8 +25253,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26906,8 +25264,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26921,8 +25277,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26934,8 +25288,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26949,8 +25301,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26962,8 +25312,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -26977,8 +25325,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -26990,8 +25336,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27005,8 +25349,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27018,8 +25360,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27033,8 +25373,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27046,8 +25384,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27061,8 +25397,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27074,8 +25408,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27089,8 +25421,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27102,8 +25432,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27117,8 +25445,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27130,8 +25456,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27145,8 +25469,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27158,8 +25480,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27173,8 +25493,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27186,8 +25504,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27201,8 +25517,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27214,8 +25528,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27229,8 +25541,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27242,8 +25552,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27257,8 +25565,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27270,8 +25576,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27285,8 +25589,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27298,8 +25600,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27313,8 +25613,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27326,8 +25624,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27341,8 +25637,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27354,8 +25648,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27369,8 +25661,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27382,8 +25672,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27397,8 +25685,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27410,8 +25696,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27425,8 +25709,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27438,8 +25720,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27453,8 +25733,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27466,8 +25744,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27481,8 +25757,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27494,8 +25768,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27509,8 +25781,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27522,8 +25792,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27537,8 +25805,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27550,8 +25816,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27565,8 +25829,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27578,8 +25840,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27593,8 +25853,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27606,8 +25864,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27621,8 +25877,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27634,8 +25888,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27649,8 +25901,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27662,8 +25912,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27677,8 +25925,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27690,8 +25936,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27705,8 +25949,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27718,8 +25960,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27733,8 +25973,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27746,8 +25984,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27761,8 +25997,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27774,8 +26008,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27789,8 +26021,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27802,8 +26032,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27817,8 +26045,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27830,8 +26056,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27845,8 +26069,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27858,8 +26080,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27873,8 +26093,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27886,8 +26104,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27901,8 +26117,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27914,8 +26128,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27929,8 +26141,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27942,8 +26152,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27957,8 +26165,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27970,8 +26176,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -27985,8 +26189,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -27998,8 +26200,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28013,8 +26213,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28026,8 +26224,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28041,8 +26237,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28054,8 +26248,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28069,8 +26261,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28082,8 +26272,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28097,8 +26285,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28110,8 +26296,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28125,8 +26309,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28138,8 +26320,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28153,8 +26333,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28166,8 +26344,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28181,8 +26357,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28194,8 +26368,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28209,8 +26381,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28222,8 +26392,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28237,8 +26405,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28250,8 +26416,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28265,8 +26429,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28278,8 +26440,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28293,8 +26453,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28306,8 +26464,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28321,8 +26477,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28334,8 +26488,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28349,8 +26501,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28362,8 +26512,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28377,8 +26525,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28390,8 +26536,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28405,8 +26549,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28418,8 +26560,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28433,8 +26573,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28446,8 +26584,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28461,8 +26597,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28474,8 +26608,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28489,8 +26621,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28502,8 +26632,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28517,8 +26645,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28530,8 +26656,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28545,8 +26669,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28558,8 +26680,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28573,8 +26693,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28586,8 +26704,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28601,8 +26717,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28614,8 +26728,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28629,8 +26741,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28642,8 +26752,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28657,8 +26765,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28670,8 +26776,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28685,8 +26789,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28698,8 +26800,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28713,8 +26813,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28726,8 +26824,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28741,8 +26837,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28754,8 +26848,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28769,8 +26861,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28782,8 +26872,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28797,8 +26885,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28810,8 +26896,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28825,8 +26909,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28838,8 +26920,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28853,8 +26933,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28866,8 +26944,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28881,8 +26957,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28894,8 +26968,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28909,8 +26981,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28922,8 +26992,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28937,8 +27005,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28950,8 +27016,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28965,8 +27029,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -28978,8 +27040,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -28993,8 +27053,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29006,8 +27064,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29021,8 +27077,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29034,8 +27088,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29049,8 +27101,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29062,8 +27112,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29077,8 +27125,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29090,8 +27136,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29105,8 +27149,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29118,8 +27160,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29133,8 +27173,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29146,8 +27184,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29161,8 +27197,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29174,8 +27208,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29189,8 +27221,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29202,8 +27232,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29217,8 +27245,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29230,8 +27256,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29245,8 +27269,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29258,8 +27280,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29273,8 +27293,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29286,8 +27304,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29301,8 +27317,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29314,8 +27328,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29329,8 +27341,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29342,8 +27352,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29357,8 +27365,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29370,8 +27376,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29385,8 +27389,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29398,8 +27400,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29413,8 +27413,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29426,8 +27424,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29441,8 +27437,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29454,8 +27448,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29469,8 +27461,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29482,8 +27472,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29497,8 +27485,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29510,8 +27496,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29525,8 +27509,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29538,8 +27520,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29553,8 +27533,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29566,8 +27544,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29581,8 +27557,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29594,8 +27568,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29609,8 +27581,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29622,8 +27592,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29637,8 +27605,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29650,8 +27616,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29665,8 +27629,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29678,8 +27640,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29693,8 +27653,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29706,8 +27664,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29721,8 +27677,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29734,8 +27688,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29749,8 +27701,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29762,8 +27712,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29777,8 +27725,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29790,8 +27736,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29805,8 +27749,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29818,8 +27760,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29833,8 +27773,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29847,8 +27785,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29860,8 +27796,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29877,8 +27811,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29892,8 +27824,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29909,8 +27839,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29924,8 +27852,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29941,8 +27867,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29954,8 +27878,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29969,8 +27891,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -29982,8 +27902,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -29997,8 +27915,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30010,8 +27926,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30025,8 +27939,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30038,8 +27950,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30053,8 +27963,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30066,8 +27974,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30081,8 +27987,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30094,8 +27998,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30109,8 +28011,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30122,8 +28022,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30137,8 +28035,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30150,8 +28046,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30165,8 +28059,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30178,8 +28070,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30193,8 +28083,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30206,8 +28094,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30221,8 +28107,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30234,8 +28118,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30249,8 +28131,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30262,8 +28142,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30277,8 +28155,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30290,8 +28166,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30305,8 +28179,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30318,8 +28190,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30333,8 +28203,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30346,8 +28214,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30361,8 +28227,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30374,8 +28238,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30389,8 +28251,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30402,8 +28262,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30417,8 +28275,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30430,8 +28286,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30445,8 +28299,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30458,8 +28310,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30473,8 +28323,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30486,8 +28334,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30501,8 +28347,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30514,8 +28358,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30529,8 +28371,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30542,8 +28382,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30557,8 +28395,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30570,8 +28406,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30585,8 +28419,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30598,8 +28430,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30613,8 +28443,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30626,8 +28454,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30641,8 +28467,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30654,8 +28478,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30669,8 +28491,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30682,8 +28502,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30697,8 +28515,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30710,8 +28526,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30725,8 +28539,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30739,8 +28551,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30752,8 +28562,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30769,8 +28577,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30784,8 +28590,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30801,8 +28605,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30816,8 +28618,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30833,8 +28633,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30846,8 +28644,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30861,8 +28657,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30874,8 +28668,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30889,8 +28681,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30902,8 +28692,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30917,8 +28705,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30930,8 +28716,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30945,8 +28729,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30958,8 +28740,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -30973,8 +28753,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -30986,8 +28764,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31001,8 +28777,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31014,8 +28788,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31029,8 +28801,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31042,8 +28812,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31057,8 +28825,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31070,8 +28836,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31085,8 +28849,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31098,8 +28860,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31113,8 +28873,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31126,8 +28884,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31141,8 +28897,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31154,8 +28908,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31169,8 +28921,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31182,8 +28932,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31197,8 +28945,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31210,8 +28956,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31225,8 +28969,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31238,8 +28980,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31253,8 +28993,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31266,8 +29004,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31281,8 +29017,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31294,8 +29028,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31309,8 +29041,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31322,8 +29052,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31337,8 +29065,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31350,8 +29076,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31365,8 +29089,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31378,8 +29100,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31393,8 +29113,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31406,8 +29124,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31421,8 +29137,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31434,8 +29148,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31449,8 +29161,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31462,8 +29172,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31477,8 +29185,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31490,8 +29196,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31505,8 +29209,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31518,8 +29220,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31533,8 +29233,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31546,8 +29244,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31561,8 +29257,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31574,8 +29268,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31589,8 +29281,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31602,8 +29292,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31617,8 +29305,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31630,8 +29316,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31645,8 +29329,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31658,8 +29340,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31673,8 +29353,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31686,8 +29364,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31701,8 +29377,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31714,8 +29388,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31729,8 +29401,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31742,8 +29412,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31757,8 +29425,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31770,8 +29436,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31785,8 +29449,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31798,8 +29460,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31813,8 +29473,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31826,8 +29484,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31841,8 +29497,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31854,8 +29508,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31869,8 +29521,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31882,8 +29532,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31897,8 +29545,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31910,8 +29556,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31925,8 +29569,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31938,8 +29580,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31953,8 +29593,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31966,8 +29604,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -31981,8 +29617,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -31994,8 +29628,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32009,8 +29641,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32022,8 +29652,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32037,8 +29665,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32050,8 +29676,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32065,8 +29689,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32078,8 +29700,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32093,8 +29713,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32106,8 +29724,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32121,8 +29737,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32134,8 +29748,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32149,8 +29761,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32162,8 +29772,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32177,8 +29785,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32190,8 +29796,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32205,8 +29809,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32218,8 +29820,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32233,8 +29833,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32246,8 +29844,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32261,8 +29857,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32274,8 +29868,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32289,8 +29881,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32302,8 +29892,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32317,8 +29905,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32330,8 +29916,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32345,8 +29929,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32358,8 +29940,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32373,8 +29953,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32386,8 +29964,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32401,8 +29977,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32414,8 +29988,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32429,8 +30001,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32442,8 +30012,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32457,8 +30025,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32470,8 +30036,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32485,8 +30049,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32498,8 +30060,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32513,8 +30073,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32526,8 +30084,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32541,8 +30097,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32554,8 +30108,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32569,8 +30121,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32582,8 +30132,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32597,8 +30145,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32610,8 +30156,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32625,8 +30169,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32638,8 +30180,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32653,8 +30193,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32666,8 +30204,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32681,8 +30217,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32694,8 +30228,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32709,8 +30241,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32722,8 +30252,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32737,8 +30265,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32750,8 +30276,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32765,8 +30289,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32778,8 +30300,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32793,8 +30313,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32806,8 +30324,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32823,8 +30339,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32838,8 +30352,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32855,8 +30367,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32868,8 +30378,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32883,8 +30391,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32896,8 +30402,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32911,8 +30415,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32924,8 +30426,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32939,8 +30439,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32952,8 +30450,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32967,8 +30463,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -32980,8 +30474,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -32995,8 +30487,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33008,8 +30498,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33023,8 +30511,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33036,8 +30522,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33051,8 +30535,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33064,8 +30546,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33079,8 +30559,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33092,8 +30570,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33107,8 +30583,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33120,8 +30594,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33135,8 +30607,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33148,8 +30618,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33163,8 +30631,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33176,8 +30642,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33191,8 +30655,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33204,8 +30666,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33219,8 +30679,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33232,8 +30690,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33247,8 +30703,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33260,8 +30714,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33275,8 +30727,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33288,8 +30738,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33303,8 +30751,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33316,8 +30762,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33331,8 +30775,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33344,8 +30786,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33359,8 +30799,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33372,8 +30810,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33387,8 +30823,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33400,8 +30834,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33415,8 +30847,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33428,8 +30858,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33443,8 +30871,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33456,8 +30882,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33471,8 +30895,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33484,8 +30906,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33499,8 +30919,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33512,8 +30930,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33527,8 +30943,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33540,8 +30954,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33555,8 +30967,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33568,8 +30978,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33583,8 +30991,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33596,8 +31002,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33611,8 +31015,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33624,8 +31026,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33639,8 +31039,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33652,8 +31050,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33667,8 +31063,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33680,8 +31074,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33695,8 +31087,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33708,8 +31098,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33723,8 +31111,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33736,8 +31122,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33751,8 +31135,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33764,8 +31146,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33779,8 +31159,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33792,8 +31170,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33807,8 +31183,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33820,8 +31194,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33835,8 +31207,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33848,8 +31218,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33863,8 +31231,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33876,8 +31242,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33891,8 +31255,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33904,8 +31266,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33919,8 +31279,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33932,8 +31290,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33947,8 +31303,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33960,8 +31314,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -33975,8 +31327,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -33988,8 +31338,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34003,8 +31351,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34016,8 +31362,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34031,8 +31375,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34044,8 +31386,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34059,8 +31399,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34072,8 +31410,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34087,8 +31423,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34100,8 +31434,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34115,8 +31447,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34128,8 +31458,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34143,8 +31471,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34156,8 +31482,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34171,8 +31495,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34184,8 +31506,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34199,8 +31519,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34212,8 +31530,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34227,8 +31543,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34240,8 +31554,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34255,8 +31567,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34268,8 +31578,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34283,8 +31591,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34296,8 +31602,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34311,8 +31615,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34324,8 +31626,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34339,8 +31639,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34352,8 +31650,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34367,8 +31663,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34380,8 +31674,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34395,8 +31687,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34408,8 +31698,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34423,8 +31711,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34436,8 +31722,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34451,8 +31735,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34464,8 +31746,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34479,8 +31759,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34492,8 +31770,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34507,8 +31783,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34520,8 +31794,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34535,8 +31807,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34548,8 +31818,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34563,8 +31831,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34576,8 +31842,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34591,8 +31855,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34604,8 +31866,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34619,8 +31879,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34632,8 +31890,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34647,8 +31903,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34660,8 +31914,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34675,8 +31927,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34688,8 +31938,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34703,8 +31951,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34716,8 +31962,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34731,8 +31975,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34744,8 +31986,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34759,8 +31999,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34772,8 +32010,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34787,8 +32023,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34800,8 +32034,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34815,8 +32047,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34828,8 +32058,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34843,8 +32071,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34857,8 +32083,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34870,8 +32094,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34887,8 +32109,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34902,8 +32122,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34919,8 +32137,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34934,8 +32150,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34951,8 +32165,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34964,8 +32176,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -34979,8 +32189,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -34992,8 +32200,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35007,8 +32213,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35020,8 +32224,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35035,8 +32237,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35048,8 +32248,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35063,8 +32261,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35076,8 +32272,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35091,8 +32285,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35104,8 +32296,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35119,8 +32309,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35132,8 +32320,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35147,8 +32333,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35160,8 +32344,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35175,8 +32357,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35188,8 +32368,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35203,8 +32381,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35216,8 +32392,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35231,8 +32405,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35245,8 +32417,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35258,8 +32428,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -35275,8 +32443,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35289,8 +32455,6 @@ Weapons<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
 
-    ItemDefinitionID<override>: string = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}
   }
@@ -35302,8 +32466,6 @@ Weapons<public> := module {
 
     @available { MinUploadedAtFNVersion := 4000 }
     ItemComponent<override>: item_component = external {}
-
-    ItemDefinitionID<override>: string = external {}
 
     @available { MinUploadedAtFNVersion := 4020 }
     RarityComponent<override>: ?rarity_component = external {}

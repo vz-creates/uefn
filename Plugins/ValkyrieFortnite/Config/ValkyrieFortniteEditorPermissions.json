@@ -154,6 +154,7 @@
 			"/Script/DataRegistry.DataRegistryID",
 			"/Script/RigVM.RigVMInstructionSetExecuteState",
 			"/Script/RigVM.RigVMSimPoint",
+			"/Script/RigVM.RigVMForwardedMemoryHandle",
 			"/Script/ControlRig.RigElementKey",
 			"/Script/ControlRig.RigElementKeyCollection",
 			"/Script/ControlRig.RigControlLimitEnabled",
@@ -1092,6 +1093,26 @@
 			"/Script/ControlRig.RigUnit_PoseAssetApplyAllPoses":				{  },		
 			"/Script/ControlRig.SphericalPoseReaderDebugSettings":				{  },
 			"/Script/ControlRig.TransformableControlHandle":					{  },
+			"/Script/ControlRig.RigElementWeight":								{  },
+			"/Script/ControlRig.RigElementKeyWithLabel":						{  },                        
+			"/Script/ControlRig.RigUnit_HierarchyCreatePoseItemArray_Entry":	{  },                   	
+			"/Script/ControlRig.RigUnit_ChainInfo_SegmentInfo":		            {  },            
+			"/Script/ControlRig.SphericalRegion":		                        {  },
+			"/Script/RigVM.MathRBFInterpolateQuatColor_Target":		            {  },            
+			"/Script/RigVM.MathRBFInterpolateQuatFloat_Target":		            {  },            
+			"/Script/RigVM.MathRBFInterpolateQuatQuat_Target":		            {  },            
+			"/Script/RigVM.MathRBFInterpolateQuatVector_Target":		        {  },                
+			"/Script/RigVM.MathRBFInterpolateQuatXform_Target":		            {  },            
+			"/Script/RigVM.MathRBFInterpolateVectorColor_Target":		        {  },                
+			"/Script/RigVM.MathRBFInterpolateVectorFloat_Target":		        {  },                
+			"/Script/RigVM.MathRBFInterpolateVectorQuat_Target":		        {  },                
+			"/Script/RigVM.MathRBFInterpolateVectorVector_Target":		        {  },                
+			"/Script/RigVM.MathRBFInterpolateVectorXform_Target":		        {  },                
+			"/Script/RigVM.RigVMFunction_MathRBFInterpolateQuatWorkData":		{  },                        
+			"/Script/RigVM.RigVMFunction_MathRBFInterpolateVectorWorkData":		{  },
+			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannel2DLimitSettings": 		{  },
+			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannelRotatorLimitSettings":	{  },
+			"/Script/ControlRig.RigUnit_HierarchyAddAnimationChannelVectorLimitSettings":	{  },                        
 			"/Script/ControlRigDynamics.ParticleChainCurves":					{  },
 			"/Script/ControlRigDynamics.RigDynamicsForceFieldCurves":			{  },
 			"/Script/ControlRigDynamics.RigDynamicsInertialForceSettings":		{  },
@@ -1181,10 +1202,15 @@
 			"/Script/PBIK.PBIKWorkData":										{  },
 			"/Script/PBIK.RootPrePullSettings":									{  },
 			"/Script/CameraCalibrationCore.LensFile": 							{  },
+			"/Script/CoreUObject.Box":											{  },
+			"/Script/CoreUObject.Box2D":										{  },
+			"/Script/CoreUObject.Color":										{  },
+			"/Script/CoreUObject.Ray":											{  },
 			"/Script/CoreUObject.Int64Vector2":									{  },
 			"/Script/CoreUObject.LinearColor":									{  },
 			"/Script/CoreUObject.FrameRate":									{  },
 			"/Script/CoreUObject.FrameTime":									{  },
+			"/Script/CoreUObject.FrameNumber":									{  },
 			"/Script/CoreUObject.Matrix":										{  },
 			"/Script/CoreUObject.MetaData":										{  },
 			"/Script/CoreUObject.Plane":										{  },
@@ -1197,6 +1223,7 @@
 			"/Script/CoreUObject.Vector2f":										{  },
 			"/Script/CoreUObject.Vector3f":										{  },
 			"/Script/CoreUObject.Vector4f":										{  },
+			"/Script/CoreUObject.Vector4":										{  },
 			"/Script/CoreUObject.Vector2D":										{  },
 			"/Script/CoreUObject.Guid":											{  },
 			"/Script/CrowdVolume.CrowdSpawner":									{  },
@@ -1549,6 +1576,7 @@
 			"/Script/RenderTrace.MaterialExpressionPhysicalMaterialOutput":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.AngularDriveConstraint":							{  },
 			"/Script/Engine.ConeConstraint":									{  },
+			"/Script/Engine.ConstraintBaseParams":								{  },
 			"/Script/Engine.ConstraintDrive":									{  },
 			"/Script/Engine.LinearConstraint":									{  },
 			"/Script/Engine.LinearDriveConstraint":								{  },
@@ -1560,6 +1588,7 @@
 			"/Script/Engine.MorphTarget":										{  },
 			"/Script/Engine.NullNavSysConfig":									{  },
 			"/Script/Engine.ParticleSystemComponent":							{  },
+			"/Script/Engine.PhysicsAssetSolverSettings":						{  },
 			"/Script/Engine.PhysicsConstraintTemplate":							{  },
 			"/Script/Engine.PointLight":										{ "Visible": true },
 			"/Script/Engine.PointLightComponent":								{ "Visible": true },
@@ -1587,6 +1616,7 @@
 			"/Script/Engine.SkyAtmosphereComponent":							{ "Visible": true },
 			"/Script/Engine.SkyLight":											{ "Visible": true },
 			"/Script/Engine.SkyLightComponent":									{ "Visible": true },
+			"/Script/Engine.SolverIterations":									{  },
 			"/Script/Engine.SpatialHashRuntimeGridInfo":						{  },
 			"/Script/Engine.SphereComponent":									{  },
 			"/Script/Engine.SplineComponent":									{  },
@@ -2237,6 +2267,7 @@
 			"/Script/RigVM.RigVMUnknownType":									{  },
 			"/Script/RigVM.RigVMInstructionSetExecuteState":					{  },
 			"/Script/RigVM.RigVMSimPoint":										{  },
+			"/Script/RigVM.RigVMForwardedMemoryHandle":							{  },
 			"/Script/RigVMDeveloper.RigVMEditorAsset":							{ "Visible": true, "Subclasses": "NativeOnly"  },
 			"/Script/RigVMDeveloper.RigVMFunctionLibrary":						{  },
 			"/Script/RigVMDeveloper.RigVMGraph":								{  },
@@ -2916,8 +2947,12 @@
 					"ObjectProfiler",
 					"VerseExplorerTab",
 					"NiagaraDebugger",
+					"ChaosVisualDebuggerTab",
 					"ControlRigDynamicsDebug",
-					"ControlRigPhysicsDebug"
+					"ControlRigPhysicsDebug",
+					"RewindDebugger",
+					"RewindDebugger2",
+					"RewindDebuggerDetails2"
 				]
 			},
 			"LevelEditor": {
@@ -2989,8 +3024,12 @@
 					"SkeinSourceControlSnapshotHistory",
 					"SkeinSourceControlBranchExplorer",
 					"NiagaraDebugger",
+					"ChaosVisualDebuggerTab",
 					"ControlRigDynamicsDebug",
 					"ControlRigPhysicsDebug",
+					"RewindDebugger",
+					"RewindDebugger2",
+					"RewindDebuggerDetails2",
 					"DataRecoveryToolDialog"
 				]
 			},
@@ -4760,7 +4799,7 @@
 			},
 			{
 				"Type": "/Script/CRD_HUDController.EVerseSubscribableInputAction",
-				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint"]
+				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint", "VehicleBoost", "VehicleHorn", "VehicleReverse", "VehicleSecondaryAbility", "VehicleSprint", "VehicleSwitchSeat", "VehicleThrottle", "Backpack", "MapPing", "ToggleAutofire", "ToggleMap", "MoveStick"]
 			}
 		]
 	},
@@ -4822,6 +4861,36 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
+				"Type": "/Script/Foliage.ProceduralFoliageComponent",
+				"AllowList": [ "ProceduralGuid", "FoliageSpawner" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.Brush",
+				"AllowList": [ "Brush", "BrushType", "BrushComponent", "bNotForClientOrServer", "bInManipulation", "SavedSelections" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.Emitter",
+				"AllowList": [ "ArrowComponent", "ParticleSystemComponent", "SpriteComponent" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.StaticMeshActor",
+				"AllowList": [ "StaticMeshComponent" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.LevelBounds",
+				"AllowList": [ "BoxComponent", "bAutoUpdateBounds" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.LocalFogVolumeComponent",
+				"AllowList": [ "FogStartDistance" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
 				"Type": "/Script/Engine.Info",
 				"AllowList": ["SpriteComponent"],
 				"bAllowListAllSubclassProperties": true
@@ -4837,10 +4906,46 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
-				"Type": "/Script/Engine.AIPerceptionComponent",
+				"Type": "/Script/Engine.SplineMeshActor",
+				"AllowList": [ "SplineMeshComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/AudioShapes.AudioShapeSplineComponent",
+				"AllowList": [ "SplineAABB", "SplineSegments", "ClosestPointSound" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/AIModule.AIPerceptionComponent",
 				"AllowList": [ "OnPerceptionUpdated", "OnTargetPerceptionUpdated", "OnTargetPerceptionInfoUpdated", "SensesConfig" ],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
+			},
+			{
+				"Type": "/Script/AIModule.AIPerceptionStimuliSourceComponent",
+				"AllowList": [ "RegisterAsSourceForSenses" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/CRDPostProcess.CRDPostProcessDeviceComponent",
+				"AllowList": [ "PostProcessComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/AIModule.NavLinkProxy",
+				"AllowList": [ "EdRenderComp", "PointLinks", "SmartLinkComp", "SpriteComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/NavigationSystem.NavLinkCustomComponent",
+				"AllowList": [ "AuxiliaryCustomLinkId", "CustomLinkId", "NavLinkUserId" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/Engine.NavigationObjectBase",
@@ -4849,7 +4954,7 @@
 				"bAllowListAllSubclassProperties": true
 			},
 			{
-				"Type": "/Script/Engine.NavModifierComponent",
+				"Type": "/Script/NavigationSystem.NavModifierComponent",
 				"AllowList": [ "AreaClass" ],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
@@ -4859,6 +4964,156 @@
 				"AllowList": [ "NavAgentProps", "NavMovementProperties", "MovementState", "PathFollowingComp" ],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
+			},
+			{
+				"Type": "/Script/CinematicCamera.CameraRig_Rail",
+				"AllowList": [ "RailCameraMount", "RailSplineComponent", "TransformComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/CinematicCamera.CineCameraComponent",
+				"AllowList": [ "CurrentHorizontalFOV" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/CinematicCamera.CameraRig_Crane",
+				"AllowList": [ "CraneCameraMount", "CranePitchControl", "CraneYawControl", "TransformComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/LevelSequence.LevelSequenceActor",
+				"AllowList": [ "BindingOverrides", "BurnInOptions", "DefaultInstanceData" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.ActorTextureStreamingBuildDataComponent",
+				"AllowList": [ "PackedTextureStreamingQualityLevelFeatureLevel", "StreamableTextures" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.CameraActor",
+				"AllowList": [ "CameraComponent", "SceneComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.CameraComponent",
+				"AllowList": [ "AspectRatio", "FieldOfView", "OrthoNearClipPlane", "OrthoWidth", "bAutoCalculateOrthoPlanes", "OrthoFarClipPlane", "ProjectionMode", "PostProcessSettings" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.CameraShakeSourceActor",
+				"AllowList": [ "CameraShakeSourceComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.DecalActor",
+				"AllowList": [ "ArrowComponent", "Decal", "SpriteComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.DirectionalLight",
+				"AllowList": [ "ArrowComponent", "DirectionalLightComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.Light",
+				"AllowList": [ "LightComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.PartitionActor",
+				"AllowList": [ "GridSize" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.PointLight",
+				"AllowList": [ "PointLightComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.PostProcessComponent",
+				"AllowList": [ "VolumeGuid" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.PostProcessVolume",
+				"AllowList": [ "VolumeGuid" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.RectLight",
+				"AllowList": [ "RectLightComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.SceneCaptureComponent",
+				"AllowList": [ "ShowOnlyActors" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.SceneCaptureComponent2D",
+				"AllowList": [ "OrthoWidth", "TextureTarget" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.SkeletalMeshActor",
+				"AllowList": [ "SkeletalMeshComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.SkyAtmosphereComponent",
+				"AllowList": [ "SkyAndAerialPerspectiveLuminanceFactor", "bStaticLightingBuiltGUID" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.SpotLight",
+				"AllowList": [ "ArrowComponent", "SpotLightComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.TimelineComponent",
+				"AllowList": [ "TheTimeline" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.VolumetricCloudComponent",
+				"AllowList": [ "LayerBottomAltitude", "LayerHeight", "Material", "MaterialLifetimePtr", "ReflectionViewSampleCountScaleValue", "ShadowReflectionViewSampleCountScaleValue", "ShadowTracingDistance", "ShadowViewSampleCountScale", "TracingMaxDistance", "TracingMaxDistanceMode", "ViewSampleCountScale" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.WorldPartitionHLOD",
+				"AllowList": [ "HLODBounds", "HLODRebuildPolicyDataSet", "HLODStats", "HLODBuildReport", "InputStats", "MinVisibleDistance", "SourceActors", "SourceCellGuid", "bRequireWarmup", "LODLevel" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/EntityLevel.LevelEntity",
+				"AllowList": [ "LevelEntity", "NotificationForwardingComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/Engine.SphereComponent",
@@ -4994,8 +5249,35 @@
 				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
+				"Type": "/Script/Landscape.LandscapeSplineMeshesActor",
+				"AllowList": [ "GridGuid", "StaticMeshComponents" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
 				"Type": "/Script/Landscape.LandscapeStreamingProxy",
 				"AllowList": [ "LandscapeActorRef", "OverriddenSharedProperties" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Landscape.LandscapeBlueprintBrushBase",
+				"AllowList": [ "AffectedWeightmapLayers", "AffectVisibilityLayer" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Landscape.LandscapeSplineActor",
+				"AllowList": [ "LandscapeActor", "LandscapeGuid" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Niagara.NiagaraActor",
+				"AllowList": [ "ArrowComponent", "NiagaraComponent", "SpriteComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortBuildingAddStructuralSupportMarkerComponent",
+				"AllowList": [ "BuildingClass" ],
+				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
@@ -5016,6 +5298,78 @@
 				"AllowList": [ "Attenuation" ],
 				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 1
+			},
+			{
+				"Type": "/Script/DaySequence.DaySequenceModifierVolume",
+				"AllowList": [ "DaySequenceModifier", "DefaultBox" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.RuntimeVirtualTextureVolume",
+				"AllowList": [ "VirtualTextureComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.WorldPartitionDestructibleHLODComponent",
+				"AllowList": [ "DestructibleActors", "DestructibleHLODInstancesMappingData", "DestructibleHLODMaterial" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.AthenaSpecialActorComponent",
+				"AllowList": [ "DrawLayer" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortAmbientAudioVolume",
+				"AllowList": [ "AmbientComponent" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/AmbientAudio.AmbientAudioComponent",
+				"AllowList": [ "AmbientAsset", "CrossfadeTime", "Priority" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortSplineWaterAudioComponent",
+				"AllowList": [ "ShorelineOffset", "SplineFacingDirection", "InsideSplineSound", "WaterBodyOwner" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/PCG.PCGPartitionActor",
+				"AllowList": [ "LocalToOriginal", "PCGGridSize", "PCGGuid", "bUse2DGrid" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/PCG.PCGWorldActor",
+				"AllowList": [ "LandscapeCacheObject", "bEnableWorldPartitionGenerationSources", "PartitionGridSize" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/PCG.PCGComponent",
+				"AllowList": [ "GraphInstance", "LastGeneratedBounds", "ManagedResourceContainer", "bForceGenerateOnBPAddedToWorld", "bGenerated", "GenerationTrigger", "SchedulingPolicy", "SerializedEditingMode", "GeneratedGraphOutput", "bGenerateOnDropWhenTriggerOnDemand", "Seed", "bActivated" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/SmartObjectsModule.SmartObjectComponent",
+				"AllowList": [ "ComponentGuid" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/SmartObjectsModule.SmartObjectPersistentCollection",
+				"AllowList": [ "SmartObjectContainer", "bUpdateCollectionOnSmartObjectsChange" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/PhysicsCore.BodySetupCore",
@@ -5150,6 +5504,42 @@
 				"WarnForDisallowedPropertiesPhase": 1
 			},
 			{
+				"Type": "/Script/UnrealEd.GroupActor",
+				"AllowList": [ "GroupActors", "bLocked" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/WaterEditor.JumpFloodComponent2D",
+				"AllowList": [ "BlurPasses", "UseBlur", "RTA", "RTB" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/WaterEditor.WaterBrushManager",
+				"AllowList": [ "JumpFloodComponent2D", "SceneCaptureComponent2D", "UseDynamicPreviewRT" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/FortWater/FluidSimulation/Blueprints/BP_FluidSimParent.BP_FluidSimParent_C",
+				"AllowList": [ "DefaultSceneRoot" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/FortWater/FluidSimulation/Blueprints/BP_FluidSim_01.BP_FluidSim_01_C",
+				"AllowList": [ "DebugPlane", "DebugWaterPlaneMID", "FluidSizeSquared" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Environments/Blueprints/Water/BP_Athena_Water.BP_Athena_Water_C",
+				"AllowList": [ "Box", "WaterPost", "Water_Base", "Water_Plane" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterDefinition",
 				"AllowList": [ "FortReleaseVersion", "AnimPreset", "CharacterBlueprint", "IKRetargeter", "SkeletalMesh", "AnimationBP" ],
 				"DenyList": [],
@@ -5210,6 +5600,84 @@
 				"AllowList": [ "HLODMaterial" ],
 				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 1
+			},
+			{
+				"Type": "/Script/FortniteAI.AthenaNavPresenceDetectorComponent",
+				"AllowList": [ "NavMeshNameToUse" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteAI.FortAISpawnerUtilityComponent",
+				"AllowList": [ "QueryRadius" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.CreativeUseRestrictionComponent",
+				"AllowList": [ "NativeRequiredClass", "NativeRequiredTeam", "bNativeInvertClassRequirement", "bNativeInvertTeamRequirement" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.CreativeVersionComponent",
+				"AllowList": [ "LastSavedReleaseVersion" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortCreativePhotoModeCamera",
+				"AllowList": [ "CameraComponent", "PhotoData", "SavedActorGuid" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortFXCustomizationComponent",
+				"AllowList": [ "ParticleParams" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortInspectorCameraCreativePreview",
+				"AllowList": [ "SavedActorGuid" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortPoiVolume",
+				"AllowList": [ "CurrentFortPoiVolumeSize", "LocationTags", "POIDisplayWidgetLocationComponent", "PoiCollisionComp", "VolumeThresholdForLargeGameVolume", "bIsLargeGameVolume" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortTimeOfDayComponent",
+				"AllowList": [ "NativeFinalLightToDataMap", "NativeFinalMeshToDataMap" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortLocalizableMessageComponent",
+				"AllowList": [ "MessageProperties" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FabricRuntime.FabricStepSequencerComponent",
+				"AllowList": [ "StepRate", "CurrentSteps", "PackedStepTable", "bMonophonic", "CurrentTracks" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FMInWorldKnobsRuntime.FabricScreenComponent",
+				"AllowList": [ "ScreenWidget" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/FMInWorldKnobs/Gameplay/Components/BP_FabricNoteLabelComponent.BP_FabricNoteLabelComponent_C",
+				"AllowList": [ "NoteLabelDisplayWidget", "NoteNames" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/FortniteGame.FortEventResponderComponent",
@@ -5489,6 +5957,16 @@
 				"bAllowListAllProperties": true
 			},
 			{
+				"Type": "/Script/FortniteGame.FortUserOptionContainerComponent",
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
+			},
+			{
+				"Type": "/Script/FortniteGame.FortUserOptionFilterComponent",
+				"bAllowListAllProperties": true,
+				"bAllowListAllSubclassProperties": true
+			},
+			{
 				"Type": "/Script/FortniteGame.FortMinigameSettingsBuilding",
 				"AllowList": [],
 				"DenyList": [],
@@ -5577,6 +6055,89 @@
 				"AllowList": [],
 				"DenyList": [],
 				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/FortniteGame.FortActorMetadataComponent",
+				"AllowList": [ "TemplateID" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/GameplayAbilities.AbilitySystemComponent",
+				"AllowList": [ "ActiveGameplayCues", "GameplayTagCountContainer", "MinimalReplicationGameplayCues" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/CRD_SkilledInteractionDevice/BP_SkilledInteractionComponent_PlayerListViewModel.BP_SkilledInteractionComponent_PlayerListViewModel_C",
+				"AllowList": [ "ActiveColor", "ActiveIcon", "ActiveIconColor", "BackgroundColor", "BadColor", "FailureIcon", "FailureIconColor", "GoodColor", "SuccessIcon", "SuccessIconColor", "WaitingIcon", "WaitingIconColor" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/CRD_Conversation_Device/CreativeNonPlayerConversationComponent.CreativeNonPlayerConversationComponent_C",
+				"AllowList": [ "ConversationDeviceCache" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/ContentHall/Blueprints/BP_DemoDisplay.BP_DemoDisplay_C",
+				"AllowList": [ "DefaultSceneRoot", "ISM_ Curve", "ISM_ CurveEdge", "ISM_Corner", "ISM_Main", "ISM_ShadowRound", "ISM_ShadowStraight", "ISM_ShadowStraightTop", "ISM_Side", "ISM_TitleBarMain", "ISM_TitleBarEnd", "ISM_TitleBarEndR", "DescriptionFinal" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/ContentHall/Blueprints/BP_DemoRoom.BP_DemoRoom_C",
+				"AllowList": [ "10MPillar2", "MetalTrim_Straight", "MetalTrim_Corner", "PillarCurveCorner", "LightPanel", "Trim_Curve", "Trim_Straight", "Trim_End", "Pipe", "WhiteRibbedWall", "BlackRibbedCurve", "BlackRibbedWall", "10MWall_Ceiling", "BackWall_Edge", "BackWall_Corner",
+					"Segment Counter", "UELogo", "10MEdge_White", "PillarCurve", "10MCurve", "10MWall", "DefaultSceneRoot" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/CreativeCoreDevices/TrickTile/TrickTileGameplayVolume.TrickTileGameplayVolume_C",
+				"AllowList": [ "OverlapMesh", "Scene" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/HUD/DistantInteractionPoint/BP_DistantInteractionPoint.BP_DistantInteractionPoint_C",
+				"AllowList": [ "DefaultSceneRoot", "InteractionPointWidget" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Blueprints/Lighting/TimeOfDayLighting/TODLightingComponent.TODLightingComponent_C",
+				"AllowList": [ "LightNameMap", "TestDayPhase", "TODLightData", "TODMeshData" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Creative/Devices/Common/Components/Creative_UseRestriction_Component.Creative_UseRestriction_Component_C",
+				"AllowList": [ "EnabledComponent", "InvertClassRequirement", "InvertTeamRequirement", "RequiredClass", "RequiredTeam", "ShouldUseLegacyLogic", "ToyOptions" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Sounds/Fort_Audio_Blueprints/PropAmbientAudioComponent/FortPropAudioComponent.FortPropAudioComponent_C",
+				"AllowList": [ "SoundLoop", "VolumeMultiplier", "PitchMultiplier" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/TimeOfDay/TODM_Sequence/UEFN/BP_LightingScalabilityManager.BP_LightingScalabilityManager_C",
+				"AllowList": [ "Billboard" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/UEFNExposedAssets/Devices/ChildClasses/CrowdVolumeGameplayVolume.CrowdVolumeGameplayVolume_C",
+				"AllowList": [ "OverlapMesh", "Scene" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Creative/PostProcess/PP_HorrorMovie.PP_HorrorMovie_C",
+				"AllowList": [ "PostProcess" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Creative/PostProcess/PP_Retro.PP_Retro_C",
+				"AllowList": [ "PostProcess_High" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Creative/PostProcess/PP_Spooky.PP_Spooky_C",
+				"AllowList": [ "PostProcess" ],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Game/Creative/Devices/Common/Components/Creative_DeviceComponent_Parent.Creative_DeviceComponent_Parent_C",
@@ -5713,6 +6274,42 @@
 				"DenyList": [],
 				"bAllowListAllProperties": true,
 				"bAllowListAllSubclassProperties": true
+			},
+			{
+				"Type": "/Game/Creative/PostProcess/PostProcessEffectActor.PostProcessEffectActor_C",
+				"AllowList": [ "DefaultSceneRoot", "Box" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Creative/PostProcess/PP_Oak.PP_Oak_C",
+				"AllowList": [ "PostProcess" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Sounds/Fort_Audio_Blueprints/MusicParty/MusicPartyPropComponent.MusicPartyPropComponent_C",
+				"AllowList": [ "MusicEventGroupName", "MusicEventTag", "SoundToPlay" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/CRD_PropManipulationDevice/PropManipulatorMgr_V2.PropManipulatorMgr_V2_C",
+				"AllowList": [ "DefaultSceneRoot" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/VividRazorVaultGameplay/Assets/Audio/Blueprints/SoundEventListener_VividRazorVault.SoundEventListener_VividRazorVault_C",
+				"AllowList": [ "VaultLocationTag" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Jethro/Props/StrongArm/Blueprints/BP_StrongArm_Background_A_A.BP_StrongArm_Background_A_A_C",
+				"AllowList": [ "SharedRoot", "StrongArm_Background_A", "StrongArm_Background_B", "StrongArm_Background_C", "StrongArm_Background_D", "StrongArm_Lights" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/CRD_PropManipulationDevice/CreativeResourceNodeComponent_V2.CreativeResourceNodeComponent_V2_C",

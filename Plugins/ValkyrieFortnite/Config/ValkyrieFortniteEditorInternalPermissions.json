@@ -865,6 +865,24 @@
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":	{ "Rules": ["View","Create"] }
 		},
 		"AllowedClasses": {
+			"/Script/AudioGameplayVolume.ReverbVolumeComponent": { "Visible": true },
+			"/Script/Engine.CameraActor": { "Visible": true },
+			"/Script/Engine.RuntimeVirtualTextureComponent": { "Visible": true },
+			"/Script/Engine.RuntimeVirtualTextureVolume": { "Visible": true },
+			"/Script/Engine.TriggerVolume": { "Visible": true },
+			"/Script/Foliage.ProceduralFoliageBlockingVolume": { "Visible": true },
+			"/Script/FortniteAI.AthenaNavMesh_Medium": { "Visible": true },
+			"/Script/FortniteAI.AthenaNavSystemConfigOverride": { "Visible": true },
+			"/Script/FortniteAI.FortNavModifierVolume": { "Visible": true },
+			"/Script/FortniteGame.BuildingLevelInstance": { "Visible": true },
+			"/Script/FortniteGame.FortPlayerStartWarmup": { "Visible": true },
+			"/Script/FortniteGame.FortPoi_DiscoverableComponent": { "Visible": true },
+			"/Script/FortniteGame.FortTreesHLOD": { "Visible": true },
+			"/Script/FortniteGame.FortWorldManager": { "Visible": true },
+			"/Script/FortniteGame.SimpleDestructiblePropExplosionProxy": { "Visible": true },
+			"/Script/FortniteGame.WorldTileManager": { "Visible": true },
+			"/Script/NavigationSystem.NavMeshBoundsVolume": { "Visible": true },
+			"/Script/PCG.PCGPartitionActor": { },
 			"/Script/MusicEnvironment.FrameBasedMusicMap": { },
 			"/Script/MusicalMode.MovieSceneMusicalClock": { },
 			"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C":	{ "Visible": true },
@@ -1329,6 +1347,22 @@
 	"PropertyEditorClassPermissionList": {
 		"+": [
 			{
+				"Type": "/Script/Engine.BrushComponent",
+				"AllowList": [ "bAlwaysCreatePhysicsState" ]
+			},
+			{
+				"Type": "/Script/Engine.PrimitiveComponent",
+				"AllowList": [ "bTreatAsBackgroundForOcclusion" ]
+			},
+			{
+				"Type": "/Script/Landscape.Landscape",
+				"AllowList": [ "bEnableNanite", "bNaniteSkirtEnabled", "NaniteSkirtDepth" ]
+			},
+			{
+				"Type": "/Script/Landscape.LandscapeStreamingProxy",
+				"AllowList": [ "bEnableNanite", "bNaniteSkirtEnabled", "NaniteSkirtDepth" ]
+			},
+			{
 				"Type": "/Game/Sounds/Apollo/AmbientBPs/BP_Default_Ambient.BP_Default_Ambient_C",
 				"AllowList": [
 					"DefaultAudioBank",
@@ -1578,6 +1612,222 @@
 			{
 				"Type": "/Script/Landscape.LandscapeProxy",
 				"AllowList": [ "NaniteComponents", "bUseGeneratedLandscapeSplineMeshesActors" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.LevelInstanceComponent",
+				"AllowList": [ "ShadowDesiredRuntimeBehavior" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/FortWater/Blueprints/WaterBodyMobileMaterial.WaterBodyMobileMaterial_C",
+				"AllowList": [ "Custom_OverrideMaterial", "IsOceanExtendOuter", "To_Lake_Custom_OverrideMaterial", "To_Ocean_Custom_OverrideMaterial" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass_GlobalControls.BP_MeshGrass_GlobalControls_C",
+				"AllowList": [ "BP_MeshGrassIOComponent", "Billboard", "BiomeA", "BiomeA_BiomeSetup", "BiomeA_MeshSetupBasic", "BiomeB", "BiomeBase", "BiomeBase_BiomeSetup", "BiomeBase_MeshSetupBasic", "BiomeBase_MeshSetupVariety",
+					"BiomeC", "BiomeD", "BiomeE", "BiomeF", "BiomeG", "BiomeTexture" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass_Partitioner.BP_MeshGrass_Partitioner_C",
+				"AllowList": [ "PCG_MeshGrass_Partitioner", "PCG_MeshGrass_ScalabilityManager", "Volume" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass_ScalabilityManager.BP_MeshGrass_ScalabilityManager_C",
+				"AllowList": [ "DefaultSceneRoot" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Items/EnvironmentalItems/B_ActorSpawner_Parent.B_ActorSpawner_Parent_C",
+				"AllowList": [ "EditorText-AmountToSpawn", "PreVisMesh" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Prototype/Blueprints/Cube/BP_CubeHelper.BP_CubeHelper_C",
+				"AllowList": [ "DefaultSceneRoot", "PathPoints" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/SafeZone/BP_SafeZoneStorm.BP_SafeZoneStorm_C",
+				"AllowList": [ "Box", "DefaultSceneRoot", "PostProcess", "SM_Storm_ScreenEffect", "UseNewStorm", "UseSeason11Storm", "UseVolumetricStorm" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Sounds/Vehicles/Bus/BP_Bus_Lobby_SoundController.BP_Bus_Lobby_SoundController_C",
+				"AllowList": [ "DefaultSceneRoot" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Sounds/Water/BP_WaterSpline_AudioOnly.BP_WaterSpline_AudioOnly_C",
+				"AllowList": [ "DefaultSceneRoot", "FortSplineWaterAudio", "Spline" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Sounds/Apollo/AmbientBPs/BP_Default_Ambient.BP_Default_Ambient_C",
+				"AllowList": [ "AmbientAudio_Weather", "DefaultSceneRoot" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Sounds/Fort_Audio_Blueprints/mToD_FoundMix.mToD_FoundMix_C",
+				"AllowList": [ "AmbientMix_A", "AmbientMix_B", "Attenuation Extents", "Day_Mix_Sound", "Elements List", "Evening_Mix_Sound", "Morning_Mix_Sound", "Night_Mix_Sound", "No of Elements to Deactivate", "RandomSound_MaxDelay",
+					"RandomSound_MinDelay", "Random_Day", "Random_Evening", "Random_Morning", "Random_Night", "Scene1", "TriggerRange" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/AudioGameplayVolume.ReverbVolumeComponent",
+				"AllowList": [ "ReverbSettings" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Foliage.ProceduralFoliageBlockingVolume",
+				"AllowList": [ "DensityFalloff" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteAIServer.FortEQSPrevisActor",
+				"AllowList": [ "QueryVisualizationComponent", "SceneRoot" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortAthenaMapInfo",
+				"AllowList": [ "AircraftDropVolume", "AircraftDropZone", "AircraftDropZoneComponent", "AircraftSpawnZone", "AircraftSpawnZoneComponent", "ArrowComponent", "CachedPlayableBoundsForClients", "SafeZoneDefinition", "SafeZoneStorm",
+					"SafeZoneVolumeDefinitions", "SpriteComponent" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortBallSpawner",
+				"AllowList": [ "PreviewMeshComponent", "SphereComp" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortPoi_DiscoverableComponent",
+				"AllowList": [ "QuestObjectiveBackendName" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/NavigationSystem.NavSystemConfigOverride",
+				"AllowList": [ "NavigationSystemConfig", "SpriteComponent" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/NavigationSystem.NavigationData",
+				"AllowList": [ "NavDataConfig", "SupportedAreas" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/NavigationSystem.RecastNavMesh",
+				"AllowList": [ "AgentHeight", "AgentRadius", "NavLinkJumpConfigs", "NavLinkJumpDownConfig", "bAllowWorldPartitionedNavMesh", "NavMeshResolutionParams" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/SpecialSupplyDrop/Gameplay/B_SpecialSupplyDrop_Manager.B_SpecialSupplyDrop_Manager_C",
+				"AllowList": [ "DefaultSceneRoot" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/AmbientAudioBase/Blueprints/BP_WaterSpline_AudioOnly.BP_WaterSpline_AudioOnly_C",
+				"AllowList": [ "DefaultSceneRoot", "FortSplineWaterAudio", "Spline" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/AudioPunchberryContent/Assets/Water/BP_WaterSpline_AudioOnly.BP_WaterSpline_AudioOnly_C",
+				"AllowList": [ "DefaultSceneRoot", "FortSplineWaterAudio", "Spline" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/AudioPunchberryContent/Assets/Water/BP_WaterSpline_Lake_AudioOnly.BP_WaterSpline_Lake_AudioOnly_C",
+				"AllowList": [ "DefaultSceneRoot", "FortSplineWaterAudio", "Spline" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/ArtTools/Tech_Art/DirectFX/DFX_MaterialComponent.DFX_MaterialComponent_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/ArtTools/Tech_Art/DirectFX/DFX_Placement.DFX_Placement_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Athena/Helios/Actors/BP_POI_Measure_Tool.BP_POI_Measure_Tool_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass_GlobalControls.BP_MeshGrass_GlobalControls_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass.BP_MeshGrass_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass_CullVolume.BP_MeshGrass_CullVolume_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Athena/Helios/Environments/Landscape/WorldBuildingTools/PCGGrass/BP_MeshGrass_SplineGenerator.BP_MeshGrass_SplineGenerator_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Blueprints/Blutilities/ForLDs/BPs/TestScaleEditor/TestScaleEditorActor.TestScaleEditorActor_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/Environments/Helios/TechArt/FarLights/BP_FarLights.BP_FarLights_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/TechArt/FakeLights/BP_PointDecal.BP_PointDecal_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/TechArt/FakeLights/BP_LightConeProjection.BP_LightConeProjection_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Game/TechArt/FakeLights/BP_LinearGradientProjection.BP_LinearGradientProjection_C",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/Engine.LODActor",
+				"AllowList": [ "CachedNumHLODLevels", "Key", "LODActorTag", "LODDrawDistance", "LODLevel", "NumTrianglesInMergedMesh", "NumTrianglesInSubActors", "StaticMeshComponent", "bBuiltFromHLODDesc" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.TextRenderActor",
+				"AllowList": [ "SpriteComponent", "TextRender" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.BuildingTextureData",
+				"AllowList": [ "Center", "Displacement", "Magnitude" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/NavigationSystem.NavMeshBoundsVolume",
+				"AllowList": [ "SupportedAgents" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/Engine.PhysicsVolume",
+				"AllowList": [ "Priority" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/FortniteGame.FortAthenaVehicleSpawner",
+				"AllowList": [ "DummyRoot", "FortVehicleItemDef" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Abilities/Toys/Golf/Minigame/B_GolfMinigame_Hole.B_GolfMinigame_Hole_C",
+				"AllowList": [ "GolfCourseBillboard", "HoleCollision", "SM_GolfCourse_Golf_Flag", "Scene" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Game/Athena/Items/QuestInteractables/Generic/B_DanceFloorSounds_Large.B_DanceFloorSounds_Large_C",
+				"AllowList": [ "BindingActor", "LPF Fader", "PawnVolume" ],
 				"WarnForDisallowedPropertiesPhase": 2
 			}
 		]

@@ -78,6 +78,13 @@
 		],
 		"epicInternalAssets": []
 	},
+	"VerseFortniteAbilities":
+	{
+		"assets": [
+			"VerseFortniteAbilities"
+		],
+		"epicInternalAssets": []
+	},
 	"kurai_environment":
 	{
 		"assets": [],

@@ -26,6 +26,11 @@
 			"FriendlyName": "CommonUIVer",
 			"Version": 1
 		},
+		"0A5D704A5C7442D48858022DB9C20B2A":
+		{
+			"FriendlyName": "FortWeaponRangedVersion",
+			"Version": 1
+		},
 		"0D03FD52BF174EAE89C8DE2A98BF53FE":
 		{
 			"FriendlyName": "MaterialValidationGroup",
@@ -146,6 +151,11 @@
 			"FriendlyName": "Dev-AnimPhys",
 			"Version": 17
 		},
+		"2BE25BA65E964E63BB01338ED0AD8402":
+		{
+			"FriendlyName": "FortAthenaAIBotEvaluator_RangeAttack",
+			"Version": 1
+		},
 		"2C28AC2215CF46FEBD19F011652A3C05":
 		{
 			"FriendlyName": "WorldConditionCustomVersion",
@@ -264,7 +274,7 @@
 		"601D1886AC644F84AA16D3DE0DEAC7D6":
 		{
 			"FriendlyName": "FortniteMain",
-			"Version": 268
+			"Version": 269
 		},
 		"60C4F0DE8B264C34AA9372015DFF09CC":
 		{
@@ -279,7 +289,7 @@
 		"62915CA31C8E4BF7A30E12C7C8219DF7":
 		{
 			"FriendlyName": "EngineNetworkVersion",
-			"Version": 44
+			"Version": 45
 		},
 		"6304A3E700594F598CFC21BD7721FD4E":
 		{
@@ -356,6 +366,11 @@
 			"FriendlyName": "NavigationHeightMapData",
 			"Version": 1
 		},
+		"7F95FC1A12514B3DA02072063778E94E":
+		{
+			"FriendlyName": "RidableComponentVersion",
+			"Version": 3
+		},
 		"804E3F7570884B49A4D68C063C7EB6DC":
 		{
 			"FriendlyName": "VirtualTextureBuiltDataVersion",
@@ -364,7 +379,7 @@
 		"81A1B2B3AF127711E211B0B21D235409":
 		{
 			"FriendlyName": "MovieRenderPipelineCoreObjectVersion",
-			"Version": 3
+			"Version": 4
 		},
 		"82E77C4E332343A5B46B13C597310DF3":
 		{
@@ -424,7 +439,7 @@
 		"92738C4329884D9C9A3D9BBE6EFF9FC0":
 		{
 			"FriendlyName": "InterchangeAssetImportDataVer",
-			"Version": 5
+			"Version": 6
 		},
 		"93EDE1AA10CA73754DF98A2849B157A0":
 		{
@@ -484,7 +499,7 @@
 		"A4237A36CAEA41C98FA218F858681BF3":
 		{
 			"FriendlyName": "VisualLogger",
-			"Version": 5
+			"Version": 6
 		},
 		"A462B7EAF4994E3A99C1EC1F8224E1B2":
 		{
@@ -519,7 +534,7 @@
 		"A7820CFB20A743598C542C149623CF50":
 		{
 			"FriendlyName": "Dev-ControlRig",
-			"Version": 43
+			"Version": 46
 		},
 		"A7C3E2915F8B4D063E1A9C74D20F68B5":
 		{
@@ -599,7 +614,7 @@
 		"B7F3D2854A1C5E082D6B9F71C50E8A14":
 		{
 			"FriendlyName": "Dev-RigPhysics",
-			"Version": 6
+			"Version": 8
 		},
 		"BA9262566C7947C496D1E4F4CE985342":
 		{
@@ -669,7 +684,7 @@
 		"DC49959B53C04DE79156EA885E7C5D39":
 		{
 			"FriendlyName": "Dev-RigVM",
-			"Version": 25
+			"Version": 26
 		},
 		"DCC215F26CB44CD09693A2A0BE6A6D23":
 		{
@@ -744,7 +759,7 @@
 		"F3DF151C85A943078F5B9F5381209F33":
 		{
 			"FriendlyName": "BlueprintBaseEvaluatorVersion",
-			"Version": 2
+			"Version": 3
 		},
 		"F6DFBB78BB50A0E44018B84D60CBAF23":
 		{
@@ -769,7 +784,7 @@
 		"FCF57AFA50764283B9A9E658FFA02D32":
 		{
 			"FriendlyName": "NiagaraVer",
-			"Version": 93
+			"Version": 94
 		}
 	},
 	"ExtensionAllowList": [
@@ -783,6 +798,7 @@
 		"po",
 		"locmeta",
 		"locres",
+		"py",
 		"png"
 	],
 	"ClassAllowLists":
@@ -954,6 +970,8 @@
 			"/Script/CaptureDataCore.CameraCalibration",
 			"/Script/CaptureDataCore.FootageCaptureData",
 			"/Script/CaptureDataCore.MeshCaptureData",
+			"/Script/CascadeRuntime.Emitter",
+			"/Script/CascadeRuntime.ParticleSystemComponent",
 			"/Script/ChaosClothAssetEngine.ChaosClothAsset",
 			"/Script/ChaosClothAssetEngine.ChaosClothComponent",
 			"/Script/CinematicCamera.CameraRig_Crane",
@@ -965,6 +983,7 @@
 			"/Script/CommonConversationGraph.ConversationGraphNode_Knot",
 			"/Script/CommonConversationGraph.ConversationGraphNode_Task",
 			"/Script/CommonConversationRuntime.ConversationDatabase",
+			"/Script/CommonUI.CommonActionWidget",
 			"/Script/CommonUI.CommonButtonBase",
 			"/Script/Constraints.ConstraintsActor",
 			"/Script/Constraints.ConstraintsManager",
@@ -1072,7 +1091,6 @@
 			"/Script/Engine.DirectionalLight",
 			"/Script/Engine.DirectionalLightComponent",
 			"/Script/Engine.EdGraph",
-			"/Script/Engine.Emitter",
 			"/Script/Engine.ExponentialHeightFog",
 			"/Script/Engine.ExponentialHeightFogComponent",
 			"/Script/Engine.GeneratedBlueprintBinding",
@@ -1347,7 +1365,6 @@
 			"/Script/Engine.Model",
 			"/Script/Engine.MorphTarget",
 			"/Script/Engine.NullNavSysConfig",
-			"/Script/Engine.ParticleSystemComponent",
 			"/Script/Engine.PhysicsAsset",
 			"/Script/Engine.PhysicsConstraintTemplate",
 			"/Script/Engine.PointLight",
@@ -2368,6 +2385,8 @@
 			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent",
 			"/Script/AudioMixer.SubmixEffectReverbPreset",
 			"/Script/AudioMixer.SubmixEffectSubmixEQPreset",
+			"/Script/AudioModulation.MovieSceneAudioControlBusMixSection",
+			"/Script/AudioModulation.MovieSceneAudioControlBusMixTrack",
 			"/Script/AudioModulation.MovieSceneAudioControlBusSection",
 			"/Script/AudioModulation.MovieSceneAudioControlBusTrack",
 			"/Script/AudioModulation.SoundModulationGenerator",
@@ -2435,7 +2454,9 @@
 			"/Script/CommonUIExtensionsBP.MVVMBlueprintViewExtension_EnhancedInput",
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputClassExtension",
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputExtension",
+			"/Script/CoreUObject.Class",
 			"/Script/CoreUObject.Function",
+			"/Script/CoreUObject.Object",
 			"/Script/CoreUObject.ScriptStruct",
 			"/Script/DaySequence.DaySequenceCollectionAsset",
 			"/Script/DaySequence.DaySequenceConditionTag",
@@ -2482,6 +2503,7 @@
 			"/Script/FortniteGame.FortAmbientAudioVolume",
 			"/Script/FortniteGame.FortGameFeatureAction_AlwaysGenerateExternallyReferencablePackages",
 			"/Script/FortniteGame.FortGameUserSettings",
+			"/Script/FortniteGame.FortPatchCookSeed",
 			"/Script/FortniteGame.FortPlayerMappableKeySettings",
 			"/Script/FortniteGame.FortPlayerStartWarmup",
 			"/Script/FortniteGame.FortPoi_DiscoverableComponent",
@@ -2528,6 +2550,18 @@
 			"/Script/ItemizationUI.InventoryCollectionViewModelResolver",
 			"/Script/ItemizationUI.InventoryItemViewModelResolver",
 			"/Script/ItemizationUI.ItemizationUIAllowedConversionFunctions",
+			"/Script/ModularTestFramework.DefaultModularTestSuite",
+			"/Script/ModularTestFramework.E2EModularTestSuite",
+			"/Script/ModularTestFramework.ModularTest",
+			"/Script/ModularTestFramework.ModularTestSuite",
+			"/Script/ModularTestFramework.MTFBuiltInClientOps",
+			"/Script/ModularTestFramework.MTFBuiltInServerOps",
+			"/Script/ModularTestFramework.MTFClientOpHandler",
+			"/Script/ModularTestFramework.MTFClientRole",
+			"/Script/ModularTestFramework.MTFEnv",
+			"/Script/ModularTestFramework.MTFServerOpHandler",
+			"/Script/ModularTestFramework.MTFServerRole",
+			"/Script/ModularTestFramework.TransientWorldTestSuite",
 			"/Script/MovieScene.MovieSceneBindingOverrides",
 			"/Script/MusicalMode.MovieSceneMusicalClock",
 			"/Script/MusicEnvironment.FrameBasedMusicMap",
@@ -3191,6 +3225,14 @@
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsParticleStrength",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsParticleTargetMode",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsParticleTargetVelocityInfluence",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDrag",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragAdditionalDamping",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragAngularDampingMultiplier",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragExternalAngularVelocity",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragExternalLinearVelocity",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragExternalTurbulenceVelocity",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragExternalVelocitySpace",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverDragLinearDampingMultiplier",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverGravity",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverMaxNumSteps",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverMaxTimeStep",
@@ -3198,6 +3240,10 @@
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverNumIterations",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverSettings",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverSpaceMotion",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverSpaceMotionAngularMotionScale",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverSpaceMotionInertialForces",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverSpaceMotionInertialForcesAmount",
+			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverSpaceMotionLinearMotionScale",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyGetDynamicsSolverTeleportDetection",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyImportDynamicsCollidersFromPhysicsAsset",
 			"/Script/ControlRigDynamics.RigUnit_HierarchyImportDynamicsCollidersFromPhysicsAsset1",
@@ -3250,6 +3296,14 @@
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsParticleStrength",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsParticleTargetMode",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsParticleTargetVelocityInfluence",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDrag",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragAdditionalDamping",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragAngularDampingMultiplier",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragExternalAngularVelocity",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragExternalLinearVelocity",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragExternalTurbulenceVelocity",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragExternalVelocitySpace",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverDragLinearDampingMultiplier",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverGravity",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverMaxNumSteps",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverMaxTimeStep",
@@ -3257,6 +3311,10 @@
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverNumIterations",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverSettings",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverSpaceMotion",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverSpaceMotionAngularMotionScale",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverSpaceMotionInertialForces",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverSpaceMotionInertialForcesAmount",
+			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverSpaceMotionLinearMotionScale",
 			"/Script/ControlRigDynamics.RigUnit_HierarchySetDynamicsSolverTeleportDetection",
 			"/Script/ControlRigDynamics.RigUnit_InstantiateDynamics",
 			"/Script/ControlRigDynamics.RigUnit_SpawnDynamicsChains",
@@ -3425,6 +3483,7 @@
 			"/Script/DataHierarchyEditor.DataHierarchyElementMetaData_SectionAssociation",
 			"/Script/DataHierarchyEditor.HierarchyElementIdentity",
 			"/Script/DataRegistry.DataRegistryId",
+			"/Script/DirectMeshControlRig.RigUnit_SetupShapeLibraryFromLayer",
 			"/Script/DrawDebugLibrary.RigUnit_AddToFloatHistoryArray",
 			"/Script/DrawDebugLibrary.RigUnit_AddToNameHistoryArray",
 			"/Script/DrawDebugLibrary.RigUnit_AddToVectorHistoryArray",
@@ -3555,6 +3614,7 @@
 			"/Script/EpicControlRigRuntime.RigUnit_TwoBoneIKOffPlane",
 			"/Script/FNRetargetOps.IKRetargetWeaponGripOp",
 			"/Script/FNRetargetOps.IKRetargetWeaponGripOpSettings",
+			"/Script/FortControlRigUnits.FortRigUnit_DeltaRef",
 			"/Script/FortControlRigUnits.FortRigUnit_SphereTraceByChannel",
 			"/Script/FortniteGame.BuildingActorClassData",
 			"/Script/FortniteGame.BuildingFloorActorClassData",
@@ -3632,11 +3692,14 @@
 			"/Script/IKRig.IKRigWorkData",
 			"/Script/IKRig.RigUnit_IKRig",
 			"/Script/IKRigUAF.RigUnit_UAFIKRetargeter",
+			"/Script/IKRigUAF.RigUnit_UAFIKRetargeter_v2",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits",
+			"/Script/LimbTwistOp.IKRetargetLimbTwistOp",
+			"/Script/LimbTwistOp.IKRetargetLimbTwistOpSettings",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkBase",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluateBasicValue",
 			"/Script/LiveLinkControlRig.RigUnit_LiveLinkEvaluateInputDeviceValue",
@@ -3712,6 +3775,8 @@
 			"/Script/PBIK.PBIKWorkData",
 			"/Script/PBIK.RigUnit_PBIK",
 			"/Script/PBIK.RootPrePullSettings",
+			"/Script/PelvisVolumeOp.IKRetargetPelvisVolumeOp",
+			"/Script/PelvisVolumeOp.IKRetargetPelvisVolumeOpSettings",
 			"/Script/PhysicsControl.PhysicsControlData",
 			"/Script/PhysicsControl.PhysicsControlForceAndTorqueData",
 			"/Script/PhysicsControl.PhysicsControlModifierData",
@@ -3722,6 +3787,8 @@
 			"/Script/PoseBuilder.RigUnit_PoseBuilder",
 			"/Script/PreviewPropOp.IKRetargetPreviewPropOp",
 			"/Script/PreviewPropOp.IKRetargetPreviewPropOpSettings",
+			"/Script/ProximityIKOp.IKRetargetProximityIKOp",
+			"/Script/ProximityIKOp.IKRetargetProximityIKOpSettings",
 			"/Script/RelativeIKOp.IKRetargetPelvicMotionOp",
 			"/Script/RelativeIKOp.IKRetargetPelvicMotionOpSettings",
 			"/Script/RelativeIKOp.IKRetargetRelativeIKOp",
@@ -3885,6 +3952,7 @@
 			"/Script/RigVM.RigVMFunction_MathColorFromDouble",
 			"/Script/RigVM.RigVMFunction_MathColorFromFloat",
 			"/Script/RigVM.RigVMFunction_MathColorLerp",
+			"/Script/RigVM.RigVMFunction_MathColorLerpUsingHSV",
 			"/Script/RigVM.RigVMFunction_MathColorMake",
 			"/Script/RigVM.RigVMFunction_MathColorMul",
 			"/Script/RigVM.RigVMFunction_MathColorSub",
@@ -4057,6 +4125,7 @@
 			"/Script/RigVM.RigVMFunction_MathQuaternionMirrorTransform",
 			"/Script/RigVM.RigVMFunction_MathQuaternionMul",
 			"/Script/RigVM.RigVMFunction_MathQuaternionNotEquals",
+			"/Script/RigVM.RigVMFunction_MathQuaternionQInterpTo",
 			"/Script/RigVM.RigVMFunction_MathQuaternionRotateVector",
 			"/Script/RigVM.RigVMFunction_MathQuaternionRotationOrder",
 			"/Script/RigVM.RigVMFunction_MathQuaternionScale",
@@ -4232,6 +4301,7 @@
 			"/Script/RigVM.RigVMFunction_VisualLogSphere",
 			"/Script/RigVM.RigVMFunction_VisualLogText",
 			"/Script/RigVM.RigVMFunction_VisualLogWireframeOptional",
+			"/Script/RigVM.RigVMFunction_VisualLogWorldText",
 			"/Script/RigVM.RigVMInstructionSetExecuteState",
 			"/Script/RigVM.RigVMSimPoint",
 			"/Script/RigVM.RigVMStruct",
@@ -4259,6 +4329,7 @@
 			"/Script/UAF.RigUnit_AnimNextWriteSkeletalMeshComponentPose",
 			"/Script/UAF.RigUnit_CopyModuleProxyVariables",
 			"/Script/UAF.RigUnit_GetActorTransform",
+			"/Script/UAF.RigUnit_GetMeshTransform",
 			"/Script/UAF.RigUnit_GetSocketTransform",
 			"/Script/UAF.RigUnit_IsAnimBPDriven",
 			"/Script/UAF.RigUnit_IsRecentlyRendered",
@@ -4299,6 +4370,8 @@
 			"/Script/UAFAnimGraph.RigUnit_HasValidEvaluationModifier",
 			"/Script/UAFAnimGraph.RigUnit_IsSlotActive",
 			"/Script/UAFAnimGraph.RigUnit_UAFRunAsset",
+			"/Script/UAFAnimNode.RigUnit_RunAnimNode_v1",
+			"/Script/UAFAnimNode.RigUnit_RunAnimNode_v2",
 			"/Script/UMG.WidgetAnimationBinding",
 			"/Script/UMG.WidgetTransform"
 		],
@@ -4332,7 +4405,14 @@
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Attach",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Tags",
 			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropClassData",
-			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropFieldData"
+			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropFieldData",
+			"/Script/VerseTypeEditorRuntime.VerseFieldTypeData",
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingColor",
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingColorAlpha",
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingPassthrough",
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingTruncate",
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingVector3",
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingVector3Truncate"
 		],
 		"VKCreateUGCPartner": []
 	},
@@ -4340,6 +4420,9 @@
 	{
 		"VKCreateUGC": [
 			"/AudioModulation/Volume.Volume",
+			"/BeanstalkAI/TestPlayers/Presets/TestPlayer_FollowPlayer.TestPlayer_FollowPlayer",
+			"/BeanstalkAI/TestPlayers/Presets/TestPlayer_Idle.TestPlayer_Idle",
+			"/BeanstalkAI/TestPlayers/Presets/TestPlayer_RandomMovement.TestPlayer_RandomMovement",
 			"/BeanstalkAudio/Music/SoundCues/SC_FG_FallingToTheBottom.SC_FG_FallingToTheBottom",
 			"/BeanstalkAudio/Music/SoundCues/SC_FG_WantRevenge.SC_FG_WantRevenge",
 			"/BeanstalkLevel_Composition/SetupAssets/Maps/PID_BS_S07_Checkpoint_L.PID_BS_S07_Checkpoint_L",
@@ -4711,6 +4794,7 @@
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PointWoof.Character_PointWoof",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PointyTemper.Character_PointyTemper",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PolarityWinnField.Character_PolarityWinnField",
+			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PolishedJade_Mind.Character_PolishedJade_Mind",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PoolSwirl.Character_PoolSwirl",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_PopDroid.Character_PopDroid",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/Character_Possession.Character_Possession",
@@ -16963,6 +17047,11 @@
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_VO/SC_BS_VO_Elimination.SC_BS_VO_Elimination",
 			"/BeanstalkAudio/SFX/SoundCues/SC_BS_VO/SC_BS_VO_Victory.SC_BS_VO_Victory",
 			"/BRCosmetics/Athena/Items/Cosmetics/Characters/CID_030_Athena_Commando_M_Halloween.CID_030_Athena_Commando_M_Halloween",
+			"/Game/Sounds/Modulation/Buses/CB_FortVehicles_Boost_HPF.CB_FortVehicles_Boost_HPF",
+			"/Game/Sounds/Modulation/Buses/CB_FortVehicles_Boost_LPF.CB_FortVehicles_Boost_LPF",
+			"/Game/Sounds/Modulation/Buses/CB_FortVehicles_Engine_HPF.CB_FortVehicles_Engine_HPF",
+			"/Game/Sounds/Modulation/Buses/CB_FortVehicles_Engine_LPF.CB_FortVehicles_Engine_LPF",
+			"/Game/Sounds/Modulation/Buses/UEFN/CB_FortVehicles_Boost.CB_FortVehicles_Boost",
 			"/NPCDefault/Textures/T_Soldier_HID_Creative_Mannequin_M_L.T_Soldier_HID_Creative_Mannequin_M_L"
 		],
 		"VKCreateUGCPartner": [
@@ -29737,6 +29826,7 @@
 		"/Script/CoreUObject.InstanceDataObjectClass",
 		"/Script/CoreUObject.LinkerPlaceholderClass",
 		"/Script/CoreUObject.VerseClass",
+		"/Script/CoreUObject.VerseModuleClass",
 		"/Script/Engine.AnimBlueprintGeneratedClass",
 		"/Script/Engine.BlueprintGeneratedClass",
 		"/Script/ModelViewViewModel.MVVMInstancedViewModelGeneratedClass",

@@ -1,9 +1,11 @@
-# Copyright Epic Games, Inc. All Rights Reserved.
+<#
+Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
-# Generated Digest of Verse API
-# DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.30-CL-55979764
+Generated Digest of Verse API
+DO NOT modify this manually!
+Generated from build: ++Fortnite+Release-42.00-CL-56878558
 #################################################
+#>
 
 AgentGroup<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
@@ -53,7 +55,7 @@ AgentGroup<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Interface that defines a class as providing an agent group.
-  agent_group_interface<public>(member_info: subtype(member_info_interface)) := interface<unique> {
+  agent_group_interface<native><public>(member_info: subtype(member_info_interface)) := interface<unique> {
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<public>: listenable(tuple(agent, member_info))
 
@@ -70,7 +72,6 @@ AgentGroup<public> := module {
   }
 
   using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
   # Interface that defines a class as being usable as member info in an agent group
   member_info_interface<native><public> := interface {}
@@ -78,8 +79,12 @@ AgentGroup<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   # Base class for all errors returned from agent_group.RemoveMember.
   remove_member_error<native><public> := class<computes> {}
+
+  # Verse path: /Verse.org/AgentGroup
+  using { /Verse.org/Simulation }
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/Assets
 Assets<public> := module {
   # Create an asset reference to the given internal asset path
@@ -269,7 +274,6 @@ Chat<public> := module {
 
   using { /Verse.org/AgentGroup }
   using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
   chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
@@ -282,7 +286,7 @@ Chat<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     Group<public>: agent_group_interface(member_info)
 
-    IsAgentInChannel<native_callable><epic_internal>(Agent: agent)<reads><decides>: void = external {}
+    IsAgentInChannel<native_callable><epic_internal>(Agent: agent)<decides><reads>: void = external {}
 
     Name<public>: message
   }
@@ -298,6 +302,9 @@ Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   # Error returned when a channel cannot be removed via the `RemoveChatChannel` function.
   remove_channel_error<public> := class<computes> {}
+
+  # Verse path: /Verse.org/Chat
+  using { /Verse.org/SceneGraph }
 
   @available { MinUploadedAtFNVersion := 4000 }
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
@@ -337,6 +344,7 @@ Chat<public> := module {
   }
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/Colors
 Colors<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
@@ -680,7 +688,7 @@ Colors<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   # Blend colors `CA1` and `CA2` with `CA1` over `CA2` using two non-premultiplied `color_alpha` values.
   # Alpha components are clamped between `0.0` and `1.0`. Fails if the value of both clamped Alpha components are `0.0`.
-  Over<public>(CA1: color_alpha, CA2: color_alpha)<reads><decides>: color_alpha = external {}
+  Over<public>(CA1: color_alpha, CA2: color_alpha)<decides><reads>: color_alpha = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Makes a new `color_alpha` from a `tuple(float, float, float, float)`. Fails if passed array is not of length 4.
@@ -692,6 +700,8 @@ Colors<public> := module {
 
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+  @replicatable
   @import_as("/*.FVColor")
   # Represents colors as RGB triples in the ACES 2065-1 color space.
   # Component values are linear (i.e. `*gamma* = 1.0`).
@@ -710,6 +720,7 @@ Colors<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 3800 }
+  @replicatable
   @import_as("/*.FVColorAlpha")
   # Represents colors as RGB triples in the ACES 2065-1 color space with an additional alpha channel A.
   # This reasons about the `Color` and alpha (`A`) as separate concepts instead of as a single concept.
@@ -756,17 +767,19 @@ Colors<public> := module {
 
 # Module import path: /Verse.org/Concurrency
 Concurrency<public> := module {
-  awaitable<public>() := awaitable(void)
-
   using { /Verse.org/Native }
+  @cpp_name("verse::awaitable")
   # A parametric interface implemented by events with a `payload` that can be waited on. Matched with `signalable.`
-  awaitable<public>(payload: type) := interface {
+  awaitable<native><public>(payload: type) := interface {
     # Suspends the current task until resumed by a matching call to `signalable.Signal`. Returns the event `payload`.
     Await<public>()<suspends>: payload
 
     (/Verse.org/Concurrency/awaitable:)Concurrency_awaitable_Variance<private>(): tuple(payload) = external {}
   }
 
+  awaitable<public>() := awaitable(void)
+
+  @cpp_name("verse::task")
   task<native><public>(t: type) := class<abstract><final>(awaitable(t)) {
     Active<native><epic_internal>()<transacts><decides>: void
 
@@ -812,14 +825,12 @@ Diagnostics<public> := module {
 # Module import path: /Verse.org/Input
 Input<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
-  @experimental
   # Transforms the given viewport space coordinates into 3D world origin and direction vectors. ViewportPosition is in centimeters: `Left` is the horizontal coordinate (positive rightward from the top-left corner) and `Up` is the vertical coordinate (positive upward, negative for points below the top of the screen). Only the `Left` and `Up` components are used; `Forward` is intentionally ignored because depth is unknown at the point of screen interaction — trace the returned ray against scene geometry to determine the world-space hit point at the correct depth.
   (Player: player).DeprojectViewportToWorld<native><public>(ViewportPosition: (/Verse.org/SpatialMath:)vector3)<reads>: deproject_results
 
   @available { MinUploadedAtFNVersion := 4100 }
-  @experimental
   # Transforms a 3D world position to viewport space coordinates in centimeters. Returns a vector3 where `Left` is the horizontal viewport coordinate (positive is rightward from the screen's top-left corner) and `Up` is the vertical viewport coordinate (positive is upward, so a point below the top of the screen has a negative `Up`). `Forward` is always 0 because viewport coordinates are 2D. Fails if the world position is behind the camera.
-  (Player: player).ProjectWorldToViewport<native><public>(WorldPosition: (/Verse.org/SpatialMath:)vector3)<reads><decides>: (/Verse.org/SpatialMath:)vector3
+  (Player: player).ProjectWorldToViewport<native><public>(WorldPosition: (/Verse.org/SpatialMath:)vector3)<decides><reads>: (/Verse.org/SpatialMath:)vector3
 
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
@@ -906,7 +917,6 @@ Input<public> := module {
     PlaceMarker<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 4100 }
-    @experimental
     PointerSelect<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
     @available { MinUploadedAtFNVersion := 4120 }
@@ -932,7 +942,6 @@ Input<public> := module {
     ToggleView<public>: input_action(logic) = external {}
 
     @available { MinUploadedAtFNVersion := 4100 }
-    @experimental
     TouchMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -948,6 +957,10 @@ Input<public> := module {
     ZoomOut<public>: input_action(logic) = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4200 }
+  # Diagnostic helper for verifying client-side code execution. Logs the timestamp and the current net mode to LogVerseInput. Call from a Verse function to confirm the same Verse code runs on both server and client — the log line will appear once with NetMode=DedicatedServer/ListenServer and once with NetMode=Client (or just NetMode=Standalone in PIE single-process).
+  VerseInput_TestPredictsPing<native><epic_internal>()<transacts>: void
+
   # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
   available_input_devices<native><public> := struct {
     Gamepad<native><public>: logic = external {}
@@ -960,7 +973,6 @@ Input<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
-  @experimental
   # Holds the world-space ray produced by deprojecting a viewport coordinate.
   deproject_results<native><public> := struct {
     # Normalized world space direction vector of the ray, pointing from the camera through the given viewport coordinate into the scene.
@@ -982,7 +994,7 @@ Input<public> := module {
   #              \---------------------> CancelActivationEvent ----------------------/
   input_events<native><public>(t: type) := class(input_events_base) {
     # Detection has started for this input e.g. a required key is now held down. Note: TriggerActivationEvent may also occur this frame,
-    #  but this event will always be fired first. DetectionBegin and DetectionEnd will always fire, regardless of whether the input is
+    #  but this event will always be fired first. BeginDetectEvent and EndDetectEvent will always fire, regardless of whether the input is
     #  successful or canceled.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
@@ -1000,7 +1012,7 @@ Input<public> := module {
     #                 2: elapsed seconds since detection began
     DetectionOngoingEvent<native><public>: listenable(tuple(player, t, float)) = external {}
 
-    # Detection has finished e.g. no required keys are now down. Will always fire as a pair with DetectionBegin.
+    # Detection has finished e.g. no required keys are now down. Will always fire as a pair with BeginDetectEvent.
     #  Tuple payload: 0: the player generating this event
     #                 1: elapsed seconds since detection began
     EndDetectEvent<native><public>: listenable(tuple(player, float)) = external {}
@@ -1032,11 +1044,27 @@ Input<public> := module {
     # Returns the input_events object for the given input_action, allowing you to bind to events for this action.
     GetInputEvents<native><public>(ActionToBind: input_action(t) where t: type): input_events(t)
 
+    @available { MinUploadedAtFNVersion := 4200 }
+    @deprecated { Message := "Use GetInputEvents." }
+    GetPredictsInputEvents<epic_internal>(ActionToBind: input_action(t) where t: type): predicts_input_events(t) = external {}
+
     MakeFloatInputEvents<native_callable><epic_internal>(): input_events(float) = external {}
+
+    @available { MinUploadedAtFNVersion := 4200 }
+    @deprecated { Message := "Use GetInputEvents." }
+    MakeFloatPredictsInputEvents<epic_internal>(): predicts_input_events(float) = external {}
 
     MakeLogicInputEvents<native_callable><epic_internal>(): input_events(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 4200 }
+    @deprecated { Message := "Use GetInputEvents." }
+    MakeLogicPredictsInputEvents<epic_internal>(): predicts_input_events(logic) = external {}
+
     MakeVector3InputEvents<native_callable><epic_internal>(): input_events((/Verse.org/SpatialMath:)vector3) = external {}
+
+    @available { MinUploadedAtFNVersion := 4200 }
+    @deprecated { Message := "Use GetInputEvents." }
+    MakeVector3PredictsInputEvents<epic_internal>(): predicts_input_events((/Verse.org/SpatialMath:)vector3) = external {}
 
     # Removes the given input_mapping from the player, which will disable the input_actions within it from being processed and prevent them from executing events.
     RemoveInputMapping<native><public>(InputMapping: input_mapping): void
@@ -1047,10 +1075,23 @@ Input<public> := module {
     # The player's current preferred input method, updated when the player switches between keyboard/mouse, gamepad, or touch.
     var<internal> PreferredInputMethod<native><public>: input_method = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @deprecated { Message := "Use the input_events returned by GetInputEvents." }
+  predicts_input_events<epic_internal>(t: type) := class {
+    BeginDetectEvent<epic_internal>: listenable(tuple(?player, t)) = external {}
+
+    CancelActivationEvent<epic_internal>: listenable(tuple(?player, t, float)) = external {}
+
+    DetectionOngoingEvent<epic_internal>: listenable(tuple(?player, t, float)) = external {}
+
+    EndDetectEvent<epic_internal>: listenable(tuple(?player, float)) = external {}
+
+    TriggerActivationEvent<epic_internal>: listenable(tuple(?player, t)) = external {}
+  }
 }
 
 Leaderboards<public> := module {
-  using { /Verse.org/Simulation }
   # # Leaderboard that supports a `GetTop` implementation that only returns the data needed to display the leaderboard.
   # # Leaderboard that supports a `GetTop` implementation that only returns the data needed to display the leaderboard.
   player_leaderboard<native><epic_internal> := class<computes><final> {
@@ -1060,6 +1101,9 @@ Leaderboards<public> := module {
 
     WriteStat<native><public>(Player: player, Value: float): void
   }
+
+  # Verse path: /Verse.org/Leaderboards
+  using { /Verse.org/Simulation }
 }
 
 # Module import path: /Verse.org/Native
@@ -1070,6 +1114,7 @@ Native<public> := module {
   @attribscope_struct
   @attribscope_enum
   @attribscope_interface
+  @attribscope_module
   cpp_name_attribute<epic_internal> := class<computes><internal>(attribute) {}
 
   doc<constructor><epic_internal>(DocumentationString: string)<computes>: doc_attribute = external {}
@@ -1097,6 +1142,7 @@ Native<public> := module {
   @attribscope_class
   preload<epic_internal> := class<computes>(attribute) {}
 
+  @cpp_name("verse::property_changed_interface")
   property_changed_interface<native><epic_internal> := interface {
     OnPropertyChangedFromVerse<epic_internal>(PropertyName: string)<transacts>: void
   }
@@ -1108,6 +1154,7 @@ Native<public> := module {
   validate_asset_path_attribute<epic_internal> := class<computes><internal>(attribute) {}
 }
 
+@cpp_name("verse::VerseNative_Verse_org_Persona_module_impl")
 # Module import path: /Verse.org/Persona
 Persona<epic_internal> := module {
   Cast<native><epic_internal>(__dupe___unnamed_parameter_0: any, t: type)<decides><converges>: t
@@ -1116,18 +1163,19 @@ Persona<epic_internal> := module {
   FromJson<native><epic_internal>((
     __dupe___unnamed_parameter_0: string,
     __dupe___unnamed_parameter_1: []subtype(t)
-  ) where t: type)<reads><decides><converges>: []?t
+  ) where t: type)<decides><reads><converges>: []?t
 
   # From a JSON string conforming to the schema for a type, produce a value of that type.
-  FromJson<native><epic_internal>(__dupe___unnamed_parameter_0: string, t: type)<reads><decides><converges>: t
+  FromJson<native><epic_internal>(__dupe___unnamed_parameter_0: string, t: type)<decides><reads><converges>: t
 
   # From an array of types produce a JSON schema corresponding to an object with optional fields of name 0, 1, etc., i.e. a sparse array.
-  ToJson<native><epic_internal>(__dupe___unnamed_parameter_0: []type)<reads><decides><converges>: string
+  ToJson<native><epic_internal>(__dupe___unnamed_parameter_0: []type)<decides><reads><converges>: string
 
   # From a type produce a JSON schema.
-  ToJson<native><epic_internal>(__dupe___unnamed_parameter_0: type)<reads><decides><converges>: string
+  ToJson<native><epic_internal>(__dupe___unnamed_parameter_0: type)<decides><reads><converges>: string
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/Predicts
 Predicts<public> := module {
   PredictsDebugAddClientWithID<native><epic_internal>(ClientID: int)<transacts>: void
@@ -1149,6 +1197,10 @@ Predicts<public> := module {
   PredictsDebugGCPinObject<native><epic_internal>(__dupe___unnamed_parameter_0: any)<transacts>: void
 
   PredictsDebugGCUnpinObject<native><epic_internal>(__dupe___unnamed_parameter_0: any)<transacts>: void
+
+  PredictsDebugGetObjectGen<native><epic_internal>(Obj: any)<transacts><decides>: int
+
+  PredictsDebugGetObjectSeq<native><epic_internal>(Obj: any)<transacts><decides>: int
 
   PredictsDebugIsFrankenClient<native><epic_internal>()<transacts><decides>: void
 
@@ -1185,7 +1237,6 @@ Predicts<public> := module {
 
 Presentation<public> := module {
   using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   change_description_component_event<epic_internal> := class(scene_event) {
     DescriptionComponent<public>: ?description_component = external {}
 
@@ -1221,9 +1272,11 @@ Presentation<public> := module {
     # A shortened description of this entity.
     var ShortDescription<public>: message
   }
+
+  # Verse path: /Verse.org/Presentation
+  using { /Verse.org/Simulation }
 }
 
-using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 4110 }
 # Module import path: /Verse.org/Progression
 Progression<public> := module {
@@ -1318,14 +1371,14 @@ Progression<public> := module {
       []abandon_quest_error
     )
 
-    CanAdd<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
+    CanAdd<native><native_callable><epic_internal>(Manager: quest_manager_component)<decides><reads>: void
 
     CanJoin<native><native_callable><epic_internal>(QuestParticipant: quest_participant)<reads>: result(
       void,
       []join_quest_error
     )
 
-    CanRemove<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
+    CanRemove<native><native_callable><epic_internal>(Manager: quest_manager_component)<decides><reads>: void
 
     # Marks this quest as completed. Fires CompleteEvent.
     # Idempotent — no-op if already completed.
@@ -1342,10 +1395,10 @@ Progression<public> := module {
 
     GetState<native><final><epic_internal>()<reads>: quest_state
 
-    IsActive<native><final><epic_internal>()<reads><decides>: void
+    IsActive<native><final><epic_internal>()<decides><reads>: void
 
     # Succeeds if this quest is completed.
-    IsComplete<native><final><public>()<reads><decides>: void
+    IsComplete<native><final><public>()<decides><reads>: void
 
     # Signaled when a participant joins this quest.
     JoinEvent<native><final><public>: listenable(quest_membership) = external {}
@@ -1377,7 +1430,7 @@ Progression<public> := module {
 
     GetProgress<native><final><epic_internal>()<reads>: message
 
-    IsComplete<native><final><epic_internal>()<reads><decides>: void
+    IsComplete<native><final><epic_internal>()<decides><reads>: void
 
     var Quests<native><epic_internal>: []quest
   }
@@ -1425,7 +1478,7 @@ Progression<public> := module {
 
   @experimental
   quest_granter_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    CanGrant<native><native_callable><epic_internal>(Manager: quest_manager_component)<reads><decides>: void
+    CanGrant<native><native_callable><epic_internal>(Manager: quest_manager_component)<decides><reads>: void
 
     GrantEvent<native><final><epic_internal>: listenable(quest) = external {}
 
@@ -1445,9 +1498,9 @@ Progression<public> := module {
 
     AddQuest<native><native_callable><epic_internal>(Quest: quest): void
 
-    CanAdd<native><native_callable><epic_internal>(Quest: quest)<reads><decides>: void
+    CanAdd<native><native_callable><epic_internal>(Quest: quest)<decides><reads>: void
 
-    CanRemove<native><native_callable><epic_internal>(Quest: quest)<reads><decides>: void
+    CanRemove<native><native_callable><epic_internal>(Quest: quest)<decides><reads>: void
 
     Collection<native><epic_internal>: quest_collection
 
@@ -1557,7 +1610,7 @@ Progression<public> := module {
 
 # Module import path: /Verse.org/Random
 Random<public> := module {
-  # Returns a random `float` between `Low` and `High`, inclusive.
+  # Returns a uniformly distributed, cryptographically-secure random `float` between `Low` and `High`, inclusive. (`Low` and `High` can be out of order.)
   GetRandomFloat<native><public>(Low: float, High: float)<transacts>: float
 
   # Returns a uniformly distributed, cryptographically-secure random `int` between `Low` and `High`, inclusive. (`Low` and `High` can be out of order.)
@@ -1567,6 +1620,7 @@ Random<public> := module {
   Shuffle<public>(Input: []t where t: type)<transacts>: []t = external {}
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/Restricted
 Restricted<public> := module {
   using { /Verse.org/Native }
@@ -1575,7 +1629,7 @@ Restricted<public> := module {
 
     ClearSignal<native><public>()<writes>: void
 
-    IsSignaled<native><public>()<reads><decides>: void
+    IsSignaled<native><public>()<decides><reads>: void
 
     (/Verse.org/Restricted/sticky_event:)Restricted_sticky_event_Variance<private>(: t): tuple(t) = external {}
 
@@ -1586,33 +1640,38 @@ Restricted<public> := module {
 }
 
 SceneGraph<public> := module {
-  @available { MinUploadedAtFNVersion := 2930 }
+  # Suspends until the character's pawn is within PositionTolerance of ExpectedPosition and RotationTolerance of ExpectedRotation, and its physics has settled (stopped moving, grounded), or the timeout elapses.Returns true on success, false on timeout. Player characters only.
+  (Agent: agent).WaitForTeleportTo<native><epic_internal>(
+    ExpectedPosition: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
+    ExpectedRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
+    PositionTolerance: float,
+    RotationToleranceDegrees: float,
+    IgnoreUp: logic,
+    VelocityTolerance: float,
+    Timeout: float
+  )<suspends>: logic
+
   # Find all objects in the scene that currently overlap this entity.
   (Entity: entity).FindOverlapHits<public>()<transacts>: generator(overlap_hit) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
   # Find all objects in the scene that would overlap this entity if it were placed at GlobalTransform.
   (Entity: entity).FindOverlapHits<public>(GlobalTransform: (/Verse.org/SpatialMath:)transform)<transacts>: generator(overlap_hit) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
   # Find all objects in the scene that would overlap Volume if they were placed at GlobalTransform. NOTE: This entity defines the context(scene) for the query but does not otherwise take part in the sweep.
   (Entity: entity).FindOverlapHits<public>(
     GlobalTransform: (/Verse.org/SpatialMath:)transform,
     Volume: collision_volume
   )<transacts>: generator(overlap_hit) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
   # Find objects in the scene that would intersect this entity if it were swept from its location along the Displacement vector. Returns the first object interacting as collision_interaction.Block, and all objects interacting as collision_interaction.Overlap encountered before the first block. Hits are sorted by hit distance, so the blocking hit will be last.
   (Entity: entity).FindSweepHits<public>(Displacement: (/Verse.org/SpatialMath:)vector3)<transacts>: generator(sweep_hit) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
   # Find objects in the scene that would intersect this entity if it were swept from GlobalTransform along the Displacement vector. Returns the first object interacting as collision_interaction.Block, and all objects interacting as collision_interaction.Overlap encountered before the first block. Hits are sorted by hit distance, so the blocking hit will be last.
   (Entity: entity).FindSweepHits<public>(
     Displacement: (/Verse.org/SpatialMath:)vector3,
     StartGlobalTransform: (/Verse.org/SpatialMath:)transform
   )<transacts>: generator(sweep_hit) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
   # Find all objects in the scene that would intersect Volume if they were swept from GlobalTransform along the Displacement vector Hits are sorted by hit distance. NOTE: This entity defines the context(scene) for the query but does not otherwise take part in the sweep.
   (Entity: entity).FindSweepHits<public>(
     Displacement: (/Verse.org/SpatialMath:)vector3,
@@ -1654,44 +1713,36 @@ SceneGraph<public> := module {
   (InAgent: agent).GetPossessedEntities<public>()<reads>: []possessable_component = external {}
 
   # Checks if an entity is possessed.
-  (InAgent: agent).IsEntityPossessed<public>(PossessableComponent: possessable_component)<reads><decides>: void = external {}
+  (InAgent: agent).IsEntityPossessed<public>(PossessableComponent: possessable_component)<decides><reads>: void = external {}
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all components attached to ancestor entities to `InEntity` of type `component_type`.
   # The order of the returned components is unspecified and subject to change.
   (InEntity: entity).FindAncestorComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all ancestor entities to `InEntity` of type `entity_type`.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindAncestorEntities<native><public>(entity_type: castable_subtype(entity))<transacts>: generator(entity_type)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all ancestor entities to `InEntity` containing a component of type `component_type`.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindAncestorEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all ancestor entities to `InEntity` that has any tags of type `tag_type`.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindAncestorEntitiesWithTag<native><public>(tag_type: castable_subtype(tag))<transacts>: generator(entity)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all components attached to descendant entities to and including `InEntity` of type `component_type`.
   # The order of the returned components is unspecified and subject to change.
   (InEntity: entity).FindDescendantComponents<native><public>(component_type: castable_subtype(component))<transacts>: generator(component_type)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` of type `entity_type`.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindDescendantEntities<native><public>(entity_type: castable_subtype(entity))<transacts>: generator(entity_type)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` containing a component of type `component_type`.
   # The order of the returned entities is unspecified and subject to change.
   (InEntity: entity).FindDescendantEntitiesWithComponent<native><public>(component_type: castable_subtype(component))<transacts>: generator(entity)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Finds all descendant entities including `InEntity` that has any tags of type `tag_type`.
   # When querying from the simulation entity, the simulation entity itself is not included in the results.
   # The order of the returned entities is unspecified and subject to change.
@@ -1723,6 +1774,8 @@ SceneGraph<public> := module {
   #   * Fails if this entity is not currently in the scene.
   (InEntity: entity).GetSimulationEntity<native><public>()<transacts><decides>: entity
 
+  (InEntity: entity).Preload<native><epic_internal>()<suspends>: logic
+
   # Resets the origin of this entity, which will now default to its parent
   (InEntity: entity).ResetOrigin<native><public>()<transacts>: void
 
@@ -1734,6 +1787,21 @@ SceneGraph<public> := module {
 
   # Sets the origin of this entity, in the case the entity does not have a transform_component it will create one and set its origin. This method fails if it recognized dependency recursion.
   (InEntity: entity).SetOrigin<native><public>(NewOrigin: origin)<transacts>: void
+
+  using { /Verse.org/SpatialMath }
+  # Suspends until the transform update completes or the timeout elapses. Returns true on success, false if the move did not complete in time.
+  (InEntity: entity).WaitForGlobalTransform<native><epic_internal>(
+    Agent: agent,
+    NewGlobalTransform: (/Verse.org/SpatialMath:)transform,
+    ?Timeout: float
+  )<suspends>: logic
+
+  # Suspends until the transform update completes or the timeout elapses. Returns true on success, false if the move did not complete in time.
+  (InEntity: entity).WaitForLocalTransform<native><epic_internal>(
+    Agent: agent,
+    NewLocalTransform: (/Verse.org/SpatialMath:)transform,
+    ?Timeout: float
+  )<suspends>: logic
 
   @available { MinUploadedAtFNVersion := 4100 }
   # Plaform-specific viewport to add specialized screen-space UI to. Always renders on top of the regular viewport.
@@ -1802,12 +1870,11 @@ SceneGraph<public> := module {
 
   DefaultChannelToInteraction<epic_internal>(__dupe___unnamed_parameter_0: collision_channel)<computes>: collision_interaction = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
   EmptyOverlapHitsGenerator<native><epic_internal>()<transacts>: generator(overlap_hit)
 
-  @available { MinUploadedAtFNVersion := 2930 }
   EmptySweepHitsGenerator<native><epic_internal>()<transacts>: generator(sweep_hit)
 
+  # Verse path: /Verse.org/SceneGraph
   # Module import path: /Verse.org/SceneGraph/FNECon
   FNECon<public> := module {
     @experimental
@@ -1872,6 +1939,14 @@ SceneGraph<public> := module {
     conversation_database<native><epic_internal> := class<computes><concrete><epic_internal>(asset) {}
   }
 
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Resolves `SocketName` against `Mesh` and returns a `presentation_origin` that follows that bone/socket.
+  FindPresentationOrigin<native><epic_internal>(
+    Mesh: mesh_component,
+    SocketName: string
+  )<decides><reads>: presentation_origin
+
   GetPhysicsSceneForEntity<native><epic_internal>(Entity: entity)<transacts><decides>: physics_scene_component
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -1886,11 +1961,6 @@ SceneGraph<public> := module {
   HasCollisionInvalids<epic_internal> := module {
     InvalidCollisionMaterial<epic_internal>: collision_material = external {}
   }
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  # Use this method to create a component without the need of providing an entity.
-  # This is an internal method and should only be used to initialize a component field inside a verse class
-  InitializeComponentField<native><epic_internal>(component_type: castable_subtype(component))<converges>: component_type
 
   # Module import path: /Verse.org/SceneGraph/KeyframedMovement
   # Animate Scene Graph entities with keyframes.
@@ -1908,6 +1978,7 @@ SceneGraph<public> := module {
       Y1<native><public>: float = external {}
     }
 
+    @replicatable
     # Cubic Bezier function sent to clients to reconstruct the animation curves.
     cubic_bezier_easing_function_native<native><epic_internal> := struct<concrete> {
       X0<native><public>: float = external {}
@@ -1971,6 +2042,7 @@ SceneGraph<public> := module {
       Evaluate<native><public>(Input: float): float
     }
 
+    @replicatable
     # Contains all the information needed for the client to reconstruct the entire animation command.
     keyframed_movement_command_data<native><epic_internal> := struct<concrete> {
       BlendOutDuration<native>: float = external {}
@@ -1996,13 +2068,13 @@ SceneGraph<public> := module {
       FinishedEvent<native><public>: listenable(tuple()) = external {}
 
       # Is there a valid set of playable keyframes?
-      HasValidAnimation<native><public>()<reads><decides>: void
+      HasValidAnimation<native><public>()<decides><reads>: void
 
       # Is the animation paused?
-      IsPaused<native><public>()<reads><decides>: void
+      IsPaused<native><public>()<decides><reads>: void
 
       # Is the animation currently playing?
-      IsPlaying<native><public>()<reads><decides>: void
+      IsPlaying<native><public>()<decides><reads>: void
 
       # Signaled when any keyframe is reached. (Keyframe:int, IsReversed:logic).
       KeyframeReachedEvent<native><public>: listenable(tuple(int, logic)) = external {}
@@ -2062,6 +2134,7 @@ SceneGraph<public> := module {
       Transform<native><public>: (/Verse.org/SpatialMath:)transform = external {}
     }
 
+    @replicatable
     # Keyframe delta sent to clients to reconstruct the animation frames.
     keyframed_movement_delta_native<native><epic_internal> := struct<concrete> {
       Duration<native><public>: float = external {}
@@ -2121,11 +2194,28 @@ SceneGraph<public> := module {
   @experimental
   MakeSkeletonModifierStack<native><epic_internal>()<converges>: modifier_stack(skeleton)
 
-  using { /Verse.org/SceneGraph }
   @available { MinUploadedAtFNVersion := 3800 }
   # Module import path: /Verse.org/SceneGraph/UI
   (/Verse.org/SceneGraph:)UI<public> := module {
     DefaultTextValue<localizes><epic_internal>: message = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Sizes to its content along its axis, clamped to [MinSize, MaxSize]. Use proportional_grid_track to fill leftover container space.
+    auto_grid_track<native><epic_internal> := class<final>(grid_track_definition) {
+      @editable
+      @replicated("")
+      @tool_tip("Maximum resolved size, in centimeters. Inf = unbounded. Floored by MinSize.")
+      var MaxSize<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Minimum resolved size, in centimeters.")
+      var MinSize<native><public>: float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    @hide_in_editor
+    container_element_component<native><epic_internal> := class<final_super>(component) {}
 
     @available { MinUploadedAtFNVersion := 4000 }
     drop_shadow_text_effect<native><epic_internal> := class(text_effect) {
@@ -2155,6 +2245,84 @@ SceneGraph<public> := module {
       OutlineDropShadow
     }
 
+    @available { MinUploadedAtFNVersion := 4210 }
+    # A row or column track that has a fixed size, in centimeters.
+    fixed_grid_track<native><epic_internal> := class<final>(grid_track_definition) {
+      @editable
+      @replicated("")
+      @tool_tip("Fixed size of this track, in centimeters.")
+      var Size<native><public>: float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Container widget that arranges its children in a 2D row/column layout.
+    grid_container<native><epic_internal> := class((/Verse.org/SceneGraph/UI:)widget) {
+      # Add a column track definition to the grid. No-op if the same definition is already present.
+      AddColumnDefinition<native><public>(Definition: grid_track_definition)<transacts>: void
+
+      # Add a row track definition to the grid. No-op if the same definition is already present.
+      AddRowDefinition<native><public>(Definition: grid_track_definition)<transacts>: void
+
+      # Return the current ordered list of column track definitions.
+      GetColumnDefinitions<native><public>()<reads>: []grid_track_definition
+
+      # Return the current ordered list of row track definitions.
+      GetRowDefinitions<native><public>()<reads>: []grid_track_definition
+
+      # Remove a previously added column track definition from the grid.
+      RemoveColumnDefinition<native><public>(Definition: grid_track_definition)<transacts>: void
+
+      # Remove a previously added row track definition from the grid.
+      RemoveRowDefinition<native><public>(Definition: grid_track_definition)<transacts>: void
+
+      # Spacing between columns, in centimeters.
+      var ColumnGap<public>: float = external {}
+
+      # Spacing between rows, in centimeters.
+      var RowGap<public>: float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Layout hints for a child placed inside a grid_container.
+    grid_container_element_component<native><epic_internal> := class(container_element_component) {
+      @editable
+      @replicated("")
+      @tool_tip("Column index of the cell this item occupies. 0 = first column. Negative values count from the end: -1 = last column, -2 = second-to-last. Out-of-range values clamp to the nearest valid column.")
+      # Column index of this item's anchor cell. Zero-based from the start; negative values count from the end (-1 = last column). Out-of-range values are clamped to the nearest valid column.
+      var Column<native><public>: int = external {}
+
+      # Number of columns this item spans across, starting at Column.
+      var ColumnSpan<public>: int = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("How this item is aligned along the horizontal axis within its cell.")
+      var HorizontalAlignment<native><public>: ui_alignment = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Margin applied around this element within its cell, in centimeters.")
+      var Margin<native><public>: ui_margin = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Row index of the cell this item occupies. 0 = first row. Negative values count from the end: -1 = last row, -2 = second-to-last. Out-of-range values clamp to the nearest valid row.")
+      # Row index of this item's anchor cell. Zero-based from the start; negative values count from the end (-1 = last row). Out-of-range values are clamped to the nearest valid row.
+      var Row<native><public>: int = external {}
+
+      # Number of rows this item spans across, starting at Row.
+      var RowSpan<public>: int = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("How this item is aligned along the vertical axis within its cell.")
+      var VerticalAlignment<native><public>: ui_alignment = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Abstract base class for a single row or column track inside a grid_container.
+    grid_track_definition<native><epic_internal> := class<abstract><unique><internal> {}
+
     # How text should be aligned within the `text_widget`.
     horizontal_text_alignment<native><epic_internal> := enum {
       # Align the text in the center.
@@ -2173,13 +2341,6 @@ SceneGraph<public> := module {
       Right
     }
 
-    using { /UnrealEngine.com/Temporary/UI }
-    using { /Verse.org/Assets }
-    using { /Verse.org/Colors }
-    using { /Verse.org/Native }
-    using { /Verse.org/Simulation }
-    using { /Verse.org/SpatialMath }
-    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
     @available { MinUploadedAtFNVersion := 4000 }
     @experimental
     # UI element that renders an image
@@ -2196,6 +2357,7 @@ SceneGraph<public> := module {
       Amount<native><public>: float = external {}
     }
 
+    @replicatable
     @import_as("/Script/LocalizableMessage.FLocalizableMessage")
     localizable_message_internal<native><epic_internal> := struct<concrete> {}
 
@@ -2233,6 +2395,23 @@ SceneGraph<public> := module {
       @replicated("")
       # The width of the outline to apply to the text.
       Size<native><public>: float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Takes a weighted share of the container's leftover space. Clamped to [MinSize, MaxSize].
+    proportional_grid_track<native><epic_internal> := class<final>(grid_track_definition) {
+      @editable
+      @replicated("")
+      @tool_tip("Maximum resolved size, in centimeters. Inf = unbounded. Floored by MinSize.")
+      var MaxSize<native><public>: float = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Minimum resolved size, in centimeters.")
+      var MinSize<native><public>: float = external {}
+
+      # Weight when dividing leftover space. Weight 2 gets twice the share of weight 1. Clamped to >= 0.
+      var Proportion<public>: float = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -2292,6 +2471,40 @@ SceneGraph<public> := module {
       var VerticalAlignment<public>: vertical_text_alignment = external {}
     }
 
+    using { /UnrealEngine.com/Temporary/UI }
+    using { /Verse.org/Assets }
+    using { /Verse.org/Colors }
+    using { /Verse.org/Native }
+    using { /Verse.org/Simulation }
+    using { /Verse.org/SpatialMath }
+    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+    @available { MinUploadedAtFNVersion := 4210 }
+    ui_alignment<native><epic_internal> := enum {
+      Center
+
+      End
+
+      Fill
+
+      Start
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    @replicatable
+    ui_margin<native><epic_internal> := struct<concrete><computes> {
+      @editable
+      Bottom: float = external {}
+
+      @editable
+      Left: float = external {}
+
+      @editable
+      Right: float = external {}
+
+      @editable
+      Top: float = external {}
+    }
+
     @available { MinUploadedAtFNVersion := 4000 }
     @cpp_name("umg_widget_entity")
     @hide_in_editor
@@ -2332,6 +2545,7 @@ SceneGraph<public> := module {
     (/Verse.org/SceneGraph/UI:)widget<native><epic_internal> := class(entity) {}
   }
 
+  @replicatable
   VerseRepMovement<native><epic_internal> := struct {
     Acceleration<native>: (/Verse.org/SpatialMath:)vector3 = external {}
 
@@ -2351,6 +2565,8 @@ SceneGraph<public> := module {
 
     ServerPhysicsHandle<native>: int = external {}
 
+    TeleportSeq<native>: int = external {}
+
     VelocityQuantizationLevel<native>: vector_quantization = external {}
 
     bRepAcceleration<native>: logic = external {}
@@ -2363,14 +2579,15 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   VisualModifierPosition<public>: rational = external {}
 
-  @import_as("/Script/CoreUObject.UObject")
-  actor<native><epic_internal> := class {}
+  @replicatable
+  @import_as("/Script/Entity.FActorOriginData")
+  actor_data<native><epic_internal> := struct<concrete> {}
 
   # class to provide alternative origin to the 'transform_component' as an actor. This class should never be public and is intended for internal use only.
   actor_origin<native><epic_internal> := class(origin) {
     @editable
     @replicated("RepNotify")
-    Actor<native><epic_internal>: actor
+    ActorData<native><epic_internal>: actor_data
 
     GetTransform<native><override>()<transacts>: (/Verse.org/SpatialMath:)transform
   }
@@ -2382,12 +2599,8 @@ SceneGraph<public> := module {
     PreviousAgent<native>: ?agent = external {}
   }
 
-  @import_as("/Script/Entity.UBaseEntity")
-  base_entity<native><epic_internal> := class<abstract> {}
-
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
-  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   # An interactable component with a composable feature set.
   basic_interactable_component<native><public> := class(interactable_component) {
     # Attempt to cancel an interaction. Fails if the supplied agent is not currently interacting with the component.
@@ -2407,7 +2620,7 @@ SceneGraph<public> := module {
     GetRemainingCooldownDurationAffectingAgent<native><public>(Agent: agent): float
 
     @available { MinUploadedAtFNVersion := 4020 }
-    InteractMessage<override>(Agent: agent)<reads><decides>: message = external {}
+    InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
 
     @editable
     @replicated("")
@@ -2441,7 +2654,7 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   basic_stackable_component<native><public> := class(stackable_component) {
     # Succeeds if this entity can be merged into the target entity. Merging an entity with itself will always fail.
-    CanMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+    CanMergeInto<override>(TargetEntity: entity)<decides><reads>: void = external {}
 
     Split<override>(Amount: int)<transacts><decides>: entity = external {}
 
@@ -2470,8 +2683,6 @@ SceneGraph<public> := module {
     Valid<native>: logic = external {}
   }
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/SpatialMath }
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera body settings, e.g. sensor/film settings, shutter speed, etc
@@ -2568,6 +2779,9 @@ SceneGraph<public> := module {
   camera_director_component<native><public> := class<final_super>(camera_component) {
     # Add a camera to the director. The camera with the highest priority will be chosen to be the active camera
     AddCamera<native><public>(Camera: camera_component, Priority: rational)<transacts><decides>: cancelable
+
+    # Returns the current camera transform if available.
+    GetActiveCameraTransform<native><epic_internal>()<decides><reads>: (/Verse.org/SpatialMath:)transform
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
@@ -2632,10 +2846,7 @@ SceneGraph<public> := module {
   @experimental
   # Base class for objects that can modify camera state.
   camera_modifier<native><public> := class(modifier(camera_state)) {
-    Evaluate<override>(InValue: camera_state)<reads>: camera_state = external {}
-
-    @experimental
-    InvokeEvaluate<native_callable><epic_internal>(InValue: camera_state)<reads>: camera_state = external {}
+    Evaluate<override><native_callable>(InValue: camera_state)<reads>: camera_state = external {}
 
     @experimental
     NativeCameraRigAsset<native><epic_internal>: camera_rig_asset = external {}
@@ -2733,8 +2944,16 @@ SceneGraph<public> := module {
     PreviousYawPitch
   }
 
-  using { /UnrealEngine.com/Temporary/SpatialMath }
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  cancelable_impl_internal<epic_internal> := class<epic_internal>(cancelable) {
+    Cancel<override>()<transacts>: void = external {}
+
+    Cancelable<epic_internal>: cancelable
+  }
+
   using { /Verse.org/Colors }
+  using { /Verse.org/Restricted }
   # A `capsule_light_component` emits light in all directions into the scene from a capsule shaped source with a specified radius and length. A radius and length of 0 makes it a point light. You can use these
   # to simulate any kind of light sources that emit in all directions and need an elongated source shape, such as a long light bulb.
   capsule_light_component<native><public> := class<final>(light_component) {
@@ -2849,6 +3068,7 @@ SceneGraph<public> := module {
     Overlap
   }
 
+  @replicatable
   collision_material<native><epic_internal> := struct<epic_internal> {
     # Friction coefficient for sliding contacts
     DynamicFriction<native>: float = external {}
@@ -2979,17 +3199,17 @@ SceneGraph<public> := module {
     # Succeeds if the component is currently in the scene.
     #   * After `OnAddedToScene` is called this call succeeds.
     #   * After `OnRemovingFromScene` is called this call fails.
-    IsInScene<native><final><public>()<reads><decides>: void
+    IsInScene<native><final><public>()<decides><reads>: void
 
     # Succeeds if the component is currently initialized with its parent entity.
     #   * After `OnInitialized` is called this call succeeds.
     #   * After `OnUninitializing` is called this call fails.
-    IsInitialized<native><final><epic_internal>()<reads><decides>: void
+    IsInitialized<native><final><epic_internal>()<decides><reads>: void
 
     # Succeeds if the component is currently simulating.
     #   * After `OnBeginSimulation` is called this call succeeds.
     #   * After `OnEndSimulation` is called this call fails.
-    IsSimulating<native><final><public>()<reads><decides>: void
+    IsSimulating<native><final><public>()<decides><reads>: void
 
     # Called when the component is added to the scene by parenting it under the simulation entity or another entity already in the scene.
     #   * Querying for components in the scene is valid after this phase completes.
@@ -3098,6 +3318,21 @@ SceneGraph<public> := module {
     OnUninitializingInternal<native><override>(): void
   }
 
+  # Detail level tier required for a `mesh_component` to be rendered. Mirrors UE's `EDetailMode` so the ordinals line up with the `r.DetailMode` scalability CVar (Low=0, Medium=1, High=2, Epic=3).
+  detail_mode<native><epic_internal> := enum {
+    # Rendered only when `r.DetailMode` is 3. Equivalent to UE's `DM_Epic`.
+    Epic
+
+    # Rendered when `r.DetailMode` is at least 2. Equivalent to UE's `DM_High`.
+    High
+
+    # Always rendered. Equivalent to UE's `DM_Low`.
+    Low
+
+    # Rendered when `r.DetailMode` is at least 1. Equivalent to UE's `DM_Medium`.
+    Medium
+  }
+
   # A `directional_light_component` simulates light that is being emitted from a source that is infinitely far away. This means that all shadows cast by this light will be parallel, making this the ideal choice for simulating sunlight.
   directional_light_component<native><public> := class<final>(light_component) {
     @editable_slider(float) { EpicOnly := true; MinValue := option { 0.000000 }; MaxValue := option { 1.000000 } }
@@ -3163,14 +3398,45 @@ SceneGraph<public> := module {
   @experimental
   # Interface used to trigger easing behaviors
   easeable<public> := interface<epic_internal>(cancelable) {
-    # Trigger an ease-out. If an easing_window is provided here, then it will override any previous provided window.
-    (/Verse.org/SceneGraph/easeable:)EaseOut<public>(EaseOutWindow: ?easing_window)<transacts>: void
+    # Trigger an ease-in.
+    # Triggering an ease-in again when already easing-in or when fully eased-in has no effect unless a different target weight is specified.
+    (/Verse.org/SceneGraph/easeable:)EaseIn<epic_internal>()<transacts>: void
+
+    # Trigger an ease-in providing a new ease-in window, overriding any previously provided window.
+    # Triggering an ease-in again when already easing-in or when fully eased-in has no effect unless a different target weight is specified.
+    (/Verse.org/SceneGraph/easeable:)EaseIn<epic_internal>(EaseInWindow: easing_window)<transacts>: void
+
+    # Event that gets called when an ease in is started.
+    EaseInEvent<epic_internal>: listenable(tuple())
+
+    # Trigger an ease-out.
+    # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
+    (/Verse.org/SceneGraph/easeable:)EaseOut<epic_internal>()<transacts>: void
+
+    # Trigger an ease-out. If an easing_window is provided here, then it will override any previously provided window.
+    # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
+    (/Verse.org/SceneGraph/easeable:)EaseOut<epic_internal>(EaseOutWindow: easing_window)<transacts>: void
+
+    # Event that gets called when an ease out starts.
+    EaseOutEvent<epic_internal>: listenable(tuple())
+
+    # Event that gets called when an ease in is finished.
+    PostEaseInEvent<epic_internal>: listenable(tuple())
+
+    # Event that gets called when an ease out finishes.
+    PostEaseOutEvent<epic_internal>: listenable(tuple())
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  easeout_impl_internal<epic_internal> := class<epic_internal> {
+    EasingModifier<epic_internal>: easing_modifier(skeleton)
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
-  # Modifier that eases in and out based around its target modifier's timeline (internal).
-  # The internal timeline begins when the modifier is constructed and ends either:
+  # Modifier that eases in and out based around a duration, with timing based on a clock.
+  # The internal timeline begins when the modifier is eased-in and ends either:
   # - When a timer of finite length expires.
   # - When the modifier is removed from the stack via cancelable.Cancel().
   # - When the modifier is eased out by calling EaseOut and the ease-out window completes.
@@ -3187,15 +3453,41 @@ SceneGraph<public> := module {
   ) {
     Cancel<override>()<transacts>: void = external {}
 
+    # Trigger an ease-in providing a new ease-in window, overriding any previously provided window.
+    # Triggering an ease-in again when already easing-in or when fully eased-in has no effect unless a different target weight is specified.
+    (/Verse.org/SceneGraph/easeable:)EaseIn<native><override>((local:)EaseInWindow: easing_window)<transacts>: void
+
+    # Trigger an ease-in.
+    # Triggering an ease-in again when already easing-in or when fully eased-in has no effect unless a different target weight is specified.
+    (/Verse.org/SceneGraph/easeable:)EaseIn<native><override>()<transacts>: void
+
+    # Event that gets called when an ease in is started.
+    EaseInEvent<native><override>: listenable(tuple()) = external {}
+
     # Easing to apply when easing in (i.e. 'towards' the target).
     EaseInWindow<native><epic_internal>: easing_window = external {}
 
-    (/Verse.org/SceneGraph/easeable:)EaseOut<native><override>((local:)EaseOutWindow: ?easing_window)<transacts>: void
+    # Trigger an ease-out. If an easing_window is provided here, then it will override any previously provided window.
+    # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
+    (/Verse.org/SceneGraph/easeable:)EaseOut<native><override>((local:)EaseOutWindow: easing_window)<transacts>: void
+
+    # Trigger an ease-out.
+    # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
+    (/Verse.org/SceneGraph/easeable:)EaseOut<native><override>()<transacts>: void
+
+    # Event that gets called when an ease out starts.
+    EaseOutEvent<native><override>: listenable(tuple()) = external {}
 
     # Easing to apply when easing out (i.e. 'away from' the target).
     EaseOutWindow<native><epic_internal>: easing_window = external {}
 
     Evaluate<native><override>(InValue: t)<reads>: t
+
+    # Event that gets called when an ease in is finished.
+    PostEaseInEvent<native><override>: listenable(tuple()) = external {}
+
+    # Event that gets called when an ease out finishes.
+    PostEaseOutEvent<native><override>: listenable(tuple()) = external {}
 
     (/Verse.org/SceneGraph/easing_modifier:)SceneGraph_easing_modifier_Variance<private>(: t, : t): tuple(t, t) = external {}
 
@@ -3246,7 +3538,7 @@ SceneGraph<public> := module {
   #   that you do not add code directly to the entity class, and instead keep logic in components. Keeping logic and data in
   #   components allows you to restructure your prefabs throughout production of your experience, without needing to massively
   #   refactor your class structure.
-  entity<native><public> := class<concrete><unique><transacts><castable>(base_entity, diagnosable, has_tags) {
+  entity<native><public> := class<concrete><unique><transacts><castable>(diagnosable, has_tags) {
     # Adds the provided components to the entity.
     #   * If a component is not allowed to be added to this entity it is skipped.
     #   Note: When called during the AddedToScene or BeginSimulation phase, it will make sure the added component has achieved the corresponding phase.
@@ -3264,23 +3556,19 @@ SceneGraph<public> := module {
     # Adds a `tag` instance to this entity. Returns a `tag_key` that is uniquely associated with the added instance.
     AddTag<override><native><final>(Tag: tag)<transacts>: tag_key
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Fails if at least one type in `tag_types` cannot be found in this container, succeeds otherwise. Note that this means that if `tag_types` is empty this call succeeds.
-    ContainsAllTags<override><native><final>(tag_types: []castable_subtype(tag))<reads><decides>: void
+    ContainsAllTags<override><native><final>(tag_types: []castable_subtype(tag))<decides><reads>: void
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Succeeds if at least of the types in `tag_types` is found in this container, fails otherwise. Note that this means that if `tag_types` is empty this call fails.
-    ContainsAnyTag<override><native><final>(tag_types: []castable_subtype(tag))<reads><decides>: void
+    ContainsAnyTag<override><native><final>(tag_types: []castable_subtype(tag))<decides><reads>: void
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Succeeds if at least one tag of type `tag_type` is found in this container, fails otherwise.
-    ContainsTag<override><native><final>(tag_type: castable_subtype(tag))<reads><decides>: void
+    ContainsTag<override><native><final>(tag_type: castable_subtype(tag))<decides><reads>: void
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Succeeds and returns the child component of type `component_type` if it exists and is accessible from the calling context.
     #   Note: When called during the AddedToScene or BeginSimulation phase, it will make sure the returned component has achieved the corresponding phase.
     #   Fails if no component of `component_type` exists or can be accessed.
-    GetComponent<native><final><public>(component_type: castable_subtype(component))<reads><decides>: component_type
+    GetComponent<native><final><public>(component_type: castable_subtype(component))<decides><reads>: component_type
 
     # Returns the child components belonging to this entity which are accessible from the calling context.
     GetComponents<native><final><public>()<reads>: []component
@@ -3296,17 +3584,14 @@ SceneGraph<public> := module {
     #   * The parent entity controls the lifetime of its child entities and components. When an entity
     #     is removed from the scene, all its child entities and components will be removed as well.
     #   * Method fails if there is currently no parent entity.
-    GetParent<native><final><public>()<reads><decides>: entity
+    GetParent<native><final><public>()<decides><reads>: entity
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Removes all tag instances of type `tag_type`, succeeds if at least one instance was removed, fails otherwise.
     RemoveAllTags<override><native><final>(tag_type: castable_subtype(tag))<transacts><decides>: void
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Removes all tag instances that are not of type `tag_type`, succeeds if at least one instance was removed, fails otherwise.
     RemoveAllTagsExcept<override><native><final>(tag_type: castable_subtype(tag))<transacts><decides>: void
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Removes all tag instances that are not of any of the types in `tag_types`, succeeds if at least one instance was removed, fails otherwise.
     RemoveAllTagsExcept<override><native><final>(tag_types: []castable_subtype(tag))<transacts><decides>: void
 
@@ -3325,7 +3610,6 @@ SceneGraph<public> := module {
     SendUp<native><native_callable><final><public>(SceneEvent: scene_event): logic
   }
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # class to provide alternative origin to the 'transform_component' as an entity
   entity_origin<native><public> := class<final>(origin) {
     @editable
@@ -3392,6 +3676,7 @@ SceneGraph<public> := module {
     Subscribe<native><override>(Callback: type { _(: float): void })<transacts>: cancelable
   }
 
+  # Verse path: /Verse.org/SceneGraph
   execution_subscription<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
 
@@ -3406,6 +3691,7 @@ SceneGraph<public> := module {
   }
 
   @experimental
+  @replicatable
   # A range with a minimum and maximum value. For a value to fall inside of this range, the min value must be less than or equal to the max value.
   float_range<native><public> := struct<concrete> {
     @editable
@@ -3478,15 +3764,12 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   has_collision_impl<native><final><epic_internal> := class<epic_internal> {
     @experimental
-    @available { MinUploadedAtFNVersion := 2930 }
     CollisionEnteredEventImpl<native><epic_internal>: listenable(generator(collision_hit)) = external {}
 
     @experimental
-    @available { MinUploadedAtFNVersion := 2930 }
     CollisionEventImpl<native><epic_internal>: listenable(generator(collision_hit)) = external {}
 
     @experimental
-    @available { MinUploadedAtFNVersion := 2930 }
     CollisionExitedEventImpl<native><epic_internal>: listenable(generator(collision_hit)) = external {}
 
     GetCollidableImpl<native><epic_internal>()<reads>: logic
@@ -3494,11 +3777,9 @@ SceneGraph<public> := module {
     GetCollisionMaterialImpl<native><epic_internal>()<reads>: collision_material
 
     @experimental
-    @available { MinUploadedAtFNVersion := 2930 }
     OverlapEnteredEventImpl<native><epic_internal>: listenable(generator(overlap_hit)) = external {}
 
     @experimental
-    @available { MinUploadedAtFNVersion := 2930 }
     OverlapExitedEventImpl<native><epic_internal>: listenable(generator(overlap_hit)) = external {}
 
     SetCollidableImpl<native><epic_internal>(In: logic): void
@@ -3561,12 +3842,25 @@ SceneGraph<public> := module {
 
   # Merge Rules Interface. Implemented by components that want to participate in entity mergeability checks.
   has_merge_rules<public> := interface<unique> {
-    AllowMergeInto<public>(TargetEntity: entity)<reads><decides>: void = external {}
+    AllowMergeInto<public>(TargetEntity: entity)<decides><reads>: void = external {}
 
     OnMergeInto<public>(TargetEntity: entity, MergeAmount: int)<transacts>: void = external {}
   }
 
   has_mesh_part_support<native><epic_internal> := interface<epic_internal> {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  has_origin<native><epic_internal> := interface<epic_internal>(has_mesh_part_support) {
+    # Returns the origin of the socket this mesh_part is attached to, or false if no socket is associated/resolvable
+    GetPartOrigin<final><native_callable><epic_internal>()<reads>: ?origin = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  has_origin_impl<native><final><epic_internal> := class<epic_internal> {
+    GetOriginImpl<native><epic_internal>()<decides><reads>: presentation_origin
+  }
 
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
@@ -3618,6 +3912,12 @@ SceneGraph<public> := module {
 
     SetOverridesMaxAngularVelocity<native_callable><epic_internal>(In: logic): void = external {}
 
+    # Teleports the physics body to InTranslation/InRotation and records the change in the resim buffer. Resets linear and angular velocity
+    SetPhysicsTransform<native_callable><epic_internal>(
+      InTranslation: (/Verse.org/SpatialMath:)vector3,
+      InRotation: (/Verse.org/SpatialMath:)rotation
+    )<transacts>: void = external {}
+
     SetSleepType<native_callable><epic_internal>(In: ue_phys_sleep_type): void = external {}
 
     SetStartAwake<native_callable><epic_internal>(In: logic): void = external {}
@@ -3666,6 +3966,11 @@ SceneGraph<public> := module {
     SetMaxAngularVelocityDegsImpl<native><epic_internal>(In: float): void
 
     SetOverridesMaxAngularVelocityImpl<native><epic_internal>(In: logic): void
+
+    SetPhysicsTransformImpl<native><epic_internal>(
+      InTranslation: (/Verse.org/SpatialMath:)vector3,
+      InRotation: (/Verse.org/SpatialMath:)rotation
+    )<transacts>: void
 
     SetSleepTypeImpl<native><epic_internal>(In: ue_phys_sleep_type): void
 
@@ -3721,7 +4026,7 @@ SceneGraph<public> := module {
   # Used to handle general interaction.
   interactable_component<native><public> := class<final_super>(component, enableable) {
     # Returns whether the specified agent can interact.
-    CanInteract<native><native_callable><public>(Agent: agent)<reads><decides>: void
+    CanInteract<native><native_callable><public>(Agent: agent)<decides><reads>: void
 
     # Event fires when an interaction has ended before completing successfully. Sends the formerly interacting agent. interactable_component cannot be canceled, this event is provided for subclasses to fire where appropriate.
     CanceledEvent<native><public>: listenable(agent) = external {}
@@ -3733,7 +4038,7 @@ SceneGraph<public> := module {
     Enable<native><override>(): void
 
     # Returns an appropriate message to display to players to communicate the current state of the interactable.
-    InteractMessage<native><native_callable><public>(Agent: agent)<reads><decides>: message
+    InteractMessage<native><native_callable><public>(Agent: agent)<decides><reads>: message
 
     # Succeeds if the component is enabled, fails if it’s disabled.
     IsEnabled<native><override>()<transacts><decides>: void
@@ -3829,7 +4134,7 @@ SceneGraph<public> := module {
     GetMaxSimultaneousInteractors<native><epic_internal>(__dupe___unnamed_parameter_0: accessor)<transacts>: ?int
 
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails if the agent is not interacting with this component.Returns the same value when called multiple times within a transaction.
-    GetRemainingInteractDurationForAgent<final><native><public>(Agent: agent)<reads><decides>: float
+    GetRemainingInteractDurationForAgent<final><native><public>(Agent: agent)<decides><reads>: float
 
     # Interact duration setter.
     SetInteractDuration<native><epic_internal>(
@@ -3893,6 +4198,11 @@ SceneGraph<public> := module {
     # The number of times this component has had a successful interaction.
     var SuccessfulInteractionCount<public>: int = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4110 }
+  @experimental
+  # Epic internal-only camera_modifier class that is free of the restrictions temporarily in place on camera_modifier
+  internal_camera_modifier<native><epic_internal> := class(camera_modifier) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   legendary_rarity<public> := class<allocates>(epic_rarity) {
@@ -4047,13 +4357,10 @@ SceneGraph<public> := module {
     var SpecularScale<public>: float = external {}
   }
 
-  @hide_in_editor
-  mass_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    OnAddedToSceneInternal<native><override>(): void
+  map_ready_component<native><epic_internal> := class<final_super>(component) {
+    AddDependency<native_callable><public>(Event: sticky_event(comparable)): void = external {}
 
-    OnRemovingFromSceneInternal<native><override>(): void
-
-    OnUninitializingInternal<native><override>(): void
+    MapReadyEvent<public>: sticky_event(comparable) = external {}
   }
 
   # Used to render a `mesh` at the location of this entity. A mesh is a set of polygons that can be used to represent shapes in the world such as:
@@ -4109,14 +4416,13 @@ SceneGraph<public> := module {
     # Returns the bounded box of this component, in local space.
     GetBoundedLocalBox<override><native>()<reads>: bounded_box
 
-    @available { MinUploadedAtFNVersion := 2930 }
     # Get an array of the materials assigned to this mesh's slots.
     GetMaterials<native><epic_internal>()<transacts>: generator(material)
 
     @available { MinUploadedAtFNVersion := 4110 }
     @experimental
     # Get mesh_part's on this mesh_component.
-    GetMeshParts<native><epic_internal>(): []mesh_part
+    GetMeshParts<native><epic_internal>()<transacts>: []mesh_part
 
     @experimental
     GetRigidBody<native><epic_internal>()<transacts>: rigid_body
@@ -4208,6 +4514,12 @@ SceneGraph<public> := module {
     @editable { EpicOnly := true }
     @category("Epic Internal")
     @experimental
+    # Minimum scalability `r.DetailMode` tier required to render this mesh. If the current scalability tier is lower than this value, no render scene proxy is created. Re-evaluated automatically when the player's quality settings change.
+    var DetailMode<native><epic_internal>: detail_mode = external {}
+
+    @editable { EpicOnly := true }
+    @category("Epic Internal")
+    @experimental
     # Whether to hide this mesh in game, if the mesh is Visible.
     var HiddenInGame<native><epic_internal>: logic = external {}
 
@@ -4233,6 +4545,11 @@ SceneGraph<public> := module {
 
     # Enable/disable visibility of this mesh.
     var Visible<public>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("Epic Internal")
+    # If true, this component will be visible in ray traced reflections. Screen space traces will ignore this flag, as they directly sample SceneColor
+    var VisibleInReflections<native><epic_internal>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
@@ -4243,6 +4560,9 @@ SceneGraph<public> := module {
     HasCollisionImpl<native><epic_internal>: has_collision_impl = external {}
 
     HasDynamicsImpl<native><epic_internal>: has_dynamics_impl = external {}
+
+    @available { MinUploadedAtFNVersion := 4200 }
+    HasOriginImpl<native><epic_internal>: has_origin_impl = external {}
 
     HasUEPhysicsPropertiesImpl<native><epic_internal>: has_ue_physics_properties_impl = external {}
   }
@@ -4293,6 +4613,9 @@ SceneGraph<public> := module {
     # The component is being uninitialized, called when it is about to be detached from an entity
     OnUninitializingInternal<native><override>(): void
 
+    # Possess the vehicle proxy actor with the given player's controller. Required for camera/view control.
+    PossessProxyActor<native><epic_internal>(InPlayer: player): void
+
     # Apply control input of type MAxis3D
     SetInput<native><public>(InputName: string, Value: (/Verse.org/SpatialMath:)vector3): void
 
@@ -4322,6 +4645,37 @@ SceneGraph<public> := module {
 
     # Replace the current state input configuration
     SetupStateInputConfiguration<native_callable><public>(StateInputConfigurationIn: []vehicle_input_setup): void = external {}
+  }
+
+  @experimental
+  modular_vehicle_input_component<native><epic_internal> := class<final_super><epic_internal>(component) {
+    GetBrakePressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetGearDownPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetGearUpPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetHandbrakePressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetPitchPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetRollPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetSteeringPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetThrottlePressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetYawPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnPlayerAdded<public>(InPlayer: player): void = external {}
+
+    OnPlayerRemoved<public>(InPlayer: player): void = external {}
+
+    RegisterAllPlayerBindings<public>(): void = external {}
+
+    UnregisterAllPlayerBindings<public>(): void = external {}
   }
 
   @experimental
@@ -4593,26 +4947,22 @@ SceneGraph<public> := module {
   }
 
   physics_scene_component<native><epic_internal> := class<final><final_super><epic_internal>(component) {
-    @available { MinUploadedAtFNVersion := 2930 }
     FindEntityOverlaps<native><public>(
       QueryEntity: entity,
       QueryTransform: (/Verse.org/SpatialMath:)transform
     )<transacts>: generator(overlap_hit)
 
-    @available { MinUploadedAtFNVersion := 2930 }
     FindEntitySweepHits<native><public>(
       QueryEntity: entity,
       QueryTransform: (/Verse.org/SpatialMath:)transform,
       QueryTraceVector: (/Verse.org/SpatialMath:)vector3
     )<transacts>: generator(sweep_hit)
 
-    @available { MinUploadedAtFNVersion := 2930 }
     FindShapeOverlaps<native><public>(
       QueryShape: collision_volume,
       QueryTransform: (/Verse.org/SpatialMath:)transform
     )<transacts>: generator(overlap_hit)
 
-    @available { MinUploadedAtFNVersion := 2930 }
     FindShapeSweepHits<native><public>(
       QueryShape: collision_volume,
       QueryTransform: (/Verse.org/SpatialMath:)transform,
@@ -4634,8 +4984,18 @@ SceneGraph<public> := module {
     # The skeletal_animation that was played
     Animation: skeletal_animation
 
-    # An easable interface used to control blending
+    # An easeable interface used to control blending
     Easeable: easeable
+  }
+
+  # Computes per-client Custom Primitive Data for the sibling mesh_component, letting each client render a different value for a CPD-bound material parameter.
+  player_primitive_data_component<native><epic_internal> := class<final_super>(component) {
+    @transient
+    # Subscribe to set the sibling mesh's custom primitive data per local player. The server triggers it with InvalidatePlayerPrimitiveData.
+    ComputePlayerPrimitiveDataEvent<native><epic_internal>: listenable(player_primitive_data_context) = external {}
+
+    # Triggers ComputePlayerPrimitiveDataEvent on each client, once per local player, passing UserData to the callbacks.
+    InvalidatePlayerPrimitiveData<epic_internal>(UserData: player_primitive_data_payload): void = external {}
   }
 
   @hide_in_editor
@@ -4649,7 +5009,7 @@ SceneGraph<public> := module {
 
     # Entity's opinion on whether it can be possessed by a specific agent.
     #  By default it fails if the entity is already possessed.
-    CanBePossessedBy<native_callable><epic_internal>(AgentToCheck: agent)<reads><decides>: void = external {}
+    CanBePossessedBy<native_callable><epic_internal>(AgentToCheck: agent)<decides><reads>: void = external {}
 
     # Internal function to call when unpossessing for updating status and triggering the AgentChangeEvent.
     EndPossess<final><epic_internal>()<transacts>: void = external {}
@@ -4667,6 +5027,19 @@ SceneGraph<public> := module {
   }
 
   presentation_component<native><epic_internal> := class<final_super>(component) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Positions an entity at a named bone or socket on another entity's mesh.Assign this as the `Origin` of a `transform_component` to have an entity follow a socket/bone.
+  presentation_origin<native><epic_internal> := class(origin) {
+    GetTransform<override><native>()<transacts>: (/Verse.org/SpatialMath:)transform
+
+    @replicated("")
+    SocketName<native><epic_internal>: string
+
+    @replicated("")
+    var MeshEntity<native><epic_internal>: ?entity = external {}
+  }
 
   @available { MinUploadedAtFNVersion := 4000 }
   rare_rarity<public> := class<allocates>(uncommon_rarity) {
@@ -4834,11 +5207,44 @@ SceneGraph<public> := module {
   @experimental
   # A modifier of skeletons, used to animate meshes using skeletal animation
   skeletal_animation<native><public> := class<castable><epic_internal>(skeletal_animation_base, modifier(skeleton)) {
+    @editable
+    @replicated("")
+    # Controls if the `skeletal_animation` should play automatically when created.
+    AutoPlay<native><epic_internal>: logic = external {}
+
+    BeginTime<native><epic_internal>: float = external {}
+
+    EndTime<native><epic_internal>: float = external {}
+
     Evaluate<native><override>(InValue: skeleton)<reads>: skeleton
+
+    # Get this animation's lifetime, in seconds.Fails if an animation has an indefinite duration (i.e. it is not possible at the point of the call to tell how long the animation is)Animations can be of infinite length (such as a looping animation)
+    GetDuration<native_callable><epic_internal>()<decides><reads>: float = external {}
+
+    GetIsLooping<native_callable><epic_internal>()<reads>: logic = external {}
+
+    GetSeconds<native><epic_internal>()<reads>: float
 
     InternalAsset<native><epic_internal>: animation_asset = external {}
 
-    SetProperty<native><epic_internal>(PropertyName: string, NewValue: any, MarkDirty: logic)<transacts>: void
+    Pause<native><epic_internal>()<transacts>: void
+
+    PauseEvent<native><epic_internal>: listenable(tuple()) = external {}
+
+    Play<native><epic_internal>()<transacts>: void
+
+    PlayEvent<native><epic_internal>: listenable(tuple()) = external {}
+
+    # Get a listenable event that will fire Offset seconds before this animation finishes.This can be useful for triggering crossfades as animations naturally finishFails if this animation has an indefinite duration (i.e. it is not possible at the point of the call to tell how long the animation is)If this animation has an infinite duration, then this event will never fire.
+    PreFinishEvent<native><epic_internal>(Offset: float)<transacts><decides>: listenable(tuple())
+
+    SetProperty<native><epic_internal>(PropertyName: string, NewValue: any)<transacts>: void
+
+    Stop<native><epic_internal>()<transacts>: void
+
+    StopEvent<native><epic_internal>: listenable(tuple()) = external {}
+
+    var<private> IsPlaying<native><epic_internal>: logic = external {}
   }
 
   @import_as("/Script/EntitySkeletalAnimation.UEntitySkeletalAnimationBase")
@@ -4989,7 +5395,7 @@ SceneGraph<public> := module {
   # A component that when attached to an entity allows for it to merge or 'stack' with other entities with compatible components.
   stackable_component<native><public> := class<abstract><final_super>(component) {
     # Succeeds if this entity can be merged into the target entity. Merging an entity with itself will always fail. Note that merging should be checked in both directions!
-    CanMergeInto<native_callable><public>(TargetEntity: entity)<reads><decides>: void = external {}
+    CanMergeInto<native_callable><public>(TargetEntity: entity)<decides><reads>: void = external {}
 
     CanMergeIntoInternal<final><native><epic_internal>(TargetEntity: entity)<reads>: ?logic
 
@@ -5021,10 +5427,12 @@ SceneGraph<public> := module {
 
     var<private> HasChangedFields<native><epic_internal>: logic = external {}
 
+    @replicated("RepNotify")
     @editable
     # The maximum amount this component can hold. If unset, it holds an unlimited amount.
     var<private> MaxStackSize<native><public>: ?int = external {}
 
+    @replicated("RepNotify")
     @editable_number(int) { MinValue := option { 1 } }
     # The current amount of this entity held in the stack.
     var<private> StackSize<native><public>: int = external {}
@@ -5155,6 +5563,7 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
+  @replicatable
   ue_collision_material<native><epic_internal> := struct<epic_internal> {
     DynamicFriction<native>: float = external {}
 
@@ -5195,6 +5604,18 @@ SceneGraph<public> := module {
   uncommon_rarity<public> := class<allocates>(common_rarity) {
     Color<override>: color = external {}
   }
+
+  # Verse path: /Verse.org/SceneGraph
+  using { /UnrealEngine.com/Temporary/SpatialMath }
+
+  # Verse path: /Verse.org/SceneGraph
+  using { /Verse.org/Assets }
+
+  # Verse path: /Verse.org/SceneGraph
+  using { /Verse.org/SceneGraph }
+
+  # Verse path: /Verse.org/SceneGraph
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
 
   # The component responsible for managing Networked Physics Replication for entities.
   vector_quantization<native><epic_internal> := enum<open> {
@@ -5279,6 +5700,7 @@ SceneGraph<public> := module {
   }
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/Simulation
 Simulation<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
@@ -5299,6 +5721,7 @@ Simulation<public> := module {
   # Immediately completing (less than 0) is useful when you want programmatic control over whether an expression yields or not.
   Sleep<native><public>(Seconds: float)<suspends>: void
 
+  # Verse path: /Verse.org/Simulation
   # Module import path: /Verse.org/Simulation/Tags
   Tags<public> := module {
     # Succeeds if Left and Right are equal.
@@ -5331,27 +5754,21 @@ Simulation<public> := module {
       # Adds a `tag` instance to this container. Returns a `tag_key` that is uniquely associated with the added instance.
       AddTag<native_callable><public>(Tag: tag)<transacts>: tag_key
 
-      @available { MinUploadedAtFNVersion := 3200 }
       # Fails if at least one type in `tag_types` cannot be found in this container, succeeds otherwise. Note that this means that if `tag_types` is empty this call succeeds.
-      ContainsAllTags<native_callable><public>(tag_types: []castable_subtype(tag))<reads><decides>: void
+      ContainsAllTags<native_callable><public>(tag_types: []castable_subtype(tag))<decides><reads>: void
 
-      @available { MinUploadedAtFNVersion := 3200 }
       # Succeeds if at least of the types in `tag_types` is found in this container, fails otherwise. Note that this means that if `tag_types` is empty this call fails.
-      ContainsAnyTag<native_callable><public>(tag_types: []castable_subtype(tag))<reads><decides>: void
+      ContainsAnyTag<native_callable><public>(tag_types: []castable_subtype(tag))<decides><reads>: void
 
-      @available { MinUploadedAtFNVersion := 3200 }
       # Succeeds if at least one tag of type `tag_type` is found in this container, fails otherwise.
-      ContainsTag<native_callable><public>(tag_type: castable_subtype(tag))<reads><decides>: void
+      ContainsTag<native_callable><public>(tag_type: castable_subtype(tag))<decides><reads>: void
 
-      @available { MinUploadedAtFNVersion := 3200 }
       # Removes all tag instances of type `tag_type`, succeeds if at least one instance was removed, fails otherwise.
       RemoveAllTags<native_callable><public>(tag_type: castable_subtype(tag))<transacts><decides>: void
 
-      @available { MinUploadedAtFNVersion := 3200 }
       # Removes all tag instances that are not of type `tag_type`, succeeds if at least one instance was removed, fails otherwise.
       RemoveAllTagsExcept<native_callable><public>(tag_type: castable_subtype(tag))<transacts><decides>: void
 
-      @available { MinUploadedAtFNVersion := 3200 }
       # Removes all tag instances that are not of any of the types in `tag_types`, succeeds if at least one instance was removed, fails otherwise.
       RemoveAllTagsExcept<native_callable><public>(tag_types: []castable_subtype(tag))<transacts><decides>: void
 
@@ -5373,24 +5790,23 @@ Simulation<public> := module {
       # Adds all the tags from one container to this container NOTE: From set theory, this effectively is the union of the container this is called on with TagsToAdd.
       Add<native><epic_internal>(TagsToAdd: tag_container): void
 
-      @available { MinUploadedAtFNVersion := 2930 }
       # Returns a generator for the tags in this container. This is an expensive operation since it will create new tag instances for all tags in the container. Do preferably not use this function for anything else than debugging.
       GetTags<native><epic_internal>()<transacts>: generator(tag)
 
       # Determine if TagToCheck is present in this container, also checking against parent tags {"A.1"}.Has("A") will return True, {"A"}.Has("A.1") will return False If TagToCheck is not Valid it will always return False.
-      Has<native><override>(TagToCheck: tag)<reads><decides>: void
+      Has<native><override>(TagToCheck: tag)<decides><reads>: void
 
       # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-      (/Verse.org/Simulation/Tags/tag_container:)HasAll<native><epic_internal>(InTags: tag_container)<reads><decides>: void
+      (/Verse.org/Simulation/Tags/tag_container:)HasAll<native><epic_internal>(InTags: tag_container)<decides><reads>: void
 
       # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-      (/Verse.org/Simulation/Tags/tag_view:)HasAll<native><override>(InTags: []tag)<reads><decides>: void
+      (/Verse.org/Simulation/Tags/tag_view:)HasAll<native><override>(InTags: []tag)<decides><reads>: void
 
       # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-      (/Verse.org/Simulation/Tags/tag_container:)HasAny<native><epic_internal>(InTags: tag_container)<reads><decides>: void
+      (/Verse.org/Simulation/Tags/tag_container:)HasAny<native><epic_internal>(InTags: tag_container)<decides><reads>: void
 
       # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-      (/Verse.org/Simulation/Tags/tag_view:)HasAny<native><override>(InTags: []tag)<reads><decides>: void
+      (/Verse.org/Simulation/Tags/tag_view:)HasAny<native><override>(InTags: []tag)<decides><reads>: void
 
       # Returns the number of explicitly added tags.
       Num<native><epic_internal>()<reads>: int
@@ -5416,7 +5832,7 @@ Simulation<public> := module {
 
     @import_as("/*.FVerseTagKey")
     # A `tag_key` is the return value from adding a `tag` to a container implementing the `has_tags` interface, and is used to selectively remove such an instance from the same container.
-    tag_key<native><public> := struct<internal> {}
+    tag_key<native><public> := struct<uht_comparable><internal> {}
 
     # Advanced tag search criteria
     tag_search_criteria<native><public> := class {
@@ -5439,15 +5855,14 @@ Simulation<public> := module {
       Unsorted
     }
 
-    @deprecated
+    @deprecated { Message := "Use `tag_type_info` instead." }
     # Deprecated alias, use `tag_type_info` instead.
     tag_selector<epic_internal> := tag_type_info
 
-    @deprecated
+    @deprecated { Message := "Use `tag_type_info_container` instead." }
     # Deprecated alias, use `tag_type_info_container` instead.
     tag_selector_container<epic_internal> := tag_type_info_container
 
-    @available { MinUploadedAtFNVersion := 3200 }
     @experimental
     # An experimental replacement for the `tag_container` class that uses the new `has_tags` api. as well as
     # the new underlying overridable serializaion for tag instances.
@@ -5456,13 +5871,13 @@ Simulation<public> := module {
       AddTag<native><override>(Tag: tag)<transacts>: tag_key
 
       # Fails if at least one type in `tag_types` cannot be found in this container, succeeds otherwise. Note that this means that if `tag_types` is empty this call succeeds.
-      ContainsAllTags<native><override>(tag_types: []castable_subtype(tag))<reads><decides>: void
+      ContainsAllTags<native><override>(tag_types: []castable_subtype(tag))<decides><reads>: void
 
       # Succeeds if at least of the types in `tag_types` is found in this container, fails otherwise. Note that this means that if `tag_types` is empty this call fails.
-      ContainsAnyTag<native><override>(tag_types: []castable_subtype(tag))<reads><decides>: void
+      ContainsAnyTag<native><override>(tag_types: []castable_subtype(tag))<decides><reads>: void
 
       # Succeeds if at least one tag of type `tag_type` is found in this container, fails otherwise.
-      ContainsTag<native><override>(tag_type: castable_subtype(tag))<reads><decides>: void
+      ContainsTag<native><override>(tag_type: castable_subtype(tag))<decides><reads>: void
 
       # Returns a human readable version of this `tag_set`.
       GetDiagnostic<override><native>()<reads>: diagnostic
@@ -5491,13 +5906,13 @@ Simulation<public> := module {
     # A queryable collection of tags.
     tag_view<native><public> := interface<epic_internal> {
       # Determine if TagToCheck is present in this container, also checking against parent tags {"A.1"}.Has("A") will return True, {"A"}.Has("A.1") will return False If TagToCheck is not Valid it will always return False.
-      Has<public>(TagToCheck: tag)<reads><decides>: void
+      Has<public>(TagToCheck: tag)<decides><reads>: void
 
       # Checks if this container contains ALL of the tags in the specified container, also checks against parent tags {"A.1","B.1"}.HasAll({"A","B"}) will return True, {"A","B"}.HasAll({"A.1","B.1"}) will return False If InTags is empty/invalid it will always return True, because there were no failed checks.
-      HasAll<public>(InTags: []tag)<reads><decides>: void
+      HasAll<public>(InTags: []tag)<decides><reads>: void
 
       # Checks if this container contains ANY of the tags in the specified container, also checks against parent tags {"A.1"}.HasAny({"A","B"}) will return True, {"A"}.HasAny({"A.1","B"}) will return False If InTags is empty/invalid it will always return False.
-      HasAny<public>(InTags: []tag)<reads><decides>: void
+      HasAny<public>(InTags: []tag)<decides><reads>: void
     }
   }
 
@@ -5749,7 +6164,26 @@ Simulation<public> := module {
   @hide_in_editor
   player<native><public> := class<unique><persistent><module_scoped_var_weak_map_key><epic_internal>(agent) {
     # Succeeds when this `player` may be used as a module-scoped `var` `weak_map` key. This coincides with the corresponding player having joined the game and not yet left. Using a `player` as a module-scope `var` `weak_map` key when this method fails results in a runtime error.
-    IsActive<native><public>()<reads><decides>: void
+    IsActive<native><public>()<decides><reads>: void
+  }
+
+  player_primitive_data_context<native><epic_internal> := class {
+    Entity<native><epic_internal>: entity
+
+    Player<native><epic_internal>: player
+
+    UserData<native><epic_internal>: player_primitive_data_payload = external {}
+
+    WriteFloat<native><epic_internal>(Index: int, Value: float): void
+
+    WriteVector4<native><epic_internal>(Index: int, X: float, Y: float, Z: float, W: float): void
+  }
+
+  # This class is used for the per-player primitive data feature on mesh_components. Users can derive from it and add fields  and access this user data in callbacks subscribed to ComputePlayerPrimitiveDataEvent.
+  player_primitive_data_payload<native><epic_internal> := class {
+    PredictsTransport<epic_internal>(): void = external {}
+
+    SubscribeToEvent<epic_internal>(Event: subscribable_event_intrnl(tuple()))<transacts>: cancelable = external {}
   }
 
   using { /Verse.org/Native }
@@ -5814,6 +6248,7 @@ Simulation<public> := module {
   user<native><epic_internal> := class<epic_internal> {}
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/SpatialMath
 SpatialMath<public> := module {
   # Returns `Rotation` if it does not contain `NaN`, `Inf` or `-Inf`.
@@ -6081,13 +6516,16 @@ SpatialMath<public> := module {
 
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+  @replicatable
   @import_as("/*.FVRotation")
   # An abstract representation of an orientation change in 3d-space.
-  rotation<native><public> := struct<concrete> {}
+  rotation<native><public> := struct<concrete><uht_comparable> {}
 
+  @replicatable
   @import_as("/*.FVTransform")
   # A combination of scale, rotation, and translation, applied in that order.
-  transform<native><public> := struct<concrete><computes> {
+  transform<native><public> := struct<concrete><computes><uht_comparable> {
     @editable
     # The rotation of this `transform`.
     Rotation<native><public>: rotation = external {}
@@ -6102,6 +6540,7 @@ SpatialMath<public> := module {
     Translation<native><public>: vector3 = external {}
   }
 
+  @replicatable
   @import_as("/*.FVVector3")
   # 3-dimensional vector with `float` components.
   vector3<native><public> := struct<concrete><computes><persistable><uht_comparable> {
@@ -6119,13 +6558,14 @@ SpatialMath<public> := module {
   }
 }
 
+# Verse path: /Verse.org
 # Module import path: /Verse.org/StateMachine
 StateMachine<public> := module {
   # Wether the leaves are the Parent state, or are a child of the Parent state.
-  AreChildStatesOf<native><epic_internal>(Leaves: []state, Parent: state_container)<reads><decides>: void
+  AreChildStatesOf<native><epic_internal>(Leaves: []state, Parent: state_container)<decides><reads>: void
 
   # Wether the Leaf is the Parent state, or is a child of the Parent state.
-  IsChildStateOf<native><epic_internal>(Leaf: state, Parent: state_container)<reads><decides>: void
+  IsChildStateOf<native><epic_internal>(Leaf: state, Parent: state_container)<decides><reads>: void
 
   state<native><epic_internal> := class<abstract><unique><final_super_base>(state_container) {
     # Called by the state machine (in correct order) when the state is activated.
@@ -6185,50 +6625,65 @@ StateMachine<public> := module {
   }
 }
 
-Systems<public> := module {
-  # Abstract definition of any element that can be added to a timeline.See timeline_element_point and timeline_element_span.
-  timeline_element<native><epic_internal> := class(timeline_element_base_cancelable) {}
-
-  using { /Verse.org/Native }
-  @import_as("/Script/VerseTimeline.UVerseTimelineElementBase")
-  timeline_element_base<native><epic_internal> := class<epic_internal> {}
-
-  timeline_element_base_cancelable<native><epic_internal> := class(timeline_element_base, cancelable) {
-    Cancel<override>()<transacts>: void = external {}
-  }
-
-  # A timeline element that occupies a single point in time.
-  timeline_element_point<native><epic_internal> := class<abstract>(timeline_element) {
-    SetTime<native><public>(NewTime: float)<transacts>: void
-
-    # The time of this point. May be +/-Inf.NaN will never be updated or queried.
-    var<private> Time<native><public>: float
-  }
-
-  # A timeline element that spans a range of time.
-  timeline_element_span<native><epic_internal> := class<abstract>(timeline_element) {
-    # Called to modify the timeline's range by assigning its begin and end times.
-    SetRange<native><public>(NewBeginTime: float, NewEndTime: float)<transacts>: void
-
-    # The time this span begins. Defaults to 0.0.Must be <> NaN and <= EndTime in order for it to be updated or queriedMay be +/- Inf
-    var<private> BeginTime<native><public>: float = external {}
-
-    # The time this span ends. Defaults to Inf.Must be <> NaN and >= BeginTime in order for it to be updated or queriedMay be +/- Inf.
-    var<private> EndTime<native><public>: float = external {}
-  }
-}
-
 Temporary<public> := module {
+  # Verse path: /Verse.org/Temporary
   # Module import path: /Verse.org/Temporary/EpicGamesRestricted
   EpicGamesRestricted<public> := module {
     # Module import path: /Verse.org/Temporary/EpicGamesRestricted/Network
     Network<public> := module {
+      @attribscope_struct
+      replicatable<epic_internal> := class<computes><internal>(attribute) {}
+
       replicated<constructor><epic_internal>(ReplicationArgs: string)<computes>: replicated_attribute = external {}
 
       @attribscope_data
       @customattribhandler
       replicated_attribute<epic_internal> := class<computes><internal>(attribute) {}
     }
+  }
+}
+
+@available { MinUploadedAtFNVersion := 4200 }
+# Module import path: /Verse.org/Timeline
+Timeline<public> := module {
+  @available { MinUploadedAtFNVersion := 4200 }
+  # Abstract definition of any element that can be added to a timeline.See timeline_element_point and timeline_element_span.
+  timeline_element<native><public> := class(timeline_element_base_cancelable) {}
+
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4200 }
+  @import_as("/Script/VerseTimeline.UVerseTimelineElementBase")
+  timeline_element_base<native><epic_internal> := class<epic_internal> {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  timeline_element_base_cancelable<native><epic_internal> := class(timeline_element_base, cancelable) {
+    Cancel<override>()<transacts>: void = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  # A timeline element that occupies a single point in time.
+  timeline_element_point<native><public> := class<abstract>(timeline_element) {
+    SetTime<native><public>(NewTime: float)<transacts>: void
+
+    @editable
+    # The time of this point. May be +/-Inf.NaN will never be updated or queried.
+    var<private> Time<native><public>: float
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  # A timeline element that spans a range of time.
+  timeline_element_span<native><public> := class<abstract>(timeline_element) {
+    # Called to modify the timeline's range by assigning its begin and end times.
+    SetRange<native><public>(NewBeginTime: float, NewEndTime: float)<transacts>: void
+
+    @editable
+    # The time this span begins. Defaults to 0.0.Must be <> NaN and <= EndTime in order for it to be updated or queriedMay be +/- Inf
+    var<private> BeginTime<native><public>: float = external {}
+
+    @editable
+    # The time this span ends. Defaults to Inf.Must be <> NaN and >= BeginTime in order for it to be updated or queriedMay be +/- Inf.
+    var<private> EndTime<native><public>: float = external {}
   }
 }
 
@@ -6239,7 +6694,7 @@ Verse<public> := module {
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
-  ).Contains<public>(element_type: castable_subtype(k))<reads><decides>: void = external {}
+  ).Contains<public>(element_type: castable_subtype(k))<decides><reads>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -6247,7 +6702,7 @@ Verse<public> := module {
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
-  ).ContainsAll<public>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
+  ).ContainsAll<public>(element_types: []castable_subtype(k))<decides><reads>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -6255,7 +6710,7 @@ Verse<public> := module {
   (
     InSet: classifiable_subset(t) where t: castable_subtype(k),
     k: type
-  ).ContainsAny<public>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
+  ).ContainsAny<public>(element_types: []castable_subtype(k))<decides><reads>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -6271,7 +6726,7 @@ Verse<public> := module {
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
     k: type
-  ).Contains<epic_internal>(element_type: castable_subtype(k))<reads><decides>: void = external {}
+  ).Contains<epic_internal>(element_type: castable_subtype(k))<decides><reads>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -6279,7 +6734,7 @@ Verse<public> := module {
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
     k: type
-  ).ContainsAll<epic_internal>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
+  ).ContainsAll<epic_internal>(element_types: []castable_subtype(k))<decides><reads>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -6287,7 +6742,7 @@ Verse<public> := module {
   (
     InSet: classifiable_subset_var(t) where t: castable_subtype(k),
     k: type
-  ).ContainsAny<epic_internal>(element_types: []castable_subtype(k))<reads><decides>: void = external {}
+  ).ContainsAny<epic_internal>(element_types: []castable_subtype(k))<decides><reads>: void = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -6411,9 +6866,14 @@ Verse<public> := module {
   # Returns `0.0` if `X=0.0 and Y=0.0`.
   ArcTan<native><public>(Y: float, X: float)<reads>: float
 
+  # Returns whether the Verse code that called the currently-executing function can access epic_internal definitions (i.e. is Epic-authored, or belongs to an internal-user package).
+  CanCallerAccessEpicInternal<native_callable><epic_internal>()<transacts>: logic = external {}
+
+  CanCallerAccessEpicInternal_Impl<native><epic_internal>()<transacts>: logic
+
   # Returns the smallest `int` that is greater than or equal to `Val`.
   # Fails if `not IsFinite(Val)`.
-  Ceil<native><public>(Val: float)<reads><decides>: int
+  Ceil<native><public>(Val: float)<decides><reads>: int
 
   @rtfm_always_open
   # Constrains the value of `Val` between `A` and `B`. Robustly handles different argument orderings.
@@ -6485,28 +6945,28 @@ Verse<public> := module {
 
   # Returns the largest `int` that is less than or equal to `Val`.
   # Fails if `not IsFinite(Val)`.
-  Floor<native><public>(Val: float)<reads><decides>: int
+  Floor<native><public>(Val: float)<decides><reads>: int
 
   @available { MinUploadedAtFNVersion := 3300 }
   # Return an immediate subclass of base_type that is <castable> and <final_super> and is also shared with Instance. Otherwise failure.
   GetCastableFinalSuperClass<native><epic_internal>(
     base_type: type,
     Instance: base_type
-  )<reads><decides>: castable_subtype(base_type)
+  )<decides><reads>: castable_subtype(base_type)
 
   @available { MinUploadedAtFNVersion := 3300 }
   # Return an immediate subclass of base_type that is <castable> and <final_super> and is also shared with sub_type. Otherwise failure.
   GetCastableFinalSuperClassFromType<native><epic_internal>(
     base_type: type,
     sub_type: subtype(base_type)
-  )<reads><decides>: castable_subtype(base_type)
+  )<decides><reads>: castable_subtype(base_type)
 
   # Returns the number of seconds since January 1, 1970 UTC, ignoring leap seconds. I.e, this function implements Unix time. This function always returns the same value within the same transaction.
   GetSecondsSinceEpoch<native><public>()<reads>: float
 
   # Returns the `int` that equals `Val` without the fractional part.
   # Fails if `not IsFinite(val)`.
-  Int<native><public>(Val: float)<reads><decides>: int
+  Int<native><public>(Val: float)<decides><reads>: int
 
   # Succeeds if `Val1` and `Val2` are within `AbsoluteTolerance` of each other.
   IsAlmostEqual<public>(Val1: float, Val2: float, AbsoluteTolerance: float)<computes><decides>: void = external {}
@@ -6591,7 +7051,6 @@ Verse<public> := module {
   # Writes `Message` to a dedicated `Print` log while displaying it in `Color` on the client screen for `Duration` seconds. By default, `Color` is `NamedColors.White` and `Duration` is `2.0` seconds.
   Print<native><public>(Message: message, ?Duration: float = external {}, ?Color: color = external {})<transacts>: void
 
-  using { /Verse.org/Colors }
   # Writes `Message` to a dedicated `Print` log while displaying it in `Color` on the client screen for `Duration` seconds. By default, `Color` is `NamedColors.White` and `Duration` is `2.0` seconds.
   Print<native><public>(Message: string, ?Duration: float = external {}, ?Color: color = external {})<transacts>: void
 
@@ -6612,7 +7071,7 @@ Verse<public> := module {
 
   # Returns `Val` rounded to the nearest `int`. When the fractional part of `Val` is `0.5`, rounds to the nearest *even* `int` (per the IEEE-754 default rounding mode).
   # Fails if `not IsFinite(Val)`.
-  Round<native><public>(Val: float)<reads><decides>: int
+  Round<native><public>(Val: float)<decides><reads>: int
 
   # Returns the sign of `Val`:
   #  * `1.0` if `Val > 0.0`
@@ -6672,6 +7131,9 @@ Verse<public> := module {
 
   # Returns `String` without modification.
   ToString<public>(String: string)<computes>: string = external {}
+
+  # Prints the Verse runtime callstack with warning `Message`.
+  Warn<native><epic_internal>(Message: string)<computes>: void
 
   accessor<native><epic_internal> := enum {
     Dummy
@@ -6774,11 +7236,11 @@ Verse<public> := module {
     IsValid<public>()<transacts><decides>: void
   }
 
+  # A parametric interface combining `awaitable` and `subscribable`.
+  listenable<native><public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {}
+
   # A parameterless interface combining `awaitable` and `subscribable`.
   listenable<public>() := listenable(tuple())
-
-  # A parametric interface combining `awaitable` and `subscribable`.
-  listenable<public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {}
 
   # Used for message localization.
   locale<native><public> := struct<epic_internal> {}
@@ -6807,7 +7269,7 @@ Verse<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   # Implemented by classes to provide a method for modification evaluation.
-  modifier<public>(t: type) := interface {
+  modifier<native><public>(t: type) := interface {
     Evaluate<native_callable><public>(InValue: t)<reads>: t
 
     (/Verse.org/Verse/modifier:)Verse_modifier_Variance<private>(: t): tuple(t) = external {}
@@ -6878,7 +7340,7 @@ Verse<public> := module {
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Implemented by classes that provide a result for an operation, which can fail or be successful
-  result<public>(success_type: type, error_type: type) := interface<computes><internal> {
+  result<native><public>(success_type: type, error_type: type) := interface<computes><internal> {
     # Returns the error data of the specified type.
     GetError<native_callable><public>()<computes><decides>: error_type
 
@@ -6896,25 +7358,25 @@ Verse<public> := module {
 
   # A parametric interface implemented by events with a `payload` that can be signaled.
   # Can be used with `awaitable`, `subscribable`, or both (see: `listenable`).
-  signalable<public>(payload: type) := interface {
+  signalable<native><public>(payload: type) := interface {
     # Concurrently resumes the tasks waiting for this event in `awaitable.Await` and synchronously invokes any callbacks added to this event by `subscribable.Subscribe`.
     Signal<native_callable><public>(Val: payload): void
 
     (/Verse.org/Verse/signalable:)Verse_signalable_Variance<private>(: payload): tuple() = external {}
   }
 
-  # A parameterless interface implemented by events that can be subscribed to.
-  subscribable<public>() := subscribable(tuple())
-
   # A parametric interface implemented by events with a `payload` that can be subscribed to.
   # Matched with `signalable.`
-  subscribable<public>(t: type) := interface {
+  subscribable<native><public>(t: type) := interface {
     # Registers `Callback` to be invoked on matching calls to `signable.Signal`.
     # Returns an unsubscriber object. Call `cancelable.Cancel` on the unsubscriber to unregister `Callback`.
     Subscribe<public>(Callback: type { _(: t): void })<transacts>: cancelable
 
     (/Verse.org/Verse/subscribable:)Verse_subscribable_Variance<private>(): tuple(t) = external {}
   }
+
+  # A parameterless interface implemented by events that can be subscribed to.
+  subscribable<public>() := subscribable(tuple())
 
   subscribable_event_intrnl<epic_internal>() := subscribable_event_intrnl(tuple())
 
@@ -6927,6 +7389,224 @@ Verse<public> := module {
 
     (/Verse.org/Verse/subscribable_event_intrnl:)Verse_subscribable_event_intrnl_Variance<private>(: t): tuple(t) = external {}
   }
+
+  # Verse path: /Verse.org/Verse
+  using { /Verse.org/Colors }
+}
+
+# Verse path: /Verse.org
+# Module import path: /Verse.org/VerseExperimental
+VerseExperimental<public> := module {
+  # Creates and initializes a new instance with the specified year, month, day, hour, minute, second and millisecond.
+  CreateDateTime<native><public>(
+    Year: int,
+    Month: int,
+    Day: int,
+    Hour: int,
+    Minute: int,
+    Second: int,
+    Millisecond: int
+  )<transacts><decides>: date_time
+
+  # Creates and initializes a new instance with the specified days, hours, minutes, seconds and milliseconds.
+  CreateTimeSpan<native><public>(
+    Days: int,
+    Hours: int,
+    Minutes: int,
+    Seconds: int,
+    Milliseconds: int
+  )<transacts>: time_span
+
+  # Returns the maximum date value. The maximum date value is December 31, 9999, 23:59:59.9999999. See DateTimeMin
+  DateTimeMax<public>()<transacts>: date_time = external {}
+
+  # Returns the minimum date value. The minimum date value is January 1, 0001, 00:00:00.0. See DateTimeMax
+  DateTimeMin<public>()<transacts>: date_time = external {}
+
+  # Return the number of days in the specified month of the specified year
+  DaysInMonth<native><public>(Year: int, Month: int): int
+
+  # Return the number of days in the specified year
+  DaysInYear<native><public>(Year: int): int
+
+  GetDate<native><public>(Val: date_time): date_parts
+
+  GetDay<native><public>(Val: date_time): int
+
+  GetDayOfWeek<native><public>(Val: date_time): day_of_week
+
+  GetDays<native><public>(Val: time_span): int
+
+  GetHours<native><public>(Val: date_time): int
+
+  GetHours<native><public>(Val: time_span): int
+
+  GetMicroseconds<native><public>(Val: date_time): int
+
+  GetMicroseconds<native><public>(Val: time_span): int
+
+  GetMilliseconds<native><public>(Val: date_time): int
+
+  GetMilliseconds<native><public>(Val: time_span): int
+
+  GetMinutes<native><public>(Val: date_time): int
+
+  GetMinutes<native><public>(Val: time_span): int
+
+  GetMonth<native><public>(Val: date_time): int
+
+  GetMonthOfYear<native><public>(Val: date_time): month_of_year
+
+  GetNanoseconds<native><public>(Val: date_time): int
+
+  GetNanoseconds<native><public>(Val: time_span): int
+
+  GetSeconds<native><public>(Val: date_time): int
+
+  GetSeconds<native><public>(Val: time_span): int
+
+  GetTimeOfDay<native><public>(Val: date_time): time_of_day_parts
+
+  GetTotalDays<native><public>(Val: time_span): int
+
+  GetTotalHours<native><public>(Val: time_span): int
+
+  GetTotalMicroseconds<native><public>(Val: time_span): int
+
+  GetTotalMilliseconds<native><public>(Val: time_span): int
+
+  GetTotalMinutes<native><public>(Val: time_span): int
+
+  GetTotalSeconds<native><public>(Val: time_span): int
+
+  GetYear<native><public>(Val: date_time): int
+
+  Greater<public>(Left: date_time, Right: date_time)<transacts><decides>: date_time = external {}
+
+  Greater<public>(Left: time_span, Right: time_span)<transacts><decides>: time_span = external {}
+
+  GreaterEqual<public>(Left: date_time, Right: date_time)<transacts><decides>: date_time = external {}
+
+  GreaterEqual<public>(Left: time_span, Right: time_span)<transacts><decides>: time_span = external {}
+
+  Less<public>(Left: date_time, Right: date_time)<transacts><decides>: date_time = external {}
+
+  Less<public>(Left: time_span, Right: time_span)<transacts><decides>: time_span = external {}
+
+  LessEqual<public>(Left: date_time, Right: date_time)<transacts><decides>: date_time = external {}
+
+  LessEqual<public>(Left: time_span, Right: time_span)<transacts><decides>: time_span = external {}
+
+  # Returns a string representation of the datetime in the following format: yyyy.mm.dd-hh.mm.ss. Assumes Datetime is in UTC.
+  (/Verse.org/VerseExperimental:)ToString<native><public>(Val: date_time): string
+
+  # Returns a string representation of the time span in the following format: yyyy.mm.dd-hh.mm.ss.
+  (/Verse.org/VerseExperimental:)ToString<native><public>(Val: time_span): string
+
+  # Returns the current UTC date_time.
+  UtcNow<native><public>(): date_time
+
+  ValidateDateTime<native><public>(
+    Year: int,
+    Month: int,
+    Day: int,
+    Hour: int,
+    Minute: int,
+    Second: int,
+    Millisecond: int
+  ): logic
+
+  date_parts<native><public> := struct<internal> {
+    Day<native>: int
+
+    Month<native>: int
+
+    Year<native>: int
+  }
+
+  date_time<native><public> := struct {
+    Ticks<native><public>: int = external {}
+  }
+
+  # Enumerates the days of the week in 7-day calendars.
+  day_of_week<native><public> := enum {
+    Friday
+
+    Monday
+
+    Saturday
+
+    Sunday
+
+    Thursday
+
+    Tuesday
+
+    Wednesday
+  }
+
+  # Enumerates the months of the year in 12-month calendars.
+  month_of_year<native><public> := enum {
+    April
+
+    August
+
+    December
+
+    February
+
+    January
+
+    July
+
+    June
+
+    March
+
+    May
+
+    November
+
+    October
+
+    September
+  }
+
+  (/Verse.org/VerseExperimental:)operator'*'<public>(Left: float, Right: time_span): time_span = external {}
+
+  (/Verse.org/VerseExperimental:)operator'*'<public>(Left: time_span, Right: float): time_span = external {}
+
+  (/Verse.org/VerseExperimental:)operator'+'<public>(Left: date_time, Right: time_span): date_time = external {}
+
+  (/Verse.org/VerseExperimental:)operator'+'<public>(Left: time_span, Right: time_span): time_span = external {}
+
+  (/Verse.org/VerseExperimental:)operator'-'<public>(Left: date_time, Right: date_time): time_span = external {}
+
+  (/Verse.org/VerseExperimental:)operator'-'<public>(Left: date_time, Right: time_span): date_time = external {}
+
+  (/Verse.org/VerseExperimental:)operator'-'<public>(Left: time_span, Right: time_span): time_span = external {}
+
+  (/Verse.org/VerseExperimental:)operator'-'<public>(Right: time_span): time_span = external {}
+
+  (/Verse.org/VerseExperimental:)operator'/'<public>(Left: time_span, Right: float): time_span = external {}
+
+  time_of_day_parts<native><public> := struct<internal> {
+    Hours<native>: int
+
+    Microseconds<native>: int
+
+    Milliseconds<native>: int
+
+    Minutes<native>: int
+
+    Nanoseconds<native>: int
+
+    Seconds<native>: int
+  }
+
+  time_span<native><public> := struct {
+    Ticks<public>: int = external {}
+  }
 }
 
 subscribable_event<epic_internal>(t: type) := class(subscribable_event_intrnl(t)) {
@@ -6934,3 +7614,6 @@ subscribable_event<epic_internal>(t: type) := class(subscribable_event_intrnl(t)
 
   (/Verse.org/subscribable_event:)subscribable_event_Variance<private>(: t): tuple() = external {}
 }
+
+# Verse path: /Verse.org
+using { /Verse.org/Native }

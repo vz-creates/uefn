@@ -45,7 +45,9 @@
 			"/Script/AudioModulation.SoundModulationGenerator": 					{ "Visible": true },
 			"/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower": 					{ "Visible": true },
 			"/Script/AudioModulation.MovieSceneAudioControlBusSection":			{},
+			"/Script/AudioModulation.MovieSceneAudioControlBusMixSection":			{},
 			"/Script/AudioModulation.MovieSceneAudioControlBusTrack":			{ "Visible": true },
+			"/Script/AudioModulation.MovieSceneAudioControlBusMixTrack":			{ "Visible": true },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleFactory":				{  },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetDefinitions":	{  },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetActionUtility":	{ "Visible": true }

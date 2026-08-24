@@ -1,0 +1,175 @@
+{
+	"ValkyrieBlueprintsSettings": {
+		"AllowedEnums": {
+			"+": [
+				"/Script/ModularTestFramework.EMTFBackend"
+			]
+		},
+		"AllowedStructs": {
+			"+": [
+				"/Script/ModularTestFramework.ActorHandle"
+			]
+		},
+		"AllowedFunctions": {
+			"+": [
+				"/Script/ModularTestFramework.ModularTest:ShouldSkip",
+				"/Script/ModularTestFramework.ModularTest:GetPhaseTimeout",
+				"/Script/ModularTestFramework.ModularTest:GetDisplayName",
+				"/Script/ModularTestFramework.ModularTest:GetTestSuite",
+				"/Script/ModularTestFramework.ModularTest:GetTags",
+				"/Script/ModularTestFramework.ModularTest:GetParameterNames",
+				"/Script/ModularTestFramework.ModularTest:Setup",
+				"/Script/ModularTestFramework.ModularTest:IsSetupComplete",
+				"/Script/ModularTestFramework.ModularTest:RunTest",
+				"/Script/ModularTestFramework.ModularTest:IsTestComplete",
+				"/Script/ModularTestFramework.ModularTest:Teardown",
+				"/Script/ModularTestFramework.ModularTest:IsTeardownComplete",
+				"/Script/ModularTestFramework.ModularTest:HasErrors",
+				"/Script/ModularTestFramework.ModularTest:HasFatalFailure",
+				"/Script/ModularTestFramework.ModularTest:IsExpectedFailure",
+				"/Script/ModularTestFramework.ModularTest:AddError",
+				"/Script/ModularTestFramework.ModularTest:AddWarning",
+				"/Script/ModularTestFramework.ModularTest:AddMessage",
+				"/Script/ModularTestFramework.ModularTest:MarkExpectedFailure",
+				"/Script/ModularTestFramework.ModularTest:AddExpectedError",
+				"/Script/ModularTestFramework.ModularTest:AssertTrue",
+				"/Script/ModularTestFramework.ModularTest:AssertFalse",
+				"/Script/ModularTestFramework.ModularTest:AssertIsValid",
+				"/Script/ModularTestFramework.ModularTest:AssertEqual_Int",
+				"/Script/ModularTestFramework.ModularTest:AssertEqual_Float",
+				"/Script/ModularTestFramework.ModularTest:AssertEqual_Name",
+				"/Script/ModularTestFramework.ModularTest:AssertEqual_String",
+				"/Script/ModularTestFramework.ModularTest:AssertNull",
+				"/Script/ModularTestFramework.ModularTest:AssertGreaterThan_Int",
+				"/Script/ModularTestFramework.ModularTest:AssertLessThan_Int",
+				"/Script/ModularTestFramework.ModularTest:AssertGreaterThan_Float",
+				"/Script/ModularTestFramework.ModularTest:AssertLessThan_Float",
+				"/Script/ModularTestFramework.ModularTest:RequireTrue",
+				"/Script/ModularTestFramework.ModularTest:RequireFalse",
+				"/Script/ModularTestFramework.ModularTest:RequireIsValid",
+				"/Script/ModularTestFramework.ModularTest:RequireNull",
+				"/Script/ModularTestFramework.ModularTest:RequireEqual_Int",
+				"/Script/ModularTestFramework.ModularTest:RequireEqual_Float",
+				"/Script/ModularTestFramework.ModularTest:RequireEqual_Name",
+				"/Script/ModularTestFramework.ModularTest:RequireEqual_String",
+				"/Script/ModularTestFramework.ModularTest:AddTelemetryData",
+				"/Script/ModularTestFramework.ModularTest:AddAnalyticsItem",
+
+				"/Script/ModularTestFramework.ModularTestSuite:SetupTestSuite",
+				"/Script/ModularTestFramework.ModularTestSuite:IsSetupTestSuiteComplete",
+				"/Script/ModularTestFramework.ModularTestSuite:TeardownTestSuite",
+				"/Script/ModularTestFramework.ModularTestSuite:IsTeardownTestSuiteComplete",
+				"/Script/ModularTestFramework.ModularTestSuite:GetDisplayName",
+				"/Script/ModularTestFramework.ModularTestSuite:GetTestWorld",
+				"/Script/ModularTestFramework.ModularTestSuite:GetPhaseTimeout",
+				"/Script/ModularTestFramework.ModularTestSuite:ShouldRunByDefault",
+				"/Script/ModularTestFramework.ModularTestSuite:AddError",
+				"/Script/ModularTestFramework.ModularTestSuite:AddWarning",
+				"/Script/ModularTestFramework.ModularTestSuite:AddMessage",
+				"/Script/ModularTestFramework.ModularTestSuite:HasErrors",
+
+				"/Script/ModularTestFramework.MTFEnv:GetBackend",
+				"/Script/ModularTestFramework.MTFEnv:GetServer",
+				"/Script/ModularTestFramework.MTFEnv:GetServerAt",
+				"/Script/ModularTestFramework.MTFEnv:GetServerCount",
+				"/Script/ModularTestFramework.MTFEnv:GetClient",
+				"/Script/ModularTestFramework.MTFEnv:GetClientCount",
+
+				"/Script/ModularTestFramework.MTFServerRole:IsReady",
+				"/Script/ModularTestFramework.MTFServerRole:GetOpsByClass",
+				"/Script/ModularTestFramework.MTFServerRole:ClearHandlers",
+
+				"/Script/ModularTestFramework.MTFClientRole:GetIndex",
+				"/Script/ModularTestFramework.MTFClientRole:Connect",
+				"/Script/ModularTestFramework.MTFClientRole:Disconnect",
+				"/Script/ModularTestFramework.MTFClientRole:IsConnected",
+				"/Script/ModularTestFramework.MTFClientRole:GetOpsByClass",
+				"/Script/ModularTestFramework.MTFClientRole:ClearHandlers",
+
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:LoadMap",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:UnloadMap",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:SetCVar",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:GetCVarString",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:SpawnActor",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:DestroyActor",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:FindActorsOfClass",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:ActorExists",
+				"/Script/ModularTestFramework.MTFBuiltInServerOps:GetWorldTimeSeconds",
+
+				"/Script/ModularTestFramework.MTFBuiltInClientOps:HasReplicated",
+				"/Script/ModularTestFramework.MTFBuiltInClientOps:ResolveActor",
+				"/Script/ModularTestFramework.MTFBuiltInClientOps:SetCVar",
+				"/Script/ModularTestFramework.MTFBuiltInClientOps:GetCVarString",
+				"/Script/ModularTestFramework.MTFBuiltInClientOps:ActorExists"
+			]
+		}
+	},
+	"ValkyrieEditorSettings": {
+		"AllowedClasses": {
+			"/Script/ModularTestFramework.ModularTest": { "Visible": true },
+			"/Script/ModularTestFramework.ModularTestSuite": { "Visible": true },
+			"/Script/ModularTestFramework.TransientWorldTestSuite": { "Visible": true },
+			"/Script/ModularTestFramework.DefaultModularTestSuite": { "Visible": true },
+			"/Script/ModularTestFramework.E2EModularTestSuite": { "Visible": true },
+			"/Script/ModularTestFramework.MTFEnv": { "Visible": true },
+			"/Script/ModularTestFramework.MTFServerRole": { "Visible": true },
+			"/Script/ModularTestFramework.MTFClientRole": { "Visible": true },
+			"/Script/ModularTestFramework.MTFServerOpHandler": { "Visible": true },
+			"/Script/ModularTestFramework.MTFClientOpHandler": { "Visible": true },
+			"/Script/ModularTestFramework.MTFBuiltInServerOps": { "Visible": true },
+			"/Script/ModularTestFramework.MTFBuiltInClientOps": { "Visible": true }
+		}
+	},
+	"PropertyEditorClassPermissionList": {
+		"+": [
+			{
+				"Type": "/Script/ModularTestFramework.ModularTest",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.ModularTestSuite",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.TransientWorldTestSuite",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.DefaultModularTestSuite",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.E2EModularTestSuite",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFEnv",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFServerRole",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFClientRole",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFServerOpHandler",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFClientOpHandler",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFBuiltInServerOps",
+				"bAllowListAllProperties": true
+			},
+			{
+				"Type": "/Script/ModularTestFramework.MTFBuiltInClientOps",
+				"bAllowListAllProperties": true
+			}
+		]
+	}
+}

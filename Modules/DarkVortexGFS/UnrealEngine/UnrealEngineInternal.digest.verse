@@ -1,9 +1,11 @@
-# Copyright Epic Games, Inc. All Rights Reserved.
+<#
+Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
-# Generated Digest of Verse API
-# DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.30-CL-55979764
+Generated Digest of Verse API
+DO NOT modify this manually!
+Generated from build: ++Fortnite+Release-42.00-CL-56878558
 #################################################
+#>
 
 AINavigation<public> := module {
   @experimental
@@ -72,7 +74,6 @@ AINavigation<public> := module {
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Assets }
-  using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   @experimental
@@ -92,9 +93,19 @@ AINavigation<public> := module {
 
     OnRemovingFromScene<native><override>(): void
   }
+
+  # Verse path: /UnrealEngine.com/AINavigation
+  using { /Verse.org/Native }
 }
 
 Abilities<public> := module {
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4130 }
+  @experimental
+  MakeAbilityEffectComponent<native><public>(component_type: castable_subtype(ability_effect_component))<converges>: component_type
+
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
   # Lives in the scene graph and is the high level description of an ability.
@@ -112,7 +123,7 @@ Abilities<public> := module {
 
     BeginUseEvent<native><public>: listenable(entity) = external {}
 
-    CanUse<public>(AbilityEffectParent: entity, AbilityContext: context_type)<reads><decides>: void = external {}
+    CanUse<public>(AbilityEffectParent: entity, AbilityContext: context_type)<decides><reads>: void = external {}
 
     EndUseEvent<native><public>: listenable(entity) = external {}
 
@@ -132,10 +143,6 @@ Abilities<public> := module {
     var<private> ActiveEffects<native><public>: []ability_effect_type
   }
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
   # Data passed on activation of an ability. Holds who fired, who helped, and what got hit.
@@ -187,8 +194,12 @@ Abilities<public> := module {
   @experimental
   # Lightweight tag explaining why an effect ended.
   cancel_reason<native><public> := class<abstract><castable> {}
+
+  # Verse path: /UnrealEngine.com/Abilities
+  using { /Verse.org/Assets }
 }
 
+# Verse path: /UnrealEngine.com
 # Module import path: /UnrealEngine.com/Assets
 (/UnrealEngine.com:)Assets<public> := module {
   PlaySound<native><epic_internal>(Asset: sound, ?StartDelay: float = external {})<transacts>: cancelable
@@ -197,6 +208,14 @@ Abilities<public> := module {
     Asset: sound,
     Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
     ?Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {},
+    ?StartDelay: float = external {}
+  )<transacts>: cancelable
+
+  SpawnParticleSystem<native><epic_internal>(
+    Asset: particle_system,
+    Position: (/Verse.org/SpatialMath:)vector3,
+    IntParams: [string]int,
+    ?Rotation: (/Verse.org/SpatialMath:)rotation = external {},
     ?StartDelay: float = external {}
   )<transacts>: cancelable
 
@@ -226,6 +245,7 @@ Abilities<public> := module {
   }
 }
 
+# Verse path: /UnrealEngine.com
 # Module import path: /UnrealEngine.com/BasicShapes
 BasicShapes<public> := module {
   cone<public> := class<final><public>(mesh_component) {
@@ -251,6 +271,7 @@ BasicShapes<public> := module {
   }
 }
 
+# Verse path: /UnrealEngine.com
 # Module import path: /UnrealEngine.com/ControlInput
 ControlInput<public> := module {
   @available { MinUploadedAtFNVersion := 3630 }
@@ -336,7 +357,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Returns the persona a participant is assigned to, fails if unassigned.
-  (Participant: agent).GetConversationTargetForAgent<native><epic_internal>()<reads><decides>: conversation_target
+  (Participant: agent).GetConversationTargetForAgent<native><epic_internal>()<decides><reads>: conversation_target
 
   @available { MinUploadedAtFNVersion := 4000 }
   # A participant can only speak to one conversation target at a time.
@@ -358,7 +379,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Retrieve the persona and channel the player is currently bound to prompt.
-  (Player: player).GetConversationTarget<native><public>()<reads><decides>: tuple(
+  (Player: player).GetConversationTarget<native><public>()<decides><reads>: tuple(
     persona_component,
     voice_channel(has_voice_member_info)
   )
@@ -394,7 +415,6 @@ Conversations<public> := module {
     Description<public>: string
   }
 
-  using { /Fortnite.com/Devices }
   using { /Verse.org/Chat }
   using { /Verse.org/Colors }
   using { /Verse.org/Diagnostics }
@@ -409,6 +429,7 @@ Conversations<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   ai_moderated_error<native><public> := class(ai_error) {}
 
+  # Verse path: /UnrealEngine.com/Conversations
   ai_prompt_device<epic_internal> := class {}
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -504,7 +525,7 @@ Conversations<public> := module {
     AddPlayer<native_callable><epic_internal>(Player: agent)<transacts><decides>: void = external {}
 
     # Succeeds if the agent can target Self for conversation.
-    CanConversationTargeterBeAdded<native_callable><epic_internal>(ConversationTargeter: agent)<reads><decides>: void = external {}
+    CanConversationTargeterBeAdded<native_callable><epic_internal>(ConversationTargeter: agent)<decides><reads>: void = external {}
 
     # When agent untargets Self for conversation.
     RemoveConversationTargeterEvent<final><public>: listenable(agent) = external {}
@@ -596,6 +617,7 @@ Conversations<public> := module {
     VoiceName<override>: string = external {}
   }
 
+  # Verse path: /UnrealEngine.com/Conversations
   llm_fact<native><epic_internal> := class(cancelable) {
     Cancel<native><override>()<transacts>: void
   }
@@ -760,7 +782,7 @@ Conversations<public> := module {
     AddPlayer<native><override>(Player: agent)<transacts><decides>: void
 
     # Fails if the participant is not in the list of participants
-    CanConversationTargeterBeAdded<override><native>(ConversationTargeter: agent)<reads><decides>: void
+    CanConversationTargeterBeAdded<override><native>(ConversationTargeter: agent)<decides><reads>: void
 
     # Returns a diagnostic of the Persona facts, both static and dynamic.
     DiagnoseFacts<native><public>()<reads>: diagnostic
@@ -912,6 +934,9 @@ Conversations<public> := module {
     VoiceName<override>: string = external {}
   }
 
+  # Verse path: /UnrealEngine.com/Conversations
+  using { /Fortnite.com/Devices }
+
   @available { MinUploadedAtFNVersion := 4000 }
   # The persona voice used when converting text-to-voice
   voice_model<native><public> := class<abstract><epic_internal> {
@@ -962,7 +987,7 @@ Itemization<public> := module {
   add_item_error<native><public> := class<computes> {}
 
   # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
-  # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
+  # 'add_item_query_event' can be used to veto inventory choices, sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
   add_item_query_event<native><public> := class<epic_internal>(scene_event) {
     AddError<public>(Error: add_item_error): void = external {}
 
@@ -1026,17 +1051,9 @@ Itemization<public> := module {
     SlotChangedItems<native><public>: []item_slot_change
   }
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
-  copy_from_item<native><epic_internal> := interface<epic_internal> {
-    CopyFromItem<native_callable><epic_internal>(SourceItem: entity)<transacts>: void
-  }
-
   equip_item_error<native><public> := class<computes> {}
 
+  # When equipping an item, 'equip_item_query_event' can be used to veto the equip. It is sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
   equip_item_query_event<native><public> := class(scene_event) {
     AddError<public>(Error: equip_item_error): void = external {}
 
@@ -1080,8 +1097,10 @@ Itemization<public> := module {
       ?AllowMergeItems: logic = external {}
     )<transacts>: result(add_item_result, []add_item_error)
 
+    # Triggered when an item is added. Fires on this inventory, then propagates up to all ancestor inventories.
     AddItemEvent<native><final><public>: listenable(add_item_result) = external {}
 
+    # Triggered when an item is equipped. Fires on this inventory, then propagates up to all ancestor inventories.
     EquipItemEvent<native><final><public>: listenable(equip_item_result) = external {}
 
     @available { MinUploadedAtFNVersion := 2930 }
@@ -1092,7 +1111,6 @@ Itemization<public> := module {
     # Returns a list of all items within this inventory and its descendant inventories.
     FindItems<native><final><public>()<reads>: generator(entity)
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Returns a list of all items (of a specific type) within this inventory and its descendant inventories.
     FindItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
 
@@ -1106,7 +1124,6 @@ Itemization<public> := module {
     # Returns a list of items within this inventory only.
     GetItems<native><final><public>()<reads>: []entity
 
-    @available { MinUploadedAtFNVersion := 3200 }
     # Returns a list of items (of a specific type) within this inventory only.
     GetItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
 
@@ -1155,8 +1172,10 @@ Itemization<public> := module {
     # Removes an item from this inventory or its descendent inventories. Fails if the item could not be removed.
     RemoveItem<native><final><public>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
 
+    # Triggered when an item is removed. Fires on this inventory, then propagates up to all ancestor inventories.
     RemoveItemEvent<native><final><public>: listenable(remove_item_result) = external {}
 
+    # Triggered when an item is unequipped. Fires on this inventory, then propagates up to all ancestor inventories.
     UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
 
     var<private> InventoryDescription<native><epic_internal>: message = external {}
@@ -1314,18 +1333,26 @@ Itemization<public> := module {
     #  Fails if the item is already a pickup. The transform of the item will not be altered except to unparent it from any inventory.
     (/UnrealEngine.com/Itemization/item_component:)Drop<native><public>()<transacts><decides>: void
 
+    # Removes the item from its inventory and places it in the simulation world. Works on orphaned items i.e. outside the world or any inventory.
+    #  Fails if the item is already in the world. The transform of the dropped item will be set to WorldTransform.
+    (/UnrealEngine.com/Itemization/item_component:)Drop<native><public>(WorldTransform: (/Verse.org/SpatialMath:)transform)<transacts><decides>: void
+
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to equip this item within the inventory it is currently in.
     # Fails if not in an inventory or if equip_item_query_event contains any errors after querying.
     Equip<final><native><public>()<transacts>: result(false, []equip_item_error)
 
     # Returns the inventory_component this item currently resides in. Fails if it cannot find a valid parent inventory.
-    GetParentInventory<native><final><public>()<reads><decides>: inventory_component
+    GetParentInventory<native><final><public>()<decides><reads>: inventory_component
 
     # Succeeds if this item is considered currently within an inventory and equipped.
-    IsEquipped<native><final><public>()<reads><decides>: void
+    IsEquipped<native><final><public>()<decides><reads>: void
 
     ItemDefinitionAsset<native><epic_internal>: ?item_definition = external {}
+
+    @available { MinUploadedAtFNVersion := 4200 }
+    @replicated("")
+    ItemID<native><epic_internal>: item_id = external {}
 
     @available { MinUploadedAtFNVersion := 3800 }
     MakeEquipResultInternal<final><native_callable><epic_internal>(IsSuccess: logic): result(
@@ -1361,6 +1388,10 @@ Itemization<public> := module {
 
   @import_as("/Script/ItemizationCoreRuntime.UItemDefinitionBase")
   item_definition_base<native><epic_internal> := class<epic_internal> {}
+
+  @replicatable
+  @import_as("/Script/ItemizationCoreRuntime.FItemID")
+  item_id<native><epic_internal> := struct<concrete> {}
 
   @experimental
   item_mesh_attachment_definition<native><epic_internal> := class<concrete>(item_attachment_definition) {
@@ -1416,7 +1447,7 @@ Itemization<public> := module {
   @experimental
   @hide_in_editor
   itemization_debug_item_component_mergeable<epic_internal> := class(item_component, has_merge_rules) {
-    AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+    AllowMergeInto<override>(TargetEntity: entity)<decides><reads>: void = external {}
   }
 
   @experimental
@@ -1523,6 +1554,7 @@ Itemization<public> := module {
 
   remove_item_error<native><public> := class<computes> {}
 
+  # Can be used to veto item removal. Sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
   remove_item_query_event<native><public> := class<epic_internal>(scene_event) {
     AddError<public>(Error: remove_item_error): void = external {}
 
@@ -1547,6 +1579,11 @@ Itemization<public> := module {
     RemovedItems<native><public>: []entity
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   @hide_in_editor
   subscribable_inventory_event<native><epic_internal>(t: type) := class(subscribable_event_intrnl(t)) {
     Await<native><override>()<suspends>: t
@@ -1558,6 +1595,7 @@ Itemization<public> := module {
 
   unequip_item_error<native><public> := class<computes> {}
 
+  # When unequipping an item, 'unequip_item_query_event' can be used to veto the unequip. It is sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
   unequip_item_query_event<native><public> := class(scene_event) {
     AddError<public>(Error: unequip_item_error): void = external {}
 
@@ -1569,12 +1607,16 @@ Itemization<public> := module {
   unequip_item_result<native><public> := class<epic_internal> {
     Item<native><public>: entity
   }
+
+  # Verse path: /UnrealEngine.com/Itemization
+  using { /Verse.org/SpatialMath }
 }
 
 JSON<public> := module {
   # Parse a JSON string returning a value with its contents
   Parse<native><public>(JSONString: string)<transacts><decides>: value
 
+  # Verse path: /UnrealEngine.com/JSON
   value<native><public> := class {
     # Retrieve an array value or fail if value is not a json array
     AsArray<native><public>()<transacts><decides>: []value
@@ -1596,7 +1638,6 @@ JSON<public> := module {
   }
 }
 
-using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 4110 }
 # Module import path: /UnrealEngine.com/Progression
 (/UnrealEngine.com:)Progression<public> := module {
@@ -1631,9 +1672,7 @@ using { /Verse.org/Native }
     []register_verb_error
   ) = external {}
 
-  RegisterGameplayConditional<native><epic_internal>(ContextAnchor: entity, GameplayConditional: subtype(gameplay_conditional), Callback: type { _(: gameplay_conditional_context): void })<transacts>: result(gameplay_conditional_listener_handle, []register_gameplay_conditional_error)
-
-  RegisterInstancedGameplayConditional<native><epic_internal>(ContextAnchor: entity, GameplayConditional: gameplay_conditional, Callback: type { _(: gameplay_conditional_context): void })<transacts>: result(gameplay_conditional_listener_handle, []register_gameplay_conditional_error)
+  RegisterGameplayConditional<native><epic_internal>(ContextAnchor: entity, GameplayConditional: concrete_subtype(gameplay_conditional), Callback: type { _(: gameplay_conditional_context): void })<transacts>: result(gameplay_conditional_listener_handle, []register_gameplay_conditional_error)
 
   RegisterInstancedVerbFilter<native><epic_internal>(VerbFilter: verb_filter, Callback: type { _(: entity, : scene_event, : float): void })<transacts>: result(verb_listener_handle, []register_verb_error)
 
@@ -1651,15 +1690,14 @@ using { /Verse.org/Native }
 
   already_claimed_error<native><epic_internal> := class<epic_internal>(claim_reward_error) {}
 
-  using { /Verse.org/Assets }
-  using { /Verse.org/Presentation }
+  using { /Verse.org }
   @experimental
   # Standard quest that follows the "do x, get y" paradigm.
   # Auto-completion: when Objective.IsComplete() succeeds, calls Complete() automatically.
   # Auto-rewarding: on completion, rewards are granted to eligible participants
   # via GetRecipients() then GrantReward().
   basic_quest<native><public> := class<abstract>((/Verse.org:)Progression.quest, has_icon, has_description) {
-    CanGrantRewards<native><native_callable><epic_internal>()<reads><decides>: void
+    CanGrantRewards<native><native_callable><epic_internal>()<decides><reads>: void
 
     GrantRewardsToParticipants<native><native_callable><final><epic_internal>(): void
 
@@ -1698,14 +1736,12 @@ using { /Verse.org/Native }
   }
 
   using { /Fortnite.com/Marketplace }
-  using { /Verse.org }
-  using { /Verse.org/SceneGraph }
   using { /Verse.org/StateMachine }
   @experimental
   composite_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
     GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native><native_callable>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<decides><reads>: void
 
     OnAbandon<override><native><native_callable>(QuestParticipant: (/Verse.org:)Progression.quest_participant): void
 
@@ -1751,7 +1787,8 @@ using { /Verse.org/Native }
   }
 
   contextual_reactions_component<native><epic_internal> := class<final_super><epic_internal>(component) {
-    Events<epic_internal>: []tuple(gameplay_conditional, []gameplay_reaction)
+    @available { MinUploadedAtFNVersion := 4200 }
+    Events<epic_internal>: []tuple(concrete_subtype(gameplay_conditional), []gameplay_reaction)
 
     OnBeginSimulation<override>(): void = external {}
 
@@ -1785,18 +1822,18 @@ using { /Verse.org/Native }
 
   execute_gameplay_reaction_error<native><public> := class<epic_internal> {}
 
-  gameplay_conditional<native><epic_internal> := class<abstract> {
+  gameplay_conditional<native><epic_internal> := class {
     Attributes<native><epic_internal>: []gameplay_conditional_attribute = external {}
 
     Execute<native><final><epic_internal>(ContextObject: gameplay_conditional_context): void
 
-    OnInitialization<native_callable><epic_internal>(ContextAnchor: entity): void
+    OnInitialization<native_callable><epic_internal>(ContextAnchor: entity): void = external {}
 
-    OnInvalidation<native_callable><epic_internal>(): void
+    OnInvalidation<native_callable><epic_internal>(): void = external {}
 
-    OnParticipantAdded<native_callable><epic_internal>(Participant: entity): void
+    OnParticipantAdded<native_callable><epic_internal>(Participant: entity): void = external {}
 
-    OnParticipantRemoved<native_callable><epic_internal>(Participant: entity): void
+    OnParticipantRemoved<native_callable><epic_internal>(Participant: entity): void = external {}
   }
 
   gameplay_conditional_attribute<native><epic_internal> := class<abstract> {
@@ -1838,9 +1875,9 @@ using { /Verse.org/Native }
 
     OnVerbMessageReceivedWithDelta<protected>(Author: entity, SceneEvent: scene_event, Delta: float): void = external {}
 
-    VerbFilterTypes<epic_internal>: []subtype(verb_filter)
+    VerbFilterTypes<epic_internal>: []subtype(verb_filter) = external {}
 
-    VerbMessageTypes<epic_internal>: []subtype(scene_event)
+    VerbMessageTypes<epic_internal>: []subtype(scene_event) = external {}
   }
 
   gameplay_reaction<native><epic_internal> := class<abstract> {
@@ -1861,7 +1898,8 @@ using { /Verse.org/Native }
   grant_quest_reward_error<native><public> := class {}
 
   has_gameplay_conditionals<native><epic_internal> := interface<epic_internal> {
-    Conditionals<epic_internal>: []subtype(gameplay_conditional) = external {}
+    @available { MinUploadedAtFNVersion := 4200 }
+    Conditionals<epic_internal>: []concrete_subtype(gameplay_conditional) = external {}
 
     OnConditionalExecuted<native_callable><epic_internal>(Context: gameplay_conditional_context): void
   }
@@ -1870,6 +1908,32 @@ using { /Verse.org/Native }
     Reactions<epic_internal>: []gameplay_reaction = external {}
 
     TriggerReactions<epic_internal>(Context: gameplay_reaction_context)<transacts>: void = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Implement on a quest class to customize how it displays in the quest UI.
+  has_quest_presentation<native><public> := interface {
+    GetAllowFavorite<native_callable><epic_internal>()<reads>: logic = external {}
+
+    GetCategories<native_callable><epic_internal>()<reads>: []quest_category = external {}
+
+    GetShowNotification<native_callable><epic_internal>()<reads>: logic = external {}
+
+    SetAllowFavorite<native_callable><epic_internal>(InAllowFavorite: logic)<transacts>: void = external {}
+
+    SetCategories<native_callable><epic_internal>(InCategories: []quest_category)<transacts>: void = external {}
+
+    SetShowNotification<native_callable><epic_internal>(InShowNotification: logic)<transacts>: void = external {}
+
+    # Whether players may favorite this quest to the HUD quest tracker.
+    var AllowFavorite<native><public>: logic
+
+    # The categories this quest is grouped under in the quest UI. Empty = uncategorized.
+    var Categories<native><public>: []quest_category
+
+    # Whether HUD notifications play for this quest's granted/progress/completed moments.
+    var ShowNotification<native><public>: logic
   }
 
   locker_entitlement<native><epic_internal> := class(ecosystem_entitlement) {
@@ -1885,7 +1949,7 @@ using { /Verse.org/Native }
       [](/Verse.org:)Progression.abandon_quest_error
     )
 
-    CanGrantRewards<override><native><native_callable>()<reads><decides>: void
+    CanGrantRewards<override><native><native_callable>()<decides><reads>: void
 
     CanJoin<override><native><native_callable>(QuestParticipant: (/Verse.org:)Progression.quest_participant)<reads>: result(
       void,
@@ -1941,7 +2005,7 @@ using { /Verse.org/Native }
     GetProgress<override><native><final>()<reads>: message
 
     # Succeeds if Progress >= RequiredCount.
-    IsComplete<override><native><final>()<reads><decides>: void
+    IsComplete<override><native><final>()<decides><reads>: void
 
     # Sets current progress. Clamped to [0, RequiredCount].
     SetProgress<native><final><public>(Amount: float)<transacts>: void
@@ -1956,6 +2020,20 @@ using { /Verse.org/Native }
     var<private> RequiredCount<native><public>: float
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/Presentation }
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # A category in the quest UI.
+  quest_category<native><public> := class<abstract><unique><castable>(has_icon, has_description) {
+    # The owning category that this category is considered nested under.
+    Parent<native><public>: ?quest_category = external {}
+
+    # Relative ordering among categories in the quest UI; lower values sort first.
+    SortOrder<native><public>: rational
+  }
+
   @experimental
   quest_extension<native><epic_internal> := class<abstract><castable><epic_internal> {
     CanAbandon<native><native_callable><epic_internal>(QuestParticipant: (/Verse.org:)Progression.quest_participant)<reads>: result(
@@ -1963,7 +2041,7 @@ using { /Verse.org/Native }
       [](/Verse.org:)Progression.abandon_quest_error
     )
 
-    CanGrantRewards<native><native_callable><epic_internal>()<reads><decides>: void
+    CanGrantRewards<native><native_callable><epic_internal>()<decides><reads>: void
 
     CanJoin<native><native_callable><epic_internal>(QuestParticipant: (/Verse.org:)Progression.quest_participant)<reads>: result(
       void,
@@ -1993,7 +2071,7 @@ using { /Verse.org/Native }
 
     ActivateEvent<native><final><epic_internal>: listenable(quest_objective) = external {}
 
-    CanProgress<native><native_callable><epic_internal>()<reads><decides>: void
+    CanProgress<native><native_callable><epic_internal>()<decides><reads>: void
 
     # Signaled when this objective is considered complete.
     CompleteEvent<native><final><public>: listenable(quest_objective) = external {}
@@ -2011,7 +2089,7 @@ using { /Verse.org/Native }
     GetProgress<native><native_callable><public>()<reads>: message
 
     # Succeeds if this objective is currently complete.
-    IsComplete<native><native_callable><public>()<reads><decides>: void
+    IsComplete<native><native_callable><public>()<decides><reads>: void
 
     JoinEvent<native><final><epic_internal>: listenable(tuple(
       quest_objective,
@@ -2076,17 +2154,18 @@ using { /Verse.org/Native }
     )
   }
 
+  using { /Verse.org/SceneGraph }
   register_gameplay_conditional_error<native><public> := class<epic_internal> {}
 
   register_verb_error<native><public> := class<epic_internal> {}
 
   @experimental
   reward_claim_quest_extension<native><epic_internal> := class<epic_internal>(quest_extension) {
-    CanGrantRewards<override><native><native_callable>()<reads><decides>: void
+    CanGrantRewards<override><native><native_callable>()<decides><reads>: void
 
     ClaimRewards<native><native_callable><epic_internal>()<transacts>: result(void, []claim_reward_error)
 
-    IsReadyToClaim<native><native_callable><epic_internal>()<reads><decides>: void
+    IsReadyToClaim<native><native_callable><epic_internal>()<decides><reads>: void
 
     RewardsClaimedEvent<native><final><epic_internal>: listenable(reward_claim_quest_extension) = external {}
 
@@ -2112,7 +2191,7 @@ using { /Verse.org/Native }
   sequential_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
     GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native><native_callable>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<decides><reads>: void
 
     OnAbandon<override><native><native_callable>(QuestParticipant: (/Verse.org:)Progression.quest_participant): void
 
@@ -2140,7 +2219,7 @@ using { /Verse.org/Native }
   state_machine_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
     GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native><native_callable>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<decides><reads>: void
 
     OnAbandon<override><native><native_callable>(QuestParticipant: (/Verse.org:)Progression.quest_participant): void
 
@@ -2170,7 +2249,7 @@ using { /Verse.org/Native }
   timed_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
     GetProgress<override><native><native_callable>()<reads>: message
 
-    IsComplete<override><native><native_callable>()<reads><decides>: void
+    IsComplete<override><native><native_callable>()<decides><reads>: void
 
     OnAbandon<override><native><native_callable>(QuestParticipant: (/Verse.org:)Progression.quest_participant): void
 
@@ -2214,6 +2293,7 @@ using { /Verse.org/Native }
   }
 }
 
+# Verse path: /UnrealEngine.com
 # Module import path: /UnrealEngine.com/StateMachine
 (/UnrealEngine.com:)StateMachine<public> := module {
   # Creates a new unique state handle. Each call returns a handle with a unique Id.
@@ -2309,6 +2389,7 @@ using { /Verse.org/Native }
 }
 
 Temporary<public> := module {
+  # Verse path: /UnrealEngine.com/Temporary
   # Module import path: /UnrealEngine.com/Temporary/Curves
   Curves<public> := module {
     editable_curve<native><public> := class<final><concrete> {
@@ -2604,6 +2685,7 @@ Temporary<public> := module {
   # Stably sort `Array` using `Less` where `Less` succeeding indicates `Left` should precede `Right`
   SortBy<native><public>((Array: []t, Less: type { _(: t, : t)<computes><decides>: void }) where t: type)<computes>: []t
 
+  # Verse path: /UnrealEngine.com/Temporary
   # Module import path: /UnrealEngine.com/Temporary/SpatialMath
   (/UnrealEngine.com/Temporary:)SpatialMath<public> := module {
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Y axis to `InitialRotation`.
@@ -2694,7 +2776,7 @@ Temporary<public> := module {
 
     # Makes a unit length `vector3` pointing in the same direction of `V`.
     # Fails if `V.IsAlmostZero[] or not V.IsFinite[]`.
-    (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<decides><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Returns the squared length of `V` as if `V.Z = 0.0`.
     (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).LengthSquaredXY<public>()<reads>: float = external {}
@@ -2717,7 +2799,7 @@ Temporary<public> := module {
 
     # Makes a unit length `vector2` pointing in the same direction of `V`.
     # Fails if `V.IsAlmostZero[] or not V.IsFinite[]`.
-    (V: vector2).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<reads><decides>: vector2 = external {}
+    (V: vector2).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<decides><reads>: vector2 = external {}
 
     @vm_no_effect_token
     # Returns the 'smallest angular distance' between `Rotation1` and `Rotation2` in radians.
@@ -2905,11 +2987,11 @@ Temporary<public> := module {
     (/UnrealEngine.com/Temporary/SpatialMath:)ReflectVector<public>(
       Direction: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       SurfaceNormal: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
-    )<reads><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    )<decides><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector2` by inverting the `SurfaceNormal` component of `Direction`.
     # Fails if `not SurfaceNormal.MakeUnitVector[]`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)ReflectVector<public>(Direction: vector2, SurfaceNormal: vector2)<reads><decides>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)ReflectVector<public>(Direction: vector2, SurfaceNormal: vector2)<decides><reads>: vector2 = external {}
 
     # Used to perform spherical linear interpolation between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that `0.0 <= Parameter <= 1.0`.
     (/UnrealEngine.com/Temporary/SpatialMath:)Slerp<native><public>(
@@ -2939,7 +3021,7 @@ Temporary<public> := module {
     ToVector2<public>(V: vector2i)<transacts>: vector2 = external {}
 
     # Makes a `vector2i` by component-wise truncation of `V` to `ints`s.
-    ToVector2i<public>(V: vector2)<reads><decides>: vector2i = external {}
+    ToVector2i<public>(V: vector2)<decides><reads>: vector2i = external {}
 
     # Makes a `vector3` by applying `InTransform` to `InVector`.
     TransformVector<public>(
@@ -3058,6 +3140,7 @@ Temporary<public> := module {
     using { /Verse.org/Native }
     using { /Verse.org/Simulation }
     using { /Verse.org/SpatialMath }
+    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
     @editable
     @import_as("/Script/EpicGamesTemporary.FVerseRotation_Deprecated")
     # An abstract representation of an orientation change in 3d-space.
@@ -3078,6 +3161,7 @@ Temporary<public> := module {
       Translation<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
     }
 
+    @replicatable
     # 2-dimensional vector with `float` components.
     vector2<native><public> := struct<concrete><computes><persistable> {
       @editable
@@ -3096,6 +3180,7 @@ Temporary<public> := module {
       Y<native><public>: int = external {}
     }
 
+    @replicatable
     # 3-dimensional vector with `float` components.
     (/UnrealEngine.com/Temporary/SpatialMath:)vector3<native><public> := struct<concrete><computes><persistable> {
       @editable
@@ -3194,6 +3279,7 @@ Temporary<public> := module {
     }
   }
 
+  # Verse path: /UnrealEngine.com/Temporary
   # Module import path: /UnrealEngine.com/Temporary/UI
   (/UnrealEngine.com/Temporary:)UI<public> := module {
     # Returns the `player_ui` associated with `Player`.
@@ -3233,7 +3319,7 @@ Temporary<public> := module {
 
     # The anchors of a `widget` determine its the position and sizing relative to its parent.
     # `anchor`s range from `(0.0, 0.0)` (left, top) to `(1.0, 1.0)` (right, bottom).
-    anchors<native><public> := struct {
+    anchors<native><public> := struct<concrete><computes> {
       # Holds the maximum anchors, (right, bottom). The valid range is between `0.0` and `1.0`.
       Maximum<native><public>: vector2 = external {}
 
@@ -3390,7 +3476,7 @@ Temporary<public> := module {
 
     # Specifies the gap outside each edge separating a `widget` from its neighbors.
     # Distance is measured in units where `1.0` unit is the width of a pixel at 1080p resolution.
-    margin<native><public> := struct {
+    margin<native><public> := struct<concrete><computes> {
       # The bottom edge spacing.
       Bottom<native><public>: float = external {}
 
@@ -3816,9 +3902,10 @@ Temporary<public> := module {
   }
 
   WorldPartition<public> := module {
+    # Verse path: /UnrealEngine.com/Temporary/WorldPartition
     # Module import path: /UnrealEngine.com/Temporary/WorldPartition/VerseWorldPartition
     VerseWorldPartition<public> := module {
-      @deprecated
+      @deprecated { Message := "Use `GetWorldPartitionHelperForEntity` instead." }
       # Deprecated, use GetWorldPartitionHelperForEntity instead which is a less ambiguous/future proof way to obtaining the helper
       GetWorldPartitionHelper<native><epic_internal>()<transacts>: ?world_partition_helper
 
@@ -3970,7 +4057,7 @@ Temporary<public> := module {
     GetDuration<public>()<decides>: float
 
     @experimental
-    GetOnFinishedEvent<public>()<reads><decides>: listenable(tuple())
+    GetOnFinishedEvent<public>()<decides><reads>: listenable(tuple())
 
     @experimental
     GetOnPausedEvent<public>(): listenable(tuple())
@@ -3993,36 +4080,39 @@ Temporary<public> := module {
 }
 
 Tests<public> := module {
+  # Verse path: /UnrealEngine.com/Tests
   # Module import path: /UnrealEngine.com/Tests/NexusUtils
   NexusUtils<public> := module {
-    nexus_utils<native><epic_internal> := class {
-      # Call a console command on all clients
-      ExecuteConsoleCommandOnAllClients<native><epic_internal>(ConsoleCommand: string): void
+    # Call a console command on all clients
+    ExecuteConsoleCommandOnAllClients<native><epic_internal>(ConsoleCommand: string): void
 
-      # Force a client garbage collection for all connected clients
-      ForceGarbageCollectionOnAllClients<native><epic_internal>(): void
+    # Force a client garbage collection for all connected clients
+    ForceGarbageCollectionOnAllClients<native><epic_internal>(): void
 
-      GetSavedDir<native><epic_internal>(): string
+    GetSavedDir<native><epic_internal>(): string
 
-      # Returns true when running on the new Verse VM (VVM); false on legacy Blueprint VM (BPVM). Build-time decision; never changes at runtime.
-      IsVVM<native><epic_internal>()<computes>: logic
+    # Returns true when running on the new Verse VM (VVM); false on legacy Blueprint VM (BPVM). Build-time decision; never changes at runtime.
+    IsVVM<native><epic_internal>()<computes>: logic
 
-      PrintEpicAPIFunctionLog<native><public>(): void
+    PrintEpicAPIFunctionLog<native><epic_internal>(): void
 
-      # Reads a file at a given path, returns a string array. Optionally prepends path to executables 'Saved' directory
-      ReadFile<native><epic_internal>(FilePath: []string)<transacts><decides>: []string
+    # Reads a file at a given path, returns a string array. Optionally prepends path to executables 'Saved' directory
+    ReadFile<native><epic_internal>(FilePath: []string)<transacts><decides>: []string
 
-      # Takes a screenshot on clients that are connected to the server this is called onPasses in the file name of the screenshot that gets saved to a fixed directory
-      ScreenshotAllClients<native><epic_internal>(ScreenshotFileName: string): void
+    # Takes a screenshot on clients that are connected to the server this is called onPasses in the file name of the screenshot that gets saved to a fixed directory
+    ScreenshotAllClients<native><epic_internal>(ScreenshotFileName: string): void
 
-      # Writes a string array of lines to a file at a given path. Optionally prepends path to executables 'Saved' directory
-      WriteFile<native><epic_internal>(FilePath: []string, Lines: []string)<transacts>: void
-    }
+    StoreValueForAutomation<native><epic_internal>(Key: string, Value: string): void
+
+    # Writes a string array of lines to a file at a given path. Optionally prepends path to executables 'Saved' directory
+    WriteFile<native><epic_internal>(FilePath: []string, Lines: []string)<transacts>: void
   }
 }
 
 VerseTypeEditor<public> := module {
+  # Verse path: /UnrealEngine.com/VerseTypeEditor
   using { /Verse.org/Assets }
+
   verse_type_editor_asset<native><epic_internal> := class(asset) {}
 }
 
@@ -4037,6 +4127,7 @@ WebAPI<public> := module {
     Get<native><public>(Path: string)<suspends>: response
   }
 
+  # Verse path: /UnrealEngine.com/WebAPI
   # Usage:
   #     Licensed users create a derived version of `client_id` in their module.
   #     The Verse class path for your derived `client_id` is then used as the
@@ -4052,3 +4143,6 @@ WebAPI<public> := module {
 
   response<native><public> := class<internal> {}
 }
+
+# Verse path: /UnrealEngine.com
+using { /Verse.org/Native }

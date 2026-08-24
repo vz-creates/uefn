@@ -1,9 +1,11 @@
-# Copyright Epic Games, Inc. All Rights Reserved.
+<#
+Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
-# Generated Digest of Verse API
-# DO NOT modify this manually!
-# Generated from build: ++Fortnite+Release-41.30-CL-55979764
+Generated Digest of Verse API
+DO NOT modify this manually!
+Generated from build: ++Fortnite+Release-42.00-CL-56878558
 #################################################
+#>
 
 AI<public> := module {
   @experimental
@@ -24,6 +26,7 @@ AI<public> := module {
   # Get the navigatable interface for the specified character
   (InCharacter: fort_character).GetNavigatable<public>()<transacts><decides>: navigatable = external {}
 
+  # Verse path: /Fortnite.com/AI
   # Module import path: /Fortnite.com/AI/HiredGuardCommands
   HiredGuardCommands<public> := module {
     @experimental
@@ -363,16 +366,17 @@ AI<public> := module {
 
   # NPC Component
   fort_npc_component<native><epic_internal> := class<final_super>(component) {
+    @editable
+    Logs<epic_internal>: logic = external {}
+
     OnBeginSimulation<override>(): void = external {}
 
     OnEndSimulation<override><final>(): void = external {}
 
     @editable
-    Settings<native><epic_internal>: fort_npc_component_settings = external {}
+    # Path to AI spawner data to spawn the interop actor
+    SpawnerData<native><epic_internal>: string = external {}
   }
-
-  @import_as("/Script/VerseFortniteAI.UNPCComponentSettings")
-  fort_npc_component_settings<native><epic_internal> := class {}
 
   @available { MinUploadedAtFNVersion := 3900 }
   # Fortnite Wildlife AI actions management
@@ -511,10 +515,10 @@ AI<public> := module {
     GetAgent<native><epic_internal>()<transacts><decides>: agent
 
     # Return if the associated action is currently allowed.
-    IsActionAllowed<native><epic_internal>()<reads><decides>: void
+    IsActionAllowed<native><epic_internal>()<decides><reads>: void
 
     # Return if the associated action is currently in progress.
-    IsActionInProgress<native><epic_internal>()<reads><decides>: void
+    IsActionInProgress<native><epic_internal>()<decides><reads>: void
 
     # Called when the behavior is relevant. The coroutine should loop and call Allow/DenyAction to set if the  action can be executed. Action like moving or shooting shouldn't be done in this function. Condition start denied and are considered denied once execution finished.
     OnBegin<native_callable><epic_internal>()<suspends>: void
@@ -691,7 +695,7 @@ AI<public> := module {
     # Returns the entity associated with this behavior.
     GetEntity<native><public>()<transacts><decides>: entity
 
-    @deprecated
+    @deprecated { Message := "Use `GetEntity[].GetPlayspaceForEntity[]` instead." }
     # Returns the `fort_playspace` associated with this behavior.
     GetPlayspace<epic_internal>()<transacts><decides>: fort_playspace = external {}
 
@@ -866,6 +870,397 @@ AI<public> := module {
   }
 }
 
+Abilities<public> := module {
+  @available { MinUploadedAtFNVersion := 4200 }
+  @hide_in_editor
+  @experimental
+  ability_target_query<native><public> := class {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_anim_layer<native><public> := enum {
+    FullBody
+
+    UpperBody
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_animation_element_span<native><public> := class<concrete>(fort_ability_timeline_element_span) {
+    @editable {}
+    Animation<native><public>: animation_sequence = external {}
+
+    @editable {}
+    AnimationLayer<native><public>: fort_ability_anim_layer = external {}
+
+    @editable {}
+    (/Fortnite.com/Abilities/fort_ability_animation_element_span:)EaseIn<native><public>: float = external {}
+
+    @editable {}
+    (/Fortnite.com/Abilities/fort_ability_animation_element_span:)EaseOut<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_attach_socket<native><public> := enum {
+    Chest
+
+    Head
+
+    LeftFoot
+
+    LeftHand
+
+    RightFoot
+
+    RightHand
+
+    Root
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_damage_point<native><public> := class<concrete>(fort_ability_timeline_element_point) {
+    @editable {}
+    Amount<native><public>: float = external {}
+
+    @editable {}
+    Behavior<native><public>: fort_damage_behavior = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_heal_point<native><public> := class<concrete>(fort_ability_timeline_element_point) {
+    @editable {}
+    Amount<native><public>: float = external {}
+
+    @editable {}
+    Behavior<native><public>: fort_heal_behavior = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_particle_system_element_point<native><public> := class(fort_ability_timeline_element_point) {
+    @editable {}
+    ParticleSystem<native><public>: particle_system = external {}
+
+    @editable {}
+    var ParticleAttachment<native><public>: fort_ability_attach_socket = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_particle_system_element_span<native><public> := class<concrete>(fort_ability_timeline_element_span) {
+    @editable {}
+    ParticleSystem<native><public>: particle_system = external {}
+
+    @editable {}
+    var ParticleAttachment<native><public>: fort_ability_attach_socket = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Fires a projectile defined by a projectile_template.
+  fort_ability_projectile_point<native><public> := class<concrete>(fort_ability_timeline_element_point) {
+    @editable {}
+    # Which projectile to spawn (class handle; defaults to the base template).
+    Projectile<native><public>: concrete_subtype(projectile_template) = external {}
+
+    @editable {}
+    # Local offset from the spawn socket. Use to nudge the muzzle position/rotation.
+    SpawnOffset<native><public>: (/Verse.org/SpatialMath:)transform = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_remove_item_participant_point<native><public> := class<concrete>(fort_ability_timeline_element_point) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_sound_element_point<native><public> := class(fort_ability_timeline_element_point) {
+    @editable {}
+    Sound<native><public>: sound_wave = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_sound_element_span<native><public> := class<concrete>(fort_ability_timeline_element_span) {
+    @editable {}
+    Sound<native><public>: sound_wave = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  @replicatable
+  @import_as("/Script/GameplayAbilities.FGameplayAbilitySpecHandle")
+  fort_ability_spec_handle<native><public> := struct<concrete> {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_status_effect_burn_point<native><public> := class<final>(fort_ability_status_effect_point) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_status_effect_icy_feet_point<native><public> := class<final>(fort_ability_status_effect_point) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_status_effect_pepper_point<native><public> := class<final>(fort_ability_status_effect_point) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @hide_in_editor
+  @experimental
+  fort_ability_status_effect_point<native><public> := class(fort_ability_timeline_element_point) {
+    @editable {}
+    var StatusEffectDuration<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_status_effect_slap_point<native><public> := class<final>(fort_ability_status_effect_point) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @hide_in_editor
+  @experimental
+  fort_ability_timeline_element_point<native><public> := class<concrete>((/Verse.org:)Timeline.timeline_element_point) {
+    @replicated("")
+    var Time<override>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @hide_in_editor
+  @experimental
+  fort_ability_timeline_element_span<native><public> := class<concrete>((/Verse.org:)Timeline.timeline_element_span) {
+    @editable {}
+    @replicated("")
+    var BeginTime<override>: float = external {}
+
+    @editable {}
+    @replicated("")
+    var EndTime<override>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_cancel_reason_canceled<native><final><public> := class<castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_cancel_reason_ended<native><final><public> := class<castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_cancel_reason_invalid<native><final><public> := class<castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_damage_behavior<native><public> := enum<open> {
+    EffectiveDamage
+
+    Health
+
+    Shield
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_heal_behavior<native><public> := enum<open> {
+    EffectiveHealth
+
+    Health
+
+    Shield
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @class_and_subclass_group_names("item")
+  @experimental
+  fort_item_ability_component<native><final><public> := class<final_super>(component) {
+    AddItemAbility<native><public>(InAbility: ability(ability_context, ability_effect))<transacts>: void
+
+    AddItemEquippedAbility<native><public>(InAbility: ability(ability_context, ability_effect))<transacts>: void
+
+    @replicated("RepNotify")
+    var<private> ComponentData<native><public>: fort_item_ability_component_data = external {}
+
+    @replicated("RepNotify")
+    var<private> Equipped<native><public>: logic = external {}
+
+    @editable {}
+    @replicated("RepNotify")
+    var<private> ItemAbilities<native><public>: []?ability(ability_context, ability_effect) = external {}
+
+    @editable {}
+    @replicated("RepNotify")
+    var<private> ItemEquippedAbilities<native><public>: []?ability(ability_context, ability_effect) = external {}
+  }
+
+  using { /UnrealEngine.com/Abilities }
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  @replicatable
+  @import_as("/Script/VerseFortniteAbilities.FFortItemAbilityComponentData")
+  fort_item_ability_component_data<native><public> := struct<concrete> {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # The base projectile component defining its behavior.
+  fort_projectile_component<native><public> := class<final_super>(component) {
+    # The agent that fired this projectile.
+    GetInstigator<native><public>()<transacts><decides>: agent
+
+    # The entity this projectile originated from (e.g. the weapon/launcher or ability effect).
+    GetSource<native><public>()<transacts><decides>: entity
+
+    # Method to tell the component a collision happened
+    HandleCollision<native><public>(Result: projectile_impact_result): void
+
+    # Event that is signaled upon impact
+    OnImpactEvent<native><final><public>: listenable(projectile_impact_result) = external {}
+
+    SetGravity<native><public>(Val: float): void
+
+    SetRange<native><public>(Val: float): void
+
+    SetSpeed<native><public>(Val: float): void
+
+    @editable
+    # Fall rate (cm/s^2). 0 = no gravity.
+    var<private> Gravity<native><public>: float = external {}
+
+    @editable
+    # Distance before the projectile is cleared from the scene (cm).
+    var<private> Range<native><public>: float = external {}
+
+    @editable
+    # Speed the projectile travels (cm/s).
+    var<private> Speed<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_reticle_ability_target_query<native><public> := class<concrete>(ability_target_query) {
+    @editable {}
+    @replicated("")
+    Range<native><public>: float = external {}
+
+    @editable {}
+    @replicated("")
+    Target<native><public>: fort_target_query_affiliation = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_target_query_affiliation<native><public> := enum {
+    Any
+
+    Friendly
+
+    Hostile
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_template_ability<native><public>(
+    context_type: subtype(ability_context),
+    prefab_type: subtype(fort_template_ability_effect)
+  ) := class<abstract>(ability(context_type, prefab_type)) {
+    (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance<private>(: context_type): tuple() = external {}
+
+    OnRep_SpecHandle<native><public>(): void
+
+    var (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_VarVariance_Inherited<private>: ?tuple(
+      prefab_type,
+      prefab_type
+    ) = external {}
+
+    @editable {}
+    @replicated("")
+    var AbilityElements<native><public>: [](/Verse.org:)Timeline.timeline_element = external {}
+
+    @editable {}
+    @replicated("")
+    var InputTrigger<native><public>: ?input_action(logic) = external {}
+
+    @replicated("RepNotify")
+    var SpecHandle<native><public>: fort_ability_spec_handle = external {}
+
+    @editable {}
+    @replicated("")
+    var TargetQuery<native><public>: ?ability_target_query = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Prefab to provide a central location for handling desired ability and gameplay logic.
+  fort_template_ability_effect<native><public> := class<concrete>(ability_effect) {
+    @field("Components")
+    AbilityComponent<override>: ability_effect_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_template_ability_effect_component<native><public> := class(ability_effect_component) {
+    CanCancel<override>(Reason: cancel_reason)<transacts><decides>: void = external {}
+
+    OnBeginUse<override><native><final>()<transacts>: void
+
+    OnEndUse<override><native><final>(Reason: ?cancel_reason)<transacts>: void
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_wedge_ability_target_query<native><public> := class<concrete>(ability_target_query) {
+    @editable {}
+    @replicated("")
+    CentralAngle<native><public>: float = external {}
+
+    @editable {}
+    @replicated("")
+    Radius<native><public>: float = external {}
+
+    @editable {}
+    @replicated("")
+    Target<native><public>: fort_target_query_affiliation = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Result payload for a projectile impact.
+  projectile_impact_result<native><public> := struct<concrete> {
+    # The entity that was hit, if the impact was against one (false for world geometry).
+    HitEntity<native><public>: ?entity = external {}
+
+    # World-space location of the impact.
+    Location<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # World-space surface normal at the impact point.
+    Normal<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Base entity for a spawnable projectile.
+  projectile_template<native><public> := class<concrete><internal>(entity) {
+    @field("Components")
+    # Projectile component required to define the behavior of the projectile. Can be changed in derived entities.
+    ProjectileComponent<native><public>: ?fort_projectile_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  self_ability_target_query<native><public> := class(ability_target_query) {}
+
+  # Verse path: /Fortnite.com/Abilities
+  using { /Verse.org }
+}
+
 # Module import path: /Fortnite.com/Animation
 Animation<public> := module {
   # Module import path: /Fortnite.com/Animation/PlayAnimation
@@ -873,7 +1268,6 @@ Animation<public> := module {
     # Get the play_animation_controller for the specified character.
     (InCharacter: fort_character).GetPlayAnimationController<native><public>()<transacts><decides>: play_animation_controller
 
-    @experimental
     fort_npc_play_animation_component<native><epic_internal> := class<final_super><epic_internal>(
       component,
       play_animation_controller
@@ -1023,7 +1417,6 @@ Armory<public> := module {
     WeaponComponent<override>: ?fort_weapon_component = external {}
   }
 
-  using { /Fortnite.com/Itemization }
   using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
@@ -1043,6 +1436,7 @@ Armory<public> := module {
     var<private> BulletsPerShot<native><public>: int = external {}
   }
 
+  @replicatable
   # Struct that defines a range based damage multiplier
   fort_range_damage_multiplier<native><public> := struct<concrete> {
     @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
@@ -1325,6 +1719,7 @@ Armory<public> := module {
     var<private> IsHolstered<native><public>: logic = external {}
   }
 
+  @replicatable
   @import_as("/Script/ArmoryRuntime.FFortWeaponComponentData")
   fort_weapon_component_data<native><epic_internal> := struct<concrete> {}
 
@@ -1394,6 +1789,9 @@ Armory<public> := module {
     WeaponComponent<override>: ?fort_weapon_component = external {}
   }
 
+  # Verse path: /Fortnite.com/Armory
+  using { /Fortnite.com/Itemization }
+
   @hide_in_editor
   weapon_entity<native><epic_internal> := class<concrete><internal>(fort_item_definition_entity_base) {
     @field("Components")
@@ -1444,14 +1842,15 @@ Armory<public> := module {
   emote<native><epic_internal> := class<computes><final><epic_internal>(asset) {}
 
   npc_character_definition<native><public> := class<computes><final><epic_internal>(asset) {
-    IsSameType<native><epic_internal>(NPCCharacterDefinition: npc_character_definition)<reads><decides>: void
+    IsSameType<native><epic_internal>(NPCCharacterDefinition: npc_character_definition)<decides><reads>: void
   }
 
   sidekick_cosmetic_definition<native><epic_internal> := class<computes><final><epic_internal>(asset) {
-    GetDisplayName<native><epic_internal>()<reads><decides>: message
+    GetDisplayName<native><epic_internal>()<decides><reads>: message
   }
 }
 
+# Verse path: /Fortnite.com
 # Module import path: /Fortnite.com/Blastberry
 Blastberry<public> := module {
   # Module import path: /Fortnite.com/Blastberry/Respawn
@@ -1522,6 +1921,7 @@ Blastberry<public> := module {
   }
 }
 
+# Verse path: /Fortnite.com
 # Module import path: /Fortnite.com/Building
 Building<public> := module {
   using { /Verse.org/SceneGraph }
@@ -1697,7 +2097,7 @@ Characters<public> := module {
 
   @hide_in_editor
   @experimental
-  @deprecated
+  @deprecated { Message := "Use `fort_character` directly instead." }
   fort_character_component<native><epic_internal> := class<final><final_super>(component, fort_character) {
     ApplyForce<override>(Force: (/Verse.org/SpatialMath:)vector3): void = external {}
 
@@ -1822,6 +2222,8 @@ Characters<public> := module {
     )<transacts><decides>: void = external {}
   }
 
+  pawn_linked_event<native><epic_internal> := class(scene_event) {}
+
   # Parameters for `fort_character.PutInStasis` function.
   stasis_args<native><public> := struct {
     # Controls if `fort_character` can still perform emotes while in stasis.
@@ -1856,43 +2258,36 @@ Devices<public> := module {
   # Returns a queryable `tag_view` which can be used to query the tags on `CreativeObject`.
   (CreativeObject: creative_object_interface).GetTags<native><public>()<transacts>: tag_view
 
-  @available { MinUploadedAtFNVersion := 2930 }
-  @deprecated
+  @deprecated { Message := "Use the overload that takes a tag type instead of a tag instance." }
   # DEPRECATED - use corresponding extension methods that takes a tag type instead of a tag instance.
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on a default constructed object.
   (InCreativeDevice: creative_device).FindCreativeObjectsWithTag<public>(Tag: tag)<transacts>: generator(creative_object_interface) = external {}
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Generates a `creative_object_interface` for every creative object that has any tag of type `tag_type`. Will not find anything if called on a default constructed object.
   (InCreativeDevice: creative_device).FindCreativeObjectsWithTag<public>(tag_type: castable_subtype(tag))<transacts>: generator(creative_object_interface) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
-  @deprecated
+  @deprecated { Message := "Use the overload that takes a tag type instead of a tag instance." }
   # DEPRECATED - use corresponding extension methods that takes a tag type instead of a tag instance.
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on a default constructed object.
   (InCreativeDevice: creative_device_base).FindCreativeObjectsWithTag<public>(Tag: tag)<transacts>: generator(creative_object_interface) = external {}
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Generates a `creative_object_interface` for every creative object that has any tag of type `tag_type`. Will not find anything if called on a default constructed object.
   (InCreativeDevice: creative_device_base).FindCreativeObjectsWithTag<public>(tag_type: castable_subtype(tag))<transacts>: generator(creative_object_interface) = external {}
 
-  @available { MinUploadedAtFNVersion := 2930 }
-  @deprecated
+  @deprecated { Message := "Use the overload that takes a tag type instead of a tag instance." }
   # DEPRECATED - use corresponding extension methods that takes a tag type instead of a tag instance.
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on an `entity` that is not in the scene.
   (InEntity: entity).FindCreativeObjectsWithTag<native><public>(Tag: tag)<transacts>: generator(creative_object_interface)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Generates a `creative_object_interface` for every creative object that has any tag of type `tag_type`. Will not find anything if called on an `entity` that is not in the scene.
   (InEntity: entity).FindCreativeObjectsWithTag<native><public>(tag_type: castable_subtype(tag))<transacts>: generator(creative_object_interface)
 
   @available { MinUploadedAtFNVersion := 3300 }
-  @deprecated
+  @deprecated { Message := "Use the overload that takes a tag type instead of a tag instance." }
   # DEPRECATED - use corresponding extension methods that takes a tag type instead of a tag instance.
   # Generates a `creative_object_interface` for every creative object that has been marked with the specified `Tag`. Will not find anything if called on an `npc_behavior` that is not simulating.
   (InNPCBehavior: npc_behavior).FindCreativeObjectsWithTag<native><public>(Tag: tag)<transacts>: generator(creative_object_interface)
 
-  @available { MinUploadedAtFNVersion := 3200 }
   # Generates a `creative_object_interface` for every creative object that has any tag of type `tag_type`. Will not find anything if called on an `npc_behavior` that is not simulating.
   (InNPCBehavior: npc_behavior).FindCreativeObjectsWithTag<native><public>(tag_type: castable_subtype(tag))<transacts>: generator(creative_object_interface)
 
@@ -2180,12 +2575,12 @@ Devices<public> := module {
   # Succeeds if Left and Right are equal.
   (/Fortnite.com/Devices:)Equals<native><epic_internal>(Left: creative_object, Right: creative_object)<transacts><decides>: void
 
-  @deprecated
+  @deprecated { Message := "Use `FindCreativeObjectsWithTag` instead." }
   # DEPRECATED - use `FindCreativeObjectsWithTag` instead.
   # Returns an array containing all creative objects which have been marked with the specified `Tag`.
   GetCreativeObjectsWithTag<native><public>(Tag: tag)<transacts>: []creative_object_interface
 
-  @deprecated
+  @deprecated { Message := "Use `FindCreativeObjectsWithTag` instead." }
   # DEPRECATED - use `FindCreativeObjectsWithTag` instead.
   # Returns an array containing creative objects which have tag(s) matching the specified `SearchCriteria`.
   GetCreativeObjectsWithTags<native><public>(SearchCriteria: tag_search_criteria)<transacts>: []creative_object_interface
@@ -2193,6 +2588,7 @@ Devices<public> := module {
   HandleMoveToInternalResult<epic_internal>(Result: move_to_internal_result): move_to_result = external {}
 
   Patchwork<public> := module {
+    # Verse path: /Fortnite.com/Devices/Patchwork
     cable_splitter_device<public> := class<concrete><final>(patchwork_device) {}
 
     device_event_noteoff<epic_internal> := class(listenable(any)) {
@@ -2203,6 +2599,7 @@ Devices<public> := module {
       Subscribe<override>(Callback: type { _(: any): void })<transacts>: cancelable = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     device_event_noteon<epic_internal> := class(listenable(any)) {
       Await<override>()<suspends>: note_on_message = external {}
 
@@ -2211,6 +2608,7 @@ Devices<public> := module {
       Subscribe<override>(Callback: type { _(: any): void })<transacts>: cancelable = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Apply a distortion effect to Patchwork audio inputs.
     distortion_effect_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2226,9 +2624,11 @@ Devices<public> := module {
       var Tame<epic_internal>: float = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Turn Patchwork note inputs into audio using drum samples.
     drum_player_device<public> := class<concrete><final>(patchwork_device) {}
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Create drum note patterns for Patchwork devices.
     drum_sequencer_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2238,6 +2638,7 @@ Devices<public> := module {
       var Page<epic_internal>: int = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Apply an echo effect to Patchwork audio inputs.
     echo_effect_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2253,6 +2654,7 @@ Devices<public> := module {
       var TimingStyle<epic_internal>: int = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Apply a filter effect to Patchwork audio inputs.
     filter_effect_device<epic_internal> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2266,6 +2668,7 @@ Devices<public> := module {
       var Resonance<public>: float = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Adjust Gain of a Patchwork audio signal.
     gain_device<epic_internal> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2273,6 +2676,7 @@ Devices<public> := module {
       var Gain<epic_internal>: float = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Turn Patchwork note inputs into audio using instrument samples.
     instrument_player_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2288,6 +2692,7 @@ Devices<public> := module {
       var Volume<epic_internal>: float = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Modify a setting on another Patchwork device in a regularly repeating pattern.
     lfo_modulator_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2309,6 +2714,7 @@ Devices<public> := module {
       var Waveform<epic_internal>: int = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Provides a shared tempo, key, and timeline for Patchwork devices to follow.
     music_manager_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2331,15 +2737,18 @@ Devices<public> := module {
       NoteNumber<public>: int = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     note_on_message<epic_internal> := class {
       NoteNumber<public>: int = external {}
 
       Velocity<public>: float = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Transpose Patchwork note inputs to follow a chord progression.
     note_progressor_device<public> := class<concrete><final>(patchwork_device) {}
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Create melodic note patterns for Patchwork devices.
     note_sequencer_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2378,6 +2787,7 @@ Devices<public> := module {
       OutputFunc<epic_internal>: type { _(: any): void }
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Turn Patchwork note inputs into audio using customizable sound synthesis.
     omega_synthesizer_device<public> := class<concrete><final>(patchwork_device) {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -2408,14 +2818,18 @@ Devices<public> := module {
       GetBPFunctionNamesForValidation<override>(): []string = external {}
     }
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     song_sync_device<public> := class<concrete><final>(patchwork_device) {}
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Output Patchwork audio for players to hear.
     speaker_device<public> := class<concrete><final>(patchwork_device) {}
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Modify a setting on another Patchwork device in steps over time.
     step_modulator_device<public> := class<concrete><final>(patchwork_device) {}
 
+    # Verse path: /Fortnite.com/Devices/Patchwork
     # Modify a setting on another Patchwork device when triggered.
     value_setter_device<public> := class<concrete><final>(patchwork_device) {}
   }
@@ -2559,6 +2973,7 @@ Devices<public> := module {
     Submit<public>(Agent: agent): void = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Used to select, spawn, and configure a skeletal mesh to play a specific animation.
   animated_mesh_device<public> := class<concrete><final>(creative_device_base) {
     GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -3305,7 +3720,6 @@ Devices<public> := module {
   }
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
-  using { /Verse.org/Assets }
   # Used to spawn a carryable object into the experience.
   carryable_spawner_device<public> := class<concrete><final>(creative_device_base, enableable) {
     # Signaled when the carryable collides with an agent.
@@ -3351,7 +3765,7 @@ Devices<public> := module {
     IsEnabled<override>()<transacts><decides>: void = external {}
 
     # Fails if the carryable does not exist in-world.
-    IsSpawned<public>()<reads><decides>: void = external {}
+    IsSpawned<public>()<decides><reads>: void = external {}
 
     # Signaled when `agent` picks up the carryable.
     PickUpEvent<public>: listenable(agent) = external {}
@@ -3541,7 +3955,6 @@ Devices<public> := module {
     ResetCharacters<public>(): void = external {}
   }
 
-  using { /Verse.org/Simulation }
   # Used to transform character appearance.
   character_transformation_device<epic_internal> := class<concrete><final>(creative_device_base) {
     GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -3618,6 +4031,7 @@ Devices<public> := module {
     TogglePause<public>(Agent: agent): void = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   clapboard_device<epic_internal> := class<concrete><final>(creative_device_base) {
     # Disables this device.
     Disable<public>(): void = external {}
@@ -4190,7 +4604,6 @@ Devices<public> := module {
 
   creative_prop_debug_log<epic_internal> := class(log_channel) {}
 
-  using { /Verse.org/SpatialMath }
   # Used to customize one creature type at a time. Place multiple `creature_manager_device`s for each type of creature on your island.
   # Changing properties will respect the `Affected Creatures` property of the
   # device. If `Affected Creatures` is set to `New Pawns Only`, only new spawns will
@@ -4303,6 +4716,7 @@ Devices<public> := module {
     SpawnedEvent<public>: listenable(agent) = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Spawns a crowd to cheer you on.
   crowd_volume_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -4342,6 +4756,7 @@ Devices<public> := module {
     TurnedOnEvent<public>: listenable(agent) = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Used to create a light which can have its color and brightness manipulated in response to in-game events.
   customizable_light_device<public> := class<concrete><final>(creative_device_base) {
     # Dims the light by *Dimming Amount*.
@@ -5369,6 +5784,7 @@ Devices<public> := module {
     GrowEvent<public>: listenable(tuple()) = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Used to regenerate an `agent`'s health and/or shields.
   health_powerup_device<public> := class<concrete><final>(powerup_device) {
     GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -5802,7 +6218,7 @@ Devices<public> := module {
     # Returns the number of items this Item Granter will award for all items.
     GetItemCount<epic_internal>()<transacts>: int = external {}
 
-    @deprecated
+    @deprecated { Message := "Use `GetItemGrantCountAtIndex` instead." }
     # Deprecated: Use `GetItemGrantCountAtIndex` instead.
     # Returns the number of items this item granter will award for at the specified index in the Item Granter. This will return 0 if the index is invalid.
     GetItemCountAtIndex<epic_internal>(Index: int)<transacts>: int = external {}
@@ -5848,7 +6264,7 @@ Devices<public> := module {
     # Sends the `agent` that was granted the item.
     ItemGrantedEvent<public>: listenable(agent) = external {}
 
-    @deprecated
+    @deprecated { Message := "Use `GrantItemWithCountEvent` instead." }
     # Deprecated: Use `GrantItemWithCountEvent` instead.
     # Signaled when an item is granted to an `agent`.
     # Sends the `agent` that was granted the item, as well as the number of items granted.
@@ -5860,7 +6276,7 @@ Devices<public> := module {
     # Sets the number of items this Item Granter will award for all items. `Number` must be greater than 0.
     SetItemCount<epic_internal>(Count: int): void = external {}
 
-    @deprecated
+    @deprecated { Message := "Use `SetItemGrantCountAtIndex` instead." }
     # Deprecated: Use `SetItemGrantCountAtIndex` instead.
     # Sets the number of items this item granter will award for the item at `Index`.
     # `Number` must be greater than 0.
@@ -5884,6 +6300,7 @@ Devices<public> := module {
     var DefaultItemCount<public>: int = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Allows pickup items to be placed in the world..
   item_placer_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -5909,6 +6326,7 @@ Devices<public> := module {
     Remove<public>(Agent: agent): void = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Allows the item shop to be opened when activated
   item_shop_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -5950,7 +6368,6 @@ Devices<public> := module {
   }
 
   using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
   @import_as("/Script/FortniteGame.ULevelSaveRecord")
   @experimental
   level_save_record<native><epic_internal> := class<epic_internal> {}
@@ -6045,6 +6462,7 @@ Devices<public> := module {
     GetBPFunctionNamesForValidation<override>(): []string = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   melee_designer_device<epic_internal> := class<final>(creative_device_base) {}
 
   move_to_debug_log<epic_internal> := class(log_channel) {}
@@ -6631,6 +7049,7 @@ Devices<public> := module {
     IsPerceived<public>(Agent: agent)<transacts><decides>: void = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Physics boulder that can be dislodged and damage `agent`s, vehicles, creatures, and structures.
   physics_boulder_device<public> := class<concrete><final>(physics_object_base_device) {
     # Signaled when the balanced boulder is destroyed.
@@ -7199,6 +7618,7 @@ Devices<public> := module {
     var RegressRate<public>: float = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # The state of a progress_based_mesh_device.
   progress_device_state<public> := enum<open> {
     # This device is currently paused. It will not progress or regress automatically.
@@ -7419,7 +7839,7 @@ Devices<public> := module {
     # Resumes the damage pulse from the last position where it was stopped.
     ResumePulse<public>(): void = external {}
 
-    @deprecated
+    @deprecated { Message := "Use `ResumePulse` instead." }
     # This function is deprecated. Use `ResumePulse` instead of this.
     # Resumes the damage sequence from the last position where it was stopped.
     ResumeSequence<public>(): void = external {}
@@ -7523,6 +7943,7 @@ Devices<public> := module {
     UnregisterAll<public>(): void = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Used to trigger in game events based on real world time.
   real_time_clock_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -8227,7 +8648,6 @@ Devices<public> := module {
     Target<public>(Agent: agent): void = external {}
   }
 
-  using { /Fortnite.com/Vehicles }
   # A one stop automated refueling and repairing station for your vehicles.
   service_station_device<public> := class<concrete><final>(creative_device_base, healthful, damageable, enableable) {
     # Damage the `damageable` object anonymously by `Amount`. Setting `Amount` to less than 0 will cause no damage.
@@ -8676,7 +9096,8 @@ Devices<public> := module {
     ZoneOccupiedEvent<public>: listenable(agent) = external {}
   }
 
-  @deprecated
+  # Verse path: /Fortnite.com/Devices
+  @deprecated { Message := "This type is deprecated." }
   # Controls how the sky looks, as well as giving you options for changing the sun, clouds, stars or other objects in the sky above your island. You can control the sun and moon, and add other atmospheric elements like stars, fog and clouds. You can change the color of your light source, and blend different colors for your island's sky to create the perfect atmosphere for your game.
   skydome_device<public> := class<concrete><final>(creative_device_base) {
     # Disables this device.
@@ -9661,6 +10082,21 @@ Devices<public> := module {
     TriggeredEvent<public>: listenable(?agent) = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
+  using { /Fortnite.com/Vehicles }
+
+  # Verse path: /Fortnite.com/Devices
+  using { /Verse.org/Assets }
+
+  # Verse path: /Fortnite.com/Devices
+  using { /Verse.org/SceneGraph }
+
+  # Verse path: /Fortnite.com/Devices
+  using { /Verse.org/Simulation }
+
+  # Verse path: /Fortnite.com/Devices
+  using { /Verse.org/SpatialMath }
+
   # Settings for vehicle mod boxes, used with vehicle_mod_box_spawner_device.
   vehicle_mod_box_settings<public> := class<final><public> {
     # Reset visual settings and make the associated mod box use its default non-customized visuals.
@@ -9910,9 +10346,11 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows an Armored Assault Tank to be configured and spawned.
   vehicle_spawner_armored_assault_tank_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows an armored battle bus to be configured and spawned.
   vehicle_spawner_armored_battle_bus_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows an armored transport to be configured and spawned.
   vehicle_spawner_armored_transport_device<public> := class<concrete><final>(vehicle_spawner_device) {
     GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -10043,6 +10481,7 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a DF.9 turret to be configured and spawned.
   vehicle_spawner_df9_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a dirtbike to be configured and spawned.
   vehicle_spawner_dirtbike_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -10112,24 +10551,30 @@ Devices<public> := module {
     var RechargeTimerLength<override>: float = external {}
   }
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a GetAway Car to be configured and spawned.
   vehicle_spawner_getaway_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a Hammerhead Choppa to be configured and spawned.
   vehicle_spawner_hammerhead_choppa_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows an anti-vehicle turret to be configured and spawned.
   vehicle_spawner_heavy_turret_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a helicopter to be configured and spawned.
   vehicle_spawner_helicopter_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
   # Specialized `vehicle_spawner_device` that allows an N-1 Starfighter to be configured and spawned.
   vehicle_spawner_n1_starfighter_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a Nitro Drifter sedan to be configured and spawned.
   vehicle_spawner_nitro_drifter_sedan_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Spawns a lightweight vehicle made for defying gravity with its rocket boosting, jumping, and aerial maneuverability capabilities.
   vehicle_spawner_octane_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -10139,6 +10584,7 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a Quadcrasher to be configured and spawned.
   vehicle_spawner_quadcrasher_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a Rocket Racing Vehicle to be configured and spawned.
   vehicle_spawner_rocketracing_device<public> := class<concrete><final>(vehicle_spawner_device) {
     GetBPFunctionNamesForValidation<override>(): []string = external {}
@@ -10153,9 +10599,11 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a shopping cart to be configured and spawned.
   vehicle_spawner_shopping_cart_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a siege cannon to be configured and spawned.
   vehicle_spawner_siege_cannon_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a sportbike to be configured and spawned.
   vehicle_spawner_sportbike_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -10165,6 +10613,7 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a surfboard to be configured and spawned.
   vehicle_spawner_surfboard_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a tank to be configured and spawned.
   vehicle_spawner_tank_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -10177,15 +10626,19 @@ Devices<public> := module {
   # Specialized `vehicle_spawner_device` that allows a Turbolaser turret to be configured and spawned.
   vehicle_spawner_turbolaser_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a UFO to be configured and spawned.
   vehicle_spawner_ufo_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a valet SUV to be configured and spawned.
   vehicle_spawner_valet_suv_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows a war bus to be configured and spawned.
   vehicle_spawner_war_bus_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
+  # Verse path: /Fortnite.com/Devices
   # Specialized `vehicle_spawner_device` that allows an X-wing to be configured and spawned.
   vehicle_spawner_xwing_device<public> := class<concrete><final>(vehicle_spawner_device) {}
 
@@ -10757,10 +11210,14 @@ Devices<public> := module {
 DynamicVolume<public> := module {
   dynamic_volume<native><public> := class(tag) {}
 
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation/Tags }
   # Used to dynamically load a UEFN level at runtime.
   dynamic_volume_component<native><epic_internal> := class<final_super>(component, enableable) {
+    # Get the event that fires when an agent enters the playspace of this volume
+    AgentEnteredEvent<native><public>: listenable(agent) = external {}
+
+    # Get the event that fires when an agent exits the playspace of this volume
+    AgentExitedEvent<native><public>: listenable(agent) = external {}
+
     # Start adopting the parent's users and add all the existing users to this playspace
     BeginAdoptParentPlayspaceUsers<native><epic_internal>()<transacts>: void
 
@@ -10773,20 +11230,26 @@ DynamicVolume<public> := module {
     # Stop adopting the parent's users and remove all the users not wanted by this playspace
     EndAdoptParentPlayspaceUsers<native><epic_internal>()<transacts>: void
 
+    # Returns the cached linkcode metadata. Fails if the metadata is not ready yet.
+    GetMetadata<native><epic_internal>()<decides><reads>: dynamic_volume_metadata
+
     # Succeeds if the component is enabled, fails if it's disabled.
     IsEnabled<native><override>()<transacts><decides>: void
 
     # Succeeds if the LinkCode is fully loaded.
-    IsLoaded<native><public>()<reads><decides>: void
+    IsLoaded<native><public>()<decides><reads>: void
 
     # Succeeds if the LinkCode is processing a load or unload operation.
-    IsLoading<native><public>()<reads><decides>: void
+    IsLoading<native><public>()<decides><reads>: void
 
     # Get the event that fires when the link content loading state begins to change.
     LoadInProgressEvent<native><public>: listenable(tuple()) = external {}
 
     # Get the event that fires when the link content is fully loaded.
     LoadedEvent<native><public>: listenable(tuple()) = external {}
+
+    # Get the event that fires when linkcode metadata becomes available.
+    MetadataReadyEvent<native><epic_internal>: listenable(tuple()) = external {}
 
     OnBeginSimulationInternal<native><override>(): void
 
@@ -10800,9 +11263,32 @@ DynamicVolume<public> := module {
 
     # The link code for the content to load. This will auto-load if it is set when the component is enabled and unload when it is disabled.
     var LinkCode<public>: string
+
+    # The time this component started loading, in seconds since Unix epoch (same source as GetSecondsSinceEpoch()). Returns 0.0 if no load is in progress.
+    var<private> LoadStartTime<public>: float
+
+    # Set to true to wait until all the clients have preloaded the required assets before loading the level. False loads it on the server as soon as the server is ready.
+    var<private> PreloadContentOnAllClients<public>: logic
+
+    # Set the visibility of the level. To have the server and the clients show the level at the same time, set this to false, PreloadContentOnAllClients to true and await on LoadedEvent before setting this back to true
+    var<private> ShowLevel<public>: logic
+  }
+
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  # Metadata describing the linkcode content loaded by a dynamic_volume_component.
+  dynamic_volume_metadata<native><epic_internal> := struct {
+    CreatorName<native>: string = external {}
+
+    Tagline<native>: string = external {}
+
+    Title<native>: string = external {}
   }
 
   remove_when_spawned_within<native><public> := class(dynamic_volume) {}
+
+  # Verse path: /Fortnite.com/DynamicVolume
+  using { /Verse.org/Simulation/Tags }
 }
 
 FeralCorgi<public> := module {
@@ -10947,7 +11433,6 @@ FeralCorgi<public> := module {
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Assets }
-  using { /Verse.org/Colors }
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   # Base class for creating analytic events from Verse. This would be the only public api, feral_analytics* would not be made public.
@@ -11082,6 +11567,9 @@ FeralCorgi<public> := module {
 
     QueryScore<native><public>: float = external {}
   }
+
+  # Verse path: /Fortnite.com/FeralCorgi
+  using { /Verse.org/Colors }
 }
 
 # Module import path: /Fortnite.com/FortPlayerUtilities
@@ -11090,7 +11578,7 @@ FortPlayerUtilities<public> := module {
   (InAgent: agent).GetEliminationLocation<native><epic_internal>()<transacts><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
   # Returns the agent a spectator is currently spectating, fails if the spectator isn't spectating or isn't spectating an agent.
-  (InAgent: agent).GetSpectatedAgent<native><public>()<reads><decides>: agent
+  (InAgent: agent).GetSpectatedAgent<native><public>()<decides><reads>: agent
 
   # Returns an `[]agent`s currently spectating `InAgent`.
   (InAgent: agent).GetSpectators<native><public>()<transacts>: []agent
@@ -11248,15 +11736,50 @@ Framework<public> := module {
     IsCVarEnabled<native><epic_internal>(CVarName: string)<transacts><decides>: void
   }
 
+  # Verse path: /Fortnite.com/Framework
   # Module import path: /Fortnite.com/Framework/Competitive
   Competitive<epic_internal> := module {
-    using { /Verse.org/Simulation }
-    @deprecated
-    # Sends tournaments stats for this player to the Events Service
-    (InPlayer: player).SendTournamentStats<native><epic_internal>(GameId: string, StatsMap: [string]int): void
+    (Entity: entity).GetCompetitiveManager<native><epic_internal>()<transacts><decides>: competitive_manager
 
+    @deprecated
     # Sends tournaments stats for this team to the Events Service
     (InTeam: team).SendTournamentStats<native><epic_internal>(GameId: string, StatsMap: [string]int): void
+
+    competitive_manager<native><epic_internal> := class<internal> {
+      # Returns the top players for a given mode
+      GetRankedLeaderboard<native><epic_internal>(LeaderboardParams: ranked_leaderboard_params)<suspends>: ranked_leaderboard
+
+      # Sends tournaments stats for this team to the Events Service
+      SendTournamentStatsForTeam<native><epic_internal>(
+        InTeam: team,
+        StatsMap: [string]int,
+        ?GameIdOverride: string = external {}
+      ): void
+    }
+
+    ranked_leaderboard<native><epic_internal> := struct {
+      Entries<native><public>: []ranked_leaderboard_entry = external {}
+    }
+
+    ranked_leaderboard_entry<native><epic_internal> := struct {
+      DisplayName<native><public>: string = external {}
+
+      Points<native><public>: int = external {}
+
+      Position<native><public>: int = external {}
+    }
+
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
+    ranked_leaderboard_params<native><epic_internal> := struct {
+      DivisionIndexOverride<native><public>: ?int = external {}
+
+      GameIdOverride<native><public>: ?string = external {}
+
+      LeaderboardIdOverride<native><public>: ?string = external {}
+
+      NumDesiredResults<native><public>: int = external {}
+    }
   }
 
   # Module import path: /Fortnite.com/Framework/Matchmaking
@@ -11327,6 +11850,14 @@ Framework<public> := module {
 
   # Module import path: /Fortnite.com/Framework/Persistence
   Persistence<public> := module {
+    # Internal (1P-only) read access to a player's BR Extraction sprite collection: every collected
+    # sprite entitlement id across every configured season module, plus sprite points from the current
+    # season's module. Read-only: does not grant, consume, or otherwise alter BR inventory.
+    # Check Succeeded before trusting an empty SpriteIds.
+    # Player is any player in the playspace, not necessarily the caller — acceptable because this
+    # function is epic_internal and restricted to 1P projects.
+    (Player: player).GetSpriteCollection<native><epic_internal>()<suspends>: sprite_collection
+
     BindInterface<native><epic_internal>(Interface: persistence_interface): void
 
     UnbindInterface<native><epic_internal>(Interface: persistence_interface): void
@@ -11336,6 +11867,14 @@ Framework<public> := module {
       GetVictoryCrownData<native_callable><epic_internal>(Player: player): victory_crown_data
 
       SetVictoryCrownData<native_callable><epic_internal>(Player: player, InData: victory_crown_data): void
+    }
+
+    sprite_collection<native><epic_internal> := struct {
+      Points<native><public>: int = external {}
+
+      SpriteIds<native><public>: []string = external {}
+
+      Succeeded<native><public>: logic = external {}
     }
 
     victory_crown_data<native><epic_internal> := struct<epic_internal> {
@@ -11445,11 +11984,7 @@ Game<public> := module {
   }
 
   @experimental
-  fort_ability_component<native><epic_internal> := class<final_super>(component) {
-    OnBeginSimulation<native><override>(): void
-
-    OnEndSimulation<native><override>(): void
-  }
+  fort_ability_component<native><epic_internal> := class {}
 
   @experimental
   fort_damageable_component<native><epic_internal> := class(damageable_component) {
@@ -11670,7 +12205,6 @@ Game<public> := module {
   }
 }
 
-using { /Verse.org/Native }
 @available { MinUploadedAtFNVersion := 3720 }
 # Module import path: /Fortnite.com/Input
 (/Fortnite.com:)Input<public> := module {
@@ -11776,28 +12310,25 @@ Itemization<public> := module {
     Uncommon<public>: rarity = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4100 }
-  InitializeDescriptionComponentField<native><epic_internal>(
-    Name: message,
-    Description: message,
-    ShortDescription: message
-  )<converges>: description_component
-
-  @available { MinUploadedAtFNVersion := 4100 }
-  InitializeIconComponentField<native><epic_internal>(IconTexture: texture)<converges>: icon_component
-
-  @available { MinUploadedAtFNVersion := 4100 }
-  InitializeRarityComponentField<native><epic_internal>(Rarity: rarity)<converges>: rarity_component
-
-  @available { MinUploadedAtFNVersion := 4100 }
-  InitializeStackableComponentField<native><epic_internal>(
-    SplitPrefabType: castable_concrete_subtype(entity),
-    StackSize: int,
-    MaxStackSize: ?int
-  )<converges>: basic_stackable_component
-
+  # Verse path: /Fortnite.com/Itemization
   # Module import path: /Fortnite.com/Itemization/ItemizationTests
   ItemizationTests<epic_internal> := module {
+    @experimental
+    @hide_in_editor
+    TestPrefab_AmmoHeavyBullets_BR_PreSeason_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
+      @available { MinUploadedAtFNVersion := 4020 }
+      IconComponent<override>: ?icon_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4000 }
+      ItemComponent<override>: item_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      RarityComponent<override>: ?rarity_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      StackableComponent<override>: ?basic_stackable_component = external {}
+    }
+
     @experimental
     @hide_in_editor
     category_inventory_component<native><epic_internal> := class(inventory_component) {
@@ -11840,14 +12371,23 @@ Itemization<public> := module {
 
     @experimental
     @hide_in_editor
+    itemization_test_library<native><epic_internal> := class {
+      @available { MinUploadedAtFNVersion := 4000 }
+      CreateTestCustomRarity<native_callable><epic_internal>(): rarity = external {}
+
+      CreateTestPrefab<native_callable><epic_internal>(): entity = external {}
+    }
+
+    @experimental
+    @hide_in_editor
     mergeable_item_component<native><epic_internal> := class(item_component, has_merge_rules) {
-      AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+      AllowMergeInto<override>(TargetEntity: entity)<decides><reads>: void = external {}
     }
 
     @experimental
     @hide_in_editor
     non_mergeable_item_component<native><epic_internal> := class(item_component, has_merge_rules) {
-      AllowMergeInto<override>(TargetEntity: entity)<reads><decides>: void = external {}
+      AllowMergeInto<override>(TargetEntity: entity)<decides><reads>: void = external {}
     }
 
     @experimental
@@ -11858,6 +12398,7 @@ Itemization<public> := module {
     }
 
     using { /UnrealEngine.com/Itemization }
+    using { /Verse.org/Colors }
     using { /Verse.org/Native }
     using { /Verse.org/SceneGraph }
     using { /Verse.org/Simulation }
@@ -11868,24 +12409,17 @@ Itemization<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     @experimental
     @hide_in_editor
+    test_custom_rarity<epic_internal> := class<allocates>(rare_rarity) {
+      Color<override>: color = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    @experimental
+    @hide_in_editor
     unsplittable_stackable_component<native><epic_internal> := class(stackable_component) {
       Split<override>(Amount: int)<transacts><decides>: entity = external {}
     }
   }
-
-  MakeIconComponent<native><epic_internal>(IconTexture: texture)<converges>: ?icon_component
-
-  MakeItemComponent<native><epic_internal>(Category: item_category)<converges>: item_component
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  MakeRarityComponent<native><epic_internal>(Rarity: rarity)<converges>: ?rarity_component
-
-  @available { MinUploadedAtFNVersion := 4000 }
-  MakeStackableComponent<native><epic_internal>(
-    SplitPrefabType: castable_concrete_subtype(entity),
-    StackSize: int,
-    MaxStackSize: ?int
-  )<converges>: ?basic_stackable_component
 
   # `fort_br_inventory_build_hotbar_component` is the FNBR inventory for Fortnite build tools.
   fort_br_inventory_build_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
@@ -11908,21 +12442,20 @@ Itemization<public> := module {
   # `fort_inventory_build_hotbar_component` is the UEFN inventory for Fortnite build tools.
   fort_inventory_build_hotbar_component<native><public> := class<final>(fort_br_inventory_build_hotbar_component) {
     # Returns the item currently selected, if there is one.
-    GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
+    GetEquippedItem<native><epic_internal>()<decides><reads>: item_component
   }
 
   # `fort_inventory_collectible_component` is the inventory for Fortnite collectibles.
   fort_inventory_collectibles_component<native><epic_internal> := class<final>(fort_inventory_component) {}
 
-  using { /Verse.org/Presentation }
   # `fort_inventory_component` is a shared class for all Fortnite inventories, with appropriate default UI and behavior. The HUD when using the BR Style Inventory Configuration will only be shown when using the default configuration. If new inventories are added you will need to create your own custom HUD using Verse UI.
   fort_inventory_component<native><public> := class<epic_internal>(inventory_component) {
     @experimental
     # Returns the item in the specified slot, if there is one. NOTE: this function will only work consistently with custom (pure Verse) inventories *not* fort_inventory_weapon_hotbar_component
-    GetItemInSlot<native><epic_internal>(Slot: int)<reads><decides>: item_component
+    GetItemInSlot<native><epic_internal>(Slot: int)<decides><reads>: item_component
 
     # Returns the total number of slots in this inventory.
-    GetMaxSlots<native><public>()<reads><decides>: int
+    GetMaxSlots<native><public>()<decides><reads>: int
 
     # Takes either a Melee or Ranged weapon item and reloads its initial ammount of ammo. Does not grant extra ammo
     ResetWeaponState<native><epic_internal>(Weapon: item_component)<transacts><decides>: void
@@ -11941,7 +12474,7 @@ Itemization<public> := module {
   # `fort_inventory_harvest_tool_component` is the UEFN inventory for the Fortnite harvest tool.
   fort_inventory_harvest_tool_component<native><public> := class<final>(fort_br_inventory_harvest_tool_component) {
     # Returns the item currently selected, if there is one.
-    GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
+    GetEquippedItem<native><epic_internal>()<decides><reads>: item_component
   }
 
   # `fort_inventory_legacy_quickbar_component` is a shared class for all Fortnite inventories that rely on coupling to the legacy AFortQuickBars class.
@@ -11959,10 +12492,10 @@ Itemization<public> := module {
     ClassChangedEvent<native><final><epic_internal>: listenable(tuple()) = external {}
 
     # Returns the item currently selected, if there is one.
-    GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
+    GetEquippedItem<native><epic_internal>()<decides><reads>: item_component
 
     # Succeeds if the inventory has infinite consumables.
-    HasInfiniteConsumables<native><epic_internal>()<reads><decides>: void
+    HasInfiniteConsumables<native><epic_internal>()<decides><reads>: void
 
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
@@ -11993,31 +12526,13 @@ Itemization<public> := module {
   @hide_in_editor
   fort_item_definition_entity_base<native><epic_internal> := class<concrete>(entity) {}
 
-  @class_and_subclass_group_names("item")
-  @hide_in_editor
-  fort_item_pickup_component<native><final><epic_internal> := class<final_super>(component, copy_from_item) {
-    CopyFromItem<override><final><native>(SourceItem: entity)<transacts>: void
-
-    OnEndSimulation<override>(): void = external {}
-
-    OnSimulate<override>()<suspends>: void = external {}
-
-    var<private> DestroyOnDropFromInventory<native><epic_internal>: logic = external {}
-
-    var<private> DropOnOwnerElimination<native><epic_internal>: logic = external {}
-
-    var<private> DropOnOwnerExit<native><epic_internal>: logic = external {}
-
-    var<private> PickupLifetime<native><public>: float = external {}
-
-    var<private> PickupOverflowBehavior<native><epic_internal>: pickup_overflow_behavior = external {}
-  }
-
   @available { MinUploadedAtFNVersion := 4040 }
   @class_and_subclass_group_names("item")
   # Place this component onto an entity to allow it to be added to an agent inventory on interaction. The owning entity should have an item_component and a mesh_component. This component expects the interacting agent to have a subentity with an inventory_component.
   fort_item_pickup_interactable_component<native><public> := class(basic_interactable_component) {
-    CanInteract<native><override>(Agent: agent)<reads><decides>: void
+    CanInteract<native><override>(Agent: agent)<decides><reads>: void
+
+    CancelInteractionSubscription<epic_internal>(): void = external {}
 
     Disable<override>(): void = external {}
 
@@ -12040,7 +12555,7 @@ Itemization<public> := module {
   # `fort_npc_inventory_weapon_component` is the NPC inventory for Fortnite weapons and gadgets.
   fort_npc_inventory_weapon_component<native><epic_internal> := class<final>(fort_inventory_component) {
     # Returns the item currently selected, if there is one.
-    GetEquippedItem<native><epic_internal>()<reads><decides>: item_component
+    GetEquippedItem<native><epic_internal>()<decides><reads>: item_component
 
     @available { MinUploadedAtFNVersion := 4000 }
     OnReceive<override>(Event: scene_event): logic = external {}
@@ -12085,7 +12600,6 @@ Itemization<public> := module {
     var<private> RequestSelect<public>: logic = external {}
   }
 
-  using { /UnrealEngine.com/Itemization }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
@@ -12130,7 +12644,7 @@ Itemization<public> := module {
   @experimental
   @hide_in_editor
   item_attributes_component<native><final><epic_internal> := class<final_super>(component) {
-    GetAmmoIcon<native><public>()<reads><decides>: texture
+    GetAmmoIcon<native><public>()<decides><reads>: texture
 
     GetCurrentAmmoValue<native><public>()<reads>: int
 
@@ -12149,7 +12663,7 @@ Itemization<public> := module {
     GetReserveEnergyPercent<native><public>()<reads>: float
 
     # Succeeds if the item entity is a consumable.
-    IsItemConsumable<native><public>()<reads><decides>: void
+    IsItemConsumable<native><public>()<decides><reads>: void
 
     # Called when the time changes from 0 to the reload time, then every frame with the updated time until it reaches 0, or when the reload is canceled and the time is set to 0 early.
     ReloadTimeChangedEvent<native><final><epic_internal>: listenable(float) = external {}
@@ -12161,13 +12675,11 @@ Itemization<public> := module {
     ShowMagazineAsPercentage<native><public>()<reads>: logic
   }
 
-  pickup_overflow_behavior<native><epic_internal> := enum {
-    DestroyExcess
-
-    DropExcess
-  }
-
+  # Verse path: /Fortnite.com/Itemization
   play_animation_on_self<epic_internal> := class {}
+
+  # Verse path: /Fortnite.com/Itemization
+  using { /UnrealEngine.com/Itemization }
 }
 
 Items<public> := module {
@@ -12882,7 +13394,7 @@ Items<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use CeilingZapper_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -12899,7 +13411,7 @@ Items<public> := module {
     StackableComponent<override>: ?basic_stackable_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use CeilingZapper_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -13804,7 +14316,7 @@ Items<public> := module {
     StackableComponent<override>: ?basic_stackable_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Grenade_OG_CH1S1_Common instead." }
   @preload
   # Deprecated. Please use Grenade_OG_CH1S1_Common instead.
   Grenade_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -14227,6 +14739,55 @@ Items<public> := module {
 
     @available { MinUploadedAtFNVersion := 4020 }
     StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  # Module import path: /Fortnite.com/Items/KPopDemonHunters
+  (/Fortnite.com/Items:)KPopDemonHunters<public> := module {
+    using { /Fortnite.com/Itemization }
+    using { /UnrealEngine.com/Itemization }
+    using { /Verse.org/Native }
+    using { /Verse.org/SceneGraph }
+    @preload
+    MirasXTraSpicyRamyeon_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+      @available { MinUploadedAtFNVersion := 4020 }
+      IconComponent<override>: ?icon_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4000 }
+      ItemComponent<override>: item_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      RarityComponent<override>: ?rarity_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      StackableComponent<override>: ?basic_stackable_component = external {}
+    }
+
+    @preload
+    TigersTeleportingMask_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+      @available { MinUploadedAtFNVersion := 4020 }
+      IconComponent<override>: ?icon_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4000 }
+      ItemComponent<override>: item_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      RarityComponent<override>: ?rarity_component = external {}
+    }
+
+    @preload
+    ZoeysBubbleShield_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+      @available { MinUploadedAtFNVersion := 4020 }
+      IconComponent<override>: ?icon_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4000 }
+      ItemComponent<override>: item_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      RarityComponent<override>: ?rarity_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      StackableComponent<override>: ?basic_stackable_component = external {}
+    }
   }
 
   @preload
@@ -16275,12 +16836,13 @@ Items<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  @experimental
   Telekineticon_Creative_V1_Common<native><public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4000 }
+    @available { MinUploadedAtFNVersion := 4200 }
     ItemComponent<override>: item_component = external {}
 
     @field("Components")
-    @available { MinUploadedAtFNVersion := 4100 }
+    @available { MinUploadedAtFNVersion := 4200 }
     TelekineticonComponent<native><protected>: telekineticon_component = external {}
   }
 
@@ -16464,7 +17026,7 @@ Items<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use WallDynamo_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -16481,7 +17043,7 @@ Items<public> := module {
     StackableComponent<override>: ?basic_stackable_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use WallDynamo_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -16775,8 +17337,8 @@ Items<public> := module {
     GrabPropEvent<native><final><public>: listenable(creative_prop) = external {}
 
     @editable
-    # The strength of the force, in kg*m/second^2, which forces the hold to break.  With a 1kg prop ~`1.0` causes nearly any force to break the hold. ~`10.0` is a strong hold on the object that can withstand significant forces. Allows objects to push into a wall around 1m ~`100.0` is almost unbreakable. Supports a distance of around 15m, will go through most walls - depending on how wide they are If `0.0`, `NaN`, or a negative value is provided, any physical interaction will cause the object to be dropped. If `Inf` is provided, the hold on the object cannot be broken.
-    var BreakHoldStiffness<public>: float = external {}
+    # The hold breaks when an applied force pushes the object past this distance, in cm, from its hold position.  Larger values will allow the object to be pushed around and spring back to its hold position.  If `0.0`, `NaN`, or a negative value is provided, any physical interaction will cause the object to be dropped.  If `Inf` is provided, the hold on the object cannot be broken.
+    var BreakDistance<public>: float = external {}
 
     @editable
     # The current distance, in cm, from the grabbing agent to the physical prop, along the agent`s forward vector. If false, no physical prop is currently being held. If set to false and a prop is being held, the prop is dropped. If `0.0`, `NaN`, or a negative value is provided, the object is held at a distance of `0.0` cm. If `Inf` is provided, the object is held at a distance as far as can be supported.
@@ -16815,7 +17377,6 @@ Items<public> := module {
   using { /Fortnite.com/Devices }
   using { /Fortnite.com/Itemization }
   using { /UnrealEngine.com/Itemization }
-  using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   # Used with `telekineticon_component.HoldPoint` to determine where on an object the object is held.
@@ -16826,6 +17387,9 @@ Items<public> := module {
     # The point on the object from the reticle to the object through the camera when the object is grabbed.
     GrabPoint
   }
+
+  # Verse path: /Fortnite.com/Items
+  using { /Verse.org/Native }
 }
 
 Marketplace<public> := module {
@@ -16874,11 +17438,11 @@ Marketplace<public> := module {
   MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
 
   # Informs if usage of direct prompts to purchase is restricted for `Player`.
-  RestrictDirectPromptsToPurchase<native><public>(Player: player)<reads><decides>: void
+  RestrictDirectPromptsToPurchase<native><public>(Player: player)<decides><reads>: void
 
   # Informs if usage of paid random items is restricted for `Player`
   # due to platform, territory, age, or user configuration restrictions.
-  RestrictPaidRandomItems<native><public>(Player: player)<reads><decides>: void
+  RestrictPaidRandomItems<native><public>(Player: player)<decides><reads>: void
 
   # Shows the Epic provided store front contain the specified `Offers`.
   ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
@@ -16956,11 +17520,10 @@ Marketplace<public> := module {
   }
 
   using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   offer_interactable_component<native><public> := class(interactable_component) {
-    CanInteract<native><native_callable><override>(Agent: agent)<reads><decides>: void
+    CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
 
-    InteractMessage<override>(Agent: agent)<reads><decides>: message = external {}
+    InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
 
     OnBeginSimulation<override>(): void = external {}
 
@@ -16973,11 +17536,17 @@ Marketplace<public> := module {
   }
 
   using { /Verse.org/Assets }
-  using { /Verse.org/Native }
   using { /Verse.org/Presentation }
   price_dimension<native><public> := class<computes><abstract><epic_internal> {}
 
+  # Verse path: /Fortnite.com/Marketplace
   price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+
+  # Verse path: /Fortnite.com/Marketplace
+  using { /Verse.org/Native }
+
+  # Verse path: /Fortnite.com/Marketplace
+  using { /Verse.org/Simulation }
 }
 
 # Module import path: /Fortnite.com/Playspaces
@@ -17018,6 +17587,22 @@ Playspaces<public> := module {
   }
 }
 
+@available { MinUploadedAtFNVersion := 4200 }
+# Module import path: /Fortnite.com/Progression
+(/Fortnite.com:)Progression<public> := module {
+  using { /UnrealEngine.com }
+  using { /Verse.org }
+  @experimental
+  # A category in the Fortnite quest log.
+  fort_quest_category<native><public> := class<abstract><castable>((/UnrealEngine.com:)Progression.quest_category) {}
+
+  @experimental
+  # The quest collection whose quests show in the Fortnite quest UI. A quest displays for
+  # each participant observing it.
+  fort_quest_collection<native><public> := class<final>((/Verse.org:)Progression.quest_collection) {}
+}
+
+# Verse path: /Fortnite.com
 # Module import path: /Fortnite.com/QuestUtilities
 QuestUtilities<public> := module {
   using { /Verse.org/Simulation }
@@ -17027,344 +17612,401 @@ QuestUtilities<public> := module {
   BroadcastCustomVerb<native><epic_internal>(Author: agent, CustomVerbTagString: string, Amount: int): void
 }
 
+@available { MinUploadedAtFNVersion := 4200 }
+@experimental
+# Module import path: /Fortnite.com/SceneGraphCameras
 SceneGraphCameras<public> := module {
-  # Module import path: /Fortnite.com/SceneGraphCameras/FortSceneGraphCameras
-  FortSceneGraphCameras<public> := module {
-    using { /Verse.org/Assets }
-    using { /Verse.org/Native }
-    using { /Verse.org/SceneGraph }
-    using { /Verse.org/SpatialMath }
-    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
-    @available { MinUploadedAtFNVersion := 4110 }
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/SpatialMath }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Base class for nodes that frame a target
+  fort_base_framing_camera_modifier<native><epic_internal> := class<abstract>(camera_modifier) {
     @experimental
-    # Base class for nodes that frame a target
-    fort_base_framing_camera_modifier<native><epic_internal> := class<abstract>(camera_modifier) {
-      @experimental
-      @replicated("")
-      # The size of the dead zone, i.e. the zone inside which the target can freely move.
-      # Sizes are expressed screen percentages around the desired framing location.
-      var DeadZoneScreenSpaceBottom<native><public>: float = external {}
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can freely move.
+    # Sizes are expressed screen percentages around the desired framing location.
+    var DeadZoneScreenSpaceBottom<native><public>: float = external {}
 
-      @experimental
-      @replicated("")
-      # The size of the dead zone, i.e. the zone inside which the target can freely move.
-      # Sizes are expressed screen percentages around the desired framing location.
-      var DeadZoneScreenSpaceLeft<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The size of the dead zone, i.e. the zone inside which the target can freely move.
-      # Sizes are expressed screen percentages around the desired framing location.
-      var DeadZoneScreenSpaceRight<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The size of the dead zone, i.e. the zone inside which the target can freely move.
-      # Sizes are expressed screen percentages around the desired framing location.
-      var DeadZoneScreenSpaceTop<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The time spent ramping down the reframing after entering the dead zone. If set to zero or a negative value, reframing will immediately stop once the target has entered the dead zone. Otherwise, the ReframeDampingFactor will interpolate towards zero over the specified amount of seconds.
-      var DisengageTimeSeconds<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The ideal horizontal screen-space position of the target.
-      var IdealFramingLocationScreenSpaceLeft<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The ideal vertical screen-space position of the target.
-      var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # If valid, the recentering damping factor will interpolate between LowReframeDampingFactor and ReframeDampingFactor as the target moves between the ideal target position and the boundaries of the hard-zone.
-      # If invalid, no interpolation occurs and the damping factor is always equal to ReframeDampingFactor.
-      var LowReframeDampingFactor<native><public>: ?float = external {}
-
-      @experimental
-      @replicated("")
-      # The time spent ramping up the reframing after exiting the dead zone. If set to zero or a negative value, reframing will immediately restart once the target has exited the dead zone. Otherwise the ReframeDampingFactor will interpolate from zero to its desired value over the specified amount of seconds.
-      var ReengageTimeSeconds<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The damping factor for how fast the framing recenters on the target.
-      var ReframeDampingFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
-      var SoftZoneScreenSpaceBottom<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
-      var SoftZoneScreenSpaceLeft<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
-      var SoftZoneScreenSpaceRight<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
-      var SoftZoneScreenSpaceTop<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var TargetMovementAnticipationTimeSeconds<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Targets to frame
-      var Targets<native><public>: [entity]float = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that frames a target by moving along a sideways rail (left/right relative to the camera transform) and optionally also up and down..
-    fort_dolly_framing_camera_modifier<native><epic_internal> := class<concrete>(fort_base_framing_camera_modifier) {}
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can freely move.
+    # Sizes are expressed screen percentages around the desired framing location.
+    var DeadZoneScreenSpaceLeft<native><public>: float = external {}
 
-    @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that implements a first person camera.
-    fort_first_person_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
-      NativeCameraRigAsset<override>: camera_rig_asset = external {}
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can freely move.
+    # Sizes are expressed screen percentages around the desired framing location.
+    var DeadZoneScreenSpaceRight<native><public>: float = external {}
 
-      @experimental
-      @replicated("")
-      # Entity the camera is attached to
-      TargetEntity<native><public>: entity = external {}
-
-      @experimental
-      @replicated("")
-      # Maximum backward interpolation factor for the boom arm.
-      var BoomarmMaxBackwardInterpolationFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Maximum forward interpolation factor for the boom arm.
-      var BoomarmMaxForwardInterpolationFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Rotation applied to the camera
-      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
-
-      @experimental
-      @replicated("")
-      # Translation offset applied to the camera relative to the attached entity.
-      var TranslationOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that implements a fixed angle camera.
-    fort_fixed_angle_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
-      NativeCameraRigAsset<override>: camera_rig_asset = external {}
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can freely move.
+    # Sizes are expressed screen percentages around the desired framing location.
+    var DeadZoneScreenSpaceTop<native><public>: float = external {}
 
-      @experimental
-      @replicated("")
-      # Entity the camera is attached to.
-      TargetEntity<native><public>: entity = external {}
-
-      @experimental
-      @replicated("")
-      # Distance from the camera to the focus point along its forward axis.
-      var CameraDistance<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Translation offset applied to the collision safe position.
-      var CollisionSafePositionOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-      @experimental
-      @replicated("")
-      # Radius of the sphere used for collision queries
-      var CollisionSphereRadius<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Whether camera-to-world collision avoidance is enabled.
-      var EnableCollision<native><public>: logic = external {}
-
-      @experimental
-      @replicated("")
-      # Damping factor applied along the forward axis
-      var ForwardDampingFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Damping factor applied along the lateral axis
-      var LateralDampingFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Translation offset applied on top of the calculated offset.
-      var PositionOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-      @experimental
-      @replicated("")
-      # Rotation offset applied to the camera's orientation. Defaults to Pitch=-45 (look down 45 degrees).
-      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
-
-      @experimental
-      @replicated("")
-      # Damping factor applied along the vertical axis.
-      var VerticalDampingFactor<native><public>: float = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that implements a fixed point camera.
-    fort_fixed_point_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
-      NativeCameraRigAsset<override>: camera_rig_asset = external {}
+    @replicated("")
+    # The time spent ramping down the reframing after entering the dead zone. If set to zero or a negative value, reframing will immediately stop once the target has entered the dead zone. Otherwise, the ReframeDampingFactor will interpolate towards zero over the specified amount of seconds.
+    var DisengageTimeSeconds<native><public>: float = external {}
 
-      @experimental
-      @replicated("")
-      var DeadZoneScreenSpaceBottom<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var DeadZoneScreenSpaceLeft<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var DeadZoneScreenSpaceRight<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var DeadZoneScreenSpaceTop<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The ideal horizontal screen-space position of the target.
-      var IdealFramingLocationScreenSpaceLeft<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # The ideal vertical screen-space position of the target.
-      var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # On first activation of this camera, snap the framing so the target is already at the ideal location instead of easing into it. Set to false for a pop-free entry from a wider blend.
-      var InitializeWithIdealFraming<native><public>: logic = external {}
-
-      @experimental
-      @replicated("")
-      # If valid, the recentering damping factor will interpolate between LowReframeDampingFactor and ReframeDampingFactor as the target moves between the ideal target position and the boundaries of the hard-zone.
-      # If invalid, no interpolation occurs and the damping factor is always equal to ReframeDampingFactor.
-      var LowReframeDampingFactor<native><public>: ?float = external {}
-
-      @experimental
-      @replicated("")
-      # Rotation offset applied to the camera's orientation.
-      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
-
-      @experimental
-      @replicated("")
-      var SoftZoneScreenSpaceBottom<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var SoftZoneScreenSpaceLeft<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var SoftZoneScreenSpaceRight<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      var SoftZoneScreenSpaceTop<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Entities to frame in the camera.
-      var TargetEntities<native><public>: []entity = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that implements an orbit camera.
-    fort_orbit_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
-      NativeCameraRigAsset<override>: camera_rig_asset = external {}
+    @replicated("")
+    # The ideal horizontal screen-space position of the target.
+    var IdealFramingLocationScreenSpaceLeft<native><public>: float = external {}
 
-      @experimental
-      @replicated("")
-      # Entity the camera is attached to
-      TargetEntity<native><public>: entity = external {}
-
-      @experimental
-      @replicated("")
-      # Maximum backward interpolation factor for the boom arm
-      var BoomArmMaxBackwardInterpolationFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Maximum forward interpolation factor for the boom arm
-      var BoomArmMaxForwardInterpolationFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Boom arm offset relative to the attached entity
-      var BoomArmOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-      @experimental
-      @replicated("")
-      # Distance from the camera to the orbit pivot along the camera's forward axis.
-      var CameraDistance<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Height of the orbit pivot above the attached entity's root, in world units.
-      var CameraHeight<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Radius of the sphere used for collision queries
-      var CollisionSphereRadius<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Whether camera-to-world collision avoidance is enabled
-      var EnableCollision<native><public>: logic = external {}
-
-      @experimental
-      @replicated("")
-      # Damping factor applied along the forward axis
-      var ForwardDampingFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Damping factor applied along the lateral axis
-      var LateralDampingFactor<native><public>: float = external {}
-
-      @experimental
-      @replicated("")
-      # Position offset applied to the camera relative to the orbit pivot, after the boom arm.
-      var PositionOffset<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-      @experimental
-      @replicated("")
-      # Rotation offset applied to the camera's orientation.
-      var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
-
-      @experimental
-      @replicated("")
-      # Damping factor applied along the vertical axis
-      var VerticalDampingFactor<native><public>: float = external {}
-    }
-
-    @available { MinUploadedAtFNVersion := 4110 }
     @experimental
-    # Camera modifier that frames a target by rotating in place.
-    fort_panning_framing_camera_modifier<native><epic_internal> := class<concrete>(fort_base_framing_camera_modifier) {}
+    @replicated("")
+    # The ideal vertical screen-space position of the target.
+    var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # If valid, the recentering damping factor will interpolate between LowReframeDampingFactor and ReframeDampingFactor as the target moves between the ideal target position and the boundaries of the hard-zone.
+    # If invalid, no interpolation occurs and the damping factor is always equal to ReframeDampingFactor.
+    var LowReframeDampingFactor<native><public>: ?float = external {}
+
+    @experimental
+    @replicated("")
+    # The time spent ramping up the reframing after exiting the dead zone. If set to zero or a negative value, reframing will immediately restart once the target has exited the dead zone. Otherwise the ReframeDampingFactor will interpolate from zero to its desired value over the specified amount of seconds.
+    var ReengageTimeSeconds<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The damping factor for how fast the framing recenters on the target.
+    var ReframeDampingFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+    var SoftZoneScreenSpaceBottom<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+    var SoftZoneScreenSpaceLeft<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+    var SoftZoneScreenSpaceRight<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing will engage, in order to bring the target back towards the ideal framing position. If the target is outside of the soft zone, it will be forcibly and immedialy brought back to its edges, so this zone also defines the "hard" or "safe" zone of framing. Sizes are expressed in screen percentages from the edges.
+    var SoftZoneScreenSpaceTop<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    var TargetMovementAnticipationTimeSeconds<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Targets to frame
+    var Targets<native><public>: [entity]float = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Camera modifier that frames a target by moving along a sideways rail (left/right relative to the camera transform) and optionally also up and down..
+  fort_dolly_framing_camera_modifier<native><epic_internal> := class<concrete>(fort_base_framing_camera_modifier) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Camera modifier that implements a first person camera.
+  fort_first_person_camera_modifier<native><epic_internal> := class<concrete>(camera_modifier) {
+    NativeCameraRigAsset<override>: camera_rig_asset = external {}
+
+    @experimental
+    @replicated("")
+    # Entity the camera is attached to
+    TargetEntity<native><public>: entity = external {}
+
+    @experimental
+    @replicated("")
+    # Maximum backward interpolation factor for the boom arm.
+    var BoomarmMaxBackwardInterpolationFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Maximum forward interpolation factor for the boom arm.
+    var BoomarmMaxForwardInterpolationFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Translation offset applied to the camera relative to the attached entity.
+    var PositionOffsetCentimeters<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @experimental
+    @replicated("")
+    # Rotation applied to the camera
+    var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Camera modifier that implements a fixed angle camera.
+  fort_fixed_angle_camera_modifier<native><public> := class<concrete>(camera_modifier) {
+    NativeCameraRigAsset<override>: camera_rig_asset = external {}
+
+    @experimental
+    @replicated("")
+    # Entity the camera is attached to.
+    TargetEntity<native><public>: entity = external {}
+
+    @experimental
+    @replicated("")
+    # Distance from the camera to the focus point along its forward axis.
+    var CameraDistanceCentimeters<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Translation offset applied to the collision safe position.
+    var CollisionSafePositionOffsetCentimeters<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @experimental
+    @replicated("")
+    # Radius of the sphere used for collision queries.
+    var CollisionSphereRadiusCentimeters<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Whether camera-to-world collision avoidance is enabled.
+    var EnableCollision<native><public>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor applied along the forward axis.
+    var ForwardDampingFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor applied along the lateral axis.
+    var LateralDampingFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Translation offset applied on top of the calculated offset.
+    var PositionOffsetCentimeters<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @experimental
+    @replicated("")
+    # Rotation offset applied to the camera's orientation. Defaults to Pitch=`-45` (look down 45 degrees).
+    var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor applied along the vertical axis.
+    var VerticalDampingFactor<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Camera modifier that implements a fixed point camera.
+  fort_fixed_point_camera_modifier<native><public> := class<concrete>(camera_modifier) {
+    NativeCameraRigAsset<override>: camera_rig_asset = external {}
+
+    @experimental
+    @replicated("")
+    # Entities to frame in the camera.
+    TargetEntities<native><public>: []entity = external {}
+
+    @experimental
+    @replicated("")
+    # Whether the camera is allowed to pitch (rotate vertically) to reframe the target.
+    # Turn off for a pan-only camera that only corrects horizontally.
+    var CanPitch<native><public>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Whether the camera is allowed to yaw (rotate horizontally) to reframe the target.
+    # Turn off for a tilt-only camera that only corrects vertically.
+    var CanYaw<native><public>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Bottom edge margin of the dead zone
+    # The dead zone is the screen-space region where the target can move freely without triggering reframing.
+    # Edges are normalized `[0, 1]` margins from each screen edge. `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    var DeadZoneScreenSpaceBottom<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Left edge margin of the dead zone.
+    # The dead zone is the screen-space region where the target can move freely without triggering reframing.
+    # Edges are normalized `[0, 1]` margins from each screen edge. `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    var DeadZoneScreenSpaceLeft<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Right edge margin of the dead zone
+    # The dead zone is the screen-space region where the target can move freely without triggering reframing.
+    # Edges are normalized `[0, 1]` margins from each screen edge. `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    var DeadZoneScreenSpaceRight<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Top edge margin of the dead zone
+    # The dead zone is the screen-space region where the target can move freely without triggering reframing.
+    # Edges are normalized `[0, 1]` margins from each screen edge. `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    var DeadZoneScreenSpaceTop<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The ideal horizontal screen-space position of the target in screen space. Values are normalized where `0.5` is center of the screen
+    var IdealFramingLocationScreenSpaceLeft<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The ideal vertical screen-space position of the target. Values are normalized where `0.5` is center of the screen
+    var IdealFramingLocationScreenSpaceUp<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # If valid, the recentering damping factor will interpolate between LowReframeDampingFactor and ReframeDampingFactor as the target moves between the ideal target position and the boundaries of the soft-zone.
+    # If invalid, no interpolation occurs and the damping factor is always equal to ReframeDampingFactor.
+    var LowReframeDampingFactor<native><public>: ?float = external {}
+
+    @experimental
+    @replicated("")
+    # The time spent ramping up the reframing after exiting the dead zone.
+    # If set to zero or a negative value, reframing will immediately stop once the target has entered the dead zone.
+    # Otherwise the ReframeDampingFactor will interpolate from zero to its desired value over the specified amount of seconds.
+    var ReengageTimeSeconds<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # How aggressively the camera corrects when the target is outside the dead zone. 0 = no damping (instant snap), higher = smoother but laggier (typically 1-10).
+    var ReframeDampingFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Rotation offset applied to the camera's orientation.
+    var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+    @experimental
+    @replicated("")
+    # On first activation of this camera, snap the framing so the target is already at the ideal location instead of easing into it. Set to false for a pop-free entry from a wider blend.
+    var SnapToIdealFramingOnEnable<native><public>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Bottom edge margin of the soft zone.
+    # The soft zone is the screen-space region inside which the target is reframed normally.
+    # Outside the soft zone, the camera switches to a stronger damping factor to catch up quickly.
+    # Edges are normalized `[0, 1]` margins from each screen edge.
+    var SoftZoneScreenSpaceBottom<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Left edge margin of the soft zone.
+    # The soft zone is the screen-space region inside which the target is reframed normally.
+    # Outside the soft zone, the camera switches to a stronger damping factor to catch up quickly.
+    # Edges are normalized `[0, 1]` margins from each screen edge.
+    var SoftZoneScreenSpaceLeft<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Right edge margin of the soft zone.
+    # The soft zone is the screen-space region inside which the target is reframed normally.
+    # Outside the soft zone, the camera switches to a stronger damping factor to catch up quickly.
+    # Edges are normalized `[0, 1]` margins from each screen edge.
+    var SoftZoneScreenSpaceRight<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Top edge margin of the soft zone.
+    # The soft zone is the screen-space region inside which the target is reframed normally.
+    # Outside the soft zone, the camera switches to a stronger damping factor to catch up quickly.
+    # Edges are normalized `[0, 1]` margins from each screen edge.
+    var SoftZoneScreenSpaceTop<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Predictive lead-time in seconds. The camera anticipates where the target will be N seconds from now based on its current velocity, and frames that anticipated position instead of the current one.  `0` = no anticipation. Useful for fast-moving targets to avoid trailing behind them.
+    var TargetMovementAnticipationTimeSeconds<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Camera modifier that implements an orbit camera.
+  fort_orbit_camera_modifier<native><public> := class<concrete>(camera_modifier) {
+    NativeCameraRigAsset<override>: camera_rig_asset = external {}
+
+    @experimental
+    @replicated("")
+    # Entity the camera is attached to
+    TargetEntity<native><public>: entity = external {}
+
+    @experimental
+    @replicated("")
+    # Maximum backward interpolation factor for the boom arm
+    var BoomArmMaxBackwardInterpolationFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Maximum forward interpolation factor for the boom arm
+    var BoomArmMaxForwardInterpolationFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Boom arm offset relative to the attached entity
+    var BoomArmOffsetCentimeters<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @experimental
+    @replicated("")
+    # Distance from the camera to the orbit pivot along the camera's forward axis.
+    var CameraDistanceCentimeters<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Height of the orbit pivot above the attached entity's root, in centimeters.
+    var CameraHeightCentimeters<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Radius of the sphere used for collision queries
+    var CollisionSphereRadiusCentimeters<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Whether camera-to-world collision avoidance is enabled
+    var EnableCollision<native><public>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor applied along the forward axis
+    var ForwardDampingFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor applied along the lateral axis
+    var LateralDampingFactor<native><public>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Position offset applied to the camera relative to the orbit pivot, after the boom arm.
+    var PositionOffsetCentimeters<native><public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @experimental
+    @replicated("")
+    # Rotation offset applied to the camera's orientation.
+    var RotationOffset<native><public>: (/Verse.org/SpatialMath:)rotation = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor applied along the vertical axis
+    var VerticalDampingFactor<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  # Camera modifier that frames a target by rotating in place.
+  fort_panning_framing_camera_modifier<native><epic_internal> := class<concrete>(fort_base_framing_camera_modifier) {}
 }
 
 # Module import path: /Fortnite.com/Teams
@@ -17541,17 +18183,17 @@ Teams<public> := module {
 }
 
 UI<public> := module {
-  @deprecated
+  @deprecated { Message := "Use `fort_playspace.GetHUDController().HideElements()` instead." }
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().HideElements()`.
   # Hides a set of HUD elements.
   (PlayerUI: player_ui).HideHUDElements<native><public>(HUDElements: []hud_element_identifier): void
 
-  @deprecated
+  @deprecated { Message := "Use `fort_playspace.GetHUDController().ResetElementVisibility()` instead." }
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ResetElementVisibility()`.
   # Resets the visibility for a set of HUD elements.
   (PlayerUI: player_ui).ResetHUDElementVisibility<native><public>(HUDElements: []hud_element_identifier): void
 
-  @deprecated
+  @deprecated { Message := "Use `fort_playspace.GetHUDController().ShowElements()` instead." }
   # Deprecated. This function affects all players. Please use `fort_playspace.GetHUDController().ShowElements()`.
   # Shows a set of HUD elements.
   (PlayerUI: player_ui).ShowHUDElements<native><public>(HUDElements: []hud_element_identifier): void
@@ -17808,7 +18450,6 @@ UI<public> := module {
 
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /UnrealEngine.com/Temporary/UI }
-  using { /Verse.org/Assets }
   using { /Verse.org/Simulation }
   dynamic_ui_z_order<native><epic_internal> := enum {
     (/Fortnite.com/UI/dynamic_ui_z_order:)Back
@@ -18107,6 +18748,9 @@ UI<public> := module {
     # The desired order for the tab. -1 will add tab to the end of the list.
     SortOrder<native><public>: int = external {}
   }
+
+  # Verse path: /Fortnite.com/UI
+  using { /Verse.org/Assets }
 }
 
 # Module import path: /Fortnite.com/Vehicles
@@ -18146,7 +18790,7 @@ Vehicles<public> := module {
     # Returns an array with all `agent` currently occupying the vehicle.
     GetOccupants<public>()<reads>: []agent
 
-    # Returns an array of every `fort_character` in the vehicle. Calls `GetOccupants()` and casts each occupying agent to a `fort_character`.
+    @deprecated { Message := "Use `GetOccupants` instead. To convert to `fort_character`, use `for (Agent : Vehicle.GetOccupants(), Character := Agent.GetFortCharacter[])\{ Character \ }`." }
     GetPassengers<public>()<transacts>: []fort_character = external {}
 
     # Returns an array of all `fort_vehicle_seat`s in the `fort_vehicle`.
@@ -18185,7 +18829,7 @@ Vehicles<public> := module {
 
   @hide_in_editor
   @experimental
-  @deprecated
+  @deprecated { Message := "Use `fort_vehicle` directly instead." }
   fort_vehicle_component<native><epic_internal> := class<final_super>(component, fort_vehicle) {
     AddAgent<override>(InAgent: agent)<transacts><decides>: void = external {}
 
@@ -18244,7 +18888,7 @@ Vehicles<public> := module {
   # Represents a seat in a `fort_vehicle`.
   fort_vehicle_seat<native><public> := class<unique><epic_internal> {
     # Succeeds if this is a driver seat.
-    IsDriverSeat<native><public>()<reads><decides>: void
+    IsDriverSeat<native><public>()<decides><reads>: void
 
     # Attempts to seat `Agent` into this seat. Fails if the seat is occupied or the agent cannot be seated. Setting the occupant to `false` will remove any seated agent.
     SetOccupant<native><public>(Value: ?agent)<transacts><decides>: void
@@ -18258,9 +18902,12 @@ Vehicles<public> := module {
 }
 
 VerseInternalTesting<public> := module {
+  # Verse path: /Fortnite.com/VerseInternalTesting
   # Module import path: /Fortnite.com/VerseInternalTesting/NexusFramework
   NexusFramework<public> := module {
     FailureCategoryToString<epic_internal>(Category: nexus_failure_category): string = external {}
+
+    VerseFeatureToString<epic_internal>(Feature: nexus_verse_feature): string = external {}
 
     example_nexus_device<epic_internal> := class(nexus_test_device) {
       OnBegin<override>()<suspends>: void = external {}
@@ -18329,6 +18976,9 @@ VerseInternalTesting<public> := module {
 
       EndPhase<public>(PhaseName: string): void = external {}
 
+      @editable
+      Feature<public>: nexus_verse_feature = external {}
+
       InitializeNexusReporting<protected>(): void = external {}
 
       NexusExpect<public>(Condition: logic, TestName: string, Context: string): void = external {}
@@ -18336,6 +18986,8 @@ VerseInternalTesting<public> := module {
       NexusGuard<public>(Condition: logic, TestName: string): void = external {}
 
       OnSimulate<override>()<suspends>: void = external {}
+
+      QualifiedSuite<protected>(): string = external {}
 
       ResetGuard<public>(): void = external {}
 
@@ -18395,9 +19047,13 @@ VerseInternalTesting<public> := module {
 
       NexusGuard<epic_internal>(Condition: logic, TestName: string): void = external {}
 
+      NexusTry<epic_internal>(TestName: string, Context: string, Check: type { _()<transacts><decides>: void }): void = external {}
+
       OnBegin<override>()<suspends>: void = external {}
 
       OnEnd<override>(): void = external {}
+
+      QualifiedSuite<epic_internal>(): string = external {}
 
       ResetGuard<epic_internal>(): void = external {}
 
@@ -18431,6 +19087,8 @@ VerseInternalTesting<public> := module {
     }
 
     nexus_test_runner<epic_internal> := class(creative_device) {
+      FlushResults<epic_internal>(): void = external {}
+
       OnEnd<override>(): void = external {}
     }
 
@@ -18450,6 +19108,8 @@ VerseInternalTesting<public> := module {
       DisplayResults<public>(): void = external {}
 
       EndPhase<public>(PhaseName: string): void = external {}
+
+      FlushResults<epic_internal>(): void = external {}
 
       GetFailureCount<public>(Category: nexus_failure_category): int = external {}
 
@@ -18487,10 +19147,59 @@ VerseInternalTesting<public> := module {
 
       var SkipCount<public>: int = external {}
     }
+
+    nexus_verse_feature<epic_internal> := enum {
+      AutoRTFM
+
+      CreativeDevices
+
+      DynamicSubsimulations
+
+      (/Fortnite.com/VerseInternalTesting/NexusFramework/nexus_verse_feature:)Itemization
+
+      NewVM
+
+      (/Fortnite.com/VerseInternalTesting/NexusFramework/nexus_verse_feature:)SceneGraph
+
+      (/Fortnite.com/VerseInternalTesting/NexusFramework/nexus_verse_feature:)UI
+
+      Uncategorized
+
+      VersePersistence
+    }
   }
 
+  # Verse path: /Fortnite.com/VerseInternalTesting
   # Module import path: /Fortnite.com/VerseInternalTesting/VerseFramework
   VerseFramework<public> := module {
+    HoldTestInput<epic_internal>(
+      (local:)Character: fort_character,
+      KeyName: string,
+      DurationSeconds: float
+    )<suspends>: void = external {}
+
+    InjectTestInputKey<native><epic_internal>(
+      Character: fort_character,
+      KeyName: string,
+      Pressed: logic
+    )<transacts><decides>: void
+
+    using { /Fortnite.com/AI }
+    using { /Fortnite.com/Devices }
+    using { /Fortnite.com/Game }
+    using { /Fortnite.com/Marketplace }
+    using { /Fortnite.com/Vehicles }
+    using { /UnrealEngine.com/Itemization }
+    using { /UnrealEngine.com/Temporary/Diagnostics }
+    using { /UnrealEngine.com/Temporary/SpatialMath }
+    using { /UnrealEngine.com/Temporary/Testing }
+    using { /Verse.org/Colors }
+    using { /Verse.org/Native }
+    using { /Verse.org/SceneGraph }
+    using { /Verse.org/Simulation }
+    using { /Verse.org/SpatialMath }
+    TapTestInput<epic_internal>((local:)Character: fort_character, KeyName: string)<transacts>: void = external {}
+
     dependency_tree<epic_internal> := class {
       AddDependency<public>(NodeName: string, PreReqName: string): void = external {}
 
@@ -18647,21 +19356,6 @@ VerseInternalTesting<public> := module {
       var Status<epic_internal>: node_status = external {}
     }
 
-    using { /Fortnite.com/AI }
-    using { /Fortnite.com/Characters }
-    using { /Fortnite.com/Devices }
-    using { /Fortnite.com/Game }
-    using { /Fortnite.com/Marketplace }
-    using { /Fortnite.com/Vehicles }
-    using { /UnrealEngine.com/Itemization }
-    using { /UnrealEngine.com/Temporary/Diagnostics }
-    using { /UnrealEngine.com/Temporary/SpatialMath }
-    using { /UnrealEngine.com/Temporary/Testing }
-    using { /Verse.org/Colors }
-    using { /Verse.org/Native }
-    using { /Verse.org/SceneGraph }
-    using { /Verse.org/Simulation }
-    using { /Verse.org/SpatialMath }
     test_device<epic_internal> := class(creative_device) {
       AfterAll<public>()<suspends>: void = external {}
 
@@ -19172,16 +19866,53 @@ VerseInternalTesting<public> := module {
       var Status<epic_internal>: node_status = external {}
     }
 
+    using { /Fortnite.com/Characters }
     verse_internal_testing_utils<native><final><epic_internal> := class {
-      HasServerCommandLineOption<native><epic_internal>(Option: string)<reads><decides>: void
+      HasServerCommandLineOption<native><epic_internal>(Option: string)<decides><reads>: void
     }
+  }
+}
+
+# Verse path: /Fortnite.com
+# Module import path: /Fortnite.com/VerseNPC
+VerseNPC<public> := module {
+  using { /Fortnite.com/AI }
+  using { /Fortnite.com/Animation/PlayAnimation }
+  using { /Verse.org/Native }
+  using { /Verse.org/Presentation }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  default_behavior<epic_internal> := class(npc_behavior) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  # The entity prefab for a creator customizable wildlife
+  wildlife_template<native><epic_internal> := class<concrete>(entity) {
+    @field("Components")
+    ActionsComponent<native><public>: npc_actions_component = external {}
+
+    @field("Components")
+    AwarenessComponent<native><public>: npc_awareness_component = external {}
+
+    @field("Components")
+    DescriptionComponent<native><public>: description_component = external {}
+
+    @field("Components")
+    IconComponent<native><public>: icon_component = external {}
+
+    @field("Components")
+    NPCBehaviorComponent<native><epic_internal>: npc_behavior_component = external {}
+
+    @field("Components")
+    NPCComponent<native><epic_internal>: fort_npc_component = external {}
+
+    @field("Components")
+    PlayAnimationComponent<native><epic_internal>: fort_npc_play_animation_component = external {}
   }
 }
 
 VerseScreenshotTest<public> := module {
   using { /Verse.org/Assets }
   using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   screenshot_test_component<native><epic_internal> := class(mesh_component) {
     @editable_slider(float) { MinValue := option { 0.000000 } }
     Delay<native><epic_internal>: float = external {}
@@ -19233,6 +19964,9 @@ VerseScreenshotTest<public> := module {
     @editable_slider(float) { MinValue := option { 1.000000 } }
     Timeout<native><epic_internal>: float = external {}
   }
+
+  # Verse path: /Fortnite.com/VerseScreenshotTest
+  using { /Verse.org/Simulation }
 }
 
 # Module import path: /Fortnite.com/Weapons
@@ -19901,7 +20635,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use BurstAssaultRifle_OG_CH1S1_Common instead." }
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Common instead.
   BurstAssaultRifle_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -19915,7 +20649,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use BurstAssaultRifle_OG_CH1S1_Epic instead." }
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Epic instead.
   BurstAssaultRifle_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -19929,7 +20663,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use BurstAssaultRifle_OG_CH1S1_Legendary instead." }
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Legendary instead.
   BurstAssaultRifle_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -19943,7 +20677,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use BurstAssaultRifle_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Rare instead.
   BurstAssaultRifle_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -19957,7 +20691,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use BurstAssaultRifle_OG_CH1S1_Uncommon instead." }
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Uncommon instead.
   BurstAssaultRifle_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -21364,6 +22098,30 @@ Weapons<public> := module {
   }
 
   @preload
+  DrumGun_BR_CH7S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  DrumGun_BR_CH7S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   DrumGun_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -21761,6 +22519,66 @@ Weapons<public> := module {
 
   @preload
   EggLauncher_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  EightBitShotgun_BR_CH7S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  EightBitShotgun_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  EightBitShotgun_BR_CH7S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  EightBitShotgun_BR_CH7S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  EightBitShotgun_BR_CH7S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22347,7 +23165,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use ReconBow_BR_CH7S2_Exotic instead." }
   @preload
   # Deprecated. Please use ReconBow_BR_CH7S2_Exotic instead.
   ExoticReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -22913,7 +23731,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use GuidedMissile_OG_CH1S3_Epic instead." }
   @preload
   # Deprecated. Please use GuidedMissile_OG_CH1S3_Epic instead.
   GuidedMissile_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -22927,7 +23745,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use GuidedMissile_OG_CH1S3_Legendary instead." }
   @preload
   # Deprecated. Please use GuidedMissile_OG_CH1S3_Legendary instead.
   GuidedMissile_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -24261,6 +25079,25 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
+  # Module import path: /Fortnite.com/Weapons/KPopDemonHunters
+  (/Fortnite.com/Weapons:)KPopDemonHunters<public> := module {
+    using { /Fortnite.com/Itemization }
+    using { /UnrealEngine.com/Itemization }
+    using { /Verse.org/Native }
+    using { /Verse.org/SceneGraph }
+    @preload
+    RumisEmpoweredSword_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
+      @available { MinUploadedAtFNVersion := 4020 }
+      IconComponent<override>: ?icon_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4000 }
+      ItemComponent<override>: item_component = external {}
+
+      @available { MinUploadedAtFNVersion := 4020 }
+      RarityComponent<override>: ?rarity_component = external {}
+    }
+  }
+
   @preload
   KillswitchRevolvers_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
@@ -25463,6 +26300,18 @@ Weapons<public> := module {
 
   @preload
   MidasGildedEyeDrumGun_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  MidasMasterpiece_BR_CH7S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27789,7 +28638,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use PumpShotgun_OG_CH1S1_Common instead." }
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S1_Common instead.
   PumpShotgun_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -27803,7 +28652,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use PumpShotgun_OG_CH1S6_Epic instead." }
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S6_Epic instead.
   PumpShotgun_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -27817,7 +28666,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use PumpShotgun_OG_CH1S6_Legendary instead." }
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S6_Legendary instead.
   PumpShotgun_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -27831,7 +28680,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use PumpShotgun_OG_CH1S3_Rare instead." }
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S3_Rare instead.
   PumpShotgun_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -27845,10 +28694,34 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use PumpShotgun_OG_CH1S1_Uncommon instead." }
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S1_Uncommon instead.
   PumpShotgun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  PumpShotgun_BR_CH7S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28555,7 +29428,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Revolver_OG_CH1S1_Common instead." }
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Common instead.
   Revolver_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -28569,7 +29442,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Revolver_OG_CH1S1_Epic instead." }
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Epic instead.
   Revolver_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -28583,7 +29456,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Revolver_OG_CH1S1_Legendary instead." }
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Legendary instead.
   Revolver_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -28597,7 +29470,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Revolver_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Rare instead.
   Revolver_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -28611,7 +29484,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Revolver_OG_CH1S1_Uncommon instead." }
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Uncommon instead.
   Revolver_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -30317,7 +31190,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SubmachineGun_OG_CH1S1_Common instead." }
   @preload
   # Deprecated. Please use SubmachineGun_OG_CH1S1_Common instead.
   SubmachineGun_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -30331,7 +31204,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SubmachineGun_OG_CH1S1_Rare instead." }
   @preload
   # Deprecated. Please use SubmachineGun_OG_CH1S1_Rare instead.
   SubmachineGun_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -30345,7 +31218,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SubmachineGun_OG_CH1S1_Uncommon instead." }
   @preload
   # Deprecated. Please use SubmachineGun_OG_CH1S1_Uncommon instead.
   SubmachineGun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -31860,6 +32733,18 @@ Weapons<public> := module {
   }
 
   @preload
+  TwinSiphonShotguns_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
   TwinfireAutoShotgun_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -32087,7 +32972,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SurgicalBurstRifle_BR_CH7S3_Common instead." }
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Common instead.
   VanguardBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -32101,7 +32986,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SurgicalBurstRifle_BR_CH7S3_Epic instead." }
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Epic instead.
   VanguardBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -32115,7 +33000,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SurgicalBurstRifle_BR_CH7S3_Legendary instead." }
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Legendary instead.
   VanguardBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -32129,7 +33014,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SurgicalBurstRifle_BR_CH7S3_Rare instead." }
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Rare instead.
   VanguardBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -32143,7 +33028,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use SurgicalBurstRifle_BR_CH7S3_Uncommon instead." }
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Uncommon instead.
   VanguardBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -32421,7 +33306,7 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  @deprecated
+  @deprecated { Message := "Please use Zapotron_OG_CH1S2_Legendary instead." }
   @preload
   # Deprecated. Please use Zapotron_OG_CH1S2_Legendary instead.
   Zapotron_OG_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
@@ -32459,3 +33344,6 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 }
+
+# Verse path: /Fortnite.com
+using { /Verse.org/Native }

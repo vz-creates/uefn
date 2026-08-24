@@ -26,7 +26,9 @@
 		"bOnlinePluginFriendlyNameAllowed": false,
 		"bShowingContentVersePath": false,
 		"bRelaxedValidationAllowed": false,
-		"bWorkspaceAllowed": false,
+		"bModularTestingAllowed": false,
+		"bPythonUploadAllowed": false,
+		"bForkAllowed": false,
 		"bProjectRenameAllowed": false,
 		"bModuleApiAllowed": false,
 		"DefaultProjectReferencedContent": []
@@ -274,6 +276,7 @@
 			"/Script/ControlRigPhysics.RigPhysicsVisualizationSettings1",
 			"/Script/ControlRigSpline.ControlRigSpline",
 			"/Script/FortniteAI.NPCCustomEffect",
+			"/Script/SlateCore.SlateBrush",
 			"/Script/IKRig.IKRigInputSkeleton",
 			"/Script/IKRig.IKRigSkeleton",
 			"/Script/IKRig.AnimNode_IKRig",
@@ -354,7 +357,11 @@
 			"name",
 			"object",
 			"real",
+			"softclass",
+			"softobject",
+			"string",
 			"struct",
+			"text",
 			"wildcard"
 		]
 	},
@@ -507,6 +514,12 @@
 			"tiff",
 			"wav"
 		],
+		"_comment_AllowedRemoteCommands": "Console commands allowed to be executed remotely.",
+		"AllowedRemoteCommands": [
+			"exit",
+			"Trace.Bookmark",
+			"au.ResetMainSubmixAnalyzers_AD*"
+		],
 		"_comment_AllowedContentBrowserFolders1": "The list of folder names that can appear under the 'All' folder. Everything else will be hidden, except for user projects.",
 		"_comment_AllowedContentBrowserFolders2": "Note that /Game is not here, and /Fortnite and /Epic are not real folders. These are aliases used to pick and choose which Fortnite assets are visible via FortExposedAssetLists.",
 		"AllowedContentBrowserFolders": [
@@ -573,6 +586,14 @@
 				"Names": [
 					"Analytics",
 					"BugReports"
+				]
+			},
+			"Plugins": {
+				"Names": [
+					"Model Context Protocol",
+					"MCP Toolset Servers",
+					"Semantic Search",
+					"ToolsetRegistrySettings"
 				]
 			},
 			"ContentEditors": {
@@ -1227,6 +1248,7 @@
 			"/Script/CoreUObject.Vector2D":										{  },
 			"/Script/CoreUObject.Guid":											{  },
 			"/Script/CrowdVolume.CrowdSpawner":									{  },
+			"/Script/CommonUI.CommonActionWidget":								{ "Visible": true },
 			"/Script/CurveEditor.CurveEditorBakeFilter":						{ "Visible": true },
 			"/Script/CurveEditor.CurveEditorEulerFilter":						{ "Visible": true },
 			"/Script/CurveEditor.CurveEditorGaussianFilter":					{ "Visible": true },
@@ -1284,7 +1306,7 @@
 			"/Script/Engine.DirectionalLight":									{ "Visible": true },
 			"/Script/Engine.DirectionalLightComponent":							{ "Visible": true },
 			"/Script/Engine.EdGraph":											{  },
-			"/Script/Engine.Emitter":											{  },
+			"/Script/CascadeRuntime.Emitter":											{  },
 			"/Script/Engine.ExponentialHeightFog":								{ "Visible": true },
 			"/Script/Engine.ExponentialHeightFogComponent":						{ "Visible": true },
 			"/Script/Engine.FloatAnimationAttribute":							{  },
@@ -1587,8 +1609,8 @@
 			"/Script/Engine.Model":												{  },
 			"/Script/Engine.MorphTarget":										{  },
 			"/Script/Engine.NullNavSysConfig":									{  },
-			"/Script/Engine.ParticleSystemComponent":							{  },
 			"/Script/Engine.PhysicsAssetSolverSettings":						{  },
+			"/Script/CascadeRuntime.ParticleSystemComponent":							{  },
 			"/Script/Engine.PhysicsConstraintTemplate":							{  },
 			"/Script/Engine.PointLight":										{ "Visible": true },
 			"/Script/Engine.PointLightComponent":								{ "Visible": true },
@@ -1630,15 +1652,15 @@
 			"/Script/Engine.StaticMeshSocket":									{  },
 			"/Script/Engine.StringAnimationAttribute":							{  },
 			"/Script/Engine.TextRenderComponent":								{  },
-			"/Script/Engine.Texture2D":											{  },
+			"/Script/Engine.Texture2D":											{ "Visible": true },
 			"/Script/Engine.TimelineComponent":									{  },
 			"/Script/Engine.TransformAnimationAttribute":						{  },
 			"/Script/Engine.TwistConstraint":									{  },
 			"/Script/Engine.VectorSpringState":									{  },
 			"/Script/Engine.VolumetricCloudComponent":							{  },
-			"/Script/Engine.WindDirectionalSource":								{ "Visible":  true },
-			"/Script/Engine.WindDirectionalSourceComponent":					{ "Visible":  true },
-			"/Script/Engine.World":												{  },
+			"/Script/Engine.WindDirectionalSource":								{ "Visible": true },
+			"/Script/Engine.WindDirectionalSourceComponent":					{ "Visible": true },
+			"/Script/Engine.World":												{ "Visible": true },
 			"/Script/Engine.WorldDataLayers":									{  },
 			"/Script/Engine.WorldPartition":									{ "Visible": true },
 			"/Script/Engine.WorldPartitionDestructibleHLODComponent":			{  },
@@ -2321,7 +2343,7 @@
 			"/Script/UMG.UniformGridPanel":										{ "Visible": true },
 			"/Script/UMG.UniformGridSlot":										{  },
 			"/Script/UMG.UserWidget":											{ "Visible": true },
-			"/Script/UMG.WidgetAnimation":										{  },
+			"/Script/UMG.WidgetAnimation":										{ "Visible": true },
 			"/Script/UMG.WidgetAnimationBinding":								{  },
 			"/Script/UMG.WidgetComponent":										{  },
 			"/Script/UMG.WidgetSwitcher":										{ "Visible": true },
@@ -2597,7 +2619,8 @@
 					"EditPrefabInplace_Exit",
 					"BrowseToPrefab",
 					"PushPrefabOverrides",
-					"ResetEntityPrefab"
+					"ResetEntityPrefab",
+					"BreakEntityPrefab"
 				]
 			},
 			"LevelEditor.ElementContextMenu": {
@@ -2616,6 +2639,7 @@
 					"BrowseToPrefab",
 					"PushPrefabOverrides",
 					"ResetEntityPrefab",
+					"BreakEntityPrefab",
 
 					"FocusViewportToSelection",
 					"GoHere",
@@ -2734,7 +2758,7 @@
 				"AllowList": [ "SelectAll", "SelectNone", "InvertSelection", "Hierarchy", "Advanced", "SelectAllActorsOfSameClass", "ByTypeSection", "Lights", "Material", "SkeletalMeshes", "StaticMeshes" ]
 			},
 			"LevelEditor.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectAuroraEntitlementCatalog", "ValkyrieProjectOfferLog", "ValkyriePublishingReport", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler", "OpenPython", "RecentPythonsSubMenu", "EnablePythonLocally", "ValkyrieSessionInspector" ]
+				"AllowList": [ "ViewChangelists", "ViewBranchHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "BranchHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectAuroraEntitlementCatalog", "ValkyrieProjectOfferLog", "ValkyriePublishingReport", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler", "OpenPython", "RecentPythonsSubMenu", "EnablePythonLocally", "ValkyrieSessionInspector" ]
 			},
 			"LevelEditor.MainMenu.Verse": {
 				"AllowList": [ "VisualVerseTab", "VerseLog", "OpenVSCode", "BuildVerse" ]
@@ -2758,7 +2782,7 @@
 				"AllowList": [ "OpenDocumentation", "VisitEpicGamesDotCom", "CreditsUnrealEd", "AboutUnrealEd" ]
 			},
 			"MainFrame.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewSnapshotHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "SnapshotHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl" ]
+				"AllowList": [ "ViewChangelists", "ViewBranchHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "BranchHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl" ]
 			},
 			"MainFrame.MainMenu.Window": {
 				"AllowList": [ "LoadLayout", "OverrideLayout", "RemoveLayout", "FullscreenSeparator", "ToggleFullscreen", "OpenAIAssistantTab" ]
@@ -2795,7 +2819,7 @@
 				"DenyList": [ "ChangeSettings" ]
 			},
 			"TimingProfiler.MainToolBar.PanelSelectorMenu": {
-				"AllowList": [ "ToggleTimingViewVisibility", "ToggleTimersViewVisibility", "ToggleCallersTreeViewVisibility", "ToggleCalleesTreeViewVisibility" ]
+				"AllowList": [ "ToggleFramesTrackVisibility", "ToggleTimingViewVisibility", "ToggleTimersViewVisibility", "ToggleCallersTreeViewVisibility", "ToggleCalleesTreeViewVisibility" ]
 			},
 			"UnrealEd.ViewportToolbar.View": {
 				"AllowList": [ "LitMode", "UnlitMode", "WireframeMode", "DetailLightingMode", "LightingOnlyMode", "ReflectionOverrideMode", "CollisionPawn", "CollisionVisibility", "VisualizeBufferViewMode", "VisualizeNaniteViewMode", "VisualizeLumenViewMode", "LandscapeVisualizers", "LandscapeLOD", "OptimizationSubMenu", "MeshEdgesSubMenu" ]
@@ -3020,9 +3044,9 @@
 					"ControlRigDetailsTab",
 					"ControlRigSpacePicker",
 					"AnimLayerTab",
-					"SkeinSourceControlConflictResolution",
-					"SkeinSourceControlSnapshotHistory",
-					"SkeinSourceControlBranchExplorer",
+					"LoreSourceControlConflictResolution",
+					"LoreSourceControlBranchHistory",
+					"LoreSourceControlBranchExplorer",
 					"NiagaraDebugger",
 					"ChaosVisualDebuggerTab",
 					"ControlRigDynamicsDebug",
@@ -3188,7 +3212,8 @@
 					"SourceControl",
 					"SolarisEditorCommands",
 					"SystemWideCommands",
-					"UVEditor"
+					"UVEditor",
+					"ValkyrieFortniteEditor"
 				]
 			},
 			"AssetEditor": {
@@ -3257,6 +3282,24 @@
 					"SummonControlTabNavigationBackwardsAlternate",
 					"SummonOpenAssetDialog",
 					"SummonOpenAssetDialogAlternative"
+				]
+			},
+			"UMGEditor" :  {
+				"DenyList":  [
+					"ToggleDesignerGraphMode"
+				]
+			},
+			"ValkyrieFortniteEditor": {
+				"AllowList": [
+					"ValkyriePlay",
+					"ValkyrieRefreshVerse",
+					"ValkyrieStartGame",
+					"ValkyrieStopGame",
+					"ValkyrieRestartGame",
+					"ValkyriePauseGame",
+					"ValkyrieSetViewportCameraToPlayer",
+					"ValkyrieTeleportPlayerViewport",
+					"ValkyrieToggleAutoPushVerseChanges"
 				]
 			}
 		},
@@ -3729,7 +3772,7 @@
 			},
 			{
 				"Type": "/Script/UMG.ScrollBox",
-				"AllowList": [ "Style", "BarStyle", "Orientation", "ScrollBarVisibility", "WidgetStyle" ]
+				"AllowList": [ "Style", "WidgetBarStyle", "Orientation", "ScrollBarVisibility", "WidgetStyle" ]
 			},
 			{
 				"Type": "/Script/UMG.SizeBox",
@@ -4675,6 +4718,10 @@
 					"DefaultSavePathOverride",
 					"bAutoStartLiveSessionsPlayback"
 				]
+			},
+			{
+				"Type": "/Script/StaticLandscapeSystem.LandscapeStaticMeshComponent",
+				"AllowList": [ "NumTotalVerticesGenerated", "NumTotalIndicesGenerated", "TotalVerticesBytesGenerated", "TotalIndicesBytesGenerated", "LODParams", "RandomSeed", "RebuildStaticMesh", "LandscapeSM_Vertices", "LandscapeSM_Indices", "LandscapeSM_Total" ]
 			}
 		]
 	},

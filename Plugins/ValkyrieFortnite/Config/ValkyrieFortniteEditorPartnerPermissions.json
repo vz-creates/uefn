@@ -36,7 +36,8 @@
 		"bManualLocalizationEnabled": true,
 		"bAddProjectExternalContentAllowed": true,
 		"bMultiPluginProjectAllowed": true,
-		"bModuleApiAllowed": true
+		"bModuleApiAllowed": true,
+		"bForkAllowed": true
 	},
 	"PropertyEditorClassPermissionList": {
 		"+": [

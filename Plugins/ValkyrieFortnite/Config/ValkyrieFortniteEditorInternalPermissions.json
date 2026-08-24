@@ -6,7 +6,8 @@
 	"AdditionalFeatures": {
 		"+": [
 			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioEpicDev.json",
-			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-MetaSoundEpicDev.json"
+			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-MetaSoundEpicDev.json",
+			"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-ModularTestFramework.json"
 		]
 	},
 
@@ -19,7 +20,9 @@
 		"bShowingExtendedProjectDetails": true,
 		"bShowingContentVersePath": true,
 		"bRelaxedValidationAllowed": true,
-		"bWorkspaceAllowed": true,
+		"bModularTestingAllowed": true,
+		"bPythonUploadAllowed": true,
+		"bForkAllowed": true,
 		"bProjectRenameAllowed": true,
 		"TeamMembershipInvitationPermission": "IndividualAndEmailDomains"
 	},
@@ -27,8 +30,12 @@
 		"bEnableBlueprintGraph": true,
 		"AllowedEnums": {
 			"+": [
+				"/Script/CoreUObject.EAxis",
 				"/Script/Engine.EAnimExecutionContextConversionResult",
-				"/Script/Engine.EAnimNodeReferenceConversionResult"
+				"/Script/Engine.EAnimNodeReferenceConversionResult",
+				"/Script/Engine.EEasingFunc",
+				"/Script/Engine.ELerpInterpolationMode",
+				"/Script/Engine.EMatrixColumns"
 			]
 		},
 		"AllowedStructs": {
@@ -875,6 +882,7 @@
 			"/Script/FortniteAI.AthenaNavSystemConfigOverride": { "Visible": true },
 			"/Script/FortniteAI.FortNavModifierVolume": { "Visible": true },
 			"/Script/FortniteGame.BuildingLevelInstance": { "Visible": true },
+			"/Script/FortniteGame.FortPatchCookSeed": { },
 			"/Script/FortniteGame.FortPlayerStartWarmup": { "Visible": true },
 			"/Script/FortniteGame.FortPoi_DiscoverableComponent": { "Visible": true },
 			"/Script/FortniteGame.FortTreesHLOD": { "Visible": true },
@@ -1051,7 +1059,9 @@
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputExtension":{ "Visible": true },
 			"/Script/CommonUIMVVMExtensions.MVVMViewEnhancedInputClassExtension":{  },
 			"/Script/CommonUIExtensionsBP.MVVMBlueprintViewExtension_EnhancedInput":{  },
+			"/Script/CoreUObject.Class":								{ "Visible": true },
 			"/Script/CoreUObject.Function":								{  },
+			"/Script/CoreUObject.Object":								{ "Visible": true },
 			"/Script/CoreUObject.ScriptStruct":							{  },
 			"/Script/DaySequence.DaySequenceConditionTag":				{  },
 			"/Script/DaySequence.DaySequenceConditionSet":				{  },
@@ -1160,6 +1170,13 @@
 			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropClassData": {  },
 			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropContainer": {  },
 			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropFieldData": {  },
+			"/Script/VerseTypeEditorRuntime.VerseFieldTypeData": {  },
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingColor": {  },
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingColorAlpha": {  },
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingPassthrough": {  },
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingTruncate": {  },
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingVector3": {  },
+			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingVector3Truncate": {  },
 			"/Script/MovieScene.MovieSceneBindingOverrides":			{  },
 			"/Script/Water.WaterTerrainComponent":						{ "Visible": true },
 			"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C": { "Visible": true },
@@ -1227,6 +1244,11 @@
 			"LevelEditor.MainMenu.Tools": {
 				"AllowList": {
 					"+": ["TestAutomation", "VkContentResolution"]
+				}
+			},
+			"LevelEditor.StatusBar.ToolBar": {
+				"AllowList": {
+					"+": ["InsightsStatusBar"]
 				}
 			},
 			"ObjectProfiler.MainToolBar": {
@@ -1314,12 +1336,37 @@
 					"+": [ "RecordedOutputLog" ]
 				}
 			},
+			"MaterialInstanceEditor": {
+				"AllowList": {
+					"+": [
+						"VerseTypeAssetInterop_ClassSettingsTab",
+						"VerseTypeAssetInterop_VariablesTab"
+					]
+				}
+			},
 			"Niagara": {
 				"AllowList": {
 					"+": [
 						"VerseTypeAssetInterop_ClassSettingsTab",
 						"VerseTypeAssetInterop_VariablesTab"
 					]
+				}
+			}
+		},
+		"AllowedInputCommands": {
+			"": {
+				"AllowList": {
+				"+": [ "ValkyrieEditor" ]
+				}
+			},
+			"ValkyrieEditor": {
+				"AllowList": {
+					"=": []
+				}
+			},
+			"ValkyrieFortniteEditor": {
+				"AllowList": {
+					"=": []
 				}
 			}
 		},
@@ -1484,6 +1531,10 @@
 				"AllowList": [ "MaterialSlots", "MaterialList", "Material", "Mesh", "Transform", "Miscellaneous", "File Path", "Skeleton", "PositiveBoundsExtension", "NegativeBoundsExtension", "MeshReductionSettings", "PercentTriangles", "SelectLOD", "ScreenSize", "MinLOD", "QualityLevelMinLOD", "LODForCollision", "SkeletalMeshSectionListNameLOD_0", "SkeletalMeshSectionListNameLOD_1", "SkeletalMeshSectionListNameLOD_2", "SkeletalMeshSectionListNameLOD_3", "SkeletalMeshSectionListNameLOD_4", "SkeletalMeshSectionListNameLOD_5", "SkeletalMeshSectionListNameLOD_6", "SkeletalMeshSectionListNameLOD_7", "SkeletalMeshOptimizationSettings", "LODGroup", "LODImport", "QualityLevelMinLOD", "AutoComputeLOD", "NumberOfLODs", "ApplyChanges", "LODButtons", "DefaultAnimatingRig", "PostProcessAnimBlueprint" ]
 			},
 			{
+				"Type": "/Script/Engine.StaticMesh",
+				"AllowList": [ "bAllowCPUAccess" ]
+			},
+			{
 				"Type": "/Script/Engine.SkeletalMeshComponent",
 				"AllowList": [ "SkeletalMesh", "AnimationData", "SkeletalMeshAsset", "AnimationMode", "AnimClass", "bDisablePostProcessBlueprint" ]
 			},
@@ -1548,11 +1599,11 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "bEnableWorkspaceSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins" ]
+				"AllowList": [ "bEnableForkSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins", "CharacterToUse" ]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",
-				"AllowList": [ "DefaultAssetAccessSpecifier" ]
+				"AllowList": [ "ProjectId", "RootModuleId", "DefaultAssetAccessSpecifier" ]
 			},
 			{
 				"Type": "/Script/PhysicsCore.PhysicalMaterial",
@@ -1579,7 +1630,11 @@
 					"bProcessPendingOperationsQueueInWorkerThread",
 					"DataTransportModeOverride"
 				]
-			}
+			},
+			{
+				"Type": "/Script/Engine.StaticMeshComponent",
+				"AllowList":[ "bWorldPositionOffsetWritesVelocity", "NanitePixelProgrammableDistance" ]
+			},
 		],
 		"-": [
 			{
@@ -1604,6 +1659,14 @@
 			{
 				"Type": "/Script/FabricLevelSequencer.MidiSource",
 				"DenyList": [ "MidiSourceType" ]
+			}
+		]
+	},
+	"PropertyEditorEnumPermissionList": {
+		"+": [
+			{
+				"Type": "/Script/CreativeCompanionRuntime.ESidekickVisibilityUserOptionValues",
+				"AllowList": ["Owner", "Everyone", "Squad"]
 			}
 		]
 	},

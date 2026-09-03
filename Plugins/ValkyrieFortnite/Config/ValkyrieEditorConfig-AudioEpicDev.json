@@ -51,6 +51,13 @@
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleFactory":				{  },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetDefinitions":	{  },
 			"/Script/SubtitlesAndClosedCaptionsEditor.SubtitleAssetActionUtility":	{ "Visible": true }
+		},
+		"AllowedMenus": {
+			"ContentBrowser.AssetContextMenu.SoundBase": {
+				"DenyList": {
+					"+": [ "AudioPropertiesSheetBuilderMenu_Label" ]
+				}
+			}
 		}
 	},
 	"PropertyEditorClassPermissionList": {

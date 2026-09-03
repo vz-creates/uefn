@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.00-CL-56878558
+Generated from build: ++Fortnite+Release-42.10-CL-57566230
 #################################################
 #>
 
@@ -761,6 +761,14 @@ Abilities<public> := module {
     prefab_type: subtype(fort_template_ability_effect)
   ) := class<abstract>(ability(context_type, prefab_type)) {
     (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance<private>(: context_type): tuple() = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance_Inherited<private>(
+      : context_type,
+      : prefab_type,
+      : context_type,
+      : context_type
+    ): tuple(prefab_type, context_type, prefab_type, context_type, prefab_type) = external {}
 
     OnRep_SpecHandle<native><public>(): void
 
@@ -9100,11 +9108,24 @@ Game<public> := module {
     @available { MinUploadedAtFNVersion := 3720 }
     Crouch<public>: input_action(logic) = external {}
 
+    @experimental
+    @available { MinUploadedAtFNVersion := 4210 }
+    Interact<public>: input_action(logic) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4210 }
+    InteractMapping<public>: input_mapping = external {}
+
     @available { MinUploadedAtFNVersion := 3720 }
     Jump<public>: input_action(logic) = external {}
 
+    @experimental
+    @available { MinUploadedAtFNVersion := 4210 }
+    Move<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
+
     using { /Verse.org/Assets }
     using { /Verse.org/Native }
+    using { /Verse.org/SpatialMath }
     @available { MinUploadedAtFNVersion := 3720 }
     RangedWeaponMapping<public>: input_mapping = external {}
 
@@ -9190,7 +9211,7 @@ Itemization<public> := module {
   # `fort_inventory_trap_component` is the UEFN inventory for the Fortnite trap slot.
   fort_inventory_trap_component<native><public> := class<final>(fort_inventory_component) {}
 
-  # `fort_inventory_weapon_hotbar_component` is the UEFN inventory for Fortnite weapons and gadgets.
+  # `fort_inventory_weapon_hotbar_component` is the UEFN inventory for Fortnite weapons and gadgets. N.B. This inventory has the lowest priority and Items that do not have the WorldItem category will only be added to it if there is no space in any other valid inventory.
   fort_inventory_weapon_hotbar_component<native><public> := class<final>(fort_inventory_component) {
     # Sets the total number of slots.
     SetMaxSlots<native><public>(InNumSlots: int): void
@@ -9265,6 +9286,7 @@ Items<public> := module {
 
   Bandage_BR_CH5S1_Common<public> := class<final><concrete>(entity) {}
 
+  # LegacyBandage_BR_PreSeason_Common
   Bandage_BR_PreSeason_Common<public> := class<final><concrete>(entity) {}
 
   Batteries_Creative_V1_Common<public> := class<final><concrete>(entity) {}
@@ -9339,6 +9361,7 @@ Items<public> := module {
 
   ChugCannon_BR_CH2S5_Exotic<public> := class<final><concrete>(entity) {}
 
+  # LegacyChugJug_BR_CH1S2_Legendary
   ChugJug_BR_CH1S2_Legendary<public> := class<final><concrete>(entity) {}
 
   ChugJug_BR_CH6S2_Legendary<public> := class<final><concrete>(entity) {}
@@ -9589,6 +9612,7 @@ Items<public> := module {
 
   MedKit_BR_CH5S1_Uncommon<public> := class<final><concrete>(entity) {}
 
+  # LegacyMedKit_BR_PreSeason_Uncommon
   MedKit_BR_PreSeason_Uncommon<public> := class<final><concrete>(entity) {}
 
   MedMistSmokeGrenade_BR_CH6S2_Rare<public> := class<final><concrete>(entity) {}
@@ -9733,6 +9757,7 @@ Items<public> := module {
 
   ShieldPotion_BR_CH5S1_Rare<public> := class<final><concrete>(entity) {}
 
+  # LegacyShieldPotion_BR_PreSeason_Rare
   ShieldPotion_BR_PreSeason_Rare<public> := class<final><concrete>(entity) {}
 
   ShockRock_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
@@ -9785,6 +9810,7 @@ Items<public> := module {
 
   SmallFry_BR_CH2S1_Common<public> := class<final><concrete>(entity) {}
 
+  # LegacySmallShieldPotion_BR_CH1S2_Uncommon
   SmallShieldPotion_BR_CH1S2_Uncommon<public> := class<final><concrete>(entity) {}
 
   SmallShieldPotion_BR_CH5S1_Uncommon<public> := class<final><concrete>(entity) {}
@@ -9805,10 +9831,13 @@ Items<public> := module {
 
   SpectroliteOre_Creative_V1_Epic<public> := class<final><concrete>(entity) {}
 
+  # SpeedBoost_Creative_V1_Epic
   SpeedBoostHigh_Creative_V1_Epic<public> := class<final><concrete>(entity) {}
 
+  # SpeedBoost_Creative_V1_Uncommon
   SpeedBoostLow_Creative_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
+  # SpeedBoost_Creative_V1_Rare
   SpeedBoostMedium_Creative_V1_Rare<public> := class<final><concrete>(entity) {}
 
   SpicyFish_BR_CH2S4_Rare<public> := class<final><concrete>(entity) {}
@@ -11123,8 +11152,10 @@ Weapons<public> := module {
 
   Double_BR_CH6S4_Exotic<public> := class<final><concrete>(entity) {}
 
+  # LegacyDragonsBreathShotgun_BR_CH2S5_Epic
   DragonsBreathShotgun_BR_CH2S5_Epic<public> := class<final><concrete>(entity) {}
 
+  # LegacyDragonsBreathShotgun_BR_CH2S5_Legendary
   DragonsBreathShotgun_BR_CH2S5_Legendary<public> := class<final><concrete>(entity) {}
 
   DragonsBreathShotgun_BR_CH6S2_Epic<public> := class<final><concrete>(entity) {}
@@ -11215,14 +11246,19 @@ Weapons<public> := module {
 
   EggLauncher_BR_CH2S6_Uncommon<public> := class<final><concrete>(entity) {}
 
+  # 8BitShotgun_BR_CH7S4_Common
   EightBitShotgun_BR_CH7S4_Common<public> := class<final><concrete>(entity) {}
 
+  # 8BitShotgun_BR_CH7S4_Epic
   EightBitShotgun_BR_CH7S4_Epic<public> := class<final><concrete>(entity) {}
 
+  # 8BitShotgun_BR_CH7S4_Legendary
   EightBitShotgun_BR_CH7S4_Legendary<public> := class<final><concrete>(entity) {}
 
+  # 8BitShotgun_BR_CH7S4_Rare
   EightBitShotgun_BR_CH7S4_Rare<public> := class<final><concrete>(entity) {}
 
+  # 8BitShotgun_BR_CH7S4_Uncommon
   EightBitShotgun_BR_CH7S4_Uncommon<public> := class<final><concrete>(entity) {}
 
   EmpoweredCupidsCrossbow_BR_CH7S1_Mythic<public> := class<final><concrete>(entity) {}
@@ -12838,6 +12874,12 @@ Weapons<public> := module {
   StrikerBurstRifle_BR_CH3S2_Rare<public> := class<final><concrete>(entity) {}
 
   StrikerBurstRifle_BR_CH3S2_Uncommon<public> := class<final><concrete>(entity) {}
+
+  StrikerBurstRifle_BR_CH7S4_Epic<public> := class<final><concrete>(entity) {}
+
+  StrikerBurstRifle_BR_CH7S4_Legendary<public> := class<final><concrete>(entity) {}
+
+  StrikerBurstRifle_BR_CH7S4_Rare<public> := class<final><concrete>(entity) {}
 
   StrikerPumpShotgun_BR_CH3S1_Common<public> := class<final><concrete>(entity) {}
 

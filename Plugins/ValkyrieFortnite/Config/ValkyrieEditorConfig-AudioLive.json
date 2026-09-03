@@ -66,6 +66,11 @@
       "/Script/SoundLibrary.SoundLibraryComponent":												{  }
     },
     "AllowedMenus": {
+      "ContentBrowser.AssetContextMenu.SoundBase": {
+        "DenyList": {
+          "+": [ "AudioPropertiesSheetBuilderMenu_Label" ]
+        }
+      },
       "ContentBrowser.AssetContextMenu.SoundWave": {
         "DenyList": {
           "+": [ "SoundWave_CreateImpulseResponse", "SoundWave_CreateTimeSynthClip", "SoundWave_CreateTimeSynthClipSet", "TimeSynthSoundWaveAsset", "SoundWave_CreateMotoSynthSource", "SoundWave_CreateSoundCueTemplate", "SoundWave_CreateWaveformEditor", "SoundWave_CreateDialogue" ]

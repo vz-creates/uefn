@@ -590,10 +590,7 @@
 			},
 			"Plugins": {
 				"Names": [
-					"Model Context Protocol",
-					"MCP Toolset Servers",
-					"Semantic Search",
-					"ToolsetRegistrySettings"
+					"Model Context Protocol"
 				]
 			},
 			"ContentEditors": {
@@ -666,6 +663,7 @@
 			"/Script/Engine.VolumeTexture":						{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.World":								{ "Rules": ["View","Create","Import"] },
 			"/Script/Foliage.FoliageType_InstancedStaticMesh":	{ "Rules": ["View","Create"], "Subclasses": "All" },
+			"/Script/FortniteEditor.SimpleDestructiblePropCellTransformer":	{ "Rules": ["View","Create","Import"] },
 			"/Script/FortniteGame.BuildingTextureData":			{ "Rules": [ "View", "ModuleAPI" ] },
 			"/Script/FortniteGame.FortInputMappingContext":						{ "Rules": ["View"] },
 			"/Script/CommonConversationRuntime.ConversationDatabase":			{ "Rules": ["View","Create"] },
@@ -1668,6 +1666,7 @@
 			"/Script/Engine.WorldPartitionHLOD":								{  },
 			"/Script/Engine.WorldPartitionHLODSourceActorsFromCell":			{  },
 			"/Script/Engine.WorldPartitionMiniMap":								{  },
+			"/Script/Engine.WorldPartitionRuntimeCellTransformer":				{ "Visible": true },
 			"/Script/Engine.WorldPartitionRuntimeSpatialHash":					{  },
 			"/Script/Engine.WorldPartitionRuntimeHashSet":						{ "Visible": true },
 			"/Script/Engine.RuntimePartition":									{ "Visible": true, "Subclasses": "All" },
@@ -1710,6 +1709,7 @@
 			"/Script/FortniteAI.FortNavModifierComponent":						{  },
 			"/Script/FortniteAI.FortNavSystem":									{  },
 			"/Script/FortCreativeStreamingComponent.FortCreativeStreamingMusicalReactivityComponent":	{  },
+			"/Script/FortniteEditor.SimpleDestructiblePropCellTransformer":		{ "Visible": true },
 			"/Script/FortniteGame.BuildingActorClassData":						{  },
 			"/Script/FortniteGame.BuildingCorner":								{ "Visible": true },
 			"/Script/FortniteGame.BuildingFloor":								{ "Visible": true },
@@ -3419,11 +3419,18 @@
 			"Space_Starter",
 			"Tatooine_Starter",
 			"LEGO_NinjagoStarterTemplate",
-			"Plumpton_Starter_Island"
+			"Plumpton_Starter_Island",
+			"Harrowville_Starter_Island"
 		]
 	},
 	"PropertyEditorClassPermissionList": {
 		"=": [
+			{
+				"Type": "/Script/ModelContextProtocolEngine.ModelContextProtocolSettings",
+				"AllowList": [],
+				"DenyList": [ "bAutoStartServer" ],
+				"bAllowListAllProperties": true
+			},
 			{
 				"Type": "/Script/Engine.Blueprint",
 				"DenyList": [ "Default Namespaces", "Imported Namespaces", "BlueprintNamespace" ],
@@ -3447,7 +3454,7 @@
 			},
 			{
 				"Type": "/Script/Engine.WorldPartition",
-				"AllowList": [ "DefaultHLODLayer", "DataLayersLogicOperator", "bAllowShowingHLODsInEditor" ]
+				"AllowList": [ "DefaultHLODLayer", "DataLayersLogicOperator", "bAllowShowingHLODsInEditor", "RuntimeCellsTransformerStack" ]
 			},
 			{
 				"Type": "/Script/Engine.WorldPartitionHLOD",

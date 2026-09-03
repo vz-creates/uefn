@@ -1242,6 +1242,14 @@
 			"FN1Framework"
 		]
 	},
+	"VerseSocialSynergyFortnite":
+	{
+		"assets": [
+			"Levels/VerseSocialSynergyFortnite_LevelOverlay",
+			"VerseSocialSynergyFortnite"
+		],
+		"epicInternalAssets": []
+	},
 	"ClamberingCode":
 	{
 		"assets": [],

@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.00-CL-56878558
+Generated from build: ++Fortnite+Release-42.10-CL-57566230
 #################################################
 #>
 
@@ -16,41 +16,52 @@ AgentGroup<public> := module {
   # An agent group is defined as a set of agents that share a common ownership.This class stores agents and specific information about each member via the member_info type provided.
   agent_group<native><public>(member_info: subtype(member_info_interface)) := class<unique>(agent_group_interface(member_info)) {
     # Attempt to add the given agent to this agent group.This function returns a result that will either succeed or return an error.
-    AddMember<public>(Agent: agent, MemberInfo: member_info)<transacts>: result(void, add_member_error) = external {}
+    AddMember<public>(Agent: agent, MemberInfo: member_info)<transacts>: result(comparable, add_member_error) = external {}
 
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
 
-    AddMemberInternal<final><native><epic_internal>(
+    AddMemberInternal<final><native_callable><epic_internal>(
       Agent: agent,
       MemberInfo: member_info
-    )<transacts>: result(void, add_member_error)
+    )<transacts>: result(comparable, add_member_error) = external {}
 
-    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(: member_info, : member_info): tuple(member_info) = external {}
+    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(
+      : member_info,
+      : member_info,
+      : member_info,
+      : member_info,
+      : member_info
+    ): tuple(member_info, member_info, member_info, member_info) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance_Inherited<private>(): tuple(
+      member_info,
+      member_info,
+      member_info,
+      member_info
+    ) = external {}
 
     # Get the members of this agent group with their member info
-    GetMemberMap<override><native>()<reads>: [agent]member_info
-
-    MakeAddMemberResultInternal<final><native_callable><epic_internal>(IsSuccess: logic): result(
-      comparable,
-      add_member_error
-    ) = external {}
-
-    MakeRemoveMemberResultInternal<final><native_callable><epic_internal>(IsSuccess: logic): result(
-      comparable,
-      remove_member_error
-    ) = external {}
+    GetMemberMap<override><native_callable>()<reads>: [agent]member_info = external {}
 
     # Signalled whenever the MemberInfo class is re-instantiated for a given agent.Passes in the agent that was updated along with their new member_info.
     MemberInfoChangeEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
 
     # Attempt to remove the given agent from this agent group.This function returns a result that will either succeed or return an error.
-    RemoveMember<public>(Agent: agent)<transacts>: result(void, remove_member_error) = external {}
+    RemoveMember<public>(Agent: agent)<transacts>: result(comparable, remove_member_error) = external {}
 
     # Signalled whenever an agent successfully leaves this agent group.Passes in the agent that left along with their member_info.
     RemoveMemberEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
 
-    RemoveMemberInternal<final><native><epic_internal>(Agent: agent)<transacts>: result(void, remove_member_error)
+    RemoveMemberInternal<final><native_callable><epic_internal>(Agent: agent)<transacts>: result(
+      comparable,
+      remove_member_error
+    ) = external {}
+
+    var (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_VarVariance<private>: ?tuple(member_info) = external {}
+
+    var<private> MemberMap<native><epic_internal>: [agent]member_info = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -59,7 +70,12 @@ AgentGroup<public> := module {
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<public>: listenable(tuple(agent, member_info))
 
-    (/Verse.org/AgentGroup/agent_group_interface:)AgentGroup_agent_group_interface_Variance<private>(): tuple(member_info) = external {}
+    (/Verse.org/AgentGroup/agent_group_interface:)AgentGroup_agent_group_interface_Variance<private>(): tuple(
+      member_info,
+      member_info,
+      member_info,
+      member_info
+    ) = external {}
 
     # Get the members of this agent group with their member info
     GetMemberMap<public>()<reads>: [agent]member_info
@@ -313,6 +329,9 @@ Chat<public> := module {
     CancelSubscriptions<epic_internal>(): void = external {}
 
     (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info): tuple() = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance_Inherited<private>(): tuple(member_info) = external {}
 
     # Disables users from communicating on the channel.
     Disable<epic_internal>(): void = external {}
@@ -795,6 +814,9 @@ Concurrency<public> := module {
 
     (/Verse.org/Concurrency/task:)Concurrency_task_Variance<private>(): tuple(t) = external {}
 
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Concurrency/task:)Concurrency_task_Variance_Inherited<private>(): tuple(t) = external {}
+
     Interrupted<native><epic_internal>()<transacts><decides>: void
 
     Settled<native><epic_internal>()<transacts><decides>: void
@@ -1017,6 +1039,8 @@ Input<public> := module {
     #                 1: elapsed seconds since detection began
     EndDetectEvent<native><public>: listenable(tuple(player, float)) = external {}
 
+    (/Verse.org/Input/input_events:)Input_input_events_Variance<private>(): tuple(t, t, t, t) = external {}
+
     # This input has met all required conditions and has successfully fired. Most of the time, you should bind to this event.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
@@ -1086,6 +1110,8 @@ Input<public> := module {
     DetectionOngoingEvent<epic_internal>: listenable(tuple(?player, t, float)) = external {}
 
     EndDetectEvent<epic_internal>: listenable(tuple(?player, float)) = external {}
+
+    (/Verse.org/Input/predicts_input_events:)Input_predicts_input_events_Variance<private>(): tuple(t, t, t, t) = external {}
 
     TriggerActivationEvent<epic_internal>: listenable(tuple(?player, t)) = external {}
   }
@@ -1632,6 +1658,9 @@ Restricted<public> := module {
     IsSignaled<native><public>()<decides><reads>: void
 
     (/Verse.org/Restricted/sticky_event:)Restricted_sticky_event_Variance<private>(: t): tuple(t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Restricted/sticky_event:)Restricted_sticky_event_Variance_Inherited<private>(: t, : t, : t, : t): tuple(t, t, t, t) = external {}
 
     Signal<native><override>(__dupe___unnamed_parameter_2: t): void
   }
@@ -2199,6 +2228,35 @@ SceneGraph<public> := module {
   (/Verse.org/SceneGraph:)UI<public> := module {
     DefaultTextValue<localizes><epic_internal>: message = external {}
 
+    using { /UnrealEngine.com/Temporary/UI }
+    using { /Verse.org/Assets }
+    using { /Verse.org/Colors }
+    using { /Verse.org/Native }
+    using { /Verse.org/Simulation }
+    using { /Verse.org/SpatialMath }
+    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Layout hints for a child placed inside an absolute_container. Positions the child relative to the container's rendered size, independent of its flow siblings.
+    absolute_container_element_component<native><epic_internal> := class(container_element_component) {
+      @editable
+      @replicated("")
+      @tool_tip("How this item is aligned along the horizontal axis within its containing block, after offsets are applied. Center and End require a finite container width; otherwise the item falls back to Start.")
+      # How this item is aligned along the horizontal axis within its containing block, after offsets are applied. Center and End require a finite container width; otherwise the item falls back to Start.
+      var HorizontalAlignment<native><public>: ui_alignment = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Inset from each edge of this item\'s containing block, in centimeters, applied before alignment.")
+      # Inset from each edge of this item's containing block, in centimeters, applied before alignment.
+      var Offsets<native><public>: ui_margin = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("How this item is aligned along the vertical axis within its containing block, after offsets are applied. Center and End require a finite container height; otherwise the item falls back to Start.")
+      # How this item is aligned along the vertical axis within its containing block, after offsets are applied. Center and End require a finite container height; otherwise the item falls back to Start.
+      var VerticalAlignment<native><public>: ui_alignment = external {}
+    }
+
     @available { MinUploadedAtFNVersion := 4210 }
     # Sizes to its content along its axis, clamped to [MinSize, MaxSize]. Use proportional_grid_track to fill leftover container space.
     auto_grid_track<native><epic_internal> := class<final>(grid_track_definition) {
@@ -2252,6 +2310,108 @@ SceneGraph<public> := module {
       @replicated("")
       @tool_tip("Fixed size of this track, in centimeters.")
       var Size<native><public>: float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Container widget that arranges its children in a one-dimensional flowing layout with optional wrapping.
+    flex_container<native><epic_internal> := class((/Verse.org/SceneGraph/UI:)widget) {
+      # Spacing between columns, in centimeters.
+      var ColumnGap<public>: float = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Alignment of lines along the cross axis.")
+      # Alignment of lines along the cross axis.
+      var ContentAlignment<native><public>: flex_content_alignment = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Direction children flow along the main axis.")
+      # Direction children flow along the main axis. Reversed directions (RowReverse, ColumnReverse) require a finite main-axis MaxSize; Inf silently disables reversal.
+      var FlexDirection<native><public>: flex_direction = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Alignment of items along the main axis within each line.")
+      # Alignment of items along the main axis within each line.
+      var LineAlignment<native><public>: flex_content_alignment = external {}
+
+      # Spacing between rows, in centimeters.
+      var RowGap<public>: float = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("How children wrap onto multiple lines.")
+      # How children wrap onto multiple lines.
+      var WrapDirection<native><public>: flex_wrap = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Layout hints for a child placed inside a flex_container.
+    flex_container_element_component<native><epic_internal> := class(container_element_component) {
+      @editable
+      @replicated("")
+      @tool_tip("How this item is aligned along the cross axis (perpendicular to FlexDirection) within its line.")
+      # How this item is aligned along the cross axis (perpendicular to FlexDirection) within its line.
+      var AlignSelf<native><public>: ui_alignment = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Alignment of this item along the main axis within an over-sized slot.")
+      # Alignment of this item along the main axis within an over-sized slot.
+      var AlignSelfMajorAxis<native><public>: ui_alignment = external {}
+
+      # Grow proportion along the main axis. If not set, the item does not grow. Negative values clamp to 0.
+      var GrowProportion<public>: ?float = external {}
+
+      @editable
+      @replicated("")
+      @tool_tip("Margin applied around this element within its line, in centimeters.")
+      # Margin applied around this element within its line, in centimeters.
+      var Margin<native><public>: ui_margin = external {}
+
+      # Shrink proportion along the main axis. Set to false to disable shrinking. Negative values clamp to 0.
+      var ShrinkProportion<public>: ?float = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Alignment / distribution of content along an axis within a flex_container.
+    flex_content_alignment<native><epic_internal> := enum {
+      Center
+
+      End
+
+      Fill
+
+      SpaceAround
+
+      SpaceBetween
+
+      SpaceEvenly
+
+      Start
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Direction children flow along the main axis of a flex_container.
+    flex_direction<native><epic_internal> := enum {
+      Column
+
+      ColumnReverse
+
+      Row
+
+      RowReverse
+    }
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    # Whether and how a flex_container wraps its children onto multiple lines.
+    flex_wrap<native><epic_internal> := enum {
+      NoWrap
+
+      Wrap
+
+      WrapReverse
     }
 
     @available { MinUploadedAtFNVersion := 4210 }
@@ -2471,13 +2631,6 @@ SceneGraph<public> := module {
       var VerticalAlignment<public>: vertical_text_alignment = external {}
     }
 
-    using { /UnrealEngine.com/Temporary/UI }
-    using { /Verse.org/Assets }
-    using { /Verse.org/Colors }
-    using { /Verse.org/Native }
-    using { /Verse.org/Simulation }
-    using { /Verse.org/SpatialMath }
-    using { /Verse.org/Temporary/EpicGamesRestricted/Network }
     @available { MinUploadedAtFNVersion := 4210 }
     ui_alignment<native><epic_internal> := enum {
       Center
@@ -2493,16 +2646,16 @@ SceneGraph<public> := module {
     @replicatable
     ui_margin<native><epic_internal> := struct<concrete><computes> {
       @editable
-      Bottom: float = external {}
+      Bottom<native>: float = external {}
 
       @editable
-      Left: float = external {}
+      Left<native>: float = external {}
 
       @editable
-      Right: float = external {}
+      Right<native>: float = external {}
 
       @editable
-      Top: float = external {}
+      Top<native>: float = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -2723,14 +2876,14 @@ SceneGraph<public> := module {
 
     @experimental
     # Get transition to use when entering this camera mode to transition to the specified camera mode
-    GetEnterTransition<native_callable><epic_internal>(SourceCamera: camera_component)<transacts><decides>: camera_transition = external {}
+    GetEnterTransition<native_callable><public>(SourceCamera: camera_component)<transacts><decides>: camera_transition = external {}
 
     @experimental
     GetEnterTransition_Internal<native_callable><epic_internal>(SourceCamera: camera_component)<transacts><decides>: camera_transition = external {}
 
     @experimental
     # Get transition to use when exiting this camera mode to transition to the destination camera mode
-    GetExitTransition<native_callable><epic_internal>(DestinationCamera: camera_component)<transacts><decides>: camera_transition = external {}
+    GetExitTransition<native_callable><public>(DestinationCamera: camera_component)<transacts><decides>: camera_transition = external {}
 
     @editable
     @replicated("")
@@ -2770,6 +2923,10 @@ SceneGraph<public> := module {
     @experimental
     @replicated("")
     Priority<native><public>: rational
+
+    @experimental
+    @replicated("")
+    var Transition<native><public>: camera_transition = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
@@ -2824,6 +2981,7 @@ SceneGraph<public> := module {
   @experimental
   # Configurable blend between two camera modes
   camera_mode_blend_orbit<native><public> := class<concrete>(camera_mode_blend) {
+    @replicated("")
     DrivingBlend<native><public>: camera_mode_blend = external {}
   }
 
@@ -2923,13 +3081,16 @@ SceneGraph<public> := module {
   # Controls how a camera mode transitions to another
   camera_transition<native><public> := class<concrete> {
     @editable
+    @replicated("")
     Blend<native><public>: camera_mode_blend = external {}
 
     @editable
+    @replicated("")
     # Sets the duration of the camera transition
     Duration<native><public>: float = external {}
 
     @editable
+    @replicated("")
     InitialTargetOrientation<native><epic_internal>: ?camera_transition_initial_orientation = external {}
   }
 
@@ -3411,11 +3572,11 @@ SceneGraph<public> := module {
 
     # Trigger an ease-out.
     # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
-    (/Verse.org/SceneGraph/easeable:)EaseOut<epic_internal>()<transacts>: void
+    (/Verse.org/SceneGraph/easeable:)EaseOut<public>()<transacts>: void
 
     # Trigger an ease-out. If an easing_window is provided here, then it will override any previously provided window.
     # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
-    (/Verse.org/SceneGraph/easeable:)EaseOut<epic_internal>(EaseOutWindow: easing_window)<transacts>: void
+    (/Verse.org/SceneGraph/easeable:)EaseOut<public>(EaseOutWindow: easing_window)<transacts>: void
 
     # Event that gets called when an ease out starts.
     EaseOutEvent<epic_internal>: listenable(tuple())
@@ -3490,6 +3651,9 @@ SceneGraph<public> := module {
     PostEaseOutEvent<native><override>: listenable(tuple()) = external {}
 
     (/Verse.org/SceneGraph/easing_modifier:)SceneGraph_easing_modifier_Variance<private>(: t, : t): tuple(t, t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/SceneGraph/easing_modifier:)SceneGraph_easing_modifier_Variance_Inherited<private>(: t, : t): tuple(t, t) = external {}
 
     @editable
     @replicated("RepNotify")
@@ -7223,6 +7387,9 @@ Verse<public> := module {
     Signal<native><override>(Val: t): void
 
     (/Verse.org/Verse/event:)Verse_event_Variance<private>(: t): tuple(t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/event:)Verse_event_Variance_Inherited<private>(: t): tuple(t, t) = external {}
   }
 
   # A *recurring*, successively signaled event allowing a simple mechanism to coordinate between concurrent tasks.
@@ -7237,7 +7404,10 @@ Verse<public> := module {
   }
 
   # A parametric interface combining `awaitable` and `subscribable`.
-  listenable<native><public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {}
+  listenable<native><public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/listenable:)Verse_listenable_Variance_Inherited<private>(): tuple(payload, payload, payload) = external {}
+  }
 
   # A parameterless interface combining `awaitable` and `subscribable`.
   listenable<public>() := listenable(tuple())
@@ -7288,6 +7458,9 @@ Verse<public> := module {
     Evaluate<override>(InValue: t)<reads>: t = external {}
 
     (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance<private>(: t, : t, : t, : t): tuple(t, t, t, t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance_Inherited<private>(: t): tuple(t) = external {}
 
     @replicated("RepNotify")
     @editable
@@ -7388,6 +7561,9 @@ Verse<public> := module {
     Subscribe<native><override>(Callback: type { _(: t): void })<transacts>: cancelable
 
     (/Verse.org/Verse/subscribable_event_intrnl:)Verse_subscribable_event_intrnl_Variance<private>(: t): tuple(t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/subscribable_event_intrnl:)Verse_subscribable_event_intrnl_Variance_Inherited<private>(: t): tuple(t, t, t) = external {}
   }
 
   # Verse path: /Verse.org/Verse
@@ -7613,6 +7789,16 @@ subscribable_event<epic_internal>(t: type) := class(subscribable_event_intrnl(t)
   Broadcast<epic_internal>(Val: t): void = external {}
 
   (/Verse.org/subscribable_event:)subscribable_event_Variance<private>(: t): tuple() = external {}
+
+  @available { MinUploadedAtFNVersion := 4210 }
+  (/Verse.org/subscribable_event:)subscribable_event_Variance_Inherited<private>(
+    : t,
+    : t,
+    : t,
+    : t,
+    : t,
+    : t
+  ): tuple(t, t, t, t, t, t, t, t, t) = external {}
 }
 
 # Verse path: /Verse.org

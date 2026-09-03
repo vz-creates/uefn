@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.00-CL-56878558
+Generated from build: ++Fortnite+Release-42.10-CL-57566230
 #################################################
 #>
 
@@ -16,24 +16,40 @@ AgentGroup<public> := module {
   # An agent group is defined as a set of agents that share a common ownership.This class stores agents and specific information about each member via the member_info type provided.
   agent_group<native><public>(member_info: subtype(member_info_interface)) := class<unique>(agent_group_interface(member_info)) {
     # Attempt to add the given agent to this agent group.This function returns a result that will either succeed or return an error.
-    AddMember<public>(Agent: agent, MemberInfo: member_info)<transacts>: result(void, add_member_error) = external {}
+    AddMember<public>(Agent: agent, MemberInfo: member_info)<transacts>: result(comparable, add_member_error) = external {}
 
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
 
-    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(: member_info, : member_info): tuple(member_info) = external {}
+    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(
+      : member_info,
+      : member_info,
+      : member_info,
+      : member_info,
+      : member_info
+    ): tuple(member_info, member_info, member_info, member_info) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance_Inherited<private>(): tuple(
+      member_info,
+      member_info,
+      member_info,
+      member_info
+    ) = external {}
 
     # Get the members of this agent group with their member info
-    GetMemberMap<override><native>()<reads>: [agent]member_info
+    GetMemberMap<override><native_callable>()<reads>: [agent]member_info = external {}
 
     # Signalled whenever the MemberInfo class is re-instantiated for a given agent.Passes in the agent that was updated along with their new member_info.
     MemberInfoChangeEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
 
     # Attempt to remove the given agent from this agent group.This function returns a result that will either succeed or return an error.
-    RemoveMember<public>(Agent: agent)<transacts>: result(void, remove_member_error) = external {}
+    RemoveMember<public>(Agent: agent)<transacts>: result(comparable, remove_member_error) = external {}
 
     # Signalled whenever an agent successfully leaves this agent group.Passes in the agent that left along with their member_info.
     RemoveMemberEvent<override><native><final>: listenable(tuple(agent, member_info)) = external {}
+
+    var (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_VarVariance<private>: ?tuple(member_info) = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -42,7 +58,12 @@ AgentGroup<public> := module {
     # Signalled whenever an agent successfully joins this agent group.Passes in the agent that joined along with their member_info.
     AddMemberEvent<public>: listenable(tuple(agent, member_info))
 
-    (/Verse.org/AgentGroup/agent_group_interface:)AgentGroup_agent_group_interface_Variance<private>(): tuple(member_info) = external {}
+    (/Verse.org/AgentGroup/agent_group_interface:)AgentGroup_agent_group_interface_Variance<private>(): tuple(
+      member_info,
+      member_info,
+      member_info,
+      member_info
+    ) = external {}
 
     # Get the members of this agent group with their member info
     GetMemberMap<public>()<reads>: [agent]member_info
@@ -155,6 +176,9 @@ Chat<public> := module {
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
   voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
     (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info): tuple() = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance_Inherited<private>(): tuple(member_info) = external {}
   }
 }
 
@@ -585,6 +609,9 @@ Concurrency<public> := module {
     Await<native><override>()<suspends>: t
 
     (/Verse.org/Concurrency/task:)Concurrency_task_Variance<private>(): tuple(t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Concurrency/task:)Concurrency_task_Variance_Inherited<private>(): tuple(t) = external {}
   }
 }
 
@@ -779,6 +806,8 @@ Input<public> := module {
     #  Tuple payload: 0: the player generating this event
     #                 1: elapsed seconds since detection began
     EndDetectEvent<native><public>: listenable(tuple(player, float)) = external {}
+
+    (/Verse.org/Input/input_events:)Input_input_events_Variance<private>(): tuple(t, t, t, t) = external {}
 
     # This input has met all required conditions and has successfully fired. Most of the time, you should bind to this event.
     #  Tuple payload: 0: the player generating this event
@@ -1395,6 +1424,14 @@ SceneGraph<public> := module {
   @experimental
   # Represents the physical body, lens of the camera and other cinematographic qualities, such as sensor size, aspect ratio lock/constraint, focal length, focus distance, post-process settings, etc.
   camera_component<native><public> := class<final_super><abstract>(component, has_camera_modifier) {
+    @experimental
+    # Get transition to use when entering this camera mode to transition to the specified camera mode
+    GetEnterTransition<native_callable><public>(SourceCamera: camera_component)<transacts><decides>: camera_transition = external {}
+
+    @experimental
+    # Get transition to use when exiting this camera mode to transition to the destination camera mode
+    GetExitTransition<native_callable><public>(DestinationCamera: camera_component)<transacts><decides>: camera_transition = external {}
+
     @editable
     @experimental
     # Optionally override the far clipping plane distance. If value is Inf then use the default settings
@@ -1798,7 +1835,15 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   # Interface used to trigger easing behaviors
-  easeable<public> := interface<epic_internal>(cancelable) {}
+  easeable<public> := interface<epic_internal>(cancelable) {
+    # Trigger an ease-out.
+    # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
+    (/Verse.org/SceneGraph/easeable:)EaseOut<public>()<transacts>: void
+
+    # Trigger an ease-out. If an easing_window is provided here, then it will override any previously provided window.
+    # Triggering an ease-out again when already easing-out, or when fully eased-out has no effect
+    (/Verse.org/SceneGraph/easeable:)EaseOut<public>(EaseOutWindow: easing_window)<transacts>: void
+  }
 
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
@@ -3486,6 +3531,9 @@ Verse<public> := module {
     Signal<native><override>(Val: t): void
 
     (/Verse.org/Verse/event:)Verse_event_Variance<private>(: t): tuple(t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/event:)Verse_event_Variance_Inherited<private>(: t): tuple(t, t) = external {}
   }
 
   # A *recurring*, successively signaled event allowing a simple mechanism to coordinate between concurrent tasks.
@@ -3498,7 +3546,10 @@ Verse<public> := module {
   }
 
   # A parametric interface combining `awaitable` and `subscribable`.
-  listenable<native><public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {}
+  listenable<native><public>(payload: type) := interface(awaitable(payload), subscribable(payload)) {
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/listenable:)Verse_listenable_Variance_Inherited<private>(): tuple(payload, payload, payload) = external {}
+  }
 
   # A parameterless interface combining `awaitable` and `subscribable`.
   listenable<public>() := listenable(tuple())
@@ -3541,6 +3592,9 @@ Verse<public> := module {
     Evaluate<override>(InValue: t)<reads>: t = external {}
 
     (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance<private>(: t, : t, : t, : t): tuple(t, t, t, t) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance_Inherited<private>(: t): tuple(t) = external {}
 
     var<private> FirstPosition<native><public>: rational = external {}
 

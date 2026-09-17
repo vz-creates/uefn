@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.10-CL-57566230
+Generated from build: ++Fortnite+Release-42.20-CL-58011042
 #################################################
 #>
 
@@ -243,7 +243,7 @@ Assets<public> := module {
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
-  # Fails if the `MaxSize` of the channel's `agent_group` is undefined or larger than the channel type's limit.
+  # Fails if the channel's `agent_group` already has more members than the channel type's limit.
   # * Voice Chat Max Size = 80 participants.
   # * Text Chat Max Size = 100 participants.
   (Entity: entity where MemberInfo: subtype(member_info_interface)).AddChatChannel<native><public>(Channel: chat_channel(MemberInfo)): result(
@@ -270,6 +270,9 @@ Chat<public> := module {
   # Returns all the voice channels where the agent is part of the agent_group.
   (Entity: simulation_entity).GetVoiceChannelsForAgent<native><epic_internal>(Agent: agent): []voice_channel(has_voice_member_info)
 
+  @available { MinUploadedAtFNVersion := 4220 }
+  GetDisplayableVoiceChannelName<native_callable><epic_internal>(VoiceChannel: voice_channel(has_voice_member_info))<reads>: string = external {}
+
   @available { MinUploadedAtFNVersion := 4000 }
   # Used in native to create a channel result when registering a channel.
   MakeAddChannelResult<native_callable><epic_internal>(IsSuccess: logic): result(
@@ -292,8 +295,12 @@ Chat<public> := module {
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
+  chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal>(enableable) {
     (/Verse.org/Chat/chat_channel:)Chat_chat_channel_Variance<private>(): tuple(member_info) = external {}
+
+    Disable<override>(): void = external {}
+
+    Enable<override>(): void = external {}
 
     GetAllAgents<native_callable><epic_internal>()<reads>: []agent = external {}
 
@@ -304,14 +311,30 @@ Chat<public> := module {
 
     IsAgentInChannel<native_callable><epic_internal>(Agent: agent)<decides><reads>: void = external {}
 
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
     Name<public>: message
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    var<private> MaxSize<epic_internal>: int = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Internal agent group - used to create the default voice channels when starting a game.
+  default_agent_group<epic_internal> := class(agent_group(default_member_info)) {}
+
+  @available { MinUploadedAtFNVersion := 4000 }
+  # Internal member info - used to create the default voice channels when starting a game.
+  default_member_info<epic_internal> := class(has_voice_member_info) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Used to specify permissions and other settings for a voice_channel.
   has_voice_member_info<native><public> := interface(member_info_interface) {
+    @available { MinUploadedAtFNVersion := 4220 }
+    GetCanBroadcastEpicInternal<epic_internal>()<reads>: logic = external {}
+
     # Determines if the participant can send voice messages to the channel.
-    # If true, the participant can still hear those who are broadcasting and see users in the social overlay panel.
+    # If false, the participant can still hear those who are broadcasting and see users in the social overlay panel.
     var CanBroadcast<public>: logic = external {}
   }
 
@@ -326,38 +349,95 @@ Chat<public> := module {
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
   voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
-    CancelSubscriptions<epic_internal>(): void = external {}
+    AddVoiceChannelSubscription<epic_internal>(NewSubscription: cancelable): void = external {}
 
-    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info): tuple() = external {}
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Signalled when a member of this channel starts speaking on it.
+    # Returns a subscribable with a payload of the speaking `agent`.
+    BeginBroadcastEvent<public>(): listenable(agent) = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    BeginBroadcastEventInternal<native><epic_internal>: subscribable_event_intrnl(agent) = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Signalled when a member's `CanBroadcast` changes while they hold one of the channel's slots.
+    # Returns a subscribable with a payload of the member and their new `CanBroadcast` value.
+    CanBroadcastChangeEvent<public>(): listenable(tuple(agent, logic)) = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    CanBroadcastChangeEventInternal<native><epic_internal>: subscribable_event_intrnl(tuple(agent, logic)) = external {}
+
+    CancelSubscriptions<native_callable><epic_internal>(): void = external {}
+
+    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info, : member_info): tuple() = external {}
 
     @available { MinUploadedAtFNVersion := 4210 }
     (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance_Inherited<private>(): tuple(member_info) = external {}
 
     # Disables users from communicating on the channel.
-    Disable<epic_internal>(): void = external {}
+    Disable<override><native>(): void
 
     # Allows users to communicate on the channel.
-    Enable<epic_internal>(): void = external {}
+    Enable<override><native>(): void
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Signalled when a member of this channel stops speaking on it.
+    # Returns a subscribable with a payload of the `agent` that stopped speaking.
+    EndBroadcastEvent<public>(): listenable(agent) = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    EndBroadcastEventInternal<native><epic_internal>: subscribable_event_intrnl(agent) = external {}
 
     GetActiveAgents<native><epic_internal>()<reads>: []agent
 
+    @available { MinUploadedAtFNVersion := 4220 }
+    GetBroadcastingAgents<native_callable><epic_internal>()<reads>: []agent = external {}
+
     # Returns if any user can communicate on the channel.
-    IsEnabled<epic_internal>()<transacts><decides>: void = external {}
+    IsEnabled<override><native>()<transacts><decides>: void
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Checks to see if a given member is speaking on the `voice_channel`.
+    # Fails if the agent is not a member of the channel, or is not currently speaking.
+    IsMemberSpeaking<native><public>(Agent: agent)<decides><reads>: void
 
     OnAddMemberEvent<native><epic_internal>(Agent: agent, MemberInfo: member_info)<transacts>: void
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    OnMemberInfoChangeEvent<native><epic_internal>(Agent: agent, MemberInfo: member_info)<transacts>: void
 
     OnRemoveMemberEvent<native><epic_internal>(Agent: agent, MemberInfo: member_info)<transacts>: void
 
     SetupSubscriptions<epic_internal>(): void = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # The priority assigned to the channel.
+    # When a user could hear a speaker on more than one channel, they hear the speaker on the channel with the highest priority.
+    # Between channels of equal priority the most recently joined one wins.
+    var HearingPriority<epic_internal>: float = external {}
 
     var VoiceChannelSubscriptions<epic_internal>: []cancelable = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
   voice_manager_component<native><epic_internal> := class<final_super>(component) {
+    AddToDefaultVoiceChannel<native_callable><epic_internal>(ChannelNameString: string, Agent: agent): void = external {}
+
     AddVoiceChannel<native_callable><epic_internal>(VoiceChannel: voice_channel(has_voice_member_info))<decides>: void = external {}
 
+    RemoveAgentFromAllDefaultVoiceChannels<native_callable><epic_internal>(Agent: agent): void = external {}
+
+    RemoveFromDefaultVoiceChannel<native_callable><epic_internal>(
+      ChannelNameString: string,
+      Agent: agent
+    ): void = external {}
+
     RemoveVoiceChannel<native_callable><epic_internal>(VoiceChannel: voice_channel(has_voice_member_info))<decides>: void = external {}
+
+    ToMessage<localizes><epic_internal>(ChannelName: string): message = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    UNDEFINED_PRIORITY<epic_internal>: float = external {}
 
     var VoiceChannelsOnSimulation<native><epic_internal>: []voice_channel(has_voice_member_info) = external {}
   }
@@ -983,7 +1063,7 @@ Input<public> := module {
   # Diagnostic helper for verifying client-side code execution. Logs the timestamp and the current net mode to LogVerseInput. Call from a Verse function to confirm the same Verse code runs on both server and client — the log line will appear once with NetMode=DedicatedServer/ListenServer and once with NetMode=Client (or just NetMode=Standalone in PIE single-process).
   VerseInput_TestPredictsPing<native><epic_internal>()<transacts>: void
 
-  # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
+  # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. `Touch` is a platform capability and does not change during a session. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
   available_input_devices<native><public> := struct {
     Gamepad<native><public>: logic = external {}
 
@@ -2736,6 +2816,7 @@ SceneGraph<public> := module {
   @import_as("/Script/Entity.FActorOriginData")
   actor_data<native><epic_internal> := struct<concrete> {}
 
+  @hide_in_editor
   # class to provide alternative origin to the 'transform_component' as an actor. This class should never be public and is intended for internal use only.
   actor_origin<native><epic_internal> := class(origin) {
     @editable
@@ -5428,6 +5509,7 @@ SceneGraph<public> := module {
   }
 
   @experimental
+  @hide_in_editor
   # Used to attach entities to a socket on an actor.
   socket_origin<native><epic_internal> := class(actor_origin) {
     @editable
@@ -5708,6 +5790,14 @@ SceneGraph<public> := module {
     PrePhysics<native><public>: execution_listenable = external {}
 
     StartPhysics<native><epic_internal>: execution_listenable = external {}
+  }
+
+  transform_bridge_offset_info<native><epic_internal> := struct {}
+
+  # Implemented by components that want to offset the entity transform from the actor transform mirrored by a transform_component_bridge.
+  transform_bridge_offset_interface<native><epic_internal> := interface<epic_internal> {
+    # Returns the world space translation to add to the actor transform to produce the entity transform, or false if this component doesn't contribute an offset.
+    GetTransformOffset<native_callable><protected>(Info: transform_bridge_offset_info)<reads>: ?(/Verse.org/SpatialMath:)vector3
   }
 
   # Stores the transforms for an entity, which are used to position the entity.
@@ -6768,7 +6858,7 @@ StateMachine<public> := module {
     SendUp<native><final><public>(StateEvent: state_event): logic
 
     # Transition to the new leaf states, replacing all the active states.  Propagating from leaf to root, OnExit will be invoked on active states that are not in the new transition.  Then, propagating from root to leaf, OnEnter will be invoked for the new states that were not previously activated.  Other transitions can occur while invoking OnExit or in OnEnter.  The current OnExit or OnEnter invocation will complete before the new transition executes.  The previous transition will merge with the new transition. In case of conflict, the new transition takes precedence.
-    TransitionTo<final><public>(Leaves: []state): void = external {}
+    TransitionTo<final><native_callable><public>(Leaves: []state): void = external {}
 
     # Transition to the new leaf states, replacing all the active states child of Parent state, and keeping the other leaves active.  Propagating from leaf to root, OnExit will be invoked on active states that are not in the new transition.  Then, propagating from root to leaf, OnEnter will be invoked for the new states that were not previously activated.  Other transitions can occur while invoking OnExit or in OnEnter.  The current OnExit or OnEnter invocation will complete before the new transition executes.  The previous transition will merge with the new transition. In case of conflict, the new transition takes precedence.
     TransitionUnder<final><public>(Parent: state, Leaves: []state): void = external {}

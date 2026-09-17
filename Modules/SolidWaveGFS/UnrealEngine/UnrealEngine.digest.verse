@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.10-CL-57566230
+Generated from build: ++Fortnite+Release-42.20-CL-58011042
 #################################################
 #>
 
@@ -147,14 +147,16 @@ BasicShapes<public> := module {
 # Module import path: /UnrealEngine.com/ControlInput
 ControlInput<public> := module {
   @available { MinUploadedAtFNVersion := 3630 }
-  # Access input-related data and settings for a player.
+  @deprecated
+  # Deprecated: use 'GetPlayerInput' from the '/Verse.org/Input' module instead. Access input-related data and settings for a player.
   (/UnrealEngine.com/ControlInput:)GetPlayerInput<native><public>(Player: player)<transacts><decides>: (/UnrealEngine.com/ControlInput:)player_input
 
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 3630 }
-  # Input_events is a container for user input events which can be subscribed to.
+  @deprecated
+  # Deprecated: use 'input_events' from the '/Verse.org/Input' module instead. Input_events is a container for user input events which can be subscribed to.
   #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an input_events object for a given player.
   #   * Low-level notifications of current user input: DetectionBeginEvent, DetectionOngoingEvent, and DetectionEndEvent.
   #   * High-level notifications of triggered events: ActivationTriggeredEvent and ActivationCanceledEvent.
@@ -197,7 +199,8 @@ ControlInput<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 3630 }
-  # This is the main manager class for input-related settings and functions for a player.
+  @deprecated
+  # Deprecated: use 'player_input' from the '/Verse.org/Input' module instead. This is the main manager class for input-related settings and functions for a player.
   (/UnrealEngine.com/ControlInput:)player_input<native><public> := class {
     AddInputMapping<native><public>(InputMapping: input_mapping): void
 
@@ -244,7 +247,7 @@ Conversations<public> := module {
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_error<native><public> := class {
+  ai_error<native><public> := class<castable> {
     Message<native><public>: message
   }
 
@@ -781,6 +784,163 @@ JSON<public> := module {
   }
 }
 
+Marketplace<public> := module {
+  # Displays the Epic purchase UI to the player to purchase the `Offer`.
+  # Returns true if an offer was purchased.
+  BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Consumes a consumable `entitlement`.
+  # Fails if:
+  #  * The `entitlement` is not consumable.
+  #  * The `Player` does not own requested `Count` of `entitlement`.
+  ConsumeEntitlement<native><public>(
+    Player: player,
+    entitlement_type: concrete_subtype(entitlement),
+    ?Count: int = external {}
+  )<suspends>: logic
+
+  # Used to listen for entitlement change events during a game session.
+  # Runtime error if `entitlement` is used directly.
+  GetEntitlementsChangedEvent<native><public>(
+    Player: player,
+    entitlement_type: subtype(entitlement)
+  ): listenable(tuple(player, []entitlement_change(entitlement_type)))
+
+  GetPriceVBucks<native><public>(P: price_vbucks): float
+
+  # Get all available `entitlement`s for `Player`, along with the number of those `entitlement`s.
+  # This includes finding `entitlement`s of derived types.
+  # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
+  GetPurchasedEntitlements<native><public>(
+    Player: player,
+    entitlement_type: subtype(entitlement)
+  )<suspends>: []tuple(entitlement_type, int)
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Grant an entitlement directly to `Player`.
+  # This function does not gate granting entitlements based on EntitlementDisclosures.
+  # Entitlements are always granted assuming they match the MaxCount requirement.
+  GrantEntitlement<native><public>(
+    Player: player,
+    entitlement_type: concrete_subtype(entitlement),
+    ?Count: int = external {}
+  )<suspends>: logic
+
+  MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+
+  # Informs if usage of direct prompts to purchase is restricted for `Player`.
+  RestrictDirectPromptsToPurchase<native><public>(Player: player)<decides><reads>: void
+
+  # Informs if usage of paid random items is restricted for `Player`
+  # due to platform, territory, age, or user configuration restrictions.
+  RestrictPaidRandomItems<native><public>(Player: player)<decides><reads>: void
+
+  # Shows the Epic provided store front contain the specified `Offers`.
+  ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
+
+  # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
+  bundle_offer<native><public> := class<castable>(offer) {
+    Offers<native><public>: []tuple(offer, int) = external {}
+  }
+
+  # An entitlement that is tracked by the commerce system.
+  #
+  #  * A player may only have one `entitlement` if the entitlement is not consumable.
+  #  * A player may have `MaxCount` of a consumable entitlement.
+  #  * Your derived type must be <concrete> to be used by the purchase system.
+  #  * If the entitlement you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
+  entitlement<native><public> := class<castable>(has_icon, has_description) {
+    ConsequentialToGameplay<native><public>: logic = external {}
+
+    Consumable<native><public>: logic = external {}
+
+    MaxCount<native><public>: int = external {}
+
+    PaidArea<native><public>: logic = external {}
+
+    PaidRandomItem<native><public>: logic = external {}
+  }
+
+  # Entitlements that have changed in quantity.
+  # This will also include entitlement changes triggered by moderation, refunds and other commerce operations.
+  entitlement_change<native><public>(t: type) := class<internal> {
+    # Change to the original quantity of entitlement.
+    Change<native><public>: int
+
+    # Entitlement that has changed in quantity.
+    Entitlement<native><public>: t
+
+    (/UnrealEngine.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>(): tuple(t) = external {}
+
+    # Total quantity of the entitlement now owned.
+    Quantity<native><public>: int
+  }
+
+  # An `entitlement_offer` allows an individual `entitlement` to be purchased.
+  entitlement_offer<native><public> := class<castable>(offer) {
+    @available { MinUploadedAtFNVersion := 3800 }
+    @editable
+    EntitlementType<native><public>: concrete_subtype(entitlement)
+  }
+
+  # Offers are used to sell entitlements to players. See `entitlement_offer` and `bundle_offer` classes for more information.
+  offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
+    # Override this method to restrict availability of an offer in certain regions and minimum ages.
+    #
+    # Parameters:
+    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent territories, or special
+    #                  area of geographical interest
+    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for the subdivision
+    #                  within a country, dependent territory, or special area of geographical interest.
+    #                  If subdivision information is unavailable for players in a region SubdivisionCode
+    #                  will be an empty string.
+    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows, Xbox, Luna, GeForceNow
+    #
+    # Returns:
+    #     Fails if sale of this offer should not be allowed in this (CountryCode, SubdivisionCode)
+    #     Minimum age of purchase in this (CountryCode, SubdivisionCode).
+    #     If minimum age is higher than the highest available age by region the offer will not be made
+    GetMinPurchaseAge<native_callable><public>(
+      CountryCode: string,
+      SubdivisionCode: string,
+      PlatformFamily: string
+    )<computes><decides>: int = external {}
+
+    @editable
+    Price<native><public>: price_dimension
+  }
+
+  using { /Verse.org/SceneGraph }
+  offer_interactable_component<native><public> := class(interactable_component) {
+    CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
+
+    InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnSucceed<protected>(Agent: agent): void = external {}
+
+    @editable
+    var Offer<public>: offer
+
+    var SucceededEventHandle<public>: ?cancelable = external {}
+  }
+
+  using { /Verse.org/Assets }
+  using { /Verse.org/Presentation }
+  price_dimension<native><public> := class<computes><abstract><epic_internal> {}
+
+  # Verse path: /UnrealEngine.com/Marketplace
+  price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+
+  # Verse path: /UnrealEngine.com/Marketplace
+  using { /Verse.org/Native }
+
+  # Verse path: /UnrealEngine.com/Marketplace
+  using { /Verse.org/Simulation }
+}
+
 @available { MinUploadedAtFNVersion := 4110 }
 # Module import path: /UnrealEngine.com/Progression
 (/UnrealEngine.com:)Progression<public> := module {
@@ -802,7 +962,7 @@ JSON<public> := module {
     var<private> Objective<native><public>: quest_objective
   }
 
-  using { /Fortnite.com/Marketplace }
+  using { /UnrealEngine.com/Marketplace }
   @experimental
   # Grants an entitlement to each eligible participant.
   entitlement_quest_reward<native><public> := class(quest_reward) {
@@ -1223,7 +1383,6 @@ Temporary<public> := module {
   # Stably sort `Array` using `Less` where `Less` succeeding indicates `Left` should precede `Right`
   SortBy<native><public>((Array: []t, Less: type { _(: t, : t)<computes><decides>: void }) where t: type)<computes>: []t
 
-  # Verse path: /UnrealEngine.com/Temporary
   # Module import path: /UnrealEngine.com/Temporary/SpatialMath
   (/UnrealEngine.com/Temporary:)SpatialMath<public> := module {
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Y axis to `InitialRotation`.

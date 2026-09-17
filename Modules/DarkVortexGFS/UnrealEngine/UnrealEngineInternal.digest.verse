@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.10-CL-57566230
+Generated from build: ++Fortnite+Release-42.20-CL-58011042
 #################################################
 #>
 
@@ -275,9 +275,11 @@ BasicShapes<public> := module {
 # Module import path: /UnrealEngine.com/ControlInput
 ControlInput<public> := module {
   @available { MinUploadedAtFNVersion := 3630 }
-  # Access input-related data and settings for a player.
+  @deprecated
+  # Deprecated: use 'GetPlayerInput' from the '/Verse.org/Input' module instead. Access input-related data and settings for a player.
   (/UnrealEngine.com/ControlInput:)GetPlayerInput<native><public>(Player: player)<transacts><decides>: (/UnrealEngine.com/ControlInput:)player_input
 
+  @deprecated
   MakeInputAsset<native><epic_internal>((
     InputAction: input_action(t),
     Path: string
@@ -285,7 +287,8 @@ ControlInput<public> := module {
 
   @available { MinUploadedAtFNVersion := 3630 }
   @cpp_name("input_events_vni_alt")
-  # Input_events is a container for user input events which can be subscribed to.
+  @deprecated
+  # Deprecated: use 'input_events' from the '/Verse.org/Input' module instead. Input_events is a container for user input events which can be subscribed to.
   #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an input_events object for a given player.
   #   * Low-level notifications of current user input: DetectionBeginEvent, DetectionOngoingEvent, and DetectionEndEvent.
   #   * High-level notifications of triggered events: ActivationTriggeredEvent and ActivationCanceledEvent.
@@ -336,7 +339,8 @@ ControlInput<public> := module {
 
   @available { MinUploadedAtFNVersion := 3630 }
   @cpp_name("player_input_vni_alt")
-  # This is the main manager class for input-related settings and functions for a player.
+  @deprecated
+  # Deprecated: use 'player_input' from the '/Verse.org/Input' module instead. This is the main manager class for input-related settings and functions for a player.
   (/UnrealEngine.com/ControlInput:)player_input<native><public> := class {
     AddInputMapping<native><public>(InputMapping: input_mapping): void
 
@@ -424,7 +428,7 @@ Conversations<public> := module {
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_error<native><public> := class {
+  ai_error<native><public> := class<castable> {
     Message<native><public>: message
   }
 
@@ -439,8 +443,6 @@ Conversations<public> := module {
   # Manages AI session state: conversation history, pinned entries, and registered capabilities (tools, signals, listenables).
   #  History is automatically compacted by the runtime. Completed goals are summarized into history.
   ai_session<native><public> := class<unique> {
-    CancelAllVoiceChannelSubscriptions<native_callable><epic_internal>()<transacts>: void = external {}
-
     CancelVoiceChannelSubscription<native_callable><epic_internal>(SubscriptionToCancel: cancelable)<transacts>: void = external {}
 
     # Removes all the history events from the session.
@@ -474,8 +476,6 @@ Conversations<public> := module {
     SubscribeToVoiceChannelMemberAdded<native_callable><epic_internal>(VoiceChannel: voice_channel(member_info) where member_info: subtype(has_voice_member_info))<transacts>: cancelable = external {}
 
     SubscribeToVoiceChannelMemberRemoved<native_callable><epic_internal>(VoiceChannel: voice_channel(member_info) where member_info: subtype(has_voice_member_info))<transacts>: cancelable = external {}
-
-    var VoiceChannelSubscriptions<epic_internal>: []cancelable = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -604,6 +604,19 @@ Conversations<public> := module {
     TargetAgent<native>: ?agent
   }
 
+  @available { MinUploadedAtFNVersion := 4220 }
+  # The decision made when evaluating an incoming prompt against the active interruption rule.
+  interrupt_decision<native><epic_internal> := enum {
+    # The incoming prompt was ignored because the persona cannot be interrupted.
+    Ignored
+
+    # The incoming prompt caused the active utterance to be interrupted.
+    Interrupted
+
+    # The incoming prompt was queued and will be processed after the current utterance finishes.
+    Queued
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
   jonesy_voice<final><public> := class<epic_internal>(voice_model) {
     VoiceName<override>: string = external {}
@@ -704,6 +717,18 @@ Conversations<public> := module {
     # propagate conversation history entries to all sessions found in the channel.
     # All and only conversation directly to or from a persona will be automatically recorded.
     GetAISession<native><public>()<transacts>: ai_session
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Listenable which is signaled when an incoming prompt is evaluated against the active interruption rule.
+    #  Receives the rule that was active and the decision that was made.
+    InterruptionEvaluatedEvent<native><epic_internal>: listenable(tuple(
+      persona_interruption_rule,
+      interrupt_decision
+    )) = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Succeeds if the persona is currently speaking.
+    IsTalking<native><epic_internal>()<decides><reads>: void
 
     OnInitialized<override>(): void = external {}
 
@@ -1055,6 +1080,14 @@ Itemization<public> := module {
     SlotChangedItems<native><public>: []item_slot_change
   }
 
+  @experimental
+  @hide_in_editor
+  # Owner poses let an item affect their owner's default animation stance.
+  #  For example, to make a character hold an item like a torch, or a 2-handed weapon.
+  character_pose_modifier<native><epic_internal> := class<unique><abstract><epic_internal> {
+    ProxyTable<native><epic_internal>: proxy_table
+  }
+
   equip_item_error<native><public> := class<computes> {}
 
   # When equipping an item, 'equip_item_query_event' can be used to veto the equip. It is sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
@@ -1402,13 +1435,16 @@ Itemization<public> := module {
 
   @class_and_subclass_group_names("item")
   @experimental
+  @hide_in_editor
   # Item component setting owner pose data for this item.
-  item_owner_pose_modifier_component<native><final><epic_internal> := class<final_super>(component) {
+  item_owner_pose_modifier_component<native><epic_internal> := class<final_super><epic_internal>(component) {
     @editable
-    EquippedPose<native><public>: ?pose_modifier = external {}
+    # Animation layer to apply when this item is equipped. This can be unset if the item doesn't need custom animation logic for its owner.
+    EquippedPose<native><epic_internal>: ?character_pose_modifier = external {}
 
     @editable
-    NotEquippedPose<native><public>: ?pose_modifier = external {}
+    # Animation layer to apply when this item is not equipped (but still present in the inventory). This can be unset if the item doesn't need custom animation logic for its owner.
+    NotEquippedPose<native><epic_internal>: ?character_pose_modifier = external {}
   }
 
   item_slot_change<native><epic_internal> := struct<epic_internal> {
@@ -1539,10 +1575,8 @@ Itemization<public> := module {
   }
 
   @experimental
-  @import_as("/Script/ItemizationCoreRuntime.UItemOwnerPoseAsset")
-  # Owner poses let an item affect their owner's default animation stance.
-  #  For example, to make a character hold an item like a torch, or a 2-handed weapon.
-  pose_modifier<native><epic_internal> := class<concrete><unique>(asset) {}
+  @hide_in_editor
+  proxy_table<native><epic_internal> := class<unique><final><epic_internal>(asset) {}
 
   remove_inventory_result<native><epic_internal> := class<epic_internal> {
     Inventory<native><public>: inventory_component
@@ -1646,6 +1680,163 @@ JSON<public> := module {
   }
 }
 
+Marketplace<public> := module {
+  # Displays the Epic purchase UI to the player to purchase the `Offer`.
+  # Returns true if an offer was purchased.
+  BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Consumes a consumable `entitlement`.
+  # Fails if:
+  #  * The `entitlement` is not consumable.
+  #  * The `Player` does not own requested `Count` of `entitlement`.
+  ConsumeEntitlement<native><public>(
+    Player: player,
+    entitlement_type: concrete_subtype(entitlement),
+    ?Count: int = external {}
+  )<suspends>: logic
+
+  # Used to listen for entitlement change events during a game session.
+  # Runtime error if `entitlement` is used directly.
+  GetEntitlementsChangedEvent<native><public>(
+    Player: player,
+    entitlement_type: subtype(entitlement)
+  ): listenable(tuple(player, []entitlement_change(entitlement_type)))
+
+  GetPriceVBucks<native><public>(P: price_vbucks): float
+
+  # Get all available `entitlement`s for `Player`, along with the number of those `entitlement`s.
+  # This includes finding `entitlement`s of derived types.
+  # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
+  GetPurchasedEntitlements<native><public>(
+    Player: player,
+    entitlement_type: subtype(entitlement)
+  )<suspends>: []tuple(entitlement_type, int)
+
+  @available { MinUploadedAtFNVersion := 3800 }
+  # Grant an entitlement directly to `Player`.
+  # This function does not gate granting entitlements based on EntitlementDisclosures.
+  # Entitlements are always granted assuming they match the MaxCount requirement.
+  GrantEntitlement<native><public>(
+    Player: player,
+    entitlement_type: concrete_subtype(entitlement),
+    ?Count: int = external {}
+  )<suspends>: logic
+
+  MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+
+  # Informs if usage of direct prompts to purchase is restricted for `Player`.
+  RestrictDirectPromptsToPurchase<native><public>(Player: player)<decides><reads>: void
+
+  # Informs if usage of paid random items is restricted for `Player`
+  # due to platform, territory, age, or user configuration restrictions.
+  RestrictPaidRandomItems<native><public>(Player: player)<decides><reads>: void
+
+  # Shows the Epic provided store front contain the specified `Offers`.
+  ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
+
+  # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
+  bundle_offer<native><public> := class<castable>(offer) {
+    Offers<native><public>: []tuple(offer, int) = external {}
+  }
+
+  # An entitlement that is tracked by the commerce system.
+  #
+  #  * A player may only have one `entitlement` if the entitlement is not consumable.
+  #  * A player may have `MaxCount` of a consumable entitlement.
+  #  * Your derived type must be <concrete> to be used by the purchase system.
+  #  * If the entitlement you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
+  entitlement<native><public> := class<castable>(has_icon, has_description) {
+    ConsequentialToGameplay<native><public>: logic = external {}
+
+    Consumable<native><public>: logic = external {}
+
+    MaxCount<native><public>: int = external {}
+
+    PaidArea<native><public>: logic = external {}
+
+    PaidRandomItem<native><public>: logic = external {}
+  }
+
+  # Entitlements that have changed in quantity.
+  # This will also include entitlement changes triggered by moderation, refunds and other commerce operations.
+  entitlement_change<native><public>(t: type) := class<internal> {
+    # Change to the original quantity of entitlement.
+    Change<native><public>: int
+
+    # Entitlement that has changed in quantity.
+    Entitlement<native><public>: t
+
+    (/UnrealEngine.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>(): tuple(t) = external {}
+
+    # Total quantity of the entitlement now owned.
+    Quantity<native><public>: int
+  }
+
+  # An `entitlement_offer` allows an individual `entitlement` to be purchased.
+  entitlement_offer<native><public> := class<castable>(offer) {
+    @available { MinUploadedAtFNVersion := 3800 }
+    @editable
+    EntitlementType<native><public>: concrete_subtype(entitlement)
+  }
+
+  # Offers are used to sell entitlements to players. See `entitlement_offer` and `bundle_offer` classes for more information.
+  offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
+    # Override this method to restrict availability of an offer in certain regions and minimum ages.
+    #
+    # Parameters:
+    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent territories, or special
+    #                  area of geographical interest
+    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for the subdivision
+    #                  within a country, dependent territory, or special area of geographical interest.
+    #                  If subdivision information is unavailable for players in a region SubdivisionCode
+    #                  will be an empty string.
+    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows, Xbox, Luna, GeForceNow
+    #
+    # Returns:
+    #     Fails if sale of this offer should not be allowed in this (CountryCode, SubdivisionCode)
+    #     Minimum age of purchase in this (CountryCode, SubdivisionCode).
+    #     If minimum age is higher than the highest available age by region the offer will not be made
+    GetMinPurchaseAge<native_callable><public>(
+      CountryCode: string,
+      SubdivisionCode: string,
+      PlatformFamily: string
+    )<computes><decides>: int = external {}
+
+    @editable
+    Price<native><public>: price_dimension
+  }
+
+  using { /Verse.org/SceneGraph }
+  offer_interactable_component<native><public> := class(interactable_component) {
+    CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
+
+    InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnSucceed<protected>(Agent: agent): void = external {}
+
+    @editable
+    var Offer<public>: offer
+
+    var SucceededEventHandle<public>: ?cancelable = external {}
+  }
+
+  using { /Verse.org/Assets }
+  using { /Verse.org/Presentation }
+  price_dimension<native><public> := class<computes><abstract><epic_internal> {}
+
+  # Verse path: /UnrealEngine.com/Marketplace
+  price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+
+  # Verse path: /UnrealEngine.com/Marketplace
+  using { /Verse.org/Native }
+
+  # Verse path: /UnrealEngine.com/Marketplace
+  using { /Verse.org/Simulation }
+}
+
 @available { MinUploadedAtFNVersion := 4110 }
 # Module import path: /UnrealEngine.com/Progression
 (/UnrealEngine.com:)Progression<public> := module {
@@ -1743,7 +1934,7 @@ JSON<public> := module {
     RequiredCount<native><epic_internal>: int = external {}
   }
 
-  using { /Fortnite.com/Marketplace }
+  using { /UnrealEngine.com/Marketplace }
   using { /Verse.org/StateMachine }
   @experimental
   composite_quest_objective<native><epic_internal> := class<epic_internal>(quest_objective) {
@@ -2710,7 +2901,6 @@ Temporary<public> := module {
   # Stably sort `Array` using `Less` where `Less` succeeding indicates `Left` should precede `Right`
   SortBy<native><public>((Array: []t, Less: type { _(: t, : t)<computes><decides>: void }) where t: type)<computes>: []t
 
-  # Verse path: /UnrealEngine.com/Temporary
   # Module import path: /UnrealEngine.com/Temporary/SpatialMath
   (/UnrealEngine.com/Temporary:)SpatialMath<public> := module {
     # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Y axis to `InitialRotation`.
@@ -4076,6 +4266,7 @@ Temporary<public> := module {
     }
   }
 
+  # Verse path: /UnrealEngine.com/Temporary
   @experimental
   playable<epic_internal> := interface<epic_internal> {
     @experimental

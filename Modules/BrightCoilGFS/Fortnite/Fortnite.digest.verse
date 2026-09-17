@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.10-CL-57566230
+Generated from build: ++Fortnite+Release-42.20-CL-58011042
 #################################################
 #>
 
@@ -483,20 +483,12 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_ability_anim_layer<native><public> := enum {
-    FullBody
-
-    UpperBody
-  }
-
-  @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_animation_element_span<native><public> := class<concrete>(fort_ability_timeline_element_span) {
     @editable {}
-    Animation<native><public>: animation_sequence = external {}
+    AnimationLayer<native><public>: play_animation_layer = external {}
 
     @editable {}
-    AnimationLayer<native><public>: fort_ability_anim_layer = external {}
+    AnimationSequence<native><public>: animation_sequence = external {}
 
     @editable {}
     (/Fortnite.com/Abilities/fort_ability_animation_element_span:)EaseIn<native><public>: float = external {}
@@ -689,6 +681,7 @@ Abilities<public> := module {
   }
 
   using { /UnrealEngine.com/Abilities }
+  using { /Verse.org }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
@@ -846,7 +839,7 @@ Abilities<public> := module {
   self_ability_target_query<native><public> := class(ability_target_query) {}
 
   # Verse path: /Fortnite.com/Abilities
-  using { /Verse.org }
+  using { /Fortnite.com/Animation/PlayAnimation }
 }
 
 # Module import path: /Fortnite.com/Animation
@@ -861,6 +854,7 @@ Animation<public> := module {
       # Start an animation sequence and obtain an instance to query and manipulate.
       Play<public>(
         AnimationSequence: animation_sequence,
+        ?Layer: play_animation_layer = external {},
         ?PlayRate: float = external {},
         ?PlayCount: float = external {},
         ?StartPositionSeconds: float = external {},
@@ -871,6 +865,7 @@ Animation<public> := module {
       # Play an animation sequence.
       PlayAndAwait<public>(
         AnimationSequence: animation_sequence,
+        ?Layer: play_animation_layer = external {},
         ?PlayRate: float = external {},
         ?PlayCount: float = external {},
         ?StartPositionSeconds: float = external {},
@@ -904,6 +899,15 @@ Animation<public> := module {
 
       # Stops the animation.
       Stop<native><public>(): void
+    }
+
+    # The body layer an animation plays on.
+    play_animation_layer<native><public> := enum<open> {
+      # The whole skeleton is driven by the animation.
+      FullBody
+
+      # The animation plays on the upper body when the character is in motion.
+      UpperBody
     }
 
     using { /Fortnite.com/Characters }
@@ -9795,6 +9799,8 @@ Items<public> := module {
 
   TrackingVisor_BR_CH6S3_Rare<public> := class<final><concrete>(entity) {}
 
+  Unarmed_Creative_V1_Common<public> := class<final><concrete>(entity) {}
+
   UnstableBounceGrenade_BR_CH6S3_Exotic<public> := class<final><concrete>(entity) {}
 
   VehicleModCowCatcher_BR_CH3S2_Common<public> := class<final><concrete>(entity) {}
@@ -9922,154 +9928,111 @@ Items<public> := module {
 }
 
 Marketplace<public> := module {
-  # Displays the Epic purchase UI to the player to purchase the `Offer`.
-  # Returns true if an offer was purchased.
-  BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `BuyOffer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `BuyOffer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)BuyOffer<public>(Player: player, Offer: (/Fortnite.com/Marketplace:)offer)<suspends>: logic = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Consumes a consumable `entitlement`.
-  # Fails if:
-  #  * The `entitlement` is not consumable.
-  #  * The `Player` does not own requested `Count` of `entitlement`.
-  ConsumeEntitlement<native><public>(
+  @deprecated { Message := "Use `ConsumeEntitlement` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `ConsumeEntitlement` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)ConsumeEntitlement<public>(
     Player: player,
-    entitlement_type: concrete_subtype(entitlement),
-    ?Count: int = external {}
-  )<suspends>: logic
-
-  # Used to listen for entitlement change events during a game session.
-  # Runtime error if `entitlement` is used directly.
-  GetEntitlementsChangedEvent<native><public>(
-    Player: player,
-    entitlement_type: subtype(entitlement)
-  ): listenable(tuple(player, []entitlement_change(entitlement_type)))
-
-  GetPriceVBucks<native><public>(P: price_vbucks): float
-
-  # Get all available `entitlement`s for `Player`, along with the number of those `entitlement`s.
-  # This includes finding `entitlement`s of derived types.
-  # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
-  GetPurchasedEntitlements<native><public>(
-    Player: player,
-    entitlement_type: subtype(entitlement)
-  )<suspends>: []tuple(entitlement_type, int)
+    entitlement_type: concrete_subtype((/Fortnite.com/Marketplace:)entitlement
+  ), ?Count: int = external {})<suspends>: logic = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Grant an entitlement directly to `Player`.
-  # This function does not gate granting entitlements based on EntitlementDisclosures.
-  # Entitlements are always granted assuming they match the MaxCount requirement.
-  GrantEntitlement<native><public>(
+  @deprecated { Message := "Use `GetEntitlementsChangedEvent` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GetEntitlementsChangedEvent` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GetEntitlementsChangedEvent<public>(
     Player: player,
-    entitlement_type: concrete_subtype(entitlement),
-    ?Count: int = external {}
-  )<suspends>: logic
+    entitlement_type: subtype((/UnrealEngine.com/Marketplace:)entitlement
+  )): listenable(tuple(player, [](/UnrealEngine.com/Marketplace:)entitlement_change(entitlement_type))) = external {}
 
-  MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `GetPriceVBucks` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GetPriceVBucks` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GetPriceVBucks<public>(P: (/Fortnite.com/Marketplace:)price_vbucks): float = external {}
 
-  # Informs if usage of direct prompts to purchase is restricted for `Player`.
-  RestrictDirectPromptsToPurchase<native><public>(Player: player)<decides><reads>: void
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `GetPurchasedEntitlements` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GetPurchasedEntitlements` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GetPurchasedEntitlements<public>(
+    Player: player,
+    entitlement_type: subtype((/UnrealEngine.com/Marketplace:)entitlement
+  ))<suspends>: []tuple(entitlement_type, int) = external {}
 
-  # Informs if usage of paid random items is restricted for `Player`
-  # due to platform, territory, age, or user configuration restrictions.
-  RestrictPaidRandomItems<native><public>(Player: player)<decides><reads>: void
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `GrantEntitlement` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GrantEntitlement` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GrantEntitlement<public>(
+    Player: player,
+    entitlement_type: concrete_subtype((/Fortnite.com/Marketplace:)entitlement
+  ), ?Count: int = external {})<suspends>: logic = external {}
 
-  # Shows the Epic provided store front contain the specified `Offers`.
-  ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
+  @deprecated { Message := "Use `MakePriceVBucks` from the /UnrealEngine.com/Marketplace module instead." }
+  @available { MinUploadedAtFNVersion := 3800 }
+  # DEPRECATED - Use `MakePriceVBucks` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)MakePriceVBucks<public>: type { _(: float)<converges>: (/Fortnite.com/Marketplace:)price_vbucks } = external {}
 
-  # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
-  bundle_offer<native><public> := class<castable>(offer) {
-    Offers<native><public>: []tuple(offer, int) = external {}
-  }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `RestrictDirectPromptsToPurchase` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `RestrictDirectPromptsToPurchase` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)RestrictDirectPromptsToPurchase<public>(Player: player)<decides><reads>: void = external {}
 
-  # An entitlement that is tracked by the commerce system.
-  #
-  #  * A player may only have one `entitlement` if the entitlement is not consumable.
-  #  * A player may have `MaxCount` of a consumable entitlement.
-  #  * Your derived type must be <concrete> to be used by the purchase system.
-  #  * If the entitlement you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
-  entitlement<native><public> := class<castable>(has_icon, has_description) {
-    ConsequentialToGameplay<native><public>: logic = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `RestrictPaidRandomItems` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `RestrictPaidRandomItems` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)RestrictPaidRandomItems<public>(Player: player)<decides><reads>: void = external {}
 
-    Consumable<native><public>: logic = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `ShowOffersDialog` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `ShowOffersDialog` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)ShowOffersDialog<public>(
+    Player: player,
+    Offers: [](/Fortnite.com/Marketplace:)offer,
+    ?Title: message = external {}
+  )<suspends>: void = external {}
 
-    MaxCount<native><public>: int = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `bundle_offer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `bundle_offer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)bundle_offer<public> := (/UnrealEngine.com/Marketplace:)bundle_offer
 
-    PaidArea<native><public>: logic = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `entitlement` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `entitlement` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)entitlement<public> := (/UnrealEngine.com/Marketplace:)entitlement
 
-    PaidRandomItem<native><public>: logic = external {}
-  }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `entitlement_change` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `entitlement_change` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)entitlement_change<public>(t: type) := (/UnrealEngine.com/Marketplace:)entitlement_change(t)
 
-  # Entitlements that have changed in quantity.
-  # This will also include entitlement changes triggered by moderation, refunds and other commerce operations.
-  entitlement_change<native><public>(t: type) := class<internal> {
-    # Change to the original quantity of entitlement.
-    Change<native><public>: int
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `entitlement_offer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `entitlement_offer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)entitlement_offer<public> := (/UnrealEngine.com/Marketplace:)entitlement_offer
 
-    # Entitlement that has changed in quantity.
-    Entitlement<native><public>: t
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `offer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `offer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)offer<public> := (/UnrealEngine.com/Marketplace:)offer
 
-    (/Fortnite.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>(): tuple(t) = external {}
+  @deprecated { Message := "Use `offer_interactable_component` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `offer_interactable_component` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)offer_interactable_component<public> := (/UnrealEngine.com/Marketplace:)offer_interactable_component
 
-    # Total quantity of the entitlement now owned.
-    Quantity<native><public>: int
-  }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `price_dimension` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `price_dimension` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)price_dimension<public> := (/UnrealEngine.com/Marketplace:)price_dimension
 
-  # An `entitlement_offer` allows an individual `entitlement` to be purchased.
-  entitlement_offer<native><public> := class<castable>(offer) {
-    @available { MinUploadedAtFNVersion := 3800 }
-    @editable
-    EntitlementType<native><public>: concrete_subtype(entitlement)
-  }
-
-  # Offers are used to sell entitlements to players. See `entitlement_offer` and `bundle_offer` classes for more information.
-  offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
-    # Override this method to restrict availability of an offer in certain regions and minimum ages.
-    #
-    # Parameters:
-    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent territories, or special
-    #                  area of geographical interest
-    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for the subdivision
-    #                  within a country, dependent territory, or special area of geographical interest.
-    #                  If subdivision information is unavailable for players in a region SubdivisionCode
-    #                  will be an empty string.
-    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows, Xbox, Luna, GeForceNow
-    #
-    # Returns:
-    #     Fails if sale of this offer should not be allowed in this (CountryCode, SubdivisionCode)
-    #     Minimum age of purchase in this (CountryCode, SubdivisionCode).
-    #     If minimum age is higher than the highest available age by region the offer will not be made
-    GetMinPurchaseAge<native_callable><public>(
-      CountryCode: string,
-      SubdivisionCode: string,
-      PlatformFamily: string
-    )<computes><decides>: int = external {}
-
-    @editable
-    Price<native><public>: price_dimension
-  }
-
-  using { /Verse.org/SceneGraph }
-  offer_interactable_component<native><public> := class(interactable_component) {
-    CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
-
-    InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
-
-    OnBeginSimulation<override>(): void = external {}
-
-    OnSucceed<protected>(Agent: agent): void = external {}
-
-    @editable
-    var Offer<public>: offer
-
-    var SucceededEventHandle<public>: ?cancelable = external {}
-  }
-
-  using { /Verse.org/Assets }
-  using { /Verse.org/Presentation }
-  price_dimension<native><public> := class<computes><abstract><epic_internal> {}
-
-  # Verse path: /Fortnite.com/Marketplace
-  price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+  using { /UnrealEngine.com/Marketplace }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `price_vbucks` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `price_vbucks` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)price_vbucks<public> := (/UnrealEngine.com/Marketplace:)price_vbucks
 
   # Verse path: /Fortnite.com/Marketplace
   using { /Verse.org/Native }
@@ -10714,11 +10677,13 @@ Vehicles<public> := module {
 
 # Module import path: /Fortnite.com/Weapons
 Weapons<public> := module {
+  using { /Verse.org/SceneGraph }
+  AccelerantDrumGun_BR_CH7S4_Exotic<public> := class<final><concrete>(entity) {}
+
   AnvilRocketLauncher_BR_CH3S2_Epic<public> := class<final><concrete>(entity) {}
 
   AnvilRocketLauncher_BR_CH3S2_Legendary<public> := class<final><concrete>(entity) {}
 
-  using { /Verse.org/SceneGraph }
   AnvilRocketLauncher_BR_CH3S2_Rare<public> := class<final><concrete>(entity) {}
 
   ArcLightningGun_BR_CH7S1_Epic<public> := class<final><concrete>(entity) {}
@@ -10770,6 +10735,8 @@ Weapons<public> := module {
   AutomaticSniperRifle_BR_CH2S5_Uncommon<public> := class<final><concrete>(entity) {}
 
   BallisticShield_BR_CH5S1_Epic<public> := class<final><concrete>(entity) {}
+
+  BalloonPopperAssaultRifle_BR_CH7S4_Exotic<public> := class<final><concrete>(entity) {}
 
   BankShotPistol_BR_CH7S3_Epic<public> := class<final><concrete>(entity) {}
 
@@ -12066,11 +12033,16 @@ Weapons<public> := module {
 
   OutlawShotgun_BR_CH6S2_Uncommon<public> := class<final><concrete>(entity) {}
 
+  # Overclocked8BitShotgun_BR_CH7S4_Exotic
+  OverclockedEightBitShotgun_BR_CH7S4_Exotic<public> := class<final><concrete>(entity) {}
+
   OverclockedPulseRifle_BR_CH4S2_Mythic<public> := class<final><concrete>(entity) {}
 
   OverdrivePulseRifle_BR_CH7S2_Exotic<public> := class<final><concrete>(entity) {}
 
   OverdriveTacticalPistol_BR_CH7S1_Mythic<public> := class<final><concrete>(entity) {}
+
+  OverpoweredPumpShotgun_BR_CH7S4_Exotic<public> := class<final><concrete>(entity) {}
 
   PinpointIronPumpShotgun_BR_CH7S1_Mythic<public> := class<final><concrete>(entity) {}
 
@@ -12293,6 +12265,12 @@ Weapons<public> := module {
   ReaperModularSniperRifle_BR_CH5S1_Rare<public> := class<final><concrete>(entity) {}
 
   ReaperModularSniperRifle_BR_CH5S1_Uncommon<public> := class<final><concrete>(entity) {}
+
+  ReaperSniperRifle_BR_CH7S2_Legendary<public> := class<final><concrete>(entity) {}
+
+  ReaperSniperRifle_BR_CH7S4_Epic<public> := class<final><concrete>(entity) {}
+
+  ReaperSniperRifle_BR_CH7S4_Rare<public> := class<final><concrete>(entity) {}
 
   ReaperSniperRifle_Ballistic_V1_Common<public> := class<final><concrete>(entity) {}
 

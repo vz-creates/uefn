@@ -1925,7 +1925,6 @@
 			"/Script/InterchangePipelines.InterchangeSparseVolumeTexturePipeline":{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{  },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":		{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":		{  },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{  },
 			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset":		{  },
@@ -2364,8 +2363,9 @@
 			"/Script/UnrealEd.SceneThumbnailInfo":								{  },
 			"/Script/UnrealEd.SceneThumbnailInfoWithPrimitive":					{  },
 			"/Script/UnrealEd.WorldThumbnailInfo":								{  },
+			"/Script/VerseFortniteAI.AIAnimationComponentData":					{ },
 			"/Script/VerseFortniteAI.NPCBehaviorScript":						{ "Visible": true },
-			"/Script/VerseFortniteAI.NPCCharacterDefinition": 					{ "Visible": true },			
+			"/Script/VerseFortniteAI.NPCCharacterDefinition": 					{ "Visible": true },
 			"/Script/VerseFortniteAI.NPCCharacterModifier_Inventory":			{  },
 			"/Script/VerseFortniteAI.NPCCharacterModifier_Team":				{  },
 			"/Script/VerseFortniteAI.NPCCharacterType":							{  },
@@ -3182,15 +3182,21 @@
 			"": {
 				"AllowList": [
 					"AssetEditor",
+					"CameraCutTrack",
+					"CinematicViewport",
 					"ContentBrowser",
+					"ControlRigEditMode",
+					"CurveEditorTools",
 					"EditorViewport",
 					"EditorViewportClient",
 					"ValkyrieFortniteScriptableToolsEditorMode",
 					"FortniteEditorCommands",
 					"GenericCommands",
+					"GenericCurveEditor",
 					"LandscapeEditor",
 					"LevelEditor",
 					"LevelEditorModes",
+					"LevelSequenceEditor",
 					"LevelViewport",
 					"MainFrame",
 					"ModelingModeCommands",
@@ -3209,9 +3215,16 @@
 					"ModelingToolsCubeGridTool",
 					"ModelingToolsEditMeshPolygonsTool",
 					"ModelingToolsDrawAndRevolveTool",
+					"Sequencer",
+					"SequencerTrackFilters",
+					"SequencerTrackFilter_AnimLayerSequencerFilter",
+					"SequencerTrackFilter_ControlRigControls",
+					"SequencerTrackFilter_ControlRigSelectedControls",
+					"SimpleViewEditor",
 					"SourceControl",
 					"SolarisEditorCommands",
 					"SystemWideCommands",
+					"ToolableTimelineEditor",
 					"UVEditor",
 					"ValkyrieFortniteEditor"
 				]
@@ -4200,7 +4213,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bAssignProjectVersePathAutomatically", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement", "bKeepSessionOnProjectChange", "ClientExitSessionBehavior" ]
+				"AllowList": [ "DefaultProjectName", "bUseUnrealSourceControlForNewProjects", "bShowOnlyLocalProjects", "ProjectSearchPaths", "UserDefinedProjectTemplateSearchPaths", "bShowPluginFriendlyNameOptions", "ReferencedContentCacheSizeGB", "bStartupWithLastProject", "ValkyrieLoadAtStartupMostRecentProject", "bOnlyShowUnseenNewsOnStartup", "bLoginOnStartup", "bEnableIterativeValidation", "bAutoSaveOnLaunch", "ClientResolution", "ClientWindowMode", "bAutomaticallyUpdateConnectedClients", "bAutomaticallyLaunchClientWhenTesting", "AdditionalCommandLineArguments", "bTestOnLocalMachine", "UserPreferencePermissions", "ProjectPermissions", "EffectivePermissions", "EntitledPermissions", "bDevBuildGivesAllEntitlements", "BuildIdOverride", "bDragAndDropUseNewWorkflow", "bDragAndDropPreferActorPlacement", "bKeepSessionOnProjectChange", "ClientExitSessionBehavior" ]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorPythonConfig",
@@ -5594,6 +5607,12 @@
 				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
+				"Type": "/Script/VerseFortniteAI.AIAnimationComponentData",
+				"AllowList": [ "PlayAnimGameplayAbility", "DefaultSlot" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 1
+			},
+			{
 				"Type": "/Script/VerseFortniteAI.NPCCharacterDefinition",
 				"AllowList": [ "FortReleaseVersion", "AnimPreset", "CharacterBlueprint", "IKRetargeter", "SkeletalMesh", "AnimationBP" ],
 				"DenyList": [],
@@ -6436,6 +6455,11 @@
 				"AllowList": [ "LeftModeContent", "RightModeContent", "SelectedIndex" ],
 				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 1
+			},
+			{
+				"Type": "/Script/FortDelMarTrackRuntime.FortDelMarTrackSnapToSplinePointComponent",
+				"AllowList": [ "SplinePointSnapMode", "SplinePointIndexToSnapTo" ],
+				"bAllowListAllSubclassProperties": true
 			}
 		]
 	},

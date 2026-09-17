@@ -534,7 +534,7 @@
 		"A7820CFB20A743598C542C149623CF50":
 		{
 			"FriendlyName": "Dev-ControlRig",
-			"Version": 46
+			"Version": 47
 		},
 		"A7C3E2915F8B4D063E1A9C74D20F68B5":
 		{
@@ -684,7 +684,7 @@
 		"DC49959B53C04DE79156EA885E7C5D39":
 		{
 			"FriendlyName": "Dev-RigVM",
-			"Version": 26
+			"Version": 27
 		},
 		"DCC215F26CB44CD09693A2A0BE6A6D23":
 		{
@@ -2285,6 +2285,7 @@
 			"/Script/UnrealEd.SceneThumbnailInfoWithPrimitive",
 			"/Script/UnrealEd.WorldThumbnailInfo",
 			"/Script/VerseDevices.ScriptDevice",
+			"/Script/VerseFortniteAI.AIAnimationComponentData",
 			"/Script/VerseFortniteAI.NPCBehaviorScript",
 			"/Script/VerseFortniteAI.NPCCharacterDefinition",
 			"/Script/VerseFortniteAI.NPCCharacterModifier_Inventory",
@@ -2534,7 +2535,12 @@
 			"/Script/EnhancedInput.InputTriggerPressed",
 			"/Script/EntitySequencer.MovieSceneVerseEventSection",
 			"/Script/EntitySequencer.MovieSceneVerseEventTrack",
+			"/Script/FMCoreRuntime.MusicTimeNetSyncComponent",
 			"/Script/FMJamPlayspaceRuntime.JamPlayspaceVolumeComponent_ProvideTransforms",
+			"/Script/FMJamSessionRuntime.JamSessionComponent_AudioState",
+			"/Script/FMJamSessionRuntime.JamSessionComponent_MusicManager",
+			"/Script/FMJamSessionRuntime.JamSessionComponent_PlayerManager",
+			"/Script/FMJamSessionRuntime.JamSessionComponent_ReactiveFX",
 			"/Script/FMJamSessionRuntime.JamSessionComponent_SpecialLocationMarkerManager",
 			"/Script/FMJamSessionRuntime.JamSessionSpecialLocationMarker",
 			"/Script/Foliage.ProceduralFoliageBlockingVolume",
@@ -2586,7 +2592,6 @@
 			"/Script/ItemizationCoreRuntime.InventorySetupDataNativeBasic",
 			"/Script/ItemizationCoreRuntime.ItemAttachmentDefinition",
 			"/Script/ItemizationCoreRuntime.ItemMeshAttachmentDefinition",
-			"/Script/ItemizationCoreRuntime.ItemOwnerPoseAsset",
 			"/Script/ItemizationCoreRuntime.ItemSkeletalMeshAttachmentDefinition",
 			"/Script/ItemizationCoreRuntime.ItemStaticMeshAttachmentDefinition",
 			"/Script/ItemizationRuntime.InventorySetupDataNativeFort",
@@ -2658,6 +2663,7 @@
 			"/Script/AmbientAudio.AmbientAudioDataAsset",
 			"/Script/Engine.BlueprintGeneratedClass",
 			"/Script/Engine.CurveFloat",
+			"/Script/Engine.MaterialFunction",
 			"/Script/Engine.SoundConcurrency",
 			"/Script/Engine.SubtitleAssetUserData",
 			"/Script/Entity.EntityPrefab",
@@ -3810,7 +3816,6 @@
 			"/Script/IKRigUAF.RigUnit_UAFIKRetargeter_v2",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize",
-			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize",
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits",
 			"/Script/LimbTwistOp.IKRetargetLimbTwistOp",
@@ -4017,6 +4022,11 @@
 			"/Script/RigVM.RigVMFunction_ForLoopCount",
 			"/Script/RigVM.RigVMFunction_FramesToSeconds",
 			"/Script/RigVM.RigVMFunction_GetAbsoluteTime",
+			"/Script/RigVM.RigVMFunction_GetConsoleVariableBase",
+			"/Script/RigVM.RigVMFunction_GetConsoleVariableBool",
+			"/Script/RigVM.RigVMFunction_GetConsoleVariableFloat",
+			"/Script/RigVM.RigVMFunction_GetConsoleVariableInt",
+			"/Script/RigVM.RigVMFunction_GetConsoleVariableString",
 			"/Script/RigVM.RigVMFunction_GetDeltaTime",
 			"/Script/RigVM.RigVMFunction_GetNameNumericSuffix",
 			"/Script/RigVM.RigVMFunction_GetWorldTime",
@@ -4434,6 +4444,7 @@
 			"/Script/UAF.RigUnit_AnimNextModuleDependenciesBase",
 			"/Script/UAF.RigUnit_AnimNextModuleEventBase",
 			"/Script/UAF.RigUnit_AnimNextModuleRemoveDependencies",
+			"/Script/UAF.RigUnit_AnimNextNotifyEventBase",
 			"/Script/UAF.RigUnit_AnimNextParameterBase",
 			"/Script/UAF.RigUnit_AnimNextParameterBeginExecution",
 			"/Script/UAF.RigUnit_AnimNextPostPhysicsEvent",
@@ -4446,6 +4457,10 @@
 			"/Script/UAF.RigUnit_GetActorTransform",
 			"/Script/UAF.RigUnit_GetMeshTransform",
 			"/Script/UAF.RigUnit_GetSocketTransform",
+			"/Script/UAF.RigUnit_HandleNotify",
+			"/Script/UAF.RigUnit_HandleNotifyBegin",
+			"/Script/UAF.RigUnit_HandleNotifyEnd",
+			"/Script/UAF.RigUnit_HandleNotifyTick",
 			"/Script/UAF.RigUnit_IsAnimBPDriven",
 			"/Script/UAF.RigUnit_IsRecentlyRendered",
 			"/Script/UAF.RigUnit_MakeReferencePoseFromSkeletalMeshComponent",
@@ -4463,6 +4478,13 @@
 			"/Script/UAF.RigVMDispatch_GetObjectProperty",
 			"/Script/UAF.RigVMDispatch_GetParameter",
 			"/Script/UAF.RigVMDispatch_GetScopedParameter",
+			"/Script/UAF.RigVMDispatch_GetUAFBoneTransformLabelValue",
+			"/Script/UAF.RigVMDispatch_GetUAFFloatLabelValue",
+			"/Script/UAF.RigVMDispatch_GetUAFIntegerLabelValue",
+			"/Script/UAF.RigVMDispatch_GetUAFLabelValue",
+			"/Script/UAF.RigVMDispatch_GetUAFQuaternionLabelValue",
+			"/Script/UAF.RigVMDispatch_GetUAFTransformLabelValue",
+			"/Script/UAF.RigVMDispatch_GetUAFVectorLabelValue",
 			"/Script/UAF.RigVMDispatch_SetLayerParameter",
 			"/Script/UAF.RigVMTrait_AnimNextPublicVariables",
 			"/Script/UAF.RigVMTrait_ModuleEventDependency",
@@ -4472,6 +4494,7 @@
 			"/Script/UAF.RigVMTrait_OverrideVariables",
 			"/Script/UAF.RigVMTrait_OverrideVariablesForAsset",
 			"/Script/UAF.RigVMTrait_OverrideVariablesForStruct",
+			"/Script/UAF.RigVMTrait_UAFNotifyParameters",
 			"/Script/UAFAnimGraph.RigDecorator_AnimNextCppDecorator",
 			"/Script/UAFAnimGraph.RigUnit_AnimNextGraphEvaluator",
 			"/Script/UAFAnimGraph.RigUnit_AnimNextGraphRoot",
@@ -4487,6 +4510,7 @@
 			"/Script/UAFAnimGraph.RigUnit_UAFRunAsset",
 			"/Script/UAFAnimNode.RigUnit_RunAnimNode_v1",
 			"/Script/UAFAnimNode.RigUnit_RunAnimNode_v2",
+			"/Script/UAFAnimNode.RigUnit_UAFGetNotifyValueBundle",
 			"/Script/UMG.WidgetAnimationBinding",
 			"/Script/UMG.WidgetTransform"
 		],
@@ -15787,13 +15811,6 @@
 			"/InterchangeAssets/Utilities/T_Bayer64_Grayscale_64px.T_Bayer64_Grayscale_64px",
 			"/Itemization/BRStyle/ItemizationConfiguration_BRStyle.ItemizationConfiguration_BRStyle",
 			"/Itemization/Configuration/ItemizationConfiguration_Empty.ItemizationConfiguration_Empty",
-			"/Itemization/OwnerPoses/ItemOwnerPose_AssaultRifle.ItemOwnerPose_AssaultRifle",
-			"/Itemization/OwnerPoses/ItemOwnerPose_Bow.ItemOwnerPose_Bow",
-			"/Itemization/OwnerPoses/ItemOwnerPose_ConsumableSmall.ItemOwnerPose_ConsumableSmall",
-			"/Itemization/OwnerPoses/ItemOwnerPose_ConsumableSmallWide.ItemOwnerPose_ConsumableSmallWide",
-			"/Itemization/OwnerPoses/ItemOwnerPose_FishingRod.ItemOwnerPose_FishingRod",
-			"/Itemization/OwnerPoses/ItemOwnerPose_Pistol.ItemOwnerPose_Pistol",
-			"/Itemization/OwnerPoses/ItemOwnerPose_Torch.ItemOwnerPose_Torch",
 			"/Lab_Assets/Environments/Sets/Lab/DataAssets/AB_Research_Roof.AB_Research_Roof",
 			"/Lab_Assets/Environments/Sets/Lab/DataAssets/AB_Rubber_Floor_Snow.AB_Rubber_Floor_Snow",
 			"/Lab_Assets/Environments/Sets/Lab/DataAssets/AB_Tent_Roof.AB_Tent_Roof",
@@ -33327,11 +33344,22 @@
 	{
 		"VKCreateUGC": [],
 		"VKCreateUGCEarlyAccess": [],
-		"VKCreateUGCEpicDeveloper": [],
+		"VKCreateUGCEpicDeveloper": [
+			"/Script/Engine.MaterialFunction"
+		],
 		"VKCreateUGCPartner": []
 	},
 	"CookModuleImportTypeAllowLists":
 	{
+		"VKCreateUGCEpicDeveloper":
+		{
+			"/Script/Engine.Material": [
+				"/Script/Engine.MaterialFunction"
+			],
+			"/Script/Engine.MaterialFunction": [
+				"/Script/Engine.MaterialFunction"
+			]
+		}
 	},
 	"ClassTypesList": [
 		"/Script/ControlRig.ControlRigBlueprintGeneratedClass",

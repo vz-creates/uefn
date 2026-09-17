@@ -836,6 +836,7 @@
 			"/Script/Entity.EntityPrefab":						{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/Engine.EulerAnalysisProperties":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.LinearAnalysisProperties":			{ "Rules": ["View","Create"] },
+			"/Script/Engine.MaterialFunction":					{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/Engine.PoseAsset":							{ "Rules": ["View","Create"] },
 			"/Script/Engine.UserDefinedEnum":					{ "Rules": ["View","Create"], "Subclasses": "All"},
 			"/Script/Engine.UserDefinedStruct":					{ "Rules": ["View","Create"], "Subclasses": "All"},
@@ -856,12 +857,10 @@
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":{ "Rules": ["View","Create"] },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":	{ "Rules": ["View","Create"] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":	{ "Rules": [ "View" ] },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Tags":		{ "Rules": [ "View" ] },
 			"/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset": { "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/ItemizationCoreRuntime.InventoryConfigurationAsset":	{ "Rules": ["View","Create"] },
-			"/Script/ItemizationCoreRuntime.ItemOwnerPoseAsset":			{ "Rules": ["View"] },
 			"/Script/ItemizationRuntime.InventorySetupDataNativeFort":		{ "Rules": ["View","Create"] },
 			"/Script/ItemizationRuntime.ItemDefinition":					{ "Rules": ["View", "Create" ] },
 			"/Script/NaniteDisplacedMesh.NaniteDisplacedMesh":	{ "Rules": ["View","Create","ModuleAPI"] },
@@ -1110,6 +1109,11 @@
 			"/Script/FMJamPlayspaceRuntime.JamPlayspaceVolumeComponent_ProvideTransforms": { "Visible": true },
 			"/Script/FMJamSessionRuntime.JamSessionComponent_SpecialLocationMarkerManager": { "Visible": true },
 			"/Script/FMJamSessionRuntime.JamSessionSpecialLocationMarker": { "Visible": true },
+			"/Script/FMJamSessionRuntime.JamSessionComponent_AudioState": { "Visible": true },
+			"/Script/FMJamSessionRuntime.JamSessionComponent_MusicManager": { "Visible": true },
+			"/Script/FMJamSessionRuntime.JamSessionComponent_PlayerManager": { "Visible": true },
+			"/Script/FMJamSessionRuntime.JamSessionComponent_ReactiveFX": { "Visible": true },
+			"/Script/FMCoreRuntime.MusicTimeNetSyncComponent": { "Visible": true },
 			"/Script/FortniteGame.FortInputMappingContext": 			{ "Visible": true },
 			"/Script/FortniteGame.FortPlayerMappableKeySettings":		{ "Visible": true },
 			"/Engine/EditorBlueprintResources/StandardMacros.StandardMacros_C":{ "Visible": true },
@@ -1153,11 +1157,9 @@
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Icon":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Traits":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_MaxStackSize":	{ "Visible": true },
-			"/Script/ItemizationCoreRuntime.ItemComponentData_OwnerPose":		{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_StackSize":		{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Tags":			{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.InventoryConfigurationAsset":		{ "Visible": true },
-			"/Script/ItemizationCoreRuntime.ItemOwnerPoseAsset":				{ "Visible": true },
 			"/Script/ItemizationRuntime.InventorySetupDataNativeFort":			{ "Visible": true },
 			"/Script/ItemizationUI.ItemizationUIAllowedConversionFunctions":	{ "Subclasses": "All" },
 			"/Script/ItemizationUI.InventoryCollectionViewModelResolver": 	{ "Visible": true },
@@ -1323,7 +1325,7 @@
 			},
 			"Global": {
 				"AllowList": {
-					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "VkContentResolution" ]
+					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "ValkyrieMemoryCalculation", "VkContentResolution" ]
 				}
 			},
 			"LevelEditor": {
@@ -1389,7 +1391,18 @@
 		"bShowContentServiceLinks": true,
 		"bShowGameProjectCollections": true,
 		"bShowAssetAccessSpecifierFilters": true,
-		"VerseScopesToShowAssetsFor": { "+": ["InternalAPI", "InternalUser"] }
+		"VerseScopesToShowAssetsFor": { "+": ["InternalAPI", "InternalUser"] },
+		"AllowedCookModuleExportTypes": [
+			"/Script/Engine.MaterialFunction"
+		],
+		"AllowedCookModuleImportTypes": {
+			"/Script/Engine.MaterialFunction": {
+				"AllowList": [ "/Script/Engine.MaterialFunction" ]
+			},
+			"/Script/Engine.Material": {
+				"AllowList": [ "/Script/Engine.MaterialFunction" ]
+			}
+		}
 	},
 	"PropertyEditorClassPermissionList": {
 		"+": [
@@ -1599,7 +1612,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "bEnableForkSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins", "CharacterToUse" ]
+				"AllowList": [ "bEnableForkSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins"]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",

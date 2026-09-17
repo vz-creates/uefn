@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.10-CL-57566230
+Generated from build: ++Fortnite+Release-42.20-CL-58011042
 #################################################
 #>
 
@@ -121,7 +121,7 @@ Assets<public> := module {
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
-  # Fails if the `MaxSize` of the channel's `agent_group` is undefined or larger than the channel type's limit.
+  # Fails if the channel's `agent_group` already has more members than the channel type's limit.
   # * Voice Chat Max Size = 80 participants.
   # * Text Chat Max Size = 100 participants.
   (Entity: entity where MemberInfo: subtype(member_info_interface)).AddChatChannel<native><public>(Channel: chat_channel(MemberInfo)): result(
@@ -146,12 +146,19 @@ Chat<public> := module {
 
   using { /Verse.org/AgentGroup }
   using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4000 }
-  chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal> {
+  chat_channel<native><public>(member_info: subtype(member_info_interface)) := class<unique><abstract><internal>(enableable) {
     (/Verse.org/Chat/chat_channel:)Chat_chat_channel_Variance<private>(): tuple(member_info) = external {}
+
+    Disable<override>(): void = external {}
+
+    Enable<override>(): void = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
     Group<public>: agent_group_interface(member_info)
+
+    IsEnabled<override>()<transacts><decides>: void = external {}
 
     Name<public>: message
   }
@@ -160,7 +167,7 @@ Chat<public> := module {
   # Used to specify permissions and other settings for a voice_channel.
   has_voice_member_info<native><public> := interface(member_info_interface) {
     # Determines if the participant can send voice messages to the channel.
-    # If true, the participant can still hear those who are broadcasting and see users in the social overlay panel.
+    # If false, the participant can still hear those who are broadcasting and see users in the social overlay panel.
     var CanBroadcast<public>: logic = external {}
   }
 
@@ -175,10 +182,39 @@ Chat<public> := module {
   # A `voice_channel` defines a group of agents who can communicate via voice chat.
   # An agent can be a member of more than one `voice_channel`.Voice channels can accommodate 80 members of the channel's `Group`. Agents beyond this limit are not included in the chat.A chat participant in a `voice_channel` may be restricted from voice chat based on parental controls and/or user settings.
   voice_channel<native><public>(member_info: subtype(has_voice_member_info)) := class<final>(chat_channel(member_info)) {
-    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info): tuple() = external {}
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Signalled when a member of this channel starts speaking on it.
+    # Returns a subscribable with a payload of the speaking `agent`.
+    BeginBroadcastEvent<public>(): listenable(agent) = external {}
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Signalled when a member's `CanBroadcast` changes while they hold one of the channel's slots.
+    # Returns a subscribable with a payload of the member and their new `CanBroadcast` value.
+    CanBroadcastChangeEvent<public>(): listenable(tuple(agent, logic)) = external {}
+
+    (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance<private>(: member_info, : member_info, : member_info): tuple() = external {}
 
     @available { MinUploadedAtFNVersion := 4210 }
     (/Verse.org/Chat/voice_channel:)Chat_voice_channel_Variance_Inherited<private>(): tuple(member_info) = external {}
+
+    # Disables users from communicating on the channel.
+    Disable<override><native>(): void
+
+    # Allows users to communicate on the channel.
+    Enable<override><native>(): void
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Signalled when a member of this channel stops speaking on it.
+    # Returns a subscribable with a payload of the `agent` that stopped speaking.
+    EndBroadcastEvent<public>(): listenable(agent) = external {}
+
+    # Returns if any user can communicate on the channel.
+    IsEnabled<override><native>()<transacts><decides>: void
+
+    @available { MinUploadedAtFNVersion := 4220 }
+    # Checks to see if a given member is speaking on the `voice_channel`.
+    # Fails if the agent is not a member of the channel, or is not currently speaking.
+    IsMemberSpeaking<native><public>(Agent: agent)<decides><reads>: void
   }
 }
 
@@ -751,7 +787,7 @@ Input<public> := module {
     ZoomOut<public>: input_action(logic) = external {}
   }
 
-  # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
+  # Flags for input devices currently available to the player. Updates at runtime as devices connect or disconnect. `Touch` is a platform capability and does not change during a session. Note that `Keyboard` and `Mouse` always carry the same value because the engine groups them as a single capability today.
   available_input_devices<native><public> := struct {
     Gamepad<native><public>: logic = external {}
 

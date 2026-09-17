@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.10-CL-57566230
+Generated from build: ++Fortnite+Release-42.20-CL-58011042
 #################################################
 #>
 
@@ -365,8 +365,24 @@ AI<public> := module {
   }
 
   # NPC Component
-  fort_npc_component<native><epic_internal> := class<final_super>(component, pawn_interop_interface) {
+  fort_npc_component<native><epic_internal> := class<final_super>(
+    component,
+    pawn_interop_interface,
+    transform_bridge_offset_interface
+  ) {
+    @editable
+    # Path to the anim instance class to apply to the interop pawn alongside the avatar mesh. Leave empty to keep the animation blueprint the pawn was authored with.
+    AvatarAnimClass<native><epic_internal>: string = external {}
+
+    @editable
+    DrawSkeleton<native><epic_internal>: logic = external {}
+
+    GetTransformOffset<override><native>(Info: transform_bridge_offset_info)<reads>: ?(/Verse.org/SpatialMath:)vector3
+
     HandlePawnLinked<override><native>(Info: pawn_linked_info): void
+
+    @editable
+    HasAvatar<native><epic_internal>: logic = external {}
 
     @editable
     Logs<epic_internal>: logic = external {}
@@ -434,6 +450,9 @@ AI<public> := module {
 
     # Untether the NPC.
     Untether<native><public>(): void
+
+    # The guard's current shooting-accuracy tier. Setting it at runtime immediately re-applies the aiming/attacking skill on the live NPC.
+    var Accuracy<epic_internal>: npc_accuracy = external {}
   }
 
   @available { MinUploadedAtFNVersion := 3900 }
@@ -612,6 +631,17 @@ AI<public> := module {
   }
 
   navigation_target<native><public> := class<epic_internal> {}
+
+  # Shooting-accuracy tier for a Fortnite guard NPC. Mirrors the guard spawner's Accuracy option (LOW / MODERATE / HIGH / VERY HIGH).
+  npc_accuracy<native><epic_internal> := enum<open> {
+    High
+
+    Low
+
+    Moderate
+
+    VeryHigh
+  }
 
   @available { MinUploadedAtFNVersion := 3900 }
   # Fortnite NPC AI actions management
@@ -880,20 +910,12 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_ability_anim_layer<native><public> := enum {
-    FullBody
-
-    UpperBody
-  }
-
-  @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_animation_element_span<native><public> := class<concrete>(fort_ability_timeline_element_span) {
     @editable {}
-    Animation<native><public>: animation_sequence = external {}
+    AnimationLayer<native><public>: play_animation_layer = external {}
 
     @editable {}
-    AnimationLayer<native><public>: fort_ability_anim_layer = external {}
+    AnimationSequence<native><public>: animation_sequence = external {}
 
     @editable {}
     (/Fortnite.com/Abilities/fort_ability_animation_element_span:)EaseIn<native><public>: float = external {}
@@ -1098,6 +1120,7 @@ Abilities<public> := module {
   }
 
   using { /UnrealEngine.com/Abilities }
+  using { /Verse.org }
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
@@ -1268,7 +1291,7 @@ Abilities<public> := module {
   self_ability_target_query<native><public> := class(ability_target_query) {}
 
   # Verse path: /Fortnite.com/Abilities
-  using { /Verse.org }
+  using { /Fortnite.com/Animation/PlayAnimation }
 }
 
 # Module import path: /Fortnite.com/Animation
@@ -1278,16 +1301,21 @@ Animation<public> := module {
     # Get the play_animation_controller for the specified character.
     (InCharacter: fort_character).GetPlayAnimationController<native><public>()<transacts><decides>: play_animation_controller
 
-    fort_npc_play_animation_component<native><epic_internal> := class<final_super><epic_internal>(
+    fort_play_animation_component<native><epic_internal> := class<final_super><epic_internal>(
       component,
       play_animation_controller
     ) {
+      @editable
+      # Animation slot used by play_animation_layer.FullBody.
+      FullBodySlot<native><epic_internal>: string = external {}
+
       OnInitialized<native><override>(): void
 
       OnUninitializing<native><override>(): void
 
       Play<override>(
         AnimationSequence: animation_sequence,
+        ?Layer: play_animation_layer = external {},
         ?PlayRate: float = external {},
         ?PlayCount: float = external {},
         ?StartPositionSeconds: float = external {},
@@ -1297,6 +1325,7 @@ Animation<public> := module {
 
       PlayAndAwait<override>(
         AnimationSequence: animation_sequence,
+        ?Layer: play_animation_layer = external {},
         ?PlayRate: float = external {},
         ?PlayCount: float = external {},
         ?StartPositionSeconds: float = external {},
@@ -1305,17 +1334,22 @@ Animation<public> := module {
       )<suspends>: play_animation_result = external {}
 
       @editable
-      PlayAnimationSettings<native><epic_internal>: fort_npc_play_animation_settings = external {}
+      PlayAnimationSettings<native><epic_internal>: fort_play_animation_settings = external {}
+
+      @editable
+      # Animation slot used by play_animation_layer.UpperBody.
+      UpperBodySlot<native><epic_internal>: string = external {}
     }
 
     @import_as("/Script/VerseFortniteAI.UAIAnimationComponentData")
-    fort_npc_play_animation_settings<native><epic_internal> := class {}
+    fort_play_animation_settings<native><epic_internal> := class {}
 
     # An interface for playing an animation on an object.
     play_animation_controller<native><public> := interface<epic_internal> {
       # Start an animation sequence and obtain an instance to query and manipulate.
       Play<public>(
         AnimationSequence: animation_sequence,
+        ?Layer: play_animation_layer = external {},
         ?PlayRate: float = external {},
         ?PlayCount: float = external {},
         ?StartPositionSeconds: float = external {},
@@ -1326,6 +1360,7 @@ Animation<public> := module {
       # Play an animation sequence.
       PlayAndAwait<public>(
         AnimationSequence: animation_sequence,
+        ?Layer: play_animation_layer = external {},
         ?PlayRate: float = external {},
         ?PlayCount: float = external {},
         ?StartPositionSeconds: float = external {},
@@ -1359,6 +1394,15 @@ Animation<public> := module {
 
       # Stops the animation.
       Stop<native><public>(): void
+    }
+
+    # The body layer an animation plays on.
+    play_animation_layer<native><public> := enum<open> {
+      # The whole skeleton is driven by the animation.
+      FullBody
+
+      # The animation plays on the upper body when the character is in motion.
+      UpperBody
     }
 
     using { /Fortnite.com/Characters }
@@ -1460,6 +1504,9 @@ Armory<public> := module {
 
   # The component on weapons entities like pistols and assault rifles for tweaking weapon properties
   fort_trace_weapon_component<native><public> := class<internal>(fort_weapon_component) {
+    # True while the weapon is actually taking a shot, whoever pulled the trigger. This is the shot cadence rather than the request: it goes false between the rounds of a burst and while a reload or an equip is holding the shot back.
+    IsFiring<native><epic_internal>()<reads>: logic
+
     OnRemovingFromScene<native><override>(): void
 
     SetAimDownSightRecoilMultiplier<native><public>(Val: float): void
@@ -1523,6 +1570,12 @@ Armory<public> := module {
     SetSprintingSpreadMultiplier<native><public>(Val: float): void
 
     SetWeaponFireSound<native><public>(Val: []sound_wave): void
+
+    # Starts firing the weapon, as if the wielder had pressed the fire input and kept holding it, so an automatic weapon keeps firing until StopFire. Server only: does nothing when called on a client. The wielder's own trigger takes precedence: this is ignored while they are already firing, and their own press or release takes it back, so call StopFire then StartFire again to reassert. The request also outlives an unequip and is re-applied to whatever the wielder equips next, so always end it with StopFire rather than relying on the weapon being put away.
+    StartFire<native><epic_internal>(): void
+
+    # Stops firing the weapon, as if the wielder had released the fire input. Server only: does nothing when called on a client. The wielder's own input is never suppressed, so this only takes back what StartFire asked for.
+    StopFire<native><epic_internal>(): void
 
     @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
     @category("Weapon Recoil")
@@ -1980,6 +2033,9 @@ Characters<public> := module {
     game_action_instigator,
     game_action_causer
   ) {
+    # Signaled when this `fort_character` changes active state.
+    ActiveChangedEvent<epic_internal>(): listenable(tuple(fort_character, logic))
+
     # Apply a force to a ‘fort_character’ with units in Newtons. Will not do anything if physics is disabled.
     ApplyForce<public>(Force: (/Verse.org/SpatialMath:)vector3): void
 
@@ -2109,6 +2165,8 @@ Characters<public> := module {
   @experimental
   @deprecated { Message := "Use `fort_character` directly instead." }
   fort_character_component<native><epic_internal> := class<final><final_super>(component, fort_character) {
+    ActiveChangedEvent<override>(): listenable(tuple(fort_character, logic)) = external {}
+
     ApplyForce<override>(Force: (/Verse.org/SpatialMath:)vector3): void = external {}
 
     ApplyLinearImpulse<override>(LinearImpulse: (/Verse.org/SpatialMath:)vector3): void = external {}
@@ -12005,9 +12063,15 @@ Game<public> := module {
     EliminatingCharacter<native><public>: ?fort_character
   }
 
+  @deprecated
   @experimental
-  fort_ability_component<native><epic_internal> := class {}
+  fort_ability_component<native><epic_internal> := class<final_super>(component) {
+    OnBeginSimulation<override><native>(): void
 
+    OnEndSimulation<override><native>(): void
+  }
+
+  @deprecated
   @experimental
   fort_damageable_component<native><epic_internal> := class(damageable_component) {
     @experimental
@@ -12465,6 +12529,35 @@ Itemization<public> := module {
   # `fort_br_inventory_weapon_hotbar_component` is the FNBR inventory for Fortnite weapons and gadgets.
   fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
+  @experimental
+  @hide_in_editor
+  fort_character_pose_modifier<epic_internal> := class<abstract><epic_internal>(character_pose_modifier) {}
+
+  @experimental
+  fort_character_pose_modifier_assault_rifle<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+    ProxyTable<override>: proxy_table = external {}
+  }
+
+  @experimental
+  fort_character_pose_modifier_bow<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+    ProxyTable<override>: proxy_table = external {}
+  }
+
+  @experimental
+  fort_character_pose_modifier_fire_torch<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+    ProxyTable<override>: proxy_table = external {}
+  }
+
+  @experimental
+  fort_character_pose_modifier_fishing_rod<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+    ProxyTable<override>: proxy_table = external {}
+  }
+
+  @experimental
+  fort_character_pose_modifier_pistol<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+    ProxyTable<override>: proxy_table = external {}
+  }
+
   # `fort_inventory_ammo_component` is the inventory for Fortnite ammo.
   fort_inventory_ammo_component<native><public> := class<final>(fort_inventory_component) {}
 
@@ -12558,7 +12651,12 @@ Itemization<public> := module {
   }
 
   @hide_in_editor
-  fort_item_definition_entity_base<native><epic_internal> := class<concrete>(entity) {}
+  fort_item_definition_entity_base<native><epic_internal> := class<concrete>(entity) {
+    ExpandItemComponents<native><epic_internal>()<converges>: void
+  }
+
+  @experimental
+  fort_item_owner_pose_modifier_component<epic_internal> := class<final>(item_owner_pose_modifier_component) {}
 
   @available { MinUploadedAtFNVersion := 4040 }
   @class_and_subclass_group_names("item")
@@ -12719,9 +12817,6 @@ Itemization<public> := module {
 Items<public> := module {
   @preload
   Acorn_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12737,9 +12832,6 @@ Items<public> := module {
 
   @preload
   ActivePowercell_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12755,9 +12847,6 @@ Items<public> := module {
 
   @preload
   AdhesiveResin_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12773,9 +12862,6 @@ Items<public> := module {
 
   @preload
   AirStrike_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12791,9 +12877,6 @@ Items<public> := module {
 
   @preload
   AlienNanites_BR_CH2S7_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12809,9 +12892,6 @@ Items<public> := module {
 
   @preload
   AmmoArrows_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12827,9 +12907,6 @@ Items<public> := module {
 
   @preload
   AmmoHeavyBullets_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12845,9 +12922,6 @@ Items<public> := module {
 
   @preload
   AmmoLightBullets_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12863,9 +12937,6 @@ Items<public> := module {
 
   @preload
   AmmoMediumBullets_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12881,9 +12952,6 @@ Items<public> := module {
 
   @preload
   AmmoRockets_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12899,9 +12967,6 @@ Items<public> := module {
 
   @preload
   AmmoShells_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12917,9 +12982,6 @@ Items<public> := module {
 
   @preload
   AnimalBones_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12935,9 +12997,6 @@ Items<public> := module {
 
   @preload
   Apple_BR_CH1S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12953,9 +13012,6 @@ Items<public> := module {
 
   @preload
   ArmoredWall_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12971,9 +13027,6 @@ Items<public> := module {
 
   @preload
   AuthorityKeycard_BR_CH2S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -12986,9 +13039,6 @@ Items<public> := module {
 
   @preload
   Bacon_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13004,9 +13054,6 @@ Items<public> := module {
 
   @preload
   Balloons_BR_CH1S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13022,9 +13069,6 @@ Items<public> := module {
 
   @preload
   BananaOfTheGods_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13040,9 +13084,6 @@ Items<public> := module {
 
   @preload
   Banana_BR_CH1S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13058,9 +13099,6 @@ Items<public> := module {
 
   @preload
   BandageBazooka_BR_CH2S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13073,9 +13111,6 @@ Items<public> := module {
 
   @preload
   Bandage_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13092,9 +13127,6 @@ Items<public> := module {
   @preload
   # LegacyBandage_BR_PreSeason_Common
   Bandage_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13110,9 +13142,6 @@ Items<public> := module {
 
   @preload
   Batteries_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13128,9 +13157,6 @@ Items<public> := module {
 
   @preload
   BigBushBomb_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13146,9 +13172,6 @@ Items<public> := module {
 
   @preload
   BirthdayPresents_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13164,9 +13187,6 @@ Items<public> := module {
 
   @preload
   BlastPowder_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13182,9 +13202,6 @@ Items<public> := module {
 
   @preload
   BlizzardGrenade_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13200,9 +13217,6 @@ Items<public> := module {
 
   @preload
   BlueFleckedDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13218,9 +13232,6 @@ Items<public> := module {
 
   @preload
   BlueMushroom_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13236,9 +13247,6 @@ Items<public> := module {
 
   @preload
   BlueShimmeringDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13254,9 +13262,6 @@ Items<public> := module {
 
   @preload
   BlueSpeckledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13272,9 +13277,6 @@ Items<public> := module {
 
   @preload
   BoarHair_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13290,9 +13292,6 @@ Items<public> := module {
 
   @preload
   BoogieBomb_BR_CH1S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13308,9 +13307,6 @@ Items<public> := module {
 
   @preload
   BoomBox_BR_CH1S7_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13326,9 +13322,6 @@ Items<public> := module {
 
   @preload
   BottleRockets_BR_CH1S7_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13344,9 +13337,6 @@ Items<public> := module {
 
   @preload
   Bouncer_BR_CH1S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13362,9 +13352,6 @@ Items<public> := module {
 
   @preload
   BrickABunker_BR_CH7S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13380,9 +13367,6 @@ Items<public> := module {
 
   @preload
   BrightcoreOre_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13398,9 +13382,6 @@ Items<public> := module {
 
   @preload
   BrownDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13416,9 +13397,6 @@ Items<public> := module {
 
   @preload
   BrownSpeckledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13434,9 +13412,6 @@ Items<public> := module {
 
   @preload
   BubbleShield_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13452,9 +13427,6 @@ Items<public> := module {
 
   @preload
   Bush_BR_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13470,9 +13442,6 @@ Items<public> := module {
 
   @preload
   BusinessTurret_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13488,9 +13457,6 @@ Items<public> := module {
 
   @preload
   Butter_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13506,9 +13472,6 @@ Items<public> := module {
 
   @preload
   Cabbage_BR_CH2S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13524,9 +13487,6 @@ Items<public> := module {
 
   @preload
   CandyCorn_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13542,9 +13502,6 @@ Items<public> := module {
 
   @preload
   CarvedTwine_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13560,9 +13517,6 @@ Items<public> := module {
 
   @preload
   CattyCornerKeycard_BR_CH2S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13577,9 +13531,6 @@ Items<public> := module {
   @preload
   # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13597,9 +13548,6 @@ Items<public> := module {
   @preload
   # Deprecated. Please use CeilingZapper_OG_CH1S1_Rare instead.
   CeilingZapper_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13615,9 +13563,6 @@ Items<public> := module {
 
   @preload
   CeilingZapper_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13633,9 +13578,6 @@ Items<public> := module {
 
   @preload
   CharBlackMineralPowder_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13651,9 +13593,6 @@ Items<public> := module {
 
   @preload
   ChiliChugSplash_BR_CH2S8_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13669,9 +13608,6 @@ Items<public> := module {
 
   @preload
   ChillerGrenade_BR_CH1S7_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13687,9 +13623,6 @@ Items<public> := module {
 
   @preload
   Chiller_BR_CH1S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13705,9 +13638,6 @@ Items<public> := module {
 
   @preload
   ChugCannon_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13721,9 +13651,6 @@ Items<public> := module {
   @preload
   # LegacyChugJug_BR_CH1S2_Legendary
   ChugJug_BR_CH1S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13736,9 +13663,6 @@ Items<public> := module {
 
   @preload
   ChugJug_BR_CH6S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13751,9 +13675,6 @@ Items<public> := module {
 
   @preload
   ChugSplash_BR_CH1S9_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13769,9 +13690,6 @@ Items<public> := module {
 
   @preload
   Clinger_BR_CH1S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13787,9 +13705,6 @@ Items<public> := module {
 
   @preload
   CloakGauntlets_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13802,9 +13717,6 @@ Items<public> := module {
 
   @preload
   ClusterClinger_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13820,9 +13732,6 @@ Items<public> := module {
 
   @preload
   Coal_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13838,9 +13747,6 @@ Items<public> := module {
 
   @preload
   Coconut_BR_CH1S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13856,9 +13762,6 @@ Items<public> := module {
 
   @preload
   CommandCavernKeycard_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13871,9 +13774,6 @@ Items<public> := module {
 
   @preload
   CopperOre_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13889,9 +13789,6 @@ Items<public> := module {
 
   @preload
   Corn_BR_CH2S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13907,9 +13804,6 @@ Items<public> := module {
 
   @preload
   CozyCampfire_BR_CH1S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13925,9 +13819,6 @@ Items<public> := module {
 
   @preload
   CrashPadJr_BR_CH4S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13943,9 +13834,6 @@ Items<public> := module {
 
   @preload
   CrashPad_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13961,9 +13849,6 @@ Items<public> := module {
 
   @preload
   CreativeFishingRod_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13976,9 +13861,6 @@ Items<public> := module {
 
   @preload
   CreativeProFishingRod_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -13991,9 +13873,6 @@ Items<public> := module {
 
   @preload
   CreepinCardboard_BR_CH2S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14006,9 +13885,6 @@ Items<public> := module {
 
   @preload
   CuddleFish_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14024,9 +13900,6 @@ Items<public> := module {
 
   @preload
   Currency_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14042,9 +13915,6 @@ Items<public> := module {
 
   @preload
   DamageTrap_BR_CH1S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14060,9 +13930,6 @@ Items<public> := module {
 
   @preload
   Decoy_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14078,9 +13945,6 @@ Items<public> := module {
 
   @preload
   DialADrop_BR_CH3S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14093,9 +13957,6 @@ Items<public> := module {
 
   @preload
   Diamond_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14111,9 +13972,6 @@ Items<public> := module {
 
   @preload
   DuctTape_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14129,9 +13987,6 @@ Items<public> := module {
 
   @preload
   Dynamite_BR_CH1S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14147,9 +14002,6 @@ Items<public> := module {
 
   @preload
   EfficientMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14165,9 +14017,6 @@ Items<public> := module {
 
   @preload
   EnhancedHarpoonGun_BR_CH7S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14180,9 +14029,6 @@ Items<public> := module {
 
   @preload
   EstateVaultKeycard_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14195,9 +14041,6 @@ Items<public> := module {
 
   @preload
   ExoticSlapBerryFizz_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14210,9 +14053,6 @@ Items<public> := module {
 
   @preload
   FalconScout_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14225,9 +14065,6 @@ Items<public> := module {
 
   @preload
   FibrousHerbs_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14243,9 +14080,6 @@ Items<public> := module {
 
   @preload
   FineGrainMineralPowder_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14261,9 +14095,6 @@ Items<public> := module {
 
   @preload
   FireGrenade_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14276,9 +14107,6 @@ Items<public> := module {
 
   @preload
   FireTrap_BR_CH2S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14294,9 +14122,6 @@ Items<public> := module {
 
   @preload
   FireflyJar_BR_CH2S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14312,9 +14137,6 @@ Items<public> := module {
 
   @preload
   Flag_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14327,9 +14149,6 @@ Items<public> := module {
 
   @preload
   Flashbang_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14345,9 +14164,6 @@ Items<public> := module {
 
   @preload
   Flashlight_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14360,9 +14176,6 @@ Items<public> := module {
 
   @preload
   Flopper_BR_CH2S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14378,9 +14191,6 @@ Items<public> := module {
 
   @preload
   FlowBerryFizz_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14393,9 +14203,6 @@ Items<public> := module {
 
   @preload
   FlowBerryMistGrenade_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14411,9 +14218,6 @@ Items<public> := module {
 
   @preload
   FlowBerry_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14429,9 +14233,6 @@ Items<public> := module {
 
   @preload
   FlowerPetals_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14447,9 +14248,6 @@ Items<public> := module {
 
   @preload
   FortillaKeycard_BR_CH2S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14462,9 +14260,6 @@ Items<public> := module {
 
   @preload
   FragGrenade_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14480,9 +14275,6 @@ Items<public> := module {
 
   @preload
   FriendZoneBubble_BR_CH7S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14495,9 +14287,6 @@ Items<public> := module {
 
   @preload
   FrozenIcecreamCone_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14513,9 +14302,6 @@ Items<public> := module {
 
   @preload
   GasCan_BR_CH2S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14528,9 +14314,6 @@ Items<public> := module {
 
   @preload
   Gliders_BR_CH1S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14543,9 +14326,6 @@ Items<public> := module {
 
   @preload
   GoldSplash_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14561,9 +14341,6 @@ Items<public> := module {
 
   @preload
   Gold_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14579,9 +14356,6 @@ Items<public> := module {
 
   @preload
   GrappleGlider_BR_CH3S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14594,9 +14368,6 @@ Items<public> := module {
 
   @preload
   GrappleGlove_BR_CH3S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14609,9 +14380,6 @@ Items<public> := module {
 
   @preload
   Grappler_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14624,9 +14392,6 @@ Items<public> := module {
 
   @preload
   GrayEruptionDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14642,9 +14407,6 @@ Items<public> := module {
 
   @preload
   GreenDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14660,9 +14422,6 @@ Items<public> := module {
 
   @preload
   GreenFleckedDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14678,9 +14437,6 @@ Items<public> := module {
 
   @preload
   GreenMarbledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14698,9 +14454,6 @@ Items<public> := module {
   @preload
   # Deprecated. Please use Grenade_OG_CH1S1_Common instead.
   Grenade_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14716,9 +14469,6 @@ Items<public> := module {
 
   @preload
   Grenade_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14734,9 +14484,6 @@ Items<public> := module {
 
   @preload
   Grenade_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14752,9 +14499,6 @@ Items<public> := module {
 
   @preload
   Grenade_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14770,9 +14514,6 @@ Items<public> := module {
 
   @preload
   GrottoKeycard_BR_CH2S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14785,9 +14526,6 @@ Items<public> := module {
 
   @preload
   Grub_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14803,9 +14541,6 @@ Items<public> := module {
 
   @preload
   GuardianShield_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14818,9 +14553,6 @@ Items<public> := module {
 
   @preload
   GuzzleJuice_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14836,9 +14568,6 @@ Items<public> := module {
 
   @preload
   GuzzlingIcecreamCone_BR_CH3S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14854,9 +14583,6 @@ Items<public> := module {
 
   @preload
   HarpoonGun_BR_CH2S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14869,9 +14595,6 @@ Items<public> := module {
 
   @preload
   HealEgg_BR_CH4S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14887,9 +14610,6 @@ Items<public> := module {
 
   @preload
   Herb_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14905,9 +14625,6 @@ Items<public> := module {
 
   @preload
   HolidayPresents_BR_CH2S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14923,9 +14640,6 @@ Items<public> := module {
 
   @preload
   Honey_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14941,9 +14655,6 @@ Items<public> := module {
 
   @preload
   HopDrop_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14959,9 +14670,6 @@ Items<public> := module {
 
   @preload
   HopEgg_BR_CH4S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14977,9 +14685,6 @@ Items<public> := module {
 
   @preload
   HopFlopper_BR_CH2S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -14995,9 +14700,6 @@ Items<public> := module {
 
   @preload
   IcecreamCone_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15013,9 +14715,6 @@ Items<public> := module {
 
   @preload
   IcyGrappler_BR_CH2S8_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15028,9 +14727,6 @@ Items<public> := module {
 
   @preload
   ImpulseGrenade_BR_CH1S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15046,9 +14742,6 @@ Items<public> := module {
 
   @preload
   ImpulseGrenade_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15064,9 +14757,6 @@ Items<public> := module {
 
   @preload
   InflateABull_BR_CH2S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15079,9 +14769,6 @@ Items<public> := module {
 
   @preload
   InstantLargeShield_Ballistic_V1_Exotic<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15097,9 +14784,6 @@ Items<public> := module {
 
   @preload
   InstantShield_Ballistic_V1_Exotic<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15112,9 +14796,6 @@ Items<public> := module {
 
   @preload
   JellyBean_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15130,9 +14811,6 @@ Items<public> := module {
 
   @preload
   Jellyfish_BR_CH2S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15148,9 +14826,6 @@ Items<public> := module {
 
   @preload
   Jetpack_BR_CH1S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15163,9 +14838,6 @@ Items<public> := module {
 
   @preload
   Jewel_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15178,9 +14850,6 @@ Items<public> := module {
 
   @preload
   JulesGliderGun_BR_CH2S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15193,9 +14862,6 @@ Items<public> := module {
 
   @preload
   JunkRift_BR_CH1SX_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15211,9 +14877,6 @@ Items<public> := module {
 
   @preload
   Key_BR_CH3S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15229,9 +14892,6 @@ Items<public> := module {
 
   @preload
   LaunchPad_BR_CH3S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15247,9 +14907,6 @@ Items<public> := module {
 
   @preload
   LawlessRiftLauncher_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15262,9 +14919,6 @@ Items<public> := module {
 
   @preload
   LawlessSlapCannon_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15277,9 +14931,6 @@ Items<public> := module {
 
   @preload
   LawlessSlapJug_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15292,9 +14943,6 @@ Items<public> := module {
 
   @preload
   LemonLime_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15310,9 +14958,6 @@ Items<public> := module {
 
   @preload
   LightridersSurfCube_BR_CH6S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15325,9 +14970,6 @@ Items<public> := module {
 
   @preload
   LilWhipsSpecialServe_BR_CH3S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15343,9 +14985,6 @@ Items<public> := module {
 
   @preload
   LimitlessSevenSliders_BR_CH7S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15358,9 +14997,6 @@ Items<public> := module {
 
   @preload
   LumpOfCoal_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15376,9 +15012,6 @@ Items<public> := module {
 
   @preload
   MalachiteOre_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15394,9 +15027,6 @@ Items<public> := module {
 
   @preload
   MapleSyrup_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15412,9 +15042,6 @@ Items<public> := module {
 
   @preload
   Meat_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15430,9 +15057,6 @@ Items<public> := module {
 
   @preload
   MechanicalParts_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15448,9 +15072,6 @@ Items<public> := module {
 
   @preload
   MedKit_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15467,9 +15088,6 @@ Items<public> := module {
   @preload
   # LegacyMedKit_BR_PreSeason_Uncommon
   MedKit_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15485,9 +15103,6 @@ Items<public> := module {
 
   @preload
   MedMistSmokeGrenade_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15503,9 +15118,6 @@ Items<public> := module {
 
   @preload
   MedMistSmokeGrenade_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15521,9 +15133,6 @@ Items<public> := module {
 
   @preload
   MedMist_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15536,9 +15145,6 @@ Items<public> := module {
 
   @preload
   Metal_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15554,9 +15160,6 @@ Items<public> := module {
 
   @preload
   MidasFlopper_BR_CH2S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15572,9 +15175,6 @@ Items<public> := module {
 
   @preload
   Milk_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15590,9 +15190,6 @@ Items<public> := module {
 
   @preload
   MonsterParts_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15608,9 +15205,6 @@ Items<public> := module {
 
   @preload
   MystForm_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15623,9 +15217,6 @@ Items<public> := module {
 
   @preload
   MythicGoldfish_BR_CH2S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15638,9 +15229,6 @@ Items<public> := module {
 
   @preload
   NightRosesVoidOniMask_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15653,9 +15241,6 @@ Items<public> := module {
 
   @preload
   NitroSplash_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15671,9 +15256,6 @@ Items<public> := module {
 
   @preload
   ObsidianOre_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15689,9 +15271,6 @@ Items<public> := module {
 
   @preload
   OceansBottomlessChugJug_BR_CH2S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15704,9 +15283,6 @@ Items<public> := module {
 
   @preload
   OrangePaintGrenade_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15722,9 +15298,6 @@ Items<public> := module {
 
   @preload
   OverdriveGrenade_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15740,9 +15313,6 @@ Items<public> := module {
 
   @preload
   Overdrive_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15758,9 +15328,6 @@ Items<public> := module {
 
   @preload
   OxidizedMineralPowder_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15776,9 +15343,6 @@ Items<public> := module {
 
   @preload
   PatchworkTool_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15791,9 +15355,6 @@ Items<public> := module {
 
   @preload
   PeakyTwine_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15809,9 +15370,6 @@ Items<public> := module {
 
   @preload
   PepperMint_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15827,9 +15385,6 @@ Items<public> := module {
 
   @preload
   Pepper_BR_CH1S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15845,9 +15400,6 @@ Items<public> := module {
 
   @preload
   PinkMarbledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15863,9 +15415,6 @@ Items<public> := module {
 
   @preload
   PinkMushroom_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15881,9 +15430,6 @@ Items<public> := module {
 
   @preload
   PizzaParty_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15896,9 +15442,6 @@ Items<public> := module {
 
   @preload
   PizzaSlice_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15914,9 +15457,6 @@ Items<public> := module {
 
   @preload
   Planks_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15932,9 +15472,6 @@ Items<public> := module {
 
   @preload
   PoisonDartTrap_BR_CH1S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15950,9 +15487,6 @@ Items<public> := module {
 
   @preload
   PortABunker_BR_CH3S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15968,9 +15502,6 @@ Items<public> := module {
 
   @preload
   PortACover_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -15986,9 +15517,6 @@ Items<public> := module {
 
   @preload
   PortAFort_BR_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16004,9 +15532,6 @@ Items<public> := module {
 
   @preload
   PortAFortress_BR_CH1S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16019,9 +15544,6 @@ Items<public> := module {
 
   @preload
   PrecisionAirStrike_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16034,9 +15556,6 @@ Items<public> := module {
 
   @preload
   Presents_BR_CH1S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16052,9 +15571,6 @@ Items<public> := module {
 
   @preload
   PropOMatic_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16067,9 +15583,6 @@ Items<public> := module {
 
   @preload
   ProximityMine_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16085,9 +15598,6 @@ Items<public> := module {
 
   @preload
   ProximityMine_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16103,9 +15613,6 @@ Items<public> := module {
 
   @preload
   PulseScanner_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16121,9 +15628,6 @@ Items<public> := module {
 
   @preload
   Pumpkin_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16139,9 +15643,6 @@ Items<public> := module {
 
   @preload
   PurplePaintGrenade_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16157,9 +15658,6 @@ Items<public> := module {
 
   @preload
   QuartzCrystal_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16175,9 +15673,6 @@ Items<public> := module {
 
   @preload
   RainbowCrystal_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16193,9 +15688,6 @@ Items<public> := module {
 
   @preload
   RaptorEye_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16211,9 +15703,6 @@ Items<public> := module {
 
   @preload
   ReconGrenade_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16229,9 +15718,6 @@ Items<public> := module {
 
   @preload
   RedEruptionDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16247,9 +15733,6 @@ Items<public> := module {
 
   @preload
   RedFleckedDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16265,9 +15748,6 @@ Items<public> := module {
 
   @preload
   RedMushroom_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16283,9 +15763,6 @@ Items<public> := module {
 
   @preload
   RedShimmeringDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16301,9 +15778,6 @@ Items<public> := module {
 
   @preload
   RemoteExplosives_BR_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16319,9 +15793,6 @@ Items<public> := module {
 
   @preload
   RepairTorch_BR_CH3S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16334,9 +15805,6 @@ Items<public> := module {
 
   @preload
   RiftFish_BR_CH2S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16352,9 +15820,6 @@ Items<public> := module {
 
   @preload
   RiftPointDevice_Ballistic_V1_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16367,9 +15832,6 @@ Items<public> := module {
 
   @preload
   RiftToGo_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16385,9 +15847,6 @@ Items<public> := module {
 
   @preload
   RigKeycard_BR_CH2S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16400,9 +15859,6 @@ Items<public> := module {
 
   @preload
   RoastedChicken_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16418,9 +15874,6 @@ Items<public> := module {
 
   @preload
   RotatingGizmo_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16436,9 +15889,6 @@ Items<public> := module {
 
   @preload
   RoughMineralPowder_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16454,9 +15904,6 @@ Items<public> := module {
 
   @preload
   RoughOre_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16472,9 +15919,6 @@ Items<public> := module {
 
   @preload
   RustyCan_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16490,9 +15934,6 @@ Items<public> := module {
 
   @preload
   RustyMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16508,9 +15949,6 @@ Items<public> := module {
 
   @preload
   SevenSliders_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16523,9 +15961,6 @@ Items<public> := module {
 
   @preload
   ShadowBomb_BR_CH1S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16541,9 +15976,6 @@ Items<public> := module {
 
   @preload
   ShadowFlopper_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16559,9 +15991,6 @@ Items<public> := module {
 
   @preload
   ShadowshardCrystal_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16577,9 +16006,6 @@ Items<public> := module {
 
   @preload
   SharkKeycard_BR_CH2S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16592,9 +16018,6 @@ Items<public> := module {
 
   @preload
   SharkTooth_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16610,9 +16033,6 @@ Items<public> := module {
 
   @preload
   ShieldBreakerEMP_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16628,9 +16048,6 @@ Items<public> := module {
 
   @preload
   ShieldBubbleJr_BR_CH5S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16646,9 +16063,6 @@ Items<public> := module {
 
   @preload
   ShieldBubble_BR_CH1SX_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16664,9 +16078,6 @@ Items<public> := module {
 
   @preload
   ShieldFish_BR_CH2S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16682,9 +16093,6 @@ Items<public> := module {
 
   @preload
   ShieldKeg_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16700,9 +16108,6 @@ Items<public> := module {
 
   @preload
   ShieldMushroom_BR_CH1S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16718,9 +16123,6 @@ Items<public> := module {
 
   @preload
   ShieldPotion_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16737,9 +16139,6 @@ Items<public> := module {
   @preload
   # LegacyShieldPotion_BR_PreSeason_Rare
   ShieldPotion_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16755,9 +16154,6 @@ Items<public> := module {
 
   @preload
   ShockRock_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16773,9 +16169,6 @@ Items<public> := module {
 
   @preload
   ShockwaveGrenade_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16791,9 +16184,6 @@ Items<public> := module {
 
   @preload
   Shove_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16806,9 +16196,6 @@ Items<public> := module {
 
   @preload
   SignalRemoteA_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16821,9 +16208,6 @@ Items<public> := module {
 
   @preload
   SignalRemoteB_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16836,9 +16220,6 @@ Items<public> := module {
 
   @preload
   SignalRemoteC_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16851,9 +16232,6 @@ Items<public> := module {
 
   @preload
   SignalRemoteD_Creative_V1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16866,9 +16244,6 @@ Items<public> := module {
 
   @preload
   SignalRemote_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16881,9 +16256,6 @@ Items<public> := module {
 
   @preload
   SilverOre_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16899,9 +16271,6 @@ Items<public> := module {
 
   @preload
   SimpleMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16917,9 +16286,6 @@ Items<public> := module {
 
   @preload
   SimpleMineralPowder_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16935,9 +16301,6 @@ Items<public> := module {
 
   @preload
   SimpleTwine_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16953,9 +16316,6 @@ Items<public> := module {
 
   @preload
   SkyesGrappler_BR_CH2S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16968,9 +16328,6 @@ Items<public> := module {
 
   @preload
   SkylineDeployer_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -16983,9 +16340,6 @@ Items<public> := module {
 
   @preload
   SlapBerry_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17001,9 +16355,6 @@ Items<public> := module {
 
   @preload
   SlapJuice_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17019,9 +16370,6 @@ Items<public> := module {
 
   @preload
   SlapSplash_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17037,9 +16385,6 @@ Items<public> := module {
 
   @preload
   SlapperoniPizza_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17052,9 +16397,6 @@ Items<public> := module {
 
   @preload
   SlapperoniSlice_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17070,9 +16412,6 @@ Items<public> := module {
 
   @preload
   SleekMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17088,9 +16427,6 @@ Items<public> := module {
 
   @preload
   SlurpJuice_BR_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17106,9 +16442,6 @@ Items<public> := module {
 
   @preload
   SlurpJuice_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17124,9 +16457,6 @@ Items<public> := module {
 
   @preload
   SlurpMushroom_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17142,9 +16472,6 @@ Items<public> := module {
 
   @preload
   Slurpfish_BR_CH2S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17160,9 +16487,6 @@ Items<public> := module {
 
   @preload
   SmallFry_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17179,9 +16503,6 @@ Items<public> := module {
   @preload
   # LegacySmallShieldPotion_BR_CH1S2_Uncommon
   SmallShieldPotion_BR_CH1S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17197,9 +16518,6 @@ Items<public> := module {
 
   @preload
   SmallShieldPotion_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17215,9 +16533,6 @@ Items<public> := module {
 
   @preload
   SmokeCloud_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17233,9 +16548,6 @@ Items<public> := module {
 
   @preload
   SmokeGrenade_BR_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17251,9 +16563,6 @@ Items<public> := module {
 
   @preload
   SmokeGrenade_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17269,9 +16578,6 @@ Items<public> := module {
 
   @preload
   SneakySnowman_BR_CH2S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17284,9 +16590,6 @@ Items<public> := module {
 
   @preload
   SneakySnowman_OG_CH1S7_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17302,9 +16605,6 @@ Items<public> := module {
 
   @preload
   SnowyFlopper_BR_CH2S5_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17320,9 +16620,6 @@ Items<public> := module {
 
   @preload
   SpectralTwine_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17338,9 +16635,6 @@ Items<public> := module {
 
   @preload
   SpectroliteOre_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17357,9 +16651,6 @@ Items<public> := module {
   @preload
   # SpeedBoost_Creative_V1_Epic
   SpeedBoostHigh_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17376,9 +16667,6 @@ Items<public> := module {
   @preload
   # SpeedBoost_Creative_V1_Uncommon
   SpeedBoostLow_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17395,9 +16683,6 @@ Items<public> := module {
   @preload
   # SpeedBoost_Creative_V1_Rare
   SpeedBoostMedium_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17413,9 +16698,6 @@ Items<public> := module {
 
   @preload
   SpicyFish_BR_CH2S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17431,9 +16713,6 @@ Items<public> := module {
 
   @preload
   SpicyIcecreamCone_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17449,9 +16728,6 @@ Items<public> := module {
 
   @preload
   SpireJumpboots_BR_CH2S6_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17464,9 +16740,6 @@ Items<public> := module {
 
   @preload
   StealthSplash_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17482,9 +16755,6 @@ Items<public> := module {
 
   @preload
   StinkBomb_BR_CH1S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17500,9 +16770,6 @@ Items<public> := module {
 
   @preload
   StinkFish_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17518,9 +16785,6 @@ Items<public> := module {
 
   @preload
   StinkSac_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17536,9 +16800,6 @@ Items<public> := module {
 
   @preload
   Stone_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17554,9 +16815,6 @@ Items<public> := module {
 
   @preload
   StormFlip_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17569,9 +16827,6 @@ Items<public> := module {
 
   @preload
   StringyTwine_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17587,9 +16842,6 @@ Items<public> := module {
 
   @preload
   SturdyMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17605,9 +16857,6 @@ Items<public> := module {
 
   @preload
   SturdyTwine_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17623,9 +16872,6 @@ Items<public> := module {
 
   @preload
   SunbeamCrystal_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17641,9 +16887,6 @@ Items<public> := module {
 
   @preload
   SuperLaunchPad_Creative_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17659,9 +16902,6 @@ Items<public> := module {
 
   @preload
   SuperSlapSplash_BR_CH4S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17677,9 +16917,6 @@ Items<public> := module {
 
   @preload
   SurfCube_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17695,13 +16932,9 @@ Items<public> := module {
     using { /Fortnite.com/Itemization }
     using { /UnrealEngine.com/Itemization }
     using { /Verse.org/Native }
-    using { /Verse.org/Presentation }
     using { /Verse.org/SceneGraph }
     @preload
     TMNTPizzaParty_V1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-      @available { MinUploadedAtFNVersion := 4210 }
-      DescriptionComponent<override>: ?description_component = external {}
-
       @available { MinUploadedAtFNVersion := 4020 }
       IconComponent<override>: ?icon_component = external {}
 
@@ -17734,9 +16967,6 @@ Items<public> := module {
 
   @preload
   TheWall_Ballistic_V1_Common<epic_internal> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17752,9 +16982,6 @@ Items<public> := module {
 
   @preload
   ThermalFish_BR_CH2S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17770,9 +16997,6 @@ Items<public> := module {
 
   @preload
   ThermalTaffy_BR_CH2S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17788,9 +17012,6 @@ Items<public> := module {
 
   @preload
   Thermite_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17806,9 +17027,6 @@ Items<public> := module {
 
   @preload
   ThunderboltOfZeus_BR_CH5S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17821,9 +17039,6 @@ Items<public> := module {
 
   @preload
   Torch_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17836,9 +17051,18 @@ Items<public> := module {
 
   @preload
   TrackingVisor_BR_CH6S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  Unarmed_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17851,9 +17075,6 @@ Items<public> := module {
 
   @preload
   UnstableBounceGrenade_BR_CH6S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17869,9 +17090,6 @@ Items<public> := module {
 
   @preload
   VehicleModCowCatcher_BR_CH3S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17887,9 +17105,6 @@ Items<public> := module {
 
   @preload
   VehicleModOffRoadTires_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17902,9 +17117,6 @@ Items<public> := module {
 
   @preload
   VendettaFlopper_BR_CH2S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17920,9 +17132,6 @@ Items<public> := module {
 
   @preload
   VindertechMechanicalParts_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17938,9 +17147,6 @@ Items<public> := module {
 
   @preload
   VoidOniMask_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17955,9 +17161,6 @@ Items<public> := module {
   @preload
   # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17975,9 +17178,6 @@ Items<public> := module {
   @preload
   # Deprecated. Please use WallDynamo_OG_CH1S1_Rare instead.
   WallDynamo_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -17993,9 +17193,6 @@ Items<public> := module {
 
   @preload
   WallDynamo_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18011,9 +17208,6 @@ Items<public> := module {
 
   @preload
   Wheat_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18029,9 +17223,6 @@ Items<public> := module {
 
   @preload
   WhiteDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18047,9 +17238,6 @@ Items<public> := module {
 
   @preload
   WhiteMarbledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18065,9 +17253,6 @@ Items<public> := module {
 
   @preload
   WhiteMushroom_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18083,9 +17268,6 @@ Items<public> := module {
 
   @preload
   WhiteShimmeringDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18101,9 +17283,6 @@ Items<public> := module {
 
   @preload
   WhiteSpeckledDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18119,9 +17298,6 @@ Items<public> := module {
 
   @preload
   WildguardReliksCloakGauntlets_BR_CH4S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18134,9 +17310,6 @@ Items<public> := module {
 
   @preload
   WildwaspJar_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18152,9 +17325,6 @@ Items<public> := module {
 
   @preload
   WingsOfIcarus_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18167,9 +17337,6 @@ Items<public> := module {
 
   @preload
   Wingsuit_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18182,9 +17349,6 @@ Items<public> := module {
 
   @preload
   WitchBroom_BR_CH2S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18197,9 +17361,6 @@ Items<public> := module {
 
   @preload
   WolfTooth_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18215,9 +17376,6 @@ Items<public> := module {
 
   @preload
   Wood_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18233,9 +17391,6 @@ Items<public> := module {
 
   @preload
   YellowEruptionDinoEgg_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18251,9 +17406,6 @@ Items<public> := module {
 
   @preload
   YellowMushroom_Creative_V1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18269,9 +17421,6 @@ Items<public> := module {
 
   @preload
   ZeroPointFish_BR_CH2S5_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18287,9 +17436,6 @@ Items<public> := module {
 
   @preload
   ZeroPointPretzel_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -18379,154 +17525,111 @@ Items<public> := module {
 }
 
 Marketplace<public> := module {
-  # Displays the Epic purchase UI to the player to purchase the `Offer`.
-  # Returns true if an offer was purchased.
-  BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `BuyOffer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `BuyOffer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)BuyOffer<public>(Player: player, Offer: (/Fortnite.com/Marketplace:)offer)<suspends>: logic = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Consumes a consumable `entitlement`.
-  # Fails if:
-  #  * The `entitlement` is not consumable.
-  #  * The `Player` does not own requested `Count` of `entitlement`.
-  ConsumeEntitlement<native><public>(
+  @deprecated { Message := "Use `ConsumeEntitlement` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `ConsumeEntitlement` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)ConsumeEntitlement<public>(
     Player: player,
-    entitlement_type: concrete_subtype(entitlement),
-    ?Count: int = external {}
-  )<suspends>: logic
-
-  # Used to listen for entitlement change events during a game session.
-  # Runtime error if `entitlement` is used directly.
-  GetEntitlementsChangedEvent<native><public>(
-    Player: player,
-    entitlement_type: subtype(entitlement)
-  ): listenable(tuple(player, []entitlement_change(entitlement_type)))
-
-  GetPriceVBucks<native><public>(P: price_vbucks): float
-
-  # Get all available `entitlement`s for `Player`, along with the number of those `entitlement`s.
-  # This includes finding `entitlement`s of derived types.
-  # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
-  GetPurchasedEntitlements<native><public>(
-    Player: player,
-    entitlement_type: subtype(entitlement)
-  )<suspends>: []tuple(entitlement_type, int)
+    entitlement_type: concrete_subtype((/Fortnite.com/Marketplace:)entitlement
+  ), ?Count: int = external {})<suspends>: logic = external {}
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Grant an entitlement directly to `Player`.
-  # This function does not gate granting entitlements based on EntitlementDisclosures.
-  # Entitlements are always granted assuming they match the MaxCount requirement.
-  GrantEntitlement<native><public>(
+  @deprecated { Message := "Use `GetEntitlementsChangedEvent` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GetEntitlementsChangedEvent` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GetEntitlementsChangedEvent<public>(
     Player: player,
-    entitlement_type: concrete_subtype(entitlement),
-    ?Count: int = external {}
-  )<suspends>: logic
+    entitlement_type: subtype((/UnrealEngine.com/Marketplace:)entitlement
+  )): listenable(tuple(player, [](/UnrealEngine.com/Marketplace:)entitlement_change(entitlement_type))) = external {}
 
-  MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `GetPriceVBucks` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GetPriceVBucks` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GetPriceVBucks<public>(P: (/Fortnite.com/Marketplace:)price_vbucks): float = external {}
 
-  # Informs if usage of direct prompts to purchase is restricted for `Player`.
-  RestrictDirectPromptsToPurchase<native><public>(Player: player)<decides><reads>: void
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `GetPurchasedEntitlements` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GetPurchasedEntitlements` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GetPurchasedEntitlements<public>(
+    Player: player,
+    entitlement_type: subtype((/UnrealEngine.com/Marketplace:)entitlement
+  ))<suspends>: []tuple(entitlement_type, int) = external {}
 
-  # Informs if usage of paid random items is restricted for `Player`
-  # due to platform, territory, age, or user configuration restrictions.
-  RestrictPaidRandomItems<native><public>(Player: player)<decides><reads>: void
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `GrantEntitlement` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `GrantEntitlement` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)GrantEntitlement<public>(
+    Player: player,
+    entitlement_type: concrete_subtype((/Fortnite.com/Marketplace:)entitlement
+  ), ?Count: int = external {})<suspends>: logic = external {}
 
-  # Shows the Epic provided store front contain the specified `Offers`.
-  ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
+  @deprecated { Message := "Use `MakePriceVBucks` from the /UnrealEngine.com/Marketplace module instead." }
+  @available { MinUploadedAtFNVersion := 3800 }
+  # DEPRECATED - Use `MakePriceVBucks` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)MakePriceVBucks<public>: type { _(: float)<converges>: (/Fortnite.com/Marketplace:)price_vbucks } = external {}
 
-  # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
-  bundle_offer<native><public> := class<castable>(offer) {
-    Offers<native><public>: []tuple(offer, int) = external {}
-  }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `RestrictDirectPromptsToPurchase` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `RestrictDirectPromptsToPurchase` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)RestrictDirectPromptsToPurchase<public>(Player: player)<decides><reads>: void = external {}
 
-  # An entitlement that is tracked by the commerce system.
-  #
-  #  * A player may only have one `entitlement` if the entitlement is not consumable.
-  #  * A player may have `MaxCount` of a consumable entitlement.
-  #  * Your derived type must be <concrete> to be used by the purchase system.
-  #  * If the entitlement you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
-  entitlement<native><public> := class<castable>(has_icon, has_description) {
-    ConsequentialToGameplay<native><public>: logic = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `RestrictPaidRandomItems` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `RestrictPaidRandomItems` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)RestrictPaidRandomItems<public>(Player: player)<decides><reads>: void = external {}
 
-    Consumable<native><public>: logic = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `ShowOffersDialog` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `ShowOffersDialog` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)ShowOffersDialog<public>(
+    Player: player,
+    Offers: [](/Fortnite.com/Marketplace:)offer,
+    ?Title: message = external {}
+  )<suspends>: void = external {}
 
-    MaxCount<native><public>: int = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `bundle_offer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `bundle_offer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)bundle_offer<public> := (/UnrealEngine.com/Marketplace:)bundle_offer
 
-    PaidArea<native><public>: logic = external {}
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `entitlement` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `entitlement` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)entitlement<public> := (/UnrealEngine.com/Marketplace:)entitlement
 
-    PaidRandomItem<native><public>: logic = external {}
-  }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `entitlement_change` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `entitlement_change` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)entitlement_change<public>(t: type) := (/UnrealEngine.com/Marketplace:)entitlement_change(t)
 
-  # Entitlements that have changed in quantity.
-  # This will also include entitlement changes triggered by moderation, refunds and other commerce operations.
-  entitlement_change<native><public>(t: type) := class<internal> {
-    # Change to the original quantity of entitlement.
-    Change<native><public>: int
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `entitlement_offer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `entitlement_offer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)entitlement_offer<public> := (/UnrealEngine.com/Marketplace:)entitlement_offer
 
-    # Entitlement that has changed in quantity.
-    Entitlement<native><public>: t
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `offer` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `offer` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)offer<public> := (/UnrealEngine.com/Marketplace:)offer
 
-    (/Fortnite.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>(): tuple(t) = external {}
+  @deprecated { Message := "Use `offer_interactable_component` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `offer_interactable_component` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)offer_interactable_component<public> := (/UnrealEngine.com/Marketplace:)offer_interactable_component
 
-    # Total quantity of the entitlement now owned.
-    Quantity<native><public>: int
-  }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `price_dimension` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `price_dimension` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)price_dimension<public> := (/UnrealEngine.com/Marketplace:)price_dimension
 
-  # An `entitlement_offer` allows an individual `entitlement` to be purchased.
-  entitlement_offer<native><public> := class<castable>(offer) {
-    @available { MinUploadedAtFNVersion := 3800 }
-    @editable
-    EntitlementType<native><public>: concrete_subtype(entitlement)
-  }
-
-  # Offers are used to sell entitlements to players. See `entitlement_offer` and `bundle_offer` classes for more information.
-  offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
-    # Override this method to restrict availability of an offer in certain regions and minimum ages.
-    #
-    # Parameters:
-    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent territories, or special
-    #                  area of geographical interest
-    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for the subdivision
-    #                  within a country, dependent territory, or special area of geographical interest.
-    #                  If subdivision information is unavailable for players in a region SubdivisionCode
-    #                  will be an empty string.
-    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows, Xbox, Luna, GeForceNow
-    #
-    # Returns:
-    #     Fails if sale of this offer should not be allowed in this (CountryCode, SubdivisionCode)
-    #     Minimum age of purchase in this (CountryCode, SubdivisionCode).
-    #     If minimum age is higher than the highest available age by region the offer will not be made
-    GetMinPurchaseAge<native_callable><public>(
-      CountryCode: string,
-      SubdivisionCode: string,
-      PlatformFamily: string
-    )<computes><decides>: int = external {}
-
-    @editable
-    Price<native><public>: price_dimension
-  }
-
-  using { /Verse.org/SceneGraph }
-  offer_interactable_component<native><public> := class(interactable_component) {
-    CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
-
-    InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
-
-    OnBeginSimulation<override>(): void = external {}
-
-    OnSucceed<protected>(Agent: agent): void = external {}
-
-    @editable
-    var Offer<public>: offer
-
-    var SucceededEventHandle<public>: ?cancelable = external {}
-  }
-
-  using { /Verse.org/Assets }
-  using { /Verse.org/Presentation }
-  price_dimension<native><public> := class<computes><abstract><epic_internal> {}
-
-  # Verse path: /Fortnite.com/Marketplace
-  price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
+  using { /UnrealEngine.com/Marketplace }
+  @available { MinUploadedAtFNVersion := 3800 }
+  @deprecated { Message := "Use `price_vbucks` from the /UnrealEngine.com/Marketplace module instead." }
+  # DEPRECATED - Use `price_vbucks` from the /UnrealEngine.com/Marketplace module instead.
+  (/Fortnite.com/Marketplace:)price_vbucks<public> := (/UnrealEngine.com/Marketplace:)price_vbucks
 
   # Verse path: /Fortnite.com/Marketplace
   using { /Verse.org/Native }
@@ -20178,9 +19281,9 @@ VerseInternalTesting<public> := module {
     using { /Fortnite.com/AI }
     using { /Fortnite.com/Devices }
     using { /Fortnite.com/Game }
-    using { /Fortnite.com/Marketplace }
     using { /Fortnite.com/Vehicles }
     using { /UnrealEngine.com/Itemization }
+    using { /UnrealEngine.com/Marketplace }
     using { /UnrealEngine.com/Temporary/Diagnostics }
     using { /UnrealEngine.com/Temporary/SpatialMath }
     using { /UnrealEngine.com/Temporary/Testing }
@@ -20534,11 +19637,20 @@ VerseInternalTesting<public> := module {
     }
 
     test_event_tuple_player_entitlement_change_handler_mock<public> := class(test_device_event_handler_mock) {
-      HandleEvent<public>(InResult: tuple(player, []entitlement_change(entitlement))): void = external {}
+      HandleEvent<public>(InResult: tuple(
+        player,
+        [](/UnrealEngine.com/Marketplace:)entitlement_change((/UnrealEngine.com/Marketplace:)entitlement
+      ))): void = external {}
 
-      Subscribe<public>(Event: listenable(tuple(player, []entitlement_change(entitlement)))): void = external {}
+      Subscribe<public>(Event: listenable(tuple(
+        player,
+        [](/UnrealEngine.com/Marketplace:)entitlement_change((/UnrealEngine.com/Marketplace:)entitlement
+      )))): void = external {}
 
-      var ArgTuple<public>: ?tuple(player, []entitlement_change(entitlement)) = external {}
+      var ArgTuple<public>: ?tuple(
+        player,
+        [](/UnrealEngine.com/Marketplace:)entitlement_change((/UnrealEngine.com/Marketplace:)entitlement
+      )) = external {}
     }
 
     @experimental
@@ -20881,13 +19993,27 @@ VerseNPC<public> := module {
   using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4300 }
   default_behavior<epic_internal> := class(npc_behavior) {}
 
-  @available { MinUploadedAtFNVersion := 4200 }
+  @available { MinUploadedAtFNVersion := 4300 }
+  # The entity prefab avatar for a creator customizable wildlife
+  wildlife_avatar_template<native><public> := class<concrete>(entity) {
+    @field("Components")
+    MeshComponent<native><epic_internal>: mesh_component = external {}
+
+    @field("Components")
+    TransformComponent<native><epic_internal>: transform_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
   # The entity prefab for a creator customizable wildlife
-  wildlife_template<native><epic_internal> := class<concrete>(entity) {
+  wildlife_template<native><public> := class<concrete>(entity) {
     @field("Components")
     ActionsComponent<native><public>: npc_actions_component = external {}
+
+    @field("OwnedEntities")
+    Avatar<native><epic_internal>: entity = external {}
 
     @field("Components")
     AwarenessComponent<native><public>: npc_awareness_component = external {}
@@ -20905,7 +20031,10 @@ VerseNPC<public> := module {
     NPCComponent<native><epic_internal>: fort_npc_component = external {}
 
     @field("Components")
-    PlayAnimationComponent<native><epic_internal>: fort_npc_play_animation_component = external {}
+    PlayAnimationComponent<native><epic_internal>: fort_play_animation_component = external {}
+
+    @field("Components")
+    PossessableComponent<native><public>: possessable_component = external {}
   }
 }
 
@@ -20970,11 +20099,24 @@ VerseScreenshotTest<public> := module {
 
 # Module import path: /Fortnite.com/Weapons
 Weapons<public> := module {
+  using { /Fortnite.com/Itemization }
+  using { /UnrealEngine.com/Itemization }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  @preload
+  AccelerantDrumGun_BR_CH7S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
   @preload
   AnvilRocketLauncher_BR_CH3S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -20987,9 +20129,6 @@ Weapons<public> := module {
 
   @preload
   AnvilRocketLauncher_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21000,16 +20139,8 @@ Weapons<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
   }
 
-  using { /Fortnite.com/Itemization }
-  using { /UnrealEngine.com/Itemization }
-  using { /Verse.org/Native }
-  using { /Verse.org/Presentation }
-  using { /Verse.org/SceneGraph }
   @preload
   AnvilRocketLauncher_BR_CH3S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21022,9 +20153,6 @@ Weapons<public> := module {
 
   @preload
   ArcLightningGun_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21037,9 +20165,6 @@ Weapons<public> := module {
 
   @preload
   ArcLightningGun_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21052,9 +20177,6 @@ Weapons<public> := module {
 
   @preload
   AresModularWarforgedAssaultRifle_BR_CH5S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21067,9 +20189,6 @@ Weapons<public> := module {
 
   @preload
   AscendedMyst_BR_CH6S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21082,9 +20201,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21097,9 +20213,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21112,9 +20225,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21127,9 +20237,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21142,9 +20249,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21157,9 +20261,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21172,9 +20273,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_PreSeason_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21187,9 +20285,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_PreSeason_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21202,9 +20297,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21217,9 +20309,6 @@ Weapons<public> := module {
 
   @preload
   AssaultRifle_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21232,9 +20321,6 @@ Weapons<public> := module {
 
   @preload
   AutoShotgun_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21247,9 +20333,6 @@ Weapons<public> := module {
 
   @preload
   AutoShotgun_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21262,9 +20345,6 @@ Weapons<public> := module {
 
   @preload
   AutoShotgun_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21277,9 +20357,6 @@ Weapons<public> := module {
 
   @preload
   AutoShotgun_BR_CH3S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21292,9 +20369,6 @@ Weapons<public> := module {
 
   @preload
   AutoShotgun_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21307,9 +20381,6 @@ Weapons<public> := module {
 
   @preload
   AutoShotgun_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21322,9 +20393,6 @@ Weapons<public> := module {
 
   @preload
   AutomaticSniperRifle_BR_CH1SX_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21337,9 +20405,6 @@ Weapons<public> := module {
 
   @preload
   AutomaticSniperRifle_BR_CH1SX_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21352,9 +20417,6 @@ Weapons<public> := module {
 
   @preload
   AutomaticSniperRifle_BR_CH1SX_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21367,9 +20429,6 @@ Weapons<public> := module {
 
   @preload
   AutomaticSniperRifle_BR_CH2S5_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21382,9 +20441,18 @@ Weapons<public> := module {
 
   @preload
   BallisticShield_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  BalloonPopperAssaultRifle_BR_CH7S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21397,9 +20465,6 @@ Weapons<public> := module {
 
   @preload
   BankShotPistol_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21412,9 +20477,6 @@ Weapons<public> := module {
 
   @preload
   BankShotPistol_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21427,9 +20489,6 @@ Weapons<public> := module {
 
   @preload
   BankShotPistol_BR_CH7S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21442,9 +20501,6 @@ Weapons<public> := module {
 
   @preload
   BankShotPistol_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21457,9 +20513,6 @@ Weapons<public> := module {
 
   @preload
   BankShotPistol_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21472,9 +20525,6 @@ Weapons<public> := module {
 
   @preload
   BaronsDoubleDownPistol_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21487,9 +20537,6 @@ Weapons<public> := module {
 
   @preload
   BasicHammer_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21502,9 +20549,6 @@ Weapons<public> := module {
 
   @preload
   BasicSword_Creative_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21517,9 +20561,6 @@ Weapons<public> := module {
 
   @preload
   BassBoost_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21532,9 +20573,6 @@ Weapons<public> := module {
 
   @preload
   BassBoost_BR_CH6S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21547,9 +20585,6 @@ Weapons<public> := module {
 
   @preload
   BassBoost_BR_CH6S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21562,9 +20597,6 @@ Weapons<public> := module {
 
   @preload
   BigfootsFlexSMG_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21577,9 +20609,6 @@ Weapons<public> := module {
 
   @preload
   BoltActionSniperRifle_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21592,9 +20621,6 @@ Weapons<public> := module {
 
   @preload
   BoltActionSniperRifle_BR_CH2S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21607,9 +20633,6 @@ Weapons<public> := module {
 
   @preload
   BoltActionSniperRifle_BR_PreSeason_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21622,9 +20645,6 @@ Weapons<public> := module {
 
   @preload
   BoltActionSniperRifle_BR_PreSeason_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21637,9 +20657,6 @@ Weapons<public> := module {
 
   @preload
   BoltActionSniperRifle_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21652,9 +20669,6 @@ Weapons<public> := module {
 
   @preload
   BoomBow_BR_CH1S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21667,9 +20681,6 @@ Weapons<public> := module {
 
   @preload
   BoomSniperRifle_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21682,9 +20693,6 @@ Weapons<public> := module {
 
   @preload
   BrutusMinigun_BR_CH2S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21697,9 +20705,6 @@ Weapons<public> := module {
 
   @preload
   BrutusTwinHammerShotguns_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21712,9 +20717,6 @@ Weapons<public> := module {
 
   @preload
   BugBlaster_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21727,9 +20729,6 @@ Weapons<public> := module {
 
   @preload
   BugBlaster_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21742,9 +20741,6 @@ Weapons<public> := module {
 
   @preload
   BugBlaster_BR_CH6S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21757,9 +20753,6 @@ Weapons<public> := module {
 
   @preload
   BurstAR_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21772,9 +20765,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_BR_CH1S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21787,9 +20777,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_BR_CH1S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21804,9 +20791,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Common instead.
   BurstAssaultRifle_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21821,9 +20805,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Epic instead.
   BurstAssaultRifle_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21838,9 +20819,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Legendary instead.
   BurstAssaultRifle_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21855,9 +20833,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Rare instead.
   BurstAssaultRifle_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21872,9 +20847,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use BurstAssaultRifle_OG_CH1S1_Uncommon instead.
   BurstAssaultRifle_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21887,9 +20859,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21902,9 +20871,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21917,9 +20883,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21932,9 +20895,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21947,9 +20907,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_OG_CH1S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21962,9 +20919,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_OG_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21977,9 +20931,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -21992,9 +20943,6 @@ Weapons<public> := module {
 
   @preload
   BurstAssaultRifle_OG_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22007,9 +20955,6 @@ Weapons<public> := module {
 
   @preload
   BurstPulseRifle_BR_CH2S7_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22022,9 +20967,6 @@ Weapons<public> := module {
 
   @preload
   BurstQuadLauncher_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22037,9 +20979,6 @@ Weapons<public> := module {
 
   @preload
   BurstSMG_BR_CH1S9_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22052,9 +20991,6 @@ Weapons<public> := module {
 
   @preload
   BurstSMG_BR_CH1S9_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22067,9 +21003,6 @@ Weapons<public> := module {
 
   @preload
   BurstSMG_BR_CH1S9_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22082,9 +21015,6 @@ Weapons<public> := module {
 
   @preload
   CerberusModularGatekeeperShotgun_BR_CH5S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22097,9 +21027,6 @@ Weapons<public> := module {
 
   @preload
   ChainsOfHades_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22112,9 +21039,6 @@ Weapons<public> := module {
 
   @preload
   Chainsaw_BR_CH5S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22127,9 +21051,6 @@ Weapons<public> := module {
 
   @preload
   ChaosExploderRifle_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22142,9 +21063,6 @@ Weapons<public> := module {
 
   @preload
   ChaosExploderRifle_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22157,9 +21075,6 @@ Weapons<public> := module {
 
   @preload
   ChaosExploderRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22172,9 +21087,6 @@ Weapons<public> := module {
 
   @preload
   ChaosExploderRifle_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22187,9 +21099,6 @@ Weapons<public> := module {
 
   @preload
   ChaosExploderRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22202,9 +21111,6 @@ Weapons<public> := module {
 
   @preload
   ChaosReloaderShotgun_BR_CH7S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22217,9 +21123,6 @@ Weapons<public> := module {
 
   @preload
   ChaosReloaderShotgun_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22232,9 +21135,6 @@ Weapons<public> := module {
 
   @preload
   ChaosReloaderShotgun_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22247,9 +21147,6 @@ Weapons<public> := module {
 
   @preload
   ChaosReloaderShotgun_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22262,9 +21159,6 @@ Weapons<public> := module {
 
   @preload
   ChaosReloaderShotgun_BR_CH7S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22277,9 +21171,6 @@ Weapons<public> := module {
 
   @preload
   ChargeSMG_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22292,9 +21183,6 @@ Weapons<public> := module {
 
   @preload
   ChargeSMG_BR_CH3S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22307,9 +21195,6 @@ Weapons<public> := module {
 
   @preload
   ChargeSMG_BR_CH3S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22322,9 +21207,6 @@ Weapons<public> := module {
 
   @preload
   ChargeSMG_BR_CH3S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22337,9 +21219,6 @@ Weapons<public> := module {
 
   @preload
   ChargeSMG_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22352,9 +21231,6 @@ Weapons<public> := module {
 
   @preload
   ChargeSMG_BR_CH3S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22367,9 +21243,6 @@ Weapons<public> := module {
 
   @preload
   ChargeShotgun_BR_CH2S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22382,9 +21255,6 @@ Weapons<public> := module {
 
   @preload
   ChargeShotgun_BR_CH2S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22397,9 +21267,6 @@ Weapons<public> := module {
 
   @preload
   ChargeShotgun_BR_CH2S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22412,9 +21279,6 @@ Weapons<public> := module {
 
   @preload
   ChargeShotgun_BR_CH2S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22427,9 +21291,6 @@ Weapons<public> := module {
 
   @preload
   ChargeShotgun_BR_CH2S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22442,9 +21303,6 @@ Weapons<public> := module {
 
   @preload
   CobraDMR_BR_CH3S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22457,9 +21315,6 @@ Weapons<public> := module {
 
   @preload
   CobraDMR_BR_CH3S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22472,9 +21327,6 @@ Weapons<public> := module {
 
   @preload
   CobraDMR_BR_CH3S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22487,9 +21339,6 @@ Weapons<public> := module {
 
   @preload
   CobraDMR_BR_CH3S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22502,9 +21351,6 @@ Weapons<public> := module {
 
   @preload
   CobraDMR_BR_CH3S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22517,9 +21363,6 @@ Weapons<public> := module {
 
   @preload
   CobraDMR_BR_CH3S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22532,9 +21375,6 @@ Weapons<public> := module {
 
   @preload
   CollateralDamageAssaultRifle_BR_CH6S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22547,9 +21387,6 @@ Weapons<public> := module {
 
   @preload
   CollateralDamageAssaultRifle_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22562,9 +21399,6 @@ Weapons<public> := module {
 
   @preload
   CollateralDamageAssaultRifle_BR_CH6S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22577,9 +21411,6 @@ Weapons<public> := module {
 
   @preload
   CollateralDamageAssaultRifle_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22592,9 +21423,6 @@ Weapons<public> := module {
 
   @preload
   CollateralDamageAssaultRifle_BR_CH6S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22607,9 +21435,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22622,9 +21447,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH2S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22637,9 +21459,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22652,9 +21471,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22667,9 +21483,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22682,9 +21495,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH7S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22697,9 +21507,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22712,9 +21519,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22727,9 +21531,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22742,9 +21543,6 @@ Weapons<public> := module {
 
   @preload
   CombatAssaultRifle_BR_CH7S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22757,9 +21555,6 @@ Weapons<public> := module {
 
   @preload
   CombatPistol_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22772,9 +21567,6 @@ Weapons<public> := module {
 
   @preload
   CombatPistol_BR_CH2S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22787,9 +21579,6 @@ Weapons<public> := module {
 
   @preload
   CombatPistol_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22802,9 +21591,6 @@ Weapons<public> := module {
 
   @preload
   CombatPistol_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22817,9 +21603,6 @@ Weapons<public> := module {
 
   @preload
   CombatPistol_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22832,9 +21615,6 @@ Weapons<public> := module {
 
   @preload
   CombatSMG_BR_CH3S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22847,9 +21627,6 @@ Weapons<public> := module {
 
   @preload
   CombatSMG_BR_CH3S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22862,9 +21639,6 @@ Weapons<public> := module {
 
   @preload
   CombatSMG_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22877,9 +21651,6 @@ Weapons<public> := module {
 
   @preload
   CombatSMG_BR_CH3S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22892,9 +21663,6 @@ Weapons<public> := module {
 
   @preload
   CombatSMG_BR_CH3S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22907,9 +21675,6 @@ Weapons<public> := module {
 
   @preload
   CombatSMG_BR_CH3S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22922,9 +21687,6 @@ Weapons<public> := module {
 
   @preload
   CombatShotgun_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22937,9 +21699,6 @@ Weapons<public> := module {
 
   @preload
   CombatShotgun_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22952,9 +21711,6 @@ Weapons<public> := module {
 
   @preload
   CombatShotgun_BR_CH1S9_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22967,9 +21723,6 @@ Weapons<public> := module {
 
   @preload
   CombatShotgun_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22982,9 +21735,6 @@ Weapons<public> := module {
 
   @preload
   CombatShotgun_BR_CH4S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -22997,9 +21747,6 @@ Weapons<public> := module {
 
   @preload
   CompactSMG_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23012,9 +21759,6 @@ Weapons<public> := module {
 
   @preload
   CompactSMG_BR_CH1S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23027,9 +21771,6 @@ Weapons<public> := module {
 
   @preload
   CompactSMG_BR_CH6MS2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23042,9 +21783,6 @@ Weapons<public> := module {
 
   @preload
   CompactSMG_BR_CH6MS2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23057,9 +21795,6 @@ Weapons<public> := module {
 
   @preload
   Crossbow_BR_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23072,9 +21807,6 @@ Weapons<public> := module {
 
   @preload
   Crossbow_BR_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23087,9 +21819,6 @@ Weapons<public> := module {
 
   @preload
   CubeRifle_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23102,9 +21831,6 @@ Weapons<public> := module {
 
   @preload
   CubeRifle_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23117,9 +21843,6 @@ Weapons<public> := module {
 
   @preload
   CubeRifle_BR_CH7S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23132,9 +21855,6 @@ Weapons<public> := module {
 
   @preload
   CupidsCrossbow_BR_CH1S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23147,9 +21867,6 @@ Weapons<public> := module {
 
   @preload
   DMR_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23162,9 +21879,6 @@ Weapons<public> := module {
 
   @preload
   DMR_BR_CH3S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23177,9 +21891,6 @@ Weapons<public> := module {
 
   @preload
   DMR_BR_CH3S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23192,9 +21903,6 @@ Weapons<public> := module {
 
   @preload
   DMR_BR_CH3S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23207,9 +21915,6 @@ Weapons<public> := module {
 
   @preload
   DMR_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23222,9 +21927,6 @@ Weapons<public> := module {
 
   @preload
   DMR_BR_CH3S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23237,9 +21939,6 @@ Weapons<public> := module {
 
   @preload
   DarkVoyagersChaosRifle_BR_CH7S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23252,9 +21951,6 @@ Weapons<public> := module {
 
   @preload
   DarkVoyagersObliterator_BR_CH7S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23267,9 +21963,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeAssaultRifle_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23282,9 +21975,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeAssaultRifle_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23297,9 +21987,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeAssaultRifle_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23312,9 +21999,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeAssaultRifle_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23327,9 +22011,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeAssaultRifle_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23342,9 +22023,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeDMR_BR_CH6S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23357,9 +22035,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeDMR_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23372,9 +22047,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeDMR_BR_CH6S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23387,9 +22059,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeDMR_BR_CH6S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23402,9 +22071,6 @@ Weapons<public> := module {
 
   @preload
   DeadeyeDMR_BR_CH6S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23417,9 +22083,6 @@ Weapons<public> := module {
 
   @preload
   DiamondsThermalDMR_BR_CH4S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23432,9 +22095,6 @@ Weapons<public> := module {
 
   @preload
   DoubleBarrelShotgun_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23447,9 +22107,6 @@ Weapons<public> := module {
 
   @preload
   DoubleBarrelShotgun_BR_CH1S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23462,9 +22119,6 @@ Weapons<public> := module {
 
   @preload
   Double_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23478,9 +22132,6 @@ Weapons<public> := module {
   @preload
   # LegacyDragonsBreathShotgun_BR_CH2S5_Epic
   DragonsBreathShotgun_BR_CH2S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23494,9 +22145,6 @@ Weapons<public> := module {
   @preload
   # LegacyDragonsBreathShotgun_BR_CH2S5_Legendary
   DragonsBreathShotgun_BR_CH2S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23509,9 +22157,6 @@ Weapons<public> := module {
 
   @preload
   DragonsBreathShotgun_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23524,9 +22169,6 @@ Weapons<public> := module {
 
   @preload
   DragonsBreathShotgun_BR_CH6S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23539,9 +22181,6 @@ Weapons<public> := module {
 
   @preload
   DragonsBreathSniper_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23554,9 +22193,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH1S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23569,9 +22205,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH1S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23584,9 +22217,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH6MS2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23599,9 +22229,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH6MS2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23614,9 +22241,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH6MS2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23629,9 +22253,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH7S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23644,9 +22265,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_BR_CH7S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23659,9 +22277,6 @@ Weapons<public> := module {
 
   @preload
   DrumGun_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23674,9 +22289,6 @@ Weapons<public> := module {
 
   @preload
   DrumShotgun_BR_CH1S9_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23689,9 +22301,6 @@ Weapons<public> := module {
 
   @preload
   DrumShotgun_BR_CH1S9_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23704,9 +22313,6 @@ Weapons<public> := module {
 
   @preload
   DrumShotgun_BR_CH1S9_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23719,9 +22325,6 @@ Weapons<public> := module {
 
   @preload
   DrumShotgun_BR_CH3S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23734,9 +22337,6 @@ Weapons<public> := module {
 
   @preload
   DrumShotgun_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23749,9 +22349,6 @@ Weapons<public> := module {
 
   @preload
   DualFiendHunters_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23764,9 +22361,6 @@ Weapons<public> := module {
 
   @preload
   DualFiendHunters_BR_CH2S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23779,9 +22373,6 @@ Weapons<public> := module {
 
   @preload
   DualFiendHunters_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23794,9 +22385,6 @@ Weapons<public> := module {
 
   @preload
   DualFiendHunters_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23809,9 +22397,6 @@ Weapons<public> := module {
 
   @preload
   DualFiendHunters_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23824,9 +22409,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH5S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23839,9 +22421,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH5S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23854,9 +22433,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH5S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23869,9 +22445,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH5S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23884,9 +22457,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH5S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23899,9 +22469,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23914,9 +22481,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23929,9 +22493,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23944,9 +22505,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23959,9 +22517,6 @@ Weapons<public> := module {
 
   @preload
   DualMicroSMGs_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23974,9 +22529,6 @@ Weapons<public> := module {
 
   @preload
   DualPistols_BR_CH1S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -23989,9 +22541,6 @@ Weapons<public> := module {
 
   @preload
   DualPistols_BR_CH1S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24004,9 +22553,6 @@ Weapons<public> := module {
 
   @preload
   DualPistols_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24019,9 +22565,6 @@ Weapons<public> := module {
 
   @preload
   DualPistols_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24034,9 +22577,6 @@ Weapons<public> := module {
 
   @preload
   DualPistols_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24049,9 +22589,6 @@ Weapons<public> := module {
 
   @preload
   DualSuppressedPistols_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24064,9 +22601,6 @@ Weapons<public> := module {
 
   @preload
   DualSuppressedPistols_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24079,9 +22613,6 @@ Weapons<public> := module {
 
   @preload
   DualSuppressedPistols_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24094,9 +22625,6 @@ Weapons<public> := module {
 
   @preload
   DualSuppressedPistols_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24109,9 +22637,6 @@ Weapons<public> := module {
 
   @preload
   EggLauncher_BR_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24124,9 +22649,6 @@ Weapons<public> := module {
 
   @preload
   EggLauncher_BR_CH1S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24139,9 +22661,6 @@ Weapons<public> := module {
 
   @preload
   EggLauncher_BR_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24154,9 +22673,6 @@ Weapons<public> := module {
 
   @preload
   EggLauncher_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24170,9 +22686,6 @@ Weapons<public> := module {
   @preload
   # 8BitShotgun_BR_CH7S4_Common
   EightBitShotgun_BR_CH7S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24186,9 +22699,6 @@ Weapons<public> := module {
   @preload
   # 8BitShotgun_BR_CH7S4_Epic
   EightBitShotgun_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24202,9 +22712,6 @@ Weapons<public> := module {
   @preload
   # 8BitShotgun_BR_CH7S4_Legendary
   EightBitShotgun_BR_CH7S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24218,9 +22725,6 @@ Weapons<public> := module {
   @preload
   # 8BitShotgun_BR_CH7S4_Rare
   EightBitShotgun_BR_CH7S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24234,9 +22738,6 @@ Weapons<public> := module {
   @preload
   # 8BitShotgun_BR_CH7S4_Uncommon
   EightBitShotgun_BR_CH7S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24249,9 +22750,6 @@ Weapons<public> := module {
 
   @preload
   EmpoweredCupidsCrossbow_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24264,9 +22762,6 @@ Weapons<public> := module {
 
   @preload
   EnforcerAR_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24279,9 +22774,6 @@ Weapons<public> := module {
 
   @preload
   EnforcerAR_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24294,9 +22786,6 @@ Weapons<public> := module {
 
   @preload
   EnforcerAR_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24309,9 +22798,6 @@ Weapons<public> := module {
 
   @preload
   EnforcerAR_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24324,9 +22810,6 @@ Weapons<public> := module {
 
   @preload
   EnforcerAR_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24339,9 +22822,6 @@ Weapons<public> := module {
 
   @preload
   EnforcerAR_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24354,9 +22834,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedAssaultRifle_BR_CH6S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24369,9 +22846,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedCollateralDamageAR_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24384,9 +22858,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedCompactSMG_BR_CH6MS2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24399,9 +22870,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedDrumShotgun_BR_CH4S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24414,9 +22882,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedFalconEyeSniper_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24429,9 +22894,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedFlapJackRifle_BR_CH4S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24444,9 +22906,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedFuryAssaultRifle_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24459,9 +22918,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedHavocShotgun_BR_CH4S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24474,9 +22930,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedHoloTwisterAssaultRifle_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24489,9 +22942,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedHyperburstPistol_BR_CH6S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24504,9 +22954,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedInfiltratorPumpShotgun_BR_CH4S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24519,9 +22966,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedOniShotgun_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24534,9 +22978,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedOutlawShotgun_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24549,9 +22990,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedSentinelPumpShotgun_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24564,9 +23002,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedSpireRifle_BR_CH6S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24579,9 +23014,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedSurgefireSMG_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24594,9 +23026,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedTwinfireAutoShotgun_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24609,9 +23038,6 @@ Weapons<public> := module {
 
   @preload
   EnhancedWreckerRevolver_BR_CH6S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24624,9 +23050,6 @@ Weapons<public> := module {
 
   @preload
   EradicatorHopRockFuryAssaultRifle_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24639,9 +23062,6 @@ Weapons<public> := module {
 
   @preload
   EradicatorMarksmanWreckerRevolver_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24654,9 +23074,6 @@ Weapons<public> := module {
 
   @preload
   EradicatorOXRRifle_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24669,9 +23086,6 @@ Weapons<public> := module {
 
   @preload
   EradicatorShadowPrecisionSMG_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24684,9 +23098,6 @@ Weapons<public> := module {
 
   @preload
   EradicatorShockNSlowShockwaveLauncher_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24699,9 +23110,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeBurstRifle_BR_CH3S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24714,9 +23122,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeBurstRifle_BR_CH3S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24729,9 +23134,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeBurstRifle_BR_CH3S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24744,9 +23146,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeBurstRifle_BR_CH3S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24759,9 +23158,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeBurstRifle_BR_CH3S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24774,9 +23170,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeBurstRifle_BR_CH3S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24789,9 +23182,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeShotgun_BR_CH3S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24804,9 +23194,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeShotgun_BR_CH3S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24819,9 +23206,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeShotgun_BR_CH3S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24834,9 +23218,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeShotgun_BR_CH3S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24849,9 +23230,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeShotgun_BR_CH3S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24864,9 +23242,6 @@ Weapons<public> := module {
 
   @preload
   EvoChromeShotgun_BR_CH3S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24879,9 +23254,6 @@ Weapons<public> := module {
 
   @preload
   ExCaliberRifle_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24894,9 +23266,6 @@ Weapons<public> := module {
 
   @preload
   ExCaliberRifle_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24909,9 +23278,6 @@ Weapons<public> := module {
 
   @preload
   ExCaliberRifle_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24924,9 +23290,6 @@ Weapons<public> := module {
 
   @preload
   ExCaliberRifle_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24939,9 +23302,6 @@ Weapons<public> := module {
 
   @preload
   ExCaliberRifle_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24954,9 +23314,6 @@ Weapons<public> := module {
 
   @preload
   ExoticLeapingLightningGun_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24971,9 +23328,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use ReconBow_BR_CH7S2_Exotic instead.
   ExoticReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -24986,9 +23340,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveGooGun_BR_CH3S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25001,9 +23352,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveRepeaterRifle_BR_CH4S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25016,9 +23364,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveRepeaterRifle_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25031,9 +23376,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveRepeaterRifle_BR_CH4S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25046,9 +23388,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveRepeaterRifle_BR_CH4S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25061,9 +23400,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveRepeaterRifle_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25076,9 +23412,6 @@ Weapons<public> := module {
 
   @preload
   ExplosiveRepeaterRifle_BR_CH4S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25091,9 +23424,6 @@ Weapons<public> := module {
 
   @preload
   ExtendingFocusShotgun_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25106,9 +23436,6 @@ Weapons<public> := module {
 
   @preload
   ExtendingFocusShotgun_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25121,9 +23448,6 @@ Weapons<public> := module {
 
   @preload
   ExtendingFocusShotgun_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25136,9 +23460,6 @@ Weapons<public> := module {
 
   @preload
   ExtendingFocusShotgun_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25151,9 +23472,6 @@ Weapons<public> := module {
 
   @preload
   ExtendingFocusShotgun_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25166,9 +23484,6 @@ Weapons<public> := module {
 
   @preload
   FalconEyeSniper_BR_CH6S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25181,9 +23496,6 @@ Weapons<public> := module {
 
   @preload
   FalconEyeSniper_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25196,9 +23508,6 @@ Weapons<public> := module {
 
   @preload
   FalconEyeSniper_BR_CH6S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25211,9 +23520,6 @@ Weapons<public> := module {
 
   @preload
   FalconEyeSniper_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25226,9 +23532,6 @@ Weapons<public> := module {
 
   @preload
   FalconEyeSniper_BR_CH6S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25241,9 +23544,6 @@ Weapons<public> := module {
 
   @preload
   FiendHunterCrossbow_BR_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25256,9 +23556,6 @@ Weapons<public> := module {
 
   @preload
   FireOniMask_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25271,9 +23568,6 @@ Weapons<public> := module {
 
   @preload
   FireworkFlareGun_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25286,9 +23580,6 @@ Weapons<public> := module {
 
   @preload
   FlapjackRifle_BR_CH4S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25301,9 +23592,6 @@ Weapons<public> := module {
 
   @preload
   FlapjackRifle_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25316,9 +23604,6 @@ Weapons<public> := module {
 
   @preload
   FlapjackRifle_BR_CH4S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25331,9 +23616,6 @@ Weapons<public> := module {
 
   @preload
   FlapjackRifle_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25346,9 +23628,6 @@ Weapons<public> := module {
 
   @preload
   FlapjackRifle_BR_CH4S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25361,9 +23640,6 @@ Weapons<public> := module {
 
   @preload
   FlareGun_BR_CH2S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25376,9 +23652,6 @@ Weapons<public> := module {
 
   @preload
   FlashlightPistol_Creative_V1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25391,9 +23664,6 @@ Weapons<public> := module {
 
   @preload
   FlexSMG_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25406,9 +23676,6 @@ Weapons<public> := module {
 
   @preload
   FlexSMG_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25421,9 +23688,6 @@ Weapons<public> := module {
 
   @preload
   FlexSMG_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25436,9 +23700,6 @@ Weapons<public> := module {
 
   @preload
   FlexSMG_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25451,9 +23712,6 @@ Weapons<public> := module {
 
   @preload
   FlexSMG_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25466,9 +23724,6 @@ Weapons<public> := module {
 
   @preload
   FlintKnockPistol_BR_CH1S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25481,9 +23736,6 @@ Weapons<public> := module {
 
   @preload
   FlintKnockPistol_BR_CH1S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25496,9 +23748,6 @@ Weapons<public> := module {
 
   @preload
   FoundationsPowerGloves_BR_CH7S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25511,9 +23760,6 @@ Weapons<public> := module {
 
   @preload
   FrenzyAutoShotgun_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25526,9 +23772,6 @@ Weapons<public> := module {
 
   @preload
   FuryAssaultRifle_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25541,9 +23784,6 @@ Weapons<public> := module {
 
   @preload
   FuryAssaultRifle_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25556,9 +23796,6 @@ Weapons<public> := module {
 
   @preload
   FuryAssaultRifle_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25571,9 +23808,6 @@ Weapons<public> := module {
 
   @preload
   FuryAssaultRifle_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25586,9 +23820,6 @@ Weapons<public> := module {
 
   @preload
   FuryAssaultRifle_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25601,9 +23832,6 @@ Weapons<public> := module {
 
   @preload
   GrappleBlade_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25616,9 +23844,6 @@ Weapons<public> := module {
 
   @preload
   GrapplerBow_BR_CH2S6_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25631,9 +23856,6 @@ Weapons<public> := module {
 
   @preload
   GrenadeLauncher_BR_PreSeason_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25646,9 +23868,6 @@ Weapons<public> := module {
 
   @preload
   GrenadeLauncher_BR_PreSeason_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25661,9 +23880,6 @@ Weapons<public> := module {
 
   @preload
   GrenadeLauncher_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25678,9 +23894,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use GuidedMissile_OG_CH1S3_Epic instead.
   GuidedMissile_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25695,9 +23908,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use GuidedMissile_OG_CH1S3_Legendary instead.
   GuidedMissile_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25710,9 +23920,6 @@ Weapons<public> := module {
 
   @preload
   GuidedMissile_OG_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25725,9 +23932,6 @@ Weapons<public> := module {
 
   @preload
   GuidedMissile_OG_CH1S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25740,9 +23944,6 @@ Weapons<public> := module {
 
   @preload
   GunnarsStingerSMG_BR_CH3S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25755,9 +23956,6 @@ Weapons<public> := module {
 
   @preload
   HadesModularHarbingerSMG_BR_CH5S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25770,9 +23968,6 @@ Weapons<public> := module {
 
   @preload
   HammerAssaultRifle_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25785,9 +23980,6 @@ Weapons<public> := module {
 
   @preload
   HammerAssaultRifle_BR_CH3S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25800,9 +23992,6 @@ Weapons<public> := module {
 
   @preload
   HammerAssaultRifle_BR_CH3S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25815,9 +24004,6 @@ Weapons<public> := module {
 
   @preload
   HammerAssaultRifle_BR_CH3S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25830,9 +24016,6 @@ Weapons<public> := module {
 
   @preload
   HammerAssaultRifle_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25845,9 +24028,6 @@ Weapons<public> := module {
 
   @preload
   HammerAssaultRifle_BR_CH3S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25860,9 +24040,6 @@ Weapons<public> := module {
 
   @preload
   HammerPumpShotgun_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25875,9 +24052,6 @@ Weapons<public> := module {
 
   @preload
   HammerRevolver_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25890,9 +24064,6 @@ Weapons<public> := module {
 
   @preload
   HammerRevolver_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25905,9 +24076,6 @@ Weapons<public> := module {
 
   @preload
   HammerRevolver_BR_CH7S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25920,9 +24088,6 @@ Weapons<public> := module {
 
   @preload
   HammerRevolver_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25935,9 +24100,6 @@ Weapons<public> := module {
 
   @preload
   HammerRevolver_BR_CH7S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25950,9 +24112,6 @@ Weapons<public> := module {
 
   @preload
   HandCannon_BR_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25965,9 +24124,6 @@ Weapons<public> := module {
 
   @preload
   HandCannon_BR_CH1S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25980,9 +24136,6 @@ Weapons<public> := module {
 
   @preload
   HandCannon_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -25995,9 +24148,6 @@ Weapons<public> := module {
 
   @preload
   HandCannon_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26010,9 +24160,6 @@ Weapons<public> := module {
 
   @preload
   HavocPumpShotgun_BR_CH4S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26025,9 +24172,6 @@ Weapons<public> := module {
 
   @preload
   HavocPumpShotgun_BR_CH4S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26040,9 +24184,6 @@ Weapons<public> := module {
 
   @preload
   HavocPumpShotgun_BR_CH4S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26055,9 +24196,6 @@ Weapons<public> := module {
 
   @preload
   HavocPumpShotgun_BR_CH4S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26070,9 +24208,6 @@ Weapons<public> := module {
 
   @preload
   HavocPumpShotgun_BR_CH4S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26085,9 +24220,6 @@ Weapons<public> := module {
 
   @preload
   HavocSuppressedAssaultRifle_BR_CH4S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26100,9 +24232,6 @@ Weapons<public> := module {
 
   @preload
   HavocSuppressedAssaultRifle_BR_CH4S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26115,9 +24244,6 @@ Weapons<public> := module {
 
   @preload
   HavocSuppressedAssaultRifle_BR_CH4S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26130,9 +24256,6 @@ Weapons<public> := module {
 
   @preload
   HavocSuppressedAssaultRifle_BR_CH4S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26145,9 +24268,6 @@ Weapons<public> := module {
 
   @preload
   HavocSuppressedAssaultRifle_BR_CH4S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26160,9 +24280,6 @@ Weapons<public> := module {
 
   @preload
   HavocSuppressedAssaultRifle_BR_CH4S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26175,9 +24292,6 @@ Weapons<public> := module {
 
   @preload
   HeartsHavocSuppressedRifle_BR_CH4S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26190,9 +24304,6 @@ Weapons<public> := module {
 
   @preload
   HeavyAssaultRifle_BR_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26205,9 +24316,6 @@ Weapons<public> := module {
 
   @preload
   HeavyAssaultRifle_BR_CH1S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26220,9 +24328,6 @@ Weapons<public> := module {
 
   @preload
   HeavyAssaultRifle_BR_CH1S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26235,9 +24340,6 @@ Weapons<public> := module {
 
   @preload
   HeavyAssaultRifle_BR_CH1S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26250,9 +24352,6 @@ Weapons<public> := module {
 
   @preload
   HeavyAssaultRifle_BR_CH1S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26265,9 +24364,6 @@ Weapons<public> := module {
 
   @preload
   HeavyImpactSniperRifle_BR_CH5S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26280,9 +24376,6 @@ Weapons<public> := module {
 
   @preload
   HeavyImpactSniperRifle_BR_CH5S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26295,9 +24388,6 @@ Weapons<public> := module {
 
   @preload
   HeavyImpactSniperRifle_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26310,9 +24400,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26325,9 +24412,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26340,9 +24424,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26355,9 +24436,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26370,9 +24448,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26385,9 +24460,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_OG_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26400,9 +24472,6 @@ Weapons<public> := module {
 
   @preload
   HeavyShotgun_OG_CH1S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26415,9 +24484,6 @@ Weapons<public> := module {
 
   @preload
   HeavySniperRifle_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26430,9 +24496,6 @@ Weapons<public> := module {
 
   @preload
   HeavySniperRifle_BR_CH1S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26445,9 +24508,6 @@ Weapons<public> := module {
 
   @preload
   HeavySniperRifle_BR_CH3S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26460,9 +24520,6 @@ Weapons<public> := module {
 
   @preload
   HeistedAccelerantShotgun_BR_CH4S1_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26475,9 +24532,6 @@ Weapons<public> := module {
 
   @preload
   HeistedBlinkMagSMG_BR_CH4S1_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26490,9 +24544,6 @@ Weapons<public> := module {
 
   @preload
   HeistedBreacherShotgun_BR_CH4S1_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26505,9 +24556,6 @@ Weapons<public> := module {
 
   @preload
   HeistedExplosiveAssaultRifle_BR_CH4S1_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26520,9 +24568,6 @@ Weapons<public> := module {
 
   @preload
   HeistedRunNGunSMG_BR_CH4S1_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26535,9 +24580,6 @@ Weapons<public> := module {
 
   @preload
   HighStakesShotgun_BR_CH4S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26550,9 +24592,6 @@ Weapons<public> := module {
 
   @preload
   HighcardsHavocSuppressedRifle_BR_CH4S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26565,9 +24604,6 @@ Weapons<public> := module {
 
   @preload
   HoloRushSMG_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26580,9 +24616,6 @@ Weapons<public> := module {
 
   @preload
   HoloRushSMG_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26595,9 +24628,6 @@ Weapons<public> := module {
 
   @preload
   HoloRushSMG_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26610,9 +24640,6 @@ Weapons<public> := module {
 
   @preload
   HoloRushSMG_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26625,9 +24652,6 @@ Weapons<public> := module {
 
   @preload
   HoloRushSMG_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26640,9 +24664,6 @@ Weapons<public> := module {
 
   @preload
   HoloTwisterAssaultRifle_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26655,9 +24676,6 @@ Weapons<public> := module {
 
   @preload
   HoloTwisterAssaultRifle_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26670,9 +24688,6 @@ Weapons<public> := module {
 
   @preload
   HoloTwisterAssaultRifle_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26685,9 +24700,6 @@ Weapons<public> := module {
 
   @preload
   HoloTwisterAssaultRifle_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26700,9 +24712,6 @@ Weapons<public> := module {
 
   @preload
   HoloTwisterAssaultRifle_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26715,9 +24724,6 @@ Weapons<public> := module {
 
   @preload
   HopRockDualies_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26730,9 +24736,6 @@ Weapons<public> := module {
 
   @preload
   HumanBillsArcLightningGun_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26745,9 +24748,6 @@ Weapons<public> := module {
 
   @preload
   HunterBoltActionSniper_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26760,9 +24760,6 @@ Weapons<public> := module {
 
   @preload
   HunterBoltActionSniper_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26775,9 +24772,6 @@ Weapons<public> := module {
 
   @preload
   HunterBoltActionSniper_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26790,9 +24784,6 @@ Weapons<public> := module {
 
   @preload
   HunterBoltActionSniper_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26805,9 +24796,6 @@ Weapons<public> := module {
 
   @preload
   HunterBoltActionSniper_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26820,9 +24808,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26835,9 +24820,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH1S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26850,9 +24832,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH2S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26865,9 +24844,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH2S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26880,9 +24856,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26895,9 +24868,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26910,9 +24880,6 @@ Weapons<public> := module {
 
   @preload
   HuntingRifle_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26925,9 +24892,6 @@ Weapons<public> := module {
 
   @preload
   HuntmasterSabersThermalRifle_BR_CH3S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26940,9 +24904,6 @@ Weapons<public> := module {
 
   @preload
   HushsDeadeyeAssaultRifle_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26955,9 +24916,6 @@ Weapons<public> := module {
 
   @preload
   HyperSMG_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26970,9 +24928,6 @@ Weapons<public> := module {
 
   @preload
   HyperburstPistol_BR_CH6S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -26985,9 +24940,6 @@ Weapons<public> := module {
 
   @preload
   HyperburstPistol_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27000,9 +24952,6 @@ Weapons<public> := module {
 
   @preload
   HyperburstPistol_BR_CH6S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27015,9 +24964,6 @@ Weapons<public> := module {
 
   @preload
   HyperburstPistol_BR_CH6S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27030,9 +24976,6 @@ Weapons<public> := module {
 
   @preload
   HyperburstPistol_BR_CH6S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27045,9 +24988,6 @@ Weapons<public> := module {
 
   @preload
   IceKingsGauntlets_BR_CH7S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27060,9 +25000,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH1S7_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27075,9 +25012,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH1S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27090,9 +25024,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH1S7_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27105,9 +25036,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH1S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27120,9 +25048,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH1S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27135,9 +25060,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH6MS2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27150,9 +25072,6 @@ Weapons<public> := module {
 
   @preload
   InfantryRifle_BR_CH6MS2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27165,9 +25084,6 @@ Weapons<public> := module {
 
   @preload
   InfiltratorPumpShotgun_BR_CH4S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27180,9 +25096,6 @@ Weapons<public> := module {
 
   @preload
   InfiltratorPumpShotgun_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27195,9 +25108,6 @@ Weapons<public> := module {
 
   @preload
   InfiltratorPumpShotgun_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27210,9 +25120,6 @@ Weapons<public> := module {
 
   @preload
   InfiltratorPumpShotgun_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27225,9 +25132,6 @@ Weapons<public> := module {
 
   @preload
   InfiltratorPumpShotgun_BR_CH4S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27240,9 +25144,6 @@ Weapons<public> := module {
 
   @preload
   InfinityBlade_BR_CH1S7_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27255,9 +25156,6 @@ Weapons<public> := module {
 
   @preload
   InkquisitorsSuppressedSMG_BR_CH3S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27270,9 +25168,6 @@ Weapons<public> := module {
 
   @preload
   IronPumpShotgun_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27285,9 +25180,6 @@ Weapons<public> := module {
 
   @preload
   IronPumpShotgun_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27300,9 +25192,6 @@ Weapons<public> := module {
 
   @preload
   IronPumpShotgun_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27315,9 +25204,6 @@ Weapons<public> := module {
 
   @preload
   IronPumpShotgun_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27330,9 +25216,6 @@ Weapons<public> := module {
 
   @preload
   IronPumpShotgun_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27345,9 +25228,6 @@ Weapons<public> := module {
 
   @preload
   JulesDrumGun_BR_CH2S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27360,9 +25240,6 @@ Weapons<public> := module {
 
   @preload
   KillswitchRevolvers_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27375,9 +25252,6 @@ Weapons<public> := module {
 
   @preload
   KillswitchRevolvers_BR_CH6S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27390,9 +25264,6 @@ Weapons<public> := module {
 
   @preload
   KillswitchRevolvers_BR_CH6S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27405,9 +25276,6 @@ Weapons<public> := module {
 
   @preload
   KillswitchsRevolvers_BR_CH6S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27420,9 +25288,6 @@ Weapons<public> := module {
 
   @preload
   KineticBlade_BR_CH4S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27435,9 +25300,6 @@ Weapons<public> := module {
 
   @preload
   KineticBlade_BR_CH4S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27450,9 +25312,6 @@ Weapons<public> := module {
 
   @preload
   KineticBoomerang_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27465,9 +25324,6 @@ Weapons<public> := module {
 
   @preload
   KitsChargeShotgun_BR_CH2S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27480,9 +25336,6 @@ Weapons<public> := module {
 
   @preload
   KitsShockwaveLauncher_BR_CH2S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27495,9 +25348,6 @@ Weapons<public> := module {
 
   @preload
   KorsDeadeyeDMR_BR_CH6S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27510,9 +25360,6 @@ Weapons<public> := module {
 
   @preload
   KymeraRayGun_BR_CH2S7_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27525,9 +25372,6 @@ Weapons<public> := module {
 
   @preload
   KymeraRayGun_BR_CH2S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27540,9 +25384,6 @@ Weapons<public> := module {
 
   @preload
   KymeraRayGun_BR_CH2S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27555,9 +25396,6 @@ Weapons<public> := module {
 
   @preload
   LawfulAccelerantHoloTwisterAR_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27570,9 +25408,6 @@ Weapons<public> := module {
 
   @preload
   LawfulExplosiveMammothPistol_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27585,9 +25420,6 @@ Weapons<public> := module {
 
   @preload
   LawfulHeavyImpactTrackingRifle_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27600,9 +25432,6 @@ Weapons<public> := module {
 
   @preload
   LawfulShockwaveRocketLauncher_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27615,9 +25444,6 @@ Weapons<public> := module {
 
   @preload
   LawlessAccelerantHoloTwisterAR_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27630,9 +25456,6 @@ Weapons<public> := module {
 
   @preload
   LawlessBlinkPumpDump_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27645,9 +25468,6 @@ Weapons<public> := module {
 
   @preload
   LawlessExplosiveMammothPistol_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27660,9 +25480,6 @@ Weapons<public> := module {
 
   @preload
   LawlessFinalMarkRifle_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27675,9 +25492,6 @@ Weapons<public> := module {
 
   @preload
   LawlessHeavyImpactTrackingRifle_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27690,9 +25504,6 @@ Weapons<public> := module {
 
   @preload
   LawlessShockwaveRocketLauncher_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27705,9 +25516,6 @@ Weapons<public> := module {
 
   @preload
   LawlessStinkRifle_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27720,9 +25528,6 @@ Weapons<public> := module {
 
   @preload
   LawlessTrinityAssaultRifle_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27735,9 +25540,6 @@ Weapons<public> := module {
 
   @preload
   LawlessTwinfireSlapShotgun_BR_CH6S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27750,9 +25552,6 @@ Weapons<public> := module {
 
   @preload
   Leadspitter3000_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27765,9 +25564,6 @@ Weapons<public> := module {
 
   @preload
   Leadspitter3000_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27780,9 +25576,6 @@ Weapons<public> := module {
 
   @preload
   Leadspitter3000_BR_CH6S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27795,9 +25588,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionRifle_BR_CH2S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27810,9 +25600,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionRifle_BR_CH2S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27825,9 +25612,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionRifle_BR_CH2S5_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27840,9 +25624,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionRifle_BR_CH2S5_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27855,9 +25636,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionShotgun_BR_CH2S5_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27870,9 +25648,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionShotgun_BR_CH2S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27885,9 +25660,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionShotgun_BR_CH2S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27900,9 +25672,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionShotgun_BR_CH2S5_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27915,9 +25684,6 @@ Weapons<public> := module {
 
   @preload
   LeverActionShotgun_BR_CH2S5_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27930,9 +25696,6 @@ Weapons<public> := module {
 
   @preload
   LightMachineGun_BR_CH1S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27945,9 +25708,6 @@ Weapons<public> := module {
 
   @preload
   LightMachineGun_BR_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27960,9 +25720,6 @@ Weapons<public> := module {
 
   @preload
   LightMachineGun_BR_CH3S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27975,9 +25732,6 @@ Weapons<public> := module {
 
   @preload
   LightMachineGun_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -27990,9 +25744,6 @@ Weapons<public> := module {
 
   @preload
   LightMachineGun_BR_CH3S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28005,9 +25756,6 @@ Weapons<public> := module {
 
   @preload
   LockOnAssaultRifle_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28020,9 +25768,6 @@ Weapons<public> := module {
 
   @preload
   LockOnAssaultRifle_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28035,9 +25780,6 @@ Weapons<public> := module {
 
   @preload
   LockOnAssaultRifle_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28050,9 +25792,6 @@ Weapons<public> := module {
 
   @preload
   LockOnAssaultRifle_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28065,9 +25804,6 @@ Weapons<public> := module {
 
   @preload
   LockOnAssaultRifle_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28080,9 +25816,6 @@ Weapons<public> := module {
 
   @preload
   LockOnPistol_BR_CH4S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28095,9 +25828,6 @@ Weapons<public> := module {
 
   @preload
   MKAlphaAssaultRifle_BR_CH4S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28110,9 +25840,6 @@ Weapons<public> := module {
 
   @preload
   MKAlphaAssaultRifle_BR_CH4S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28125,9 +25852,6 @@ Weapons<public> := module {
 
   @preload
   MKAlphaAssaultRifle_BR_CH4S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28140,9 +25864,6 @@ Weapons<public> := module {
 
   @preload
   MKAlphaAssaultRifle_BR_CH4S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28155,9 +25876,6 @@ Weapons<public> := module {
 
   @preload
   MKAlphaAssaultRifle_BR_CH4S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28170,9 +25888,6 @@ Weapons<public> := module {
 
   @preload
   MKSevenAssaultRifle_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28185,9 +25900,6 @@ Weapons<public> := module {
 
   @preload
   MKSevenAssaultRifle_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28200,9 +25912,6 @@ Weapons<public> := module {
 
   @preload
   MKSevenAssaultRifle_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28215,9 +25924,6 @@ Weapons<public> := module {
 
   @preload
   MKSevenAssaultRifle_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28230,9 +25936,6 @@ Weapons<public> := module {
 
   @preload
   MKSevenAssaultRifle_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28245,9 +25948,6 @@ Weapons<public> := module {
 
   @preload
   MachinePistol_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28260,9 +25960,6 @@ Weapons<public> := module {
 
   @preload
   MachineSMG_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28275,9 +25972,6 @@ Weapons<public> := module {
 
   @preload
   MachineSMG_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28290,9 +25984,6 @@ Weapons<public> := module {
 
   @preload
   MachineSMG_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28305,9 +25996,6 @@ Weapons<public> := module {
 
   @preload
   MachineSMG_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28320,9 +26008,6 @@ Weapons<public> := module {
 
   @preload
   MachineSMG_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28335,9 +26020,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftBow_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28350,9 +26032,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftRevolver_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28365,9 +26044,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftRevolver_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28380,9 +26056,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftRevolver_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28395,9 +26068,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftRifle_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28410,9 +26080,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftRifle_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28425,9 +26092,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftRifle_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28440,9 +26104,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftShotgun_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28455,9 +26116,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftShotgun_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28470,9 +26128,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftShotgun_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28485,9 +26140,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftSubmachineGun_BR_CH2S6_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28500,9 +26152,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftSubmachineGun_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28515,9 +26164,6 @@ Weapons<public> := module {
 
   @preload
   MakeshiftSubmachineGun_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28530,9 +26176,6 @@ Weapons<public> := module {
 
   @preload
   MammothPistol_BR_CH4S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28545,9 +26188,6 @@ Weapons<public> := module {
 
   @preload
   MammothPistol_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28560,9 +26200,6 @@ Weapons<public> := module {
 
   @preload
   MammothPistol_BR_CH4S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28575,9 +26212,6 @@ Weapons<public> := module {
 
   @preload
   MammothPistol_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28590,9 +26224,6 @@ Weapons<public> := module {
 
   @preload
   MammothPistol_BR_CH4S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28605,9 +26236,6 @@ Weapons<public> := module {
 
   @preload
   MarksmanSixShooter_BR_CH2S6_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28620,9 +26248,6 @@ Weapons<public> := module {
 
   @preload
   MavenAutoShotgun_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28635,9 +26260,6 @@ Weapons<public> := module {
 
   @preload
   MavenAutoShotgun_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28650,9 +26272,6 @@ Weapons<public> := module {
 
   @preload
   MavenAutoShotgun_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28665,9 +26284,6 @@ Weapons<public> := module {
 
   @preload
   MavenAutoShotgun_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28680,9 +26296,6 @@ Weapons<public> := module {
 
   @preload
   MavenAutoShotgun_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28695,9 +26308,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalBow_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28710,9 +26320,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalExplosiveBow_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28725,9 +26332,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalExplosiveBow_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28740,9 +26344,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalExplosiveBow_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28755,9 +26356,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalShockwaveBow_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28770,9 +26368,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalShockwaveBow_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28785,9 +26380,6 @@ Weapons<public> := module {
 
   @preload
   MechanicalShockwaveBow_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28800,9 +26392,6 @@ Weapons<public> := module {
 
   @preload
   MegaloDonsModularCombatShotgun_BR_CH5S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28815,9 +26404,6 @@ Weapons<public> := module {
 
   @preload
   MegaloDonsNitroFists_BR_CH5S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28830,9 +26416,6 @@ Weapons<public> := module {
 
   @preload
   MeowsclesPeowPeowRifle_BR_CH2S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28845,9 +26428,6 @@ Weapons<public> := module {
 
   @preload
   MidasDrumGun_BR_CH2S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28860,9 +26440,6 @@ Weapons<public> := module {
 
   @preload
   MidasGildedEyeDrumGun_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28875,9 +26452,6 @@ Weapons<public> := module {
 
   @preload
   MidasMasterpiece_BR_CH7S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28890,9 +26464,6 @@ Weapons<public> := module {
 
   @preload
   MidasModularDrumGun_BR_CH5S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28905,9 +26476,6 @@ Weapons<public> := module {
 
   @preload
   Minigun_BR_CH1S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28920,9 +26488,6 @@ Weapons<public> := module {
 
   @preload
   Minigun_BR_CH1S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28935,9 +26500,6 @@ Weapons<public> := module {
 
   @preload
   Minigun_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28950,9 +26512,6 @@ Weapons<public> := module {
 
   @preload
   ModularBoomBolt_BR_CH5S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28965,9 +26524,6 @@ Weapons<public> := module {
 
   @preload
   ModularBoomBolt_BR_CH5S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28980,9 +26536,6 @@ Weapons<public> := module {
 
   @preload
   ModularBoomBolt_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -28995,9 +26548,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatAssaultRifle_BR_CH5S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29010,9 +26560,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatAssaultRifle_BR_CH5S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29025,9 +26572,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatAssaultRifle_BR_CH5S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29040,9 +26584,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatAssaultRifle_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29055,9 +26596,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatAssaultRifle_BR_CH5S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29070,9 +26608,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatShotgun_BR_CH5S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29085,9 +26620,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatShotgun_BR_CH5S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29100,9 +26632,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatShotgun_BR_CH5S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29115,9 +26644,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatShotgun_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29130,9 +26656,6 @@ Weapons<public> := module {
 
   @preload
   ModularCombatShotgun_BR_CH5S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29145,9 +26668,6 @@ Weapons<public> := module {
 
   @preload
   ModularConductorHandCannon_BR_CH5S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29160,9 +26680,6 @@ Weapons<public> := module {
 
   @preload
   ModularDrumGun_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29175,9 +26692,6 @@ Weapons<public> := module {
 
   @preload
   ModularDrumGun_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29190,9 +26704,6 @@ Weapons<public> := module {
 
   @preload
   ModularDrumGun_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29205,9 +26716,6 @@ Weapons<public> := module {
 
   @preload
   ModularEnforcerAR_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29220,9 +26728,6 @@ Weapons<public> := module {
 
   @preload
   ModularEnforcerAR_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29235,9 +26740,6 @@ Weapons<public> := module {
 
   @preload
   ModularEnforcerAR_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29250,9 +26752,6 @@ Weapons<public> := module {
 
   @preload
   ModularEnforcerAR_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29265,9 +26764,6 @@ Weapons<public> := module {
 
   @preload
   ModularEnforcerAR_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29280,9 +26776,6 @@ Weapons<public> := module {
 
   @preload
   ModularFrenzyAutoShotgun_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29295,9 +26788,6 @@ Weapons<public> := module {
 
   @preload
   ModularFrenzyAutoShotgun_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29310,9 +26800,6 @@ Weapons<public> := module {
 
   @preload
   ModularFrenzyAutoShotgun_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29325,9 +26812,6 @@ Weapons<public> := module {
 
   @preload
   ModularFrenzyAutoShotgun_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29340,9 +26824,6 @@ Weapons<public> := module {
 
   @preload
   ModularFrenzyAutoShotgun_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29355,9 +26836,6 @@ Weapons<public> := module {
 
   @preload
   ModularGatekeeperShotgun_BR_CH5S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29370,9 +26848,6 @@ Weapons<public> := module {
 
   @preload
   ModularGatekeeperShotgun_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29385,9 +26860,6 @@ Weapons<public> := module {
 
   @preload
   ModularGatekeeperShotgun_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29400,9 +26872,6 @@ Weapons<public> := module {
 
   @preload
   ModularGatekeeperShotgun_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29415,9 +26884,6 @@ Weapons<public> := module {
 
   @preload
   ModularGatekeeperShotgun_BR_CH5S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29430,9 +26896,6 @@ Weapons<public> := module {
 
   @preload
   ModularHammerPumpShotgun_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29445,9 +26908,6 @@ Weapons<public> := module {
 
   @preload
   ModularHammerPumpShotgun_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29460,9 +26920,6 @@ Weapons<public> := module {
 
   @preload
   ModularHammerPumpShotgun_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29475,9 +26932,6 @@ Weapons<public> := module {
 
   @preload
   ModularHammerPumpShotgun_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29490,9 +26944,6 @@ Weapons<public> := module {
 
   @preload
   ModularHammerPumpShotgun_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29505,9 +26956,6 @@ Weapons<public> := module {
 
   @preload
   ModularHandCannon_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29520,9 +26968,6 @@ Weapons<public> := module {
 
   @preload
   ModularHandCannon_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29535,9 +26980,6 @@ Weapons<public> := module {
 
   @preload
   ModularHandCannon_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29550,9 +26992,6 @@ Weapons<public> := module {
 
   @preload
   ModularHarbingerSMG_BR_CH5S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29565,9 +27004,6 @@ Weapons<public> := module {
 
   @preload
   ModularHarbingerSMG_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29580,9 +27016,6 @@ Weapons<public> := module {
 
   @preload
   ModularHarbingerSMG_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29595,9 +27028,6 @@ Weapons<public> := module {
 
   @preload
   ModularHarbingerSMG_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29610,9 +27040,6 @@ Weapons<public> := module {
 
   @preload
   ModularHarbingerSMG_BR_CH5S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29625,9 +27052,6 @@ Weapons<public> := module {
 
   @preload
   ModularHuntressDMR_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29640,9 +27064,6 @@ Weapons<public> := module {
 
   @preload
   ModularHuntressDMR_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29655,9 +27076,6 @@ Weapons<public> := module {
 
   @preload
   ModularHuntressDMR_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29670,9 +27088,6 @@ Weapons<public> := module {
 
   @preload
   ModularHuntressDMR_BR_CH5S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29685,9 +27100,6 @@ Weapons<public> := module {
 
   @preload
   ModularHyperSMG_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29700,9 +27112,6 @@ Weapons<public> := module {
 
   @preload
   ModularHyperSMG_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29715,9 +27124,6 @@ Weapons<public> := module {
 
   @preload
   ModularHyperSMG_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29730,9 +27136,6 @@ Weapons<public> := module {
 
   @preload
   ModularHyperSMG_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29745,9 +27148,6 @@ Weapons<public> := module {
 
   @preload
   ModularHyperSMG_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29760,9 +27160,6 @@ Weapons<public> := module {
 
   @preload
   ModularMonarchPistol_BR_CH5S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29775,9 +27172,6 @@ Weapons<public> := module {
 
   @preload
   ModularMonarchPistol_BR_CH5S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29790,9 +27184,6 @@ Weapons<public> := module {
 
   @preload
   ModularMonarchPistol_BR_CH5S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29805,9 +27196,6 @@ Weapons<public> := module {
 
   @preload
   ModularMonarchPistol_BR_CH5S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29820,9 +27208,6 @@ Weapons<public> := module {
 
   @preload
   ModularMonarchPistol_BR_CH5S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29835,9 +27220,6 @@ Weapons<public> := module {
 
   @preload
   ModularNemesisAR_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29850,9 +27232,6 @@ Weapons<public> := module {
 
   @preload
   ModularNemesisAR_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29865,9 +27244,6 @@ Weapons<public> := module {
 
   @preload
   ModularNemesisAR_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29880,9 +27256,6 @@ Weapons<public> := module {
 
   @preload
   ModularNemesisAR_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29895,9 +27268,6 @@ Weapons<public> := module {
 
   @preload
   ModularNemesisAR_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29910,9 +27280,6 @@ Weapons<public> := module {
 
   @preload
   ModularRangerPistol_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29925,9 +27292,6 @@ Weapons<public> := module {
 
   @preload
   ModularRangerPistol_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29940,9 +27304,6 @@ Weapons<public> := module {
 
   @preload
   ModularRangerPistol_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29955,9 +27316,6 @@ Weapons<public> := module {
 
   @preload
   ModularRangerPistol_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29970,9 +27328,6 @@ Weapons<public> := module {
 
   @preload
   ModularRangerPistol_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -29985,9 +27340,6 @@ Weapons<public> := module {
 
   @preload
   ModularSovereignShotgun_BR_CH5S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30000,9 +27352,6 @@ Weapons<public> := module {
 
   @preload
   ModularSovereignShotgun_BR_CH5S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30015,9 +27364,6 @@ Weapons<public> := module {
 
   @preload
   ModularSovereignShotgun_BR_CH5S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30030,9 +27376,6 @@ Weapons<public> := module {
 
   @preload
   ModularSovereignShotgun_BR_CH5S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30045,9 +27388,6 @@ Weapons<public> := module {
 
   @preload
   ModularSovereignShotgun_BR_CH5S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30060,9 +27400,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerAR_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30075,9 +27412,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerAR_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30090,9 +27424,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerAR_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30105,9 +27436,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerAR_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30120,9 +27448,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerAR_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30135,9 +27460,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerBurstRifle_BR_CH5S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30150,9 +27472,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerBurstRifle_BR_CH5S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30165,9 +27484,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerBurstRifle_BR_CH5S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30180,9 +27496,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerBurstRifle_BR_CH5S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30195,9 +27508,6 @@ Weapons<public> := module {
 
   @preload
   ModularStrikerBurstRifle_BR_CH5S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30210,9 +27520,6 @@ Weapons<public> := module {
 
   @preload
   ModularTacticalAssaultRifle_BR_CH5S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30225,9 +27532,6 @@ Weapons<public> := module {
 
   @preload
   ModularTacticalAssaultRifle_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30240,9 +27544,6 @@ Weapons<public> := module {
 
   @preload
   ModularTacticalAssaultRifle_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30255,9 +27556,6 @@ Weapons<public> := module {
 
   @preload
   ModularTacticalAssaultRifle_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30270,9 +27568,6 @@ Weapons<public> := module {
 
   @preload
   ModularTacticalAssaultRifle_BR_CH5S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30285,9 +27580,6 @@ Weapons<public> := module {
 
   @preload
   ModularThunderBurstSMG_BR_CH5S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30300,9 +27592,6 @@ Weapons<public> := module {
 
   @preload
   ModularThunderBurstSMG_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30315,9 +27604,6 @@ Weapons<public> := module {
 
   @preload
   ModularThunderBurstSMG_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30330,9 +27616,6 @@ Weapons<public> := module {
 
   @preload
   ModularThunderBurstSMG_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30345,9 +27628,6 @@ Weapons<public> := module {
 
   @preload
   ModularThunderBurstSMG_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30360,9 +27640,6 @@ Weapons<public> := module {
 
   @preload
   ModularWarforgedAssaultRifle_BR_CH5S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30375,9 +27652,6 @@ Weapons<public> := module {
 
   @preload
   ModularWarforgedAssaultRifle_BR_CH5S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30390,9 +27664,6 @@ Weapons<public> := module {
 
   @preload
   ModularWarforgedAssaultRifle_BR_CH5S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30405,9 +27676,6 @@ Weapons<public> := module {
 
   @preload
   ModularWarforgedAssaultRifle_BR_CH5S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30420,9 +27688,6 @@ Weapons<public> := module {
 
   @preload
   ModularWarforgedAssaultRifle_BR_CH5S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30435,9 +27700,6 @@ Weapons<public> := module {
 
   @preload
   ModularZeusHuntressDMR_BR_CH5S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30450,9 +27712,6 @@ Weapons<public> := module {
 
   @preload
   MontaguesModularNemesisAR_BR_CH5S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30465,9 +27724,6 @@ Weapons<public> := module {
 
   @preload
   MystGauntlets_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30480,9 +27736,6 @@ Weapons<public> := module {
 
   @preload
   NemesisAR_BR_CH7S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30495,9 +27748,6 @@ Weapons<public> := module {
 
   @preload
   NemesisAR_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30510,9 +27760,6 @@ Weapons<public> := module {
 
   @preload
   NemesisAR_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30525,9 +27772,6 @@ Weapons<public> := module {
 
   @preload
   NemesisAR_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30540,9 +27784,6 @@ Weapons<public> := module {
 
   @preload
   NemesisAR_BR_CH7S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30555,9 +27796,6 @@ Weapons<public> := module {
 
   @preload
   NemesisAR_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30570,9 +27808,6 @@ Weapons<public> := module {
 
   @preload
   NightHawk_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30585,9 +27820,6 @@ Weapons<public> := module {
 
   @preload
   NightRoseVeiledPrecisionSMG_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30600,9 +27832,6 @@ Weapons<public> := module {
 
   @preload
   NishasModularStrikerAR_BR_CH5S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30615,9 +27844,6 @@ Weapons<public> := module {
 
   @preload
   NitroFists_BR_CH5S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30630,9 +27856,6 @@ Weapons<public> := module {
 
   @preload
   OXRRifle_BR_CH6S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30645,9 +27868,6 @@ Weapons<public> := module {
 
   @preload
   OXRRifle_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30660,9 +27880,6 @@ Weapons<public> := module {
 
   @preload
   OXRRifle_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30675,9 +27892,6 @@ Weapons<public> := module {
 
   @preload
   OXRRifle_BR_CH6S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30690,9 +27904,6 @@ Weapons<public> := module {
 
   @preload
   OXRRifle_BR_CH6S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30705,9 +27916,6 @@ Weapons<public> := module {
 
   @preload
   OXRRifle_BR_CH6S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30720,9 +27928,6 @@ Weapons<public> := module {
 
   @preload
   OceansBurstAssaultRifle_BR_CH2S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30735,9 +27940,6 @@ Weapons<public> := module {
 
   @preload
   OniShotgun_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30750,9 +27952,6 @@ Weapons<public> := module {
 
   @preload
   OniShotgun_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30765,9 +27964,6 @@ Weapons<public> := module {
 
   @preload
   OniShotgun_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30780,9 +27976,6 @@ Weapons<public> := module {
 
   @preload
   OniShotgun_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30795,9 +27988,6 @@ Weapons<public> := module {
 
   @preload
   OniShotgun_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30810,9 +28000,6 @@ Weapons<public> := module {
 
   @preload
   OrangePaintLauncher_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30825,9 +28012,6 @@ Weapons<public> := module {
 
   @preload
   OscarsModularFrenzyAutoShotgun_BR_CH5S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30840,9 +28024,6 @@ Weapons<public> := module {
 
   @preload
   OutlawShotgun_BR_CH6S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30855,9 +28036,6 @@ Weapons<public> := module {
 
   @preload
   OutlawShotgun_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30870,9 +28048,6 @@ Weapons<public> := module {
 
   @preload
   OutlawShotgun_BR_CH6S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30885,9 +28060,6 @@ Weapons<public> := module {
 
   @preload
   OutlawShotgun_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30900,9 +28072,19 @@ Weapons<public> := module {
 
   @preload
   OutlawShotgun_BR_CH6S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  # Overclocked8BitShotgun_BR_CH7S4_Exotic
+  OverclockedEightBitShotgun_BR_CH7S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30915,9 +28097,6 @@ Weapons<public> := module {
 
   @preload
   OverclockedPulseRifle_BR_CH4S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30930,9 +28109,6 @@ Weapons<public> := module {
 
   @preload
   OverdrivePulseRifle_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30945,9 +28121,18 @@ Weapons<public> := module {
 
   @preload
   OverdriveTacticalPistol_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  OverpoweredPumpShotgun_BR_CH7S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30960,9 +28145,6 @@ Weapons<public> := module {
 
   @preload
   PinpointIronPumpShotgun_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30975,9 +28157,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -30990,9 +28169,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31005,9 +28181,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31020,9 +28193,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH7S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31035,9 +28205,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31050,9 +28217,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31065,9 +28229,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31080,9 +28241,6 @@ Weapons<public> := module {
 
   @preload
   Pistol_BR_CH7S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31095,9 +28253,6 @@ Weapons<public> := module {
 
   @preload
   PlasmaBurstLaser_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31110,9 +28265,6 @@ Weapons<public> := module {
 
   @preload
   PlasmaCannon_BR_CH2S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31125,9 +28277,6 @@ Weapons<public> := module {
 
   @preload
   PrimalBow_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31140,9 +28289,6 @@ Weapons<public> := module {
 
   @preload
   PrimalFlameBow_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31155,9 +28301,6 @@ Weapons<public> := module {
 
   @preload
   PrimalFlameBow_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31170,9 +28313,6 @@ Weapons<public> := module {
 
   @preload
   PrimalFlameBow_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31185,9 +28325,6 @@ Weapons<public> := module {
 
   @preload
   PrimalPistol_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31200,9 +28337,6 @@ Weapons<public> := module {
 
   @preload
   PrimalPistol_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31215,9 +28349,6 @@ Weapons<public> := module {
 
   @preload
   PrimalPistol_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31230,9 +28361,6 @@ Weapons<public> := module {
 
   @preload
   PrimalPistol_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31245,9 +28373,6 @@ Weapons<public> := module {
 
   @preload
   PrimalRifle_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31260,9 +28385,6 @@ Weapons<public> := module {
 
   @preload
   PrimalRifle_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31275,9 +28397,6 @@ Weapons<public> := module {
 
   @preload
   PrimalRifle_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31290,9 +28409,6 @@ Weapons<public> := module {
 
   @preload
   PrimalRifle_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31305,9 +28421,6 @@ Weapons<public> := module {
 
   @preload
   PrimalSMG_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31320,9 +28433,6 @@ Weapons<public> := module {
 
   @preload
   PrimalSMG_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31335,9 +28445,6 @@ Weapons<public> := module {
 
   @preload
   PrimalSMG_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31350,9 +28457,6 @@ Weapons<public> := module {
 
   @preload
   PrimalSMG_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31365,9 +28469,6 @@ Weapons<public> := module {
 
   @preload
   PrimalShotgun_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31380,9 +28481,6 @@ Weapons<public> := module {
 
   @preload
   PrimalShotgun_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31395,9 +28493,6 @@ Weapons<public> := module {
 
   @preload
   PrimalShotgun_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31410,9 +28505,6 @@ Weapons<public> := module {
 
   @preload
   PrimalShotgun_BR_CH2S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31425,9 +28517,6 @@ Weapons<public> := module {
 
   @preload
   PrimalStinkBow_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31440,9 +28529,6 @@ Weapons<public> := module {
 
   @preload
   PrimalStinkBow_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31455,9 +28541,6 @@ Weapons<public> := module {
 
   @preload
   PrimalStinkBow_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31470,9 +28553,6 @@ Weapons<public> := module {
 
   @preload
   PrimeShotgun_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31485,9 +28565,6 @@ Weapons<public> := module {
 
   @preload
   PrimeShotgun_BR_CH3S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31500,9 +28577,6 @@ Weapons<public> := module {
 
   @preload
   PrimeShotgun_BR_CH3S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31515,9 +28589,6 @@ Weapons<public> := module {
 
   @preload
   PrimeShotgun_BR_CH3S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31530,9 +28601,6 @@ Weapons<public> := module {
 
   @preload
   PrimeShotgun_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31545,9 +28613,6 @@ Weapons<public> := module {
 
   @preload
   PrimeShotgun_BR_CH3S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31560,9 +28625,6 @@ Weapons<public> := module {
 
   @preload
   ProximityGrenadeLauncher_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31575,9 +28637,6 @@ Weapons<public> := module {
 
   @preload
   ProximityGrenadeLauncher_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31590,9 +28649,6 @@ Weapons<public> := module {
 
   @preload
   PulseRifle_BR_CH2S7_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31605,9 +28661,6 @@ Weapons<public> := module {
 
   @preload
   PulseRifle_BR_CH2S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31620,9 +28673,6 @@ Weapons<public> := module {
 
   @preload
   PulseRifle_BR_CH2S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31635,9 +28685,6 @@ Weapons<public> := module {
 
   @preload
   PulseRifle_BR_CH7S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31650,9 +28697,6 @@ Weapons<public> := module {
 
   @preload
   PumpDump_BR_CH6S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31665,9 +28709,6 @@ Weapons<public> := module {
 
   @preload
   PumpDump_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31680,9 +28721,6 @@ Weapons<public> := module {
 
   @preload
   PumpDump_BR_CH6S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31695,9 +28733,6 @@ Weapons<public> := module {
 
   @preload
   PumpDump_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31710,9 +28745,6 @@ Weapons<public> := module {
 
   @preload
   PumpDump_BR_CH6S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31725,9 +28757,6 @@ Weapons<public> := module {
 
   @preload
   PumpDump_BR_CH6S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31740,9 +28769,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31755,9 +28781,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_CH1S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31770,9 +28793,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31787,9 +28807,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S1_Common instead.
   PumpShotgun_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31804,9 +28821,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S6_Epic instead.
   PumpShotgun_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31821,9 +28835,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S6_Legendary instead.
   PumpShotgun_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31838,9 +28849,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S3_Rare instead.
   PumpShotgun_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31855,9 +28863,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use PumpShotgun_OG_CH1S1_Uncommon instead.
   PumpShotgun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31870,9 +28875,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31885,9 +28887,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_CH7S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31900,9 +28899,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31915,9 +28911,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31930,9 +28923,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31945,9 +28935,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_OG_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31960,9 +28947,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_OG_CH1S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31975,9 +28959,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_OG_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -31990,9 +28971,6 @@ Weapons<public> := module {
 
   @preload
   PumpShotgun_OG_CH1S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32005,9 +28983,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH1S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32020,9 +28995,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32035,9 +29007,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32050,9 +29019,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH2S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32065,9 +29031,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32080,9 +29043,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32095,9 +29055,6 @@ Weapons<public> := module {
 
   @preload
   PumpkinLauncher_BR_CH6S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32110,9 +29067,6 @@ Weapons<public> := module {
 
   @preload
   PurplePaintLauncher_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32125,9 +29079,6 @@ Weapons<public> := module {
 
   @preload
   QuadLauncher_BR_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32140,9 +29091,6 @@ Weapons<public> := module {
 
   @preload
   QuadLauncher_BR_CH1S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32155,9 +29103,6 @@ Weapons<public> := module {
 
   @preload
   RailGun_BR_CH2S7_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32170,9 +29115,6 @@ Weapons<public> := module {
 
   @preload
   RailGun_BR_CH2S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32185,9 +29127,6 @@ Weapons<public> := module {
 
   @preload
   RailGun_BR_CH2S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32200,9 +29139,6 @@ Weapons<public> := module {
 
   @preload
   RangerAssaultRifle_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32215,9 +29151,6 @@ Weapons<public> := module {
 
   @preload
   RangerAssaultRifle_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32230,9 +29163,6 @@ Weapons<public> := module {
 
   @preload
   RangerAssaultRifle_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32245,9 +29175,6 @@ Weapons<public> := module {
 
   @preload
   RangerAssaultRifle_BR_CH3S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32260,9 +29187,6 @@ Weapons<public> := module {
 
   @preload
   RangerAssaultRifle_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32275,9 +29199,6 @@ Weapons<public> := module {
 
   @preload
   RangerAssaultRifle_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32290,9 +29211,6 @@ Weapons<public> := module {
 
   @preload
   RangerPistol_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32305,9 +29223,6 @@ Weapons<public> := module {
 
   @preload
   RangerShotgun_BR_CH3S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32320,9 +29235,6 @@ Weapons<public> := module {
 
   @preload
   RangerShotgun_BR_CH3S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32335,9 +29247,6 @@ Weapons<public> := module {
 
   @preload
   RangerShotgun_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32350,9 +29259,6 @@ Weapons<public> := module {
 
   @preload
   RangerShotgun_BR_CH3S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32365,9 +29271,6 @@ Weapons<public> := module {
 
   @preload
   RangerShotgun_BR_CH3S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32380,9 +29283,6 @@ Weapons<public> := module {
 
   @preload
   RapidFireSMG_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32395,9 +29295,6 @@ Weapons<public> := module {
 
   @preload
   RapidFireSMG_BR_CH2S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32410,9 +29307,6 @@ Weapons<public> := module {
 
   @preload
   RapidFireSMG_BR_CH2S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32425,9 +29319,6 @@ Weapons<public> := module {
 
   @preload
   RapidFireSMG_BR_CH2S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32440,9 +29331,6 @@ Weapons<public> := module {
 
   @preload
   RapidFireSMG_BR_CH2S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32455,9 +29343,6 @@ Weapons<public> := module {
 
   @preload
   RapidFireSMG_BR_CH3S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32470,9 +29355,6 @@ Weapons<public> := module {
 
   @preload
   RazsExplosiveBow_BR_CH2S6_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32485,9 +29367,6 @@ Weapons<public> := module {
 
   @preload
   ReacherExtendingShotgun_BR_CH7S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32500,9 +29379,6 @@ Weapons<public> := module {
 
   @preload
   ReaperModularSniperRifle_BR_CH5S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32515,9 +29391,6 @@ Weapons<public> := module {
 
   @preload
   ReaperModularSniperRifle_BR_CH5S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32530,9 +29403,6 @@ Weapons<public> := module {
 
   @preload
   ReaperModularSniperRifle_BR_CH5S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32545,9 +29415,42 @@ Weapons<public> := module {
 
   @preload
   ReaperModularSniperRifle_BR_CH5S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  ReaperSniperRifle_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  ReaperSniperRifle_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  ReaperSniperRifle_BR_CH7S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32560,9 +29463,6 @@ Weapons<public> := module {
 
   @preload
   ReaperSniperRifle_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32575,9 +29475,6 @@ Weapons<public> := module {
 
   @preload
   ReconBow_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32590,9 +29487,6 @@ Weapons<public> := module {
 
   @preload
   ReconScanner_BR_CH2S7_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32605,9 +29499,6 @@ Weapons<public> := module {
 
   @preload
   Recycler_BR_CH2S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32620,9 +29511,6 @@ Weapons<public> := module {
 
   @preload
   Recycler_BR_CH2S6_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32635,9 +29523,6 @@ Weapons<public> := module {
 
   @preload
   Recycler_BR_CH2S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32650,9 +29535,6 @@ Weapons<public> := module {
 
   @preload
   RedEyeAssaultRifle_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32665,9 +29547,6 @@ Weapons<public> := module {
 
   @preload
   RedEyeAssaultRifle_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32680,9 +29559,6 @@ Weapons<public> := module {
 
   @preload
   RedEyeAssaultRifle_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32695,9 +29571,6 @@ Weapons<public> := module {
 
   @preload
   RedEyeAssaultRifle_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32710,9 +29583,6 @@ Weapons<public> := module {
 
   @preload
   RedEyeAssaultRifle_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32725,9 +29595,6 @@ Weapons<public> := module {
 
   @preload
   ReliksMKAlphaAssaultRifle_BR_CH4S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32740,9 +29607,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32755,9 +29619,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32772,9 +29633,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Common instead.
   Revolver_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32789,9 +29647,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Epic instead.
   Revolver_BR_CH4MS1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32806,9 +29661,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Legendary instead.
   Revolver_BR_CH4MS1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32823,9 +29675,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Rare instead.
   Revolver_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32840,9 +29689,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use Revolver_OG_CH1S1_Uncommon instead.
   Revolver_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32855,9 +29701,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32870,9 +29713,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32885,9 +29725,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32900,9 +29737,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32915,9 +29749,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_OG_CH1S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32930,9 +29761,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_OG_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32945,9 +29773,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32960,9 +29785,6 @@ Weapons<public> := module {
 
   @preload
   Revolver_OG_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32975,9 +29797,6 @@ Weapons<public> := module {
 
   @preload
   RingmastersModularBoomBolt_BR_CH5S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -32990,9 +29809,6 @@ Weapons<public> := module {
 
   @preload
   RipsawLauncher_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33005,9 +29821,6 @@ Weapons<public> := module {
 
   @preload
   RocketDrill_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33020,9 +29833,6 @@ Weapons<public> := module {
 
   @preload
   RocketLauncher_BR_CH2S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33035,9 +29845,6 @@ Weapons<public> := module {
 
   @preload
   RocketLauncher_BR_CH2S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33050,9 +29857,6 @@ Weapons<public> := module {
 
   @preload
   RocketLauncher_BR_PreSeason_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33065,9 +29869,6 @@ Weapons<public> := module {
 
   @preload
   RocketLauncher_BR_PreSeason_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33080,9 +29881,6 @@ Weapons<public> := module {
 
   @preload
   RocketLauncher_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33095,9 +29893,6 @@ Weapons<public> := module {
 
   @preload
   RocketRam_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33110,9 +29905,6 @@ Weapons<public> := module {
 
   @preload
   ScopedAssaultRifle_BR_CH2S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33125,9 +29917,6 @@ Weapons<public> := module {
 
   @preload
   ScopedAssaultRifle_BR_CH2S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33140,9 +29929,6 @@ Weapons<public> := module {
 
   @preload
   ScopedAssaultRifle_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33155,9 +29941,6 @@ Weapons<public> := module {
 
   @preload
   ScopedAssaultRifle_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33170,9 +29953,6 @@ Weapons<public> := module {
 
   @preload
   ScopedBurstSMG_BR_CH4S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33185,9 +29965,6 @@ Weapons<public> := module {
 
   @preload
   ScopedBurstSMG_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33200,9 +29977,6 @@ Weapons<public> := module {
 
   @preload
   ScopedBurstSMG_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33215,9 +29989,6 @@ Weapons<public> := module {
 
   @preload
   ScopedBurstSMG_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33230,9 +30001,6 @@ Weapons<public> := module {
 
   @preload
   ScopedBurstSMG_BR_CH4S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33245,9 +30013,6 @@ Weapons<public> := module {
 
   @preload
   ScopedRevolver_BR_CH1S7_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33260,9 +30025,6 @@ Weapons<public> := module {
 
   @preload
   ScopedRevolver_BR_CH1S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33275,9 +30037,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoPistol_BR_CH2S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33290,9 +30049,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoPistol_BR_CH2S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33305,9 +30061,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoPistol_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33320,9 +30073,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoPistol_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33335,9 +30085,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoPistol_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33350,9 +30097,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSniperRifle_BR_CH2S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33365,9 +30109,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSniperRifle_BR_CH2S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33380,9 +30121,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSniperRifle_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33395,9 +30133,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSniperRifle_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33410,9 +30145,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSuppressedPistol_BR_CH1S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33425,9 +30157,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSuppressedPistol_BR_CH1S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33440,9 +30169,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSuppressedPistol_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33455,9 +30181,6 @@ Weapons<public> := module {
 
   @preload
   SemiAutoSuppressedPistol_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33470,9 +30193,6 @@ Weapons<public> := module {
 
   @preload
   SentinelPumpShotgun_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33485,9 +30205,6 @@ Weapons<public> := module {
 
   @preload
   SentinelPumpShotgun_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33500,9 +30217,6 @@ Weapons<public> := module {
 
   @preload
   SentinelPumpShotgun_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33515,9 +30229,6 @@ Weapons<public> := module {
 
   @preload
   SentinelPumpShotgun_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33530,9 +30241,6 @@ Weapons<public> := module {
 
   @preload
   SentinelPumpShotgun_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33545,9 +30253,6 @@ Weapons<public> := module {
 
   @preload
   SevenClusterCannon_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33560,9 +30265,6 @@ Weapons<public> := module {
 
   @preload
   SevenClusterCannon_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33575,9 +30277,6 @@ Weapons<public> := module {
 
   @preload
   SevenPowerGloves_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33590,9 +30289,6 @@ Weapons<public> := module {
 
   @preload
   ShadowMidasDrumGun_BR_CH2S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33605,9 +30301,6 @@ Weapons<public> := module {
 
   @preload
   ShadowTracker_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33620,9 +30313,6 @@ Weapons<public> := module {
 
   @preload
   SharpToothShotgun_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33635,9 +30325,6 @@ Weapons<public> := module {
 
   @preload
   SharpToothShotgun_BR_CH4S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33650,9 +30337,6 @@ Weapons<public> := module {
 
   @preload
   SharpToothShotgun_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33665,9 +30349,6 @@ Weapons<public> := module {
 
   @preload
   SharpToothShotgun_BR_CH4S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33680,9 +30361,6 @@ Weapons<public> := module {
 
   @preload
   ShockwaveHammer_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33695,9 +30373,6 @@ Weapons<public> := module {
 
   @preload
   ShockwaveLauncher_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33710,9 +30385,6 @@ Weapons<public> := module {
 
   @preload
   ShockwaveLauncher_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33725,9 +30397,6 @@ Weapons<public> := module {
 
   @preload
   ShogunXsFireOniMask_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33740,9 +30409,6 @@ Weapons<public> := module {
 
   @preload
   SidearmPistol_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33755,9 +30421,6 @@ Weapons<public> := module {
 
   @preload
   SidearmPistol_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33770,9 +30433,6 @@ Weapons<public> := module {
 
   @preload
   SidearmPistol_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33785,9 +30445,6 @@ Weapons<public> := module {
 
   @preload
   SidearmPistol_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33800,9 +30457,6 @@ Weapons<public> := module {
 
   @preload
   SidearmPistol_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33815,9 +30469,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysMinigun_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33830,9 +30481,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysMinigun_BR_CH2S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33845,9 +30493,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysMinigun_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33860,9 +30505,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysMinigun_BR_CH2S8_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33875,9 +30517,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysMinigun_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33890,9 +30529,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysMinigun_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33905,9 +30541,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysRifle_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33920,9 +30553,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysRifle_BR_CH2S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33935,9 +30565,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysRifle_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33950,9 +30577,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysRifle_BR_CH2S8_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33965,9 +30589,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysRifle_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33980,9 +30601,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysRifle_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -33995,9 +30613,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysScythe_BR_CH2S8_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34010,9 +30625,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysScythe_BR_CH2S8_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34025,9 +30637,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysScythe_BR_CH2S8_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34040,9 +30649,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysScythe_BR_CH2S8_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34055,9 +30661,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysScythe_BR_CH2S8_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34070,9 +30673,6 @@ Weapons<public> := module {
 
   @preload
   SidewaysScythe_BR_CH2S8_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34085,9 +30685,6 @@ Weapons<public> := module {
 
   @preload
   SixShooter_BR_CH1S6_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34100,9 +30697,6 @@ Weapons<public> := module {
 
   @preload
   SixShooter_BR_CH1S6_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34115,9 +30709,6 @@ Weapons<public> := module {
 
   @preload
   SixShooter_BR_CH1S6_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34130,9 +30721,6 @@ Weapons<public> := module {
 
   @preload
   SixShooter_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34145,9 +30733,6 @@ Weapons<public> := module {
 
   @preload
   SkyesAssaultRifle_BR_CH2S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34160,9 +30745,6 @@ Weapons<public> := module {
 
   @preload
   SlonesBurstAssaultRifle_BR_CH2S8_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34175,9 +30757,6 @@ Weapons<public> := module {
 
   @preload
   SlonesPulseRifle_BR_CH2S7_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34190,9 +30769,6 @@ Weapons<public> := module {
 
   @preload
   SlonesStrikerBurstRifle_BR_CH3S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34205,9 +30781,6 @@ Weapons<public> := module {
 
   @preload
   SnowballLauncher_BR_CH1S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34220,9 +30793,6 @@ Weapons<public> := module {
 
   @preload
   SnowballLauncher_BR_CH1S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34235,9 +30805,6 @@ Weapons<public> := module {
 
   @preload
   SnowballLauncher_BR_CH1S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34250,9 +30817,6 @@ Weapons<public> := module {
 
   @preload
   SnowballLauncher_BR_CH2S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34265,9 +30829,6 @@ Weapons<public> := module {
 
   @preload
   SovereignShotgun_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34280,9 +30841,6 @@ Weapons<public> := module {
 
   @preload
   SovereignShotgun_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34295,9 +30853,6 @@ Weapons<public> := module {
 
   @preload
   SovereignShotgun_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34310,9 +30865,6 @@ Weapons<public> := module {
 
   @preload
   SovereignShotgun_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34325,9 +30877,6 @@ Weapons<public> := module {
 
   @preload
   SovereignShotgun_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34340,9 +30889,6 @@ Weapons<public> := module {
 
   @preload
   SovereignSniper_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34355,9 +30901,6 @@ Weapons<public> := module {
 
   @preload
   SpireAssassinsPrimalShotgun_BR_CH2S6_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34370,9 +30913,6 @@ Weapons<public> := module {
 
   @preload
   SpireAssassinsRecycler_BR_CH2S6_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34385,9 +30925,6 @@ Weapons<public> := module {
 
   @preload
   SpireGuardiansPrimalAssaultRifle_BR_CH2S6_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34400,9 +30937,6 @@ Weapons<public> := module {
 
   @preload
   SpireRifle_BR_CH6S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34415,9 +30949,6 @@ Weapons<public> := module {
 
   @preload
   SpireRifle_BR_CH6S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34430,9 +30961,6 @@ Weapons<public> := module {
 
   @preload
   SpireRifle_BR_CH6S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34445,9 +30973,6 @@ Weapons<public> := module {
 
   @preload
   SpireRifle_BR_CH6S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34460,9 +30985,6 @@ Weapons<public> := module {
 
   @preload
   SpireRifle_BR_CH6S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34475,9 +30997,6 @@ Weapons<public> := module {
 
   @preload
   StickyGrenadeLauncher_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34490,9 +31009,6 @@ Weapons<public> := module {
 
   @preload
   StickyGrenadeLauncher_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34505,9 +31021,6 @@ Weapons<public> := module {
 
   @preload
   StingerSMG_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34520,9 +31033,6 @@ Weapons<public> := module {
 
   @preload
   StingerSMG_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34535,9 +31045,6 @@ Weapons<public> := module {
 
   @preload
   StingerSMG_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34550,9 +31057,6 @@ Weapons<public> := module {
 
   @preload
   StingerSMG_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34565,9 +31069,6 @@ Weapons<public> := module {
 
   @preload
   StingerSMG_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34580,9 +31081,6 @@ Weapons<public> := module {
 
   @preload
   StormScoutSniperRifle_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34595,9 +31093,6 @@ Weapons<public> := module {
 
   @preload
   StormScoutSniperRifle_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34610,9 +31105,6 @@ Weapons<public> := module {
 
   @preload
   StormScout_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34625,9 +31117,6 @@ Weapons<public> := module {
 
   @preload
   StrikerAR_BR_CH6MS2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34640,9 +31129,6 @@ Weapons<public> := module {
 
   @preload
   StrikerAR_BR_CH6MS2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34655,9 +31141,6 @@ Weapons<public> := module {
 
   @preload
   StrikerAR_BR_CH6MS2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34670,9 +31153,6 @@ Weapons<public> := module {
 
   @preload
   StrikerAR_BR_CH6MS2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34685,9 +31165,6 @@ Weapons<public> := module {
 
   @preload
   StrikerAR_BR_CH6MS2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34700,9 +31177,6 @@ Weapons<public> := module {
 
   @preload
   StrikerAR_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34715,9 +31189,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH3S2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34730,9 +31201,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH3S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34745,9 +31213,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH3S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34760,9 +31225,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH3S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34775,9 +31237,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH3S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34790,9 +31249,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH3S2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34805,9 +31261,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34820,9 +31273,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH7S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34835,9 +31285,6 @@ Weapons<public> := module {
 
   @preload
   StrikerBurstRifle_BR_CH7S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34850,9 +31297,6 @@ Weapons<public> := module {
 
   @preload
   StrikerPumpShotgun_BR_CH3S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34865,9 +31309,6 @@ Weapons<public> := module {
 
   @preload
   StrikerPumpShotgun_BR_CH3S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34880,9 +31321,6 @@ Weapons<public> := module {
 
   @preload
   StrikerPumpShotgun_BR_CH3S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34895,9 +31333,6 @@ Weapons<public> := module {
 
   @preload
   StrikerPumpShotgun_BR_CH3S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34910,9 +31345,6 @@ Weapons<public> := module {
 
   @preload
   StrikerPumpShotgun_BR_CH3S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34925,9 +31357,6 @@ Weapons<public> := module {
 
   @preload
   StrikerPumpShotgun_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34940,9 +31369,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH1S5_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34955,9 +31381,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH1S5_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34970,9 +31393,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH1S5_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -34985,9 +31405,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH2S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35000,9 +31417,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH2S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35017,9 +31431,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SubmachineGun_OG_CH1S1_Common instead.
   SubmachineGun_BR_CH4MS1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35034,9 +31445,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SubmachineGun_OG_CH1S1_Rare instead.
   SubmachineGun_BR_CH4MS1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35051,9 +31459,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SubmachineGun_OG_CH1S1_Uncommon instead.
   SubmachineGun_BR_CH4MS1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35066,9 +31471,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH4S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35081,9 +31483,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_BR_CH4S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35096,9 +31495,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_OG_CH1S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35111,9 +31507,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_OG_CH1S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35126,9 +31519,6 @@ Weapons<public> := module {
 
   @preload
   SubmachineGun_OG_CH1S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35141,9 +31531,6 @@ Weapons<public> := module {
 
   @preload
   SuperShredder_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35156,9 +31543,6 @@ Weapons<public> := module {
 
   @preload
   SuperShredder_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35171,9 +31555,6 @@ Weapons<public> := module {
 
   @preload
   SuperShredder_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35186,9 +31567,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedAssaultRifle_BR_CH1S5_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35201,9 +31579,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedAssaultRifle_BR_CH1S5_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35216,9 +31591,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedAssaultRifle_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35231,9 +31603,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedAssaultRifle_BR_CH6MS2_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35246,9 +31615,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedAssaultRifle_BR_CH6MS2_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35261,9 +31627,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedPistol_BR_CH4S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35276,9 +31639,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedPistol_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35291,9 +31651,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedPistol_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35306,9 +31663,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedPistol_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35321,9 +31675,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedPistol_BR_CH4S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35336,9 +31687,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedPistol_BR_CH6S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35351,9 +31699,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSniperRifle_BR_CH1S7_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35366,9 +31711,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSniperRifle_BR_CH1S7_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35381,9 +31723,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSniperRifle_BR_CH2S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35396,9 +31735,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSubmachineGun_BR_CH3S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35411,9 +31747,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSubmachineGun_BR_CH3S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35426,9 +31759,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSubmachineGun_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35441,9 +31771,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSubmachineGun_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35456,9 +31783,6 @@ Weapons<public> := module {
 
   @preload
   SuppressedSubmachineGun_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35471,9 +31795,6 @@ Weapons<public> := module {
 
   @preload
   SurgefireSMG_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35486,9 +31807,6 @@ Weapons<public> := module {
 
   @preload
   SurgefireSMG_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35501,9 +31819,6 @@ Weapons<public> := module {
 
   @preload
   SurgefireSMG_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35516,9 +31831,6 @@ Weapons<public> := module {
 
   @preload
   SurgefireSMG_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35531,9 +31843,6 @@ Weapons<public> := module {
 
   @preload
   SurgefireSMG_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35546,9 +31855,6 @@ Weapons<public> := module {
 
   @preload
   SurgicalBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35561,9 +31867,6 @@ Weapons<public> := module {
 
   @preload
   SurgicalBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35576,9 +31879,6 @@ Weapons<public> := module {
 
   @preload
   SurgicalBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35591,9 +31891,6 @@ Weapons<public> := module {
 
   @preload
   SurgicalBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35606,9 +31903,6 @@ Weapons<public> := module {
 
   @preload
   SurgicalBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35621,9 +31915,6 @@ Weapons<public> := module {
 
   @preload
   Swarmstrike_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35636,9 +31927,6 @@ Weapons<public> := module {
 
   @preload
   Swarmstrike_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35651,9 +31939,6 @@ Weapons<public> := module {
 
   @preload
   SweeperShotgun_BR_CH6S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35666,9 +31951,6 @@ Weapons<public> := module {
 
   @preload
   SweeperShotgun_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35681,9 +31963,6 @@ Weapons<public> := module {
 
   @preload
   SweeperShotgun_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35696,9 +31975,6 @@ Weapons<public> := module {
 
   @preload
   SweeperShotgun_BR_CH6S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35711,9 +31987,6 @@ Weapons<public> := module {
 
   @preload
   SweeperShotgun_BR_CH6S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35726,9 +31999,6 @@ Weapons<public> := module {
 
   @preload
   SweeperShotgun_BR_CH6S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35744,13 +32014,9 @@ Weapons<public> := module {
     using { /Fortnite.com/Itemization }
     using { /UnrealEngine.com/Itemization }
     using { /Verse.org/Native }
-    using { /Verse.org/Presentation }
     using { /Verse.org/SceneGraph }
     @preload
     DonatellosStaff_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-      @available { MinUploadedAtFNVersion := 4210 }
-      DescriptionComponent<override>: ?description_component = external {}
-
       @available { MinUploadedAtFNVersion := 4020 }
       IconComponent<override>: ?icon_component = external {}
 
@@ -35763,9 +32029,6 @@ Weapons<public> := module {
 
     @preload
     LeonardosKatanas_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-      @available { MinUploadedAtFNVersion := 4210 }
-      DescriptionComponent<override>: ?description_component = external {}
-
       @available { MinUploadedAtFNVersion := 4020 }
       IconComponent<override>: ?icon_component = external {}
 
@@ -35778,9 +32041,6 @@ Weapons<public> := module {
 
     @preload
     MichelangelosNunchaku_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-      @available { MinUploadedAtFNVersion := 4210 }
-      DescriptionComponent<override>: ?description_component = external {}
-
       @available { MinUploadedAtFNVersion := 4020 }
       IconComponent<override>: ?icon_component = external {}
 
@@ -35793,9 +32053,6 @@ Weapons<public> := module {
 
     @preload
     RaphaelsSai_V1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-      @available { MinUploadedAtFNVersion := 4210 }
-      DescriptionComponent<override>: ?description_component = external {}
-
       @available { MinUploadedAtFNVersion := 4020 }
       IconComponent<override>: ?icon_component = external {}
 
@@ -35809,9 +32066,6 @@ Weapons<public> := module {
 
   @preload
   TNTinasKaBoomBow_BR_CH2S2_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35824,9 +32078,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35839,9 +32090,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35854,9 +32102,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH1S9_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35869,9 +32114,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35884,9 +32126,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35899,9 +32138,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35914,9 +32150,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35929,9 +32162,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35944,9 +32174,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35959,9 +32186,6 @@ Weapons<public> := module {
 
   @preload
   TacticalAssaultRifle_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35974,9 +32198,6 @@ Weapons<public> := module {
 
   @preload
   TacticalDMR_BR_CH4S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -35989,9 +32210,6 @@ Weapons<public> := module {
 
   @preload
   TacticalDMR_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36004,9 +32222,6 @@ Weapons<public> := module {
 
   @preload
   TacticalDMR_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36019,9 +32234,6 @@ Weapons<public> := module {
 
   @preload
   TacticalDMR_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36034,9 +32246,6 @@ Weapons<public> := module {
 
   @preload
   TacticalDMR_BR_CH4S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36049,9 +32258,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36064,9 +32270,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36079,9 +32282,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36094,9 +32294,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH4S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36109,9 +32306,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36124,9 +32318,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36139,9 +32330,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36154,9 +32342,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36169,9 +32354,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36184,9 +32366,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36199,9 +32378,6 @@ Weapons<public> := module {
 
   @preload
   TacticalPistol_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36214,9 +32390,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_CH1S9_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36229,9 +32402,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_CH1S9_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36244,9 +32414,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_CH6MS2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36259,9 +32426,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_CH6MS2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36274,9 +32438,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_PreSeason_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36289,9 +32450,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36304,9 +32462,6 @@ Weapons<public> := module {
 
   @preload
   TacticalShotgun_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36319,9 +32474,6 @@ Weapons<public> := module {
 
   @preload
   TacticalSubmachineGun_BR_CH1SX_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36334,9 +32486,6 @@ Weapons<public> := module {
 
   @preload
   TacticalSubmachineGun_BR_PreSeason_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36349,9 +32498,6 @@ Weapons<public> := module {
 
   @preload
   TacticalSubmachineGun_BR_PreSeason_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36364,9 +32510,6 @@ Weapons<public> := module {
 
   @preload
   TacticalSubmachineGun_BR_PreSeason_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36379,9 +32522,6 @@ Weapons<public> := module {
 
   @preload
   TheAgelessChampionsExCaliberRifle_BR_CH4S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36394,9 +32534,6 @@ Weapons<public> := module {
 
   @preload
   TheAgelessChampionsShockwaveHammer_BR_CH4S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36409,9 +32546,6 @@ Weapons<public> := module {
 
   @preload
   TheBigChill_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36424,9 +32558,6 @@ Weapons<public> := module {
 
   @preload
   TheDub_BR_CH2S5_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36439,9 +32570,6 @@ Weapons<public> := module {
 
   @preload
   TheFoundationsMKSevenAssaultRifle_BR_CH3S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36454,9 +32582,6 @@ Weapons<public> := module {
 
   @preload
   TheFoundationsRiftRifle_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36469,9 +32594,6 @@ Weapons<public> := module {
 
   @preload
   TheKneecapper_BR_CH6S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36484,9 +32606,6 @@ Weapons<public> := module {
 
   @preload
   TheMachinistsModularCombatAssaultRifle_BR_CH5S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36499,9 +32618,6 @@ Weapons<public> := module {
 
   @preload
   TheVoidbladesBurstRifle_BR_CH7S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36514,9 +32630,6 @@ Weapons<public> := module {
 
   @preload
   ThermalDMR_BR_CH4S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36529,9 +32642,6 @@ Weapons<public> := module {
 
   @preload
   ThermalDMR_BR_CH4S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36544,9 +32654,6 @@ Weapons<public> := module {
 
   @preload
   ThermalDMR_BR_CH4S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36559,9 +32666,6 @@ Weapons<public> := module {
 
   @preload
   ThermalDMR_BR_CH4S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36574,9 +32678,6 @@ Weapons<public> := module {
 
   @preload
   ThermalDMR_BR_CH4S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36589,9 +32690,6 @@ Weapons<public> := module {
 
   @preload
   ThermalDMR_BR_CH4S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36604,9 +32702,6 @@ Weapons<public> := module {
 
   @preload
   ThermalScopedAssaultRifle_BR_CH1S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36619,9 +32714,6 @@ Weapons<public> := module {
 
   @preload
   ThermalScopedAssaultRifle_BR_CH1S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36634,9 +32726,6 @@ Weapons<public> := module {
 
   @preload
   ThornesScopedBurstSMG_BR_CH4S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36649,9 +32738,6 @@ Weapons<public> := module {
 
   @preload
   ThornesVampiricBlade_BR_CH4S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36664,9 +32750,6 @@ Weapons<public> := module {
 
   @preload
   ThunderBurstSMG_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36679,9 +32762,6 @@ Weapons<public> := module {
 
   @preload
   ThunderShotgun_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36694,9 +32774,6 @@ Weapons<public> := module {
 
   @preload
   ThunderShotgun_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36709,9 +32786,6 @@ Weapons<public> := module {
 
   @preload
   ThunderShotgun_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36724,9 +32798,6 @@ Weapons<public> := module {
 
   @preload
   ThunderShotgun_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36739,9 +32810,6 @@ Weapons<public> := module {
 
   @preload
   ThunderShotgun_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36754,9 +32822,6 @@ Weapons<public> := module {
 
   @preload
   TowHookCannon_BR_CH5S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36769,9 +32834,6 @@ Weapons<public> := module {
 
   @preload
   Trouble_BR_CH6S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36784,9 +32846,6 @@ Weapons<public> := module {
 
   @preload
   TwinHammerShotguns_BR_CH7S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36799,9 +32858,6 @@ Weapons<public> := module {
 
   @preload
   TwinHammerShotguns_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36814,9 +32870,6 @@ Weapons<public> := module {
 
   @preload
   TwinHammerShotguns_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36829,9 +32882,6 @@ Weapons<public> := module {
 
   @preload
   TwinHammerShotguns_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36844,9 +32894,6 @@ Weapons<public> := module {
 
   @preload
   TwinHammerShotguns_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36859,9 +32906,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagAssaultRifle_BR_CH4S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36874,9 +32918,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagAssaultRifle_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36889,9 +32930,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagAssaultRifle_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36904,9 +32942,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagAssaultRifle_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36919,9 +32954,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagAssaultRifle_BR_CH4S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36934,9 +32966,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagSMG_BR_CH4S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36949,9 +32978,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagSMG_BR_CH4S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36964,9 +32990,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagSMG_BR_CH4S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36979,9 +33002,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagSMG_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -36994,9 +33014,6 @@ Weapons<public> := module {
 
   @preload
   TwinMagSMG_BR_CH4S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37009,9 +33026,6 @@ Weapons<public> := module {
 
   @preload
   TwinSiphonShotguns_BR_CH7S2_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37024,9 +33038,6 @@ Weapons<public> := module {
 
   @preload
   TwinfireAutoShotgun_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37039,9 +33050,6 @@ Weapons<public> := module {
 
   @preload
   TwinfireAutoShotgun_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37054,9 +33062,6 @@ Weapons<public> := module {
 
   @preload
   TwinfireAutoShotgun_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37069,9 +33074,6 @@ Weapons<public> := module {
 
   @preload
   TwinfireAutoShotgun_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37084,9 +33086,6 @@ Weapons<public> := module {
 
   @preload
   TwinfireAutoShotgun_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37099,9 +33098,6 @@ Weapons<public> := module {
 
   @preload
   TwoShotShotgun_BR_CH3S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37114,9 +33110,6 @@ Weapons<public> := module {
 
   @preload
   TwoShotShotgun_BR_CH3S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37129,9 +33122,6 @@ Weapons<public> := module {
 
   @preload
   TwoShotShotgun_BR_CH3S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37144,9 +33134,6 @@ Weapons<public> := module {
 
   @preload
   TwoShotShotgun_BR_CH3S3_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37159,9 +33146,6 @@ Weapons<public> := module {
 
   @preload
   TwoShotShotgun_BR_CH3S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37174,9 +33158,6 @@ Weapons<public> := module {
 
   @preload
   TwoShotShotgun_BR_CH3S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37189,9 +33170,6 @@ Weapons<public> := module {
 
   @preload
   TyphoonBlade_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37204,9 +33182,6 @@ Weapons<public> := module {
 
   @preload
   TyphoonBlade_BR_CH6S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37219,9 +33194,6 @@ Weapons<public> := module {
 
   @preload
   UnstableBow_BR_CH2S6_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37234,9 +33206,6 @@ Weapons<public> := module {
 
   @preload
   UnstableFrostfireShotgun_BR_CH6S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37249,9 +33218,6 @@ Weapons<public> := module {
 
   @preload
   UnstableThunderclapDMR_BR_CH6S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37264,9 +33230,6 @@ Weapons<public> := module {
 
   @preload
   UnstableVoltageBurstPistol_BR_CH6S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37279,9 +33242,6 @@ Weapons<public> := module {
 
   @preload
   UnstableYoinkShotgun_BR_CH6S3_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37294,9 +33254,6 @@ Weapons<public> := module {
 
   @preload
   ValeriasModularHyperSMG_BR_CH5S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37311,9 +33268,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Common instead.
   VanguardBurstRifle_BR_CH7S3_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37328,9 +33282,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Epic instead.
   VanguardBurstRifle_BR_CH7S3_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37345,9 +33296,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Legendary instead.
   VanguardBurstRifle_BR_CH7S3_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37362,9 +33310,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Rare instead.
   VanguardBurstRifle_BR_CH7S3_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37379,9 +33324,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use SurgicalBurstRifle_BR_CH7S3_Uncommon instead.
   VanguardBurstRifle_BR_CH7S3_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37394,9 +33336,6 @@ Weapons<public> := module {
 
   @preload
   Vector7DMR_BR_CH7S2_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37409,9 +33348,6 @@ Weapons<public> := module {
 
   @preload
   Vector7DMR_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37424,9 +33360,6 @@ Weapons<public> := module {
 
   @preload
   Vector7DMR_BR_CH7S2_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37439,9 +33372,6 @@ Weapons<public> := module {
 
   @preload
   VeiledPrecisionSMG_BR_CH6S1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37454,9 +33384,6 @@ Weapons<public> := module {
 
   @preload
   VeiledPrecisionSMG_BR_CH6S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37469,9 +33396,6 @@ Weapons<public> := module {
 
   @preload
   VeiledPrecisionSMG_BR_CH6S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37484,9 +33408,6 @@ Weapons<public> := module {
 
   @preload
   VeiledPrecisionSMG_BR_CH6S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37499,9 +33420,6 @@ Weapons<public> := module {
 
   @preload
   VeiledPrecisionSMG_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37514,9 +33432,6 @@ Weapons<public> := module {
 
   @preload
   VeiledPrecisionSMG_Ballistic_V1_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37529,9 +33444,6 @@ Weapons<public> := module {
 
   @preload
   VengefulSniperRifle_BR_CH7S1_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37544,9 +33456,6 @@ Weapons<public> := module {
 
   @preload
   VengefulSniperRifle_BR_CH7S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37559,9 +33468,6 @@ Weapons<public> := module {
 
   @preload
   VengefulSniperRifle_BR_CH7S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37574,9 +33480,6 @@ Weapons<public> := module {
 
   @preload
   VengefulSniperRifle_BR_CH7S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37589,9 +33492,6 @@ Weapons<public> := module {
 
   @preload
   WoodStakeShotgun_BR_CH4S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37604,9 +33504,6 @@ Weapons<public> := module {
 
   @preload
   WoodStakeShotgun_BR_CH4S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37619,9 +33516,6 @@ Weapons<public> := module {
 
   @preload
   WoodStakeShotgun_BR_CH4S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37634,9 +33528,6 @@ Weapons<public> := module {
 
   @preload
   WreckerRevolver_BR_CH6S4_Common<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37649,9 +33540,6 @@ Weapons<public> := module {
 
   @preload
   WreckerRevolver_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37664,9 +33552,6 @@ Weapons<public> := module {
 
   @preload
   WreckerRevolver_BR_CH6S4_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37679,9 +33564,6 @@ Weapons<public> := module {
 
   @preload
   WreckerRevolver_BR_CH6S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37694,9 +33576,6 @@ Weapons<public> := module {
 
   @preload
   WreckerRevolver_BR_CH6S4_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37709,9 +33588,6 @@ Weapons<public> := module {
 
   @preload
   YuleTroopersHoloRushSMG_BR_CH7S1_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37726,9 +33602,6 @@ Weapons<public> := module {
   @preload
   # Deprecated. Please use Zapotron_OG_CH1S2_Legendary instead.
   Zapotron_OG_CH1S1_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37741,9 +33614,6 @@ Weapons<public> := module {
 
   @preload
   Zapotron_OG_CH1S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -37756,9 +33626,6 @@ Weapons<public> := module {
 
   @preload
   ZygAndChoppysRayGun_BR_CH2S7_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
-    @available { MinUploadedAtFNVersion := 4210 }
-    DescriptionComponent<override>: ?description_component = external {}
-
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 

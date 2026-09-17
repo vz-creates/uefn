@@ -118,6 +118,18 @@
 			"/Script/ModularTestFramework.MTFClientOpHandler": { "Visible": true },
 			"/Script/ModularTestFramework.MTFBuiltInServerOps": { "Visible": true },
 			"/Script/ModularTestFramework.MTFBuiltInClientOps": { "Visible": true }
+		},
+		"AllowedTabs": {
+			"Global": {
+				"AllowList": {
+					"+": [ "ModularTestRunnerWindow" ]
+				}
+			},
+			"LevelEditor": {
+				"AllowList": {
+					"+": [ "ModularTestRunnerWindow" ]
+				}
+			}
 		}
 	},
 	"PropertyEditorClassPermissionList": {

@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.20-CL-58011042
+Generated from build: ++Fortnite+Release-42.30-CL-58813929
 #################################################
 #>
 
@@ -593,7 +593,10 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_ability_status_effect_burn_point<native><public> := class<final>(fort_ability_status_effect_point) {}
+  fort_ability_status_effect_burn_point<native><public> := class<final>(fort_ability_status_effect_point) {
+    @editable {}
+    var DamagePerSecond<native><public>: float = external {}
+  }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
@@ -608,6 +611,13 @@ Abilities<public> := module {
   fort_ability_status_effect_point<native><public> := class(fort_ability_timeline_element_point) {
     @editable {}
     var StatusEffectDuration<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_status_effect_removal_point<native><public> := class<final>(fort_ability_timeline_element_point) {
+    @editable {}
+    StatusEffects<native><public>: []concrete_subtype(fort_ability_status_effect_point) = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
@@ -632,15 +642,15 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_cancel_reason_canceled<native><final><public> := class<castable>(cancel_reason) {}
+  fort_cancel_reason_canceled<native><public> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_cancel_reason_ended<native><final><public> := class<castable>(cancel_reason) {}
+  fort_cancel_reason_ended<native><public> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_cancel_reason_invalid<native><final><public> := class<castable>(cancel_reason) {}
+  fort_cancel_reason_invalid<native><public> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
@@ -664,7 +674,7 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_item_ability_component<native><final><public> := class<final_super>(component) {
+  fort_item_ability_component<native><public> := class<final><final_super>(component) {
     AddItemAbility<native><public>(InAbility: ability(ability_context, ability_effect))<transacts>: void
 
     AddItemEquippedAbility<native><public>(InAbility: ability(ability_context, ability_effect))<transacts>: void
@@ -734,44 +744,32 @@ Abilities<public> := module {
     Range<native><public>: float = external {}
 
     @editable {}
-    Target<native><public>: fort_target_query_affiliation = external {}
+    Targets<native><public>: []fort_target_query_affiliation = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
   fort_target_query_affiliation<native><public> := enum {
-    Any
-
     Friendly
 
     Hostile
+
+    Neutral
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_template_ability<native><public>(
-    context_type: subtype(ability_context),
-    prefab_type: subtype(fort_template_ability_effect)
-  ) := class<abstract>(ability(context_type, prefab_type)) {
-    (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance<private>(: context_type): tuple() = external {}
+  fort_template_ability<native><public> := class(ability(ability_context, fort_template_ability_effect)) {
+    MakeAbility<override>()<transacts>: fort_template_ability_effect = external {}
 
-    @available { MinUploadedAtFNVersion := 4210 }
-    (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance_Inherited<private>(
-      : context_type,
-      : prefab_type,
-      : context_type,
-      : context_type
-    ): tuple(prefab_type, context_type, prefab_type, context_type, prefab_type) = external {}
+    MakeContext<override>()<transacts>: ability_context = external {}
 
     OnRep_SpecHandle<native><public>(): void
 
-    var (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_VarVariance_Inherited<private>: ?tuple(
-      prefab_type,
-      prefab_type
-    ) = external {}
-
     @editable {}
     var AbilityElements<native><public>: [](/Verse.org:)Timeline.timeline_element = external {}
+
+    var ActiveEffects<override>: []fort_template_ability_effect = external {}
 
     @editable {}
     var InputTrigger<native><public>: ?input_action(logic) = external {}
@@ -809,7 +807,7 @@ Abilities<public> := module {
     Radius<native><public>: float = external {}
 
     @editable {}
-    Target<native><public>: fort_target_query_affiliation = external {}
+    Targets<native><public>: []fort_target_query_affiliation = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
@@ -957,6 +955,7 @@ Armory<public> := module {
   assault_rifle_template<public> := class<concrete><final>(entity) {}
 
   using { /Verse.org/Assets }
+  using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   using { /Verse.org/SpatialMath }
   # The multi trace specific subtype of trace_weapon_component which adds multiple traces per shot properties
@@ -990,6 +989,10 @@ Armory<public> := module {
     SetAimingDownSightsEndSound<native><public>(Val: []sound_wave): void
 
     SetAimingDownSightsStartSound<native><public>(Val: []sound_wave): void
+
+    SetAllowAimDownSightsDuringReload<native><public>(Val: logic): void
+
+    SetAllowAimDownSightsInAir<native><public>(Val: logic): void
 
     SetBulletShells<native><public>(Val: ?particle_system): void
 
@@ -1060,6 +1063,14 @@ Armory<public> := module {
     @editable {}
     # The sounds to use when starting aiming down sights
     var<private> AimingDownSightsStartSound<native><public>: []sound_wave = external {}
+
+    @editable {}
+    # Enable/Disable Aim Down Sights while the weapon is reloading
+    var<private> AllowAimDownSightsDuringReload<native><public>: logic = external {}
+
+    @editable {}
+    # Enable/Disable Aim Down Sights while in the air
+    var<private> AllowAimDownSightsInAir<native><public>: logic = external {}
 
     @editable {}
     # The particle system to use for weapon bullet shells
@@ -1181,6 +1192,10 @@ Armory<public> := module {
     var<private> IsHolstered<native><public>: logic = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4230 }
+  # The entity prefab for a creator customizable held item
+  held_item_template<public> := class<concrete><final>(entity) {}
+
   pistol_mesh<public> := class<final>(mesh_component) {}
 
   # The entity prefab for a creator customizable pistol
@@ -1197,7 +1212,7 @@ Armory<public> := module {
   sub_machine_gun_template<public> := class<concrete><final>(entity) {}
 
   # Verse path: /Fortnite.com/Armory
-  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Native }
 }
 
 # Module import path: /Fortnite.com/Assets
@@ -9794,6 +9809,8 @@ Items<public> := module {
 
   SlapBerry_BR_CH4S1_Uncommon<public> := class<final><concrete>(entity) {}
 
+  SlapCandyCorn_BR_CH7S4_Exotic<public> := class<final><concrete>(entity) {}
+
   SlapJuice_BR_CH4S1_Rare<public> := class<final><concrete>(entity) {}
 
   SlapSplash_BR_CH4S3_Rare<public> := class<final><concrete>(entity) {}
@@ -9939,6 +9956,8 @@ Items<public> := module {
   Wingsuit_BR_CH7S1_Epic<public> := class<final><concrete>(entity) {}
 
   WitchBroom_BR_CH2S4_Mythic<public> := class<final><concrete>(entity) {}
+
+  WitchBroom_BR_CH6S4_Epic<public> := class<final><concrete>(entity) {}
 
   WolfTooth_Creative_V1_Uncommon<public> := class<final><concrete>(entity) {}
 
@@ -11204,6 +11223,8 @@ Weapons<public> := module {
   DualSuppressedPistols_BR_CH3S1_Rare<public> := class<final><concrete>(entity) {}
 
   DualSuppressedPistols_BR_CH3S1_Uncommon<public> := class<final><concrete>(entity) {}
+
+  EasyRidePumpkinLauncher_BR_CH7S4_Exotic<public> := class<final><concrete>(entity) {}
 
   EggLauncher_BR_CH1S3_Epic<public> := class<final><concrete>(entity) {}
 

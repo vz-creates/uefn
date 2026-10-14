@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.20-CL-58011042
+Generated from build: ++Fortnite+Release-42.30-CL-58813929
 #################################################
 #>
 
@@ -265,7 +265,7 @@ AI<public> := module {
 
   @experimental
   # Component that points to a decision system is responsible to Start, Stop, Pause or Resume it.
-  decision_system_component<native><final><epic_internal> := class<final_super><epic_internal>(component) {
+  decision_system_component<native><epic_internal> := class<final><final_super><epic_internal>(component) {
     SetDecisionSystem<native><public>(InDecisionSystem: decision_system)<transacts>: void
 
     @editable
@@ -453,6 +453,9 @@ AI<public> := module {
 
     # The guard's current shooting-accuracy tier. Setting it at runtime immediately re-applies the aiming/attacking skill on the live NPC.
     var Accuracy<epic_internal>: npc_accuracy = external {}
+
+    # If true, any positive value is accepted for the movement speed multiplier.
+    var OverrideFortniteLimits<native><epic_internal>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 3900 }
@@ -944,6 +947,57 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
+  fort_ability_attribute<native><epic_internal> := enum<open> {
+    Gravity
+
+    MaxHealth
+
+    MaxShields
+
+    Speed
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_attribute_modifier<native><epic_internal> := enum<open> {
+    Add
+
+    Multiply
+
+    Override
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_attribute_modifier_point<native><epic_internal> := class<concrete>(fort_ability_timeline_element_point) {
+    @editable {}
+    ApplyToInstigator<native><public>: logic = external {}
+
+    @editable {}
+    ApplyToTargets<native><public>: logic = external {}
+
+    @editable {}
+    AttributeModifiers<native><public>: []fort_attribute_modifier = external {}
+
+    @editable {}
+    Duration<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_attribute_modifier_span<native><epic_internal> := class<concrete>(fort_ability_timeline_element_span) {
+    @editable {}
+    ApplyToInstigator<native><public>: logic = external {}
+
+    @editable {}
+    ApplyToTargets<native><public>: logic = external {}
+
+    @editable {}
+    AttributeModifiers<native><public>: []fort_attribute_modifier = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
   fort_ability_damage_point<native><public> := class<concrete>(fort_ability_timeline_element_point) {
     @editable {}
     Amount<native><public>: float = external {}
@@ -1021,7 +1075,10 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_ability_status_effect_burn_point<native><public> := class<final>(fort_ability_status_effect_point) {}
+  fort_ability_status_effect_burn_point<native><public> := class<final>(fort_ability_status_effect_point) {
+    @editable {}
+    var DamagePerSecond<native><public>: float = external {}
+  }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
@@ -1037,6 +1094,13 @@ Abilities<public> := module {
   fort_ability_status_effect_point<native><public> := class(fort_ability_timeline_element_point) {
     @editable {}
     var StatusEffectDuration<native><public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_ability_status_effect_removal_point<native><public> := class<final>(fort_ability_timeline_element_point) {
+    @editable {}
+    StatusEffects<native><public>: []concrete_subtype(fort_ability_status_effect_point) = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
@@ -1066,15 +1130,28 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_cancel_reason_canceled<native><final><public> := class<castable>(cancel_reason) {}
+  fort_attribute_modifier<native><epic_internal> := struct<concrete> {
+    @editable {}
+    Attribute<native><public>: fort_ability_attribute = external {}
+
+    @editable {}
+    Modifier<native><public>: fort_ability_attribute_modifier = external {}
+
+    @editable {}
+    Value<native><public>: float = external {}
+  }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_cancel_reason_ended<native><final><public> := class<castable>(cancel_reason) {}
+  fort_cancel_reason_canceled<native><public> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_cancel_reason_invalid<native><final><public> := class<castable>(cancel_reason) {}
+  fort_cancel_reason_ended<native><public> := class<final><castable>(cancel_reason) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @experimental
+  fort_cancel_reason_invalid<native><public> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
@@ -1099,7 +1176,7 @@ Abilities<public> := module {
   @available { MinUploadedAtFNVersion := 4200 }
   @class_and_subclass_group_names("item")
   @experimental
-  fort_item_ability_component<native><final><public> := class<final_super>(component) {
+  fort_item_ability_component<native><public> := class<final><final_super>(component) {
     AddItemAbility<native><public>(InAbility: ability(ability_context, ability_effect))<transacts>: void
 
     AddItemEquippedAbility<native><public>(InAbility: ability(ability_context, ability_effect))<transacts>: void
@@ -1177,45 +1254,33 @@ Abilities<public> := module {
 
     @editable {}
     @replicated("")
-    Target<native><public>: fort_target_query_affiliation = external {}
+    Targets<native><public>: []fort_target_query_affiliation = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
   fort_target_query_affiliation<native><public> := enum {
-    Any
-
     Friendly
 
     Hostile
+
+    Neutral
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  fort_template_ability<native><public>(
-    context_type: subtype(ability_context),
-    prefab_type: subtype(fort_template_ability_effect)
-  ) := class<abstract>(ability(context_type, prefab_type)) {
-    (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance<private>(: context_type): tuple() = external {}
+  fort_template_ability<native><public> := class(ability(ability_context, fort_template_ability_effect)) {
+    MakeAbility<override>()<transacts>: fort_template_ability_effect = external {}
 
-    @available { MinUploadedAtFNVersion := 4210 }
-    (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_Variance_Inherited<private>(
-      : context_type,
-      : prefab_type,
-      : context_type,
-      : context_type
-    ): tuple(prefab_type, context_type, prefab_type, context_type, prefab_type) = external {}
+    MakeContext<override>()<transacts>: ability_context = external {}
 
     OnRep_SpecHandle<native><public>(): void
-
-    var (/Fortnite.com/Abilities/fort_template_ability:)Abilities_fort_template_ability_VarVariance_Inherited<private>: ?tuple(
-      prefab_type,
-      prefab_type
-    ) = external {}
 
     @editable {}
     @replicated("")
     var AbilityElements<native><public>: [](/Verse.org:)Timeline.timeline_element = external {}
+
+    var ActiveEffects<override>: []fort_template_ability_effect = external {}
 
     @editable {}
     @replicated("")
@@ -1260,7 +1325,7 @@ Abilities<public> := module {
 
     @editable {}
     @replicated("")
-    Target<native><public>: fort_target_query_affiliation = external {}
+    Targets<native><public>: []fort_target_query_affiliation = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
@@ -1465,6 +1530,9 @@ Armory<public> := module {
 
     MeshComponent<override>: ?mesh_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4230 }
+    PoseModifierComponent<override>: ?item_owner_pose_modifier_component = external {}
+
     @available { MinUploadedAtFNVersion := 4000 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -1479,6 +1547,9 @@ Armory<public> := module {
   using { /Verse.org/Simulation }
   using { /Verse.org/SpatialMath }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
+  # The component that defines an item that is held when equipped
+  fort_held_item_component<native><epic_internal> := class<internal>(fort_weapon_component) {}
+
   # The multi trace specific subtype of trace_weapon_component which adds multiple traces per shot properties
   fort_multi_trace_weapon_component<native><public> := class<final_super><internal>(fort_trace_weapon_component) {
     SetBulletsPerShot<native><public>(Val: int): void
@@ -1504,8 +1575,17 @@ Armory<public> := module {
 
   # The component on weapons entities like pistols and assault rifles for tweaking weapon properties
   fort_trace_weapon_component<native><public> := class<internal>(fort_weapon_component) {
-    # True while the weapon is actually taking a shot, whoever pulled the trigger. This is the shot cadence rather than the request: it goes false between the rounds of a burst and while a reload or an equip is holding the shot back.
-    IsFiring<native><epic_internal>()<reads>: logic
+    @available { MinUploadedAtFNVersion := 4230 }
+    # Begins firing the weapon, as if the wielder had pressed the fire input and kept holding it.
+    BeginFire<native><epic_internal>(): void
+
+    @available { MinUploadedAtFNVersion := 4230 }
+    # Ends firing the weapon, as if the wielder had released the fire input.
+    EndFire<native><epic_internal>(): void
+
+    @available { MinUploadedAtFNVersion := 4230 }
+    # Succeeds while the weapon is actually taking a shot. Note that this could be false even if the BeginFire was called when the weapon is reloading for example.
+    IsFiring<native><epic_internal>()<decides><reads>: void
 
     OnRemovingFromScene<native><override>(): void
 
@@ -1516,6 +1596,10 @@ Armory<public> := module {
     SetAimingDownSightsEndSound<native><public>(Val: []sound_wave): void
 
     SetAimingDownSightsStartSound<native><public>(Val: []sound_wave): void
+
+    SetAllowAimDownSightsDuringReload<native><public>(Val: logic): void
+
+    SetAllowAimDownSightsInAir<native><public>(Val: logic): void
 
     SetBulletShells<native><public>(Val: ?particle_system): void
 
@@ -1571,12 +1655,6 @@ Armory<public> := module {
 
     SetWeaponFireSound<native><public>(Val: []sound_wave): void
 
-    # Starts firing the weapon, as if the wielder had pressed the fire input and kept holding it, so an automatic weapon keeps firing until StopFire. Server only: does nothing when called on a client. The wielder's own trigger takes precedence: this is ignored while they are already firing, and their own press or release takes it back, so call StopFire then StartFire again to reassert. The request also outlives an unequip and is re-applied to whatever the wielder equips next, so always end it with StopFire rather than relying on the weapon being put away.
-    StartFire<native><epic_internal>(): void
-
-    # Stops firing the weapon, as if the wielder had released the fire input. Server only: does nothing when called on a client. The wielder's own input is never suppressed, so this only takes back what StartFire asked for.
-    StopFire<native><epic_internal>(): void
-
     @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10.000000 } }
     @category("Weapon Recoil")
     @replicated("RepNotify")
@@ -1600,6 +1678,18 @@ Armory<public> := module {
     @replicated("RepNotify")
     # The sounds to use when starting aiming down sights
     var<private> AimingDownSightsStartSound<native><public>: []sound_wave = external {}
+
+    @editable {}
+    @category("Weapon Aim Down Sights")
+    @replicated("RepNotify")
+    # Enable/Disable Aim Down Sights while the weapon is reloading
+    var<private> AllowAimDownSightsDuringReload<native><public>: logic = external {}
+
+    @editable {}
+    @category("Weapon Aim Down Sights")
+    @replicated("RepNotify")
+    # Enable/Disable Aim Down Sights while in the air
+    var<private> AllowAimDownSightsInAir<native><public>: logic = external {}
 
     @editable {}
     @category("Weapon Visuals")
@@ -1786,6 +1876,25 @@ Armory<public> := module {
   @import_as("/Script/ArmoryRuntime.FFortWeaponComponentData")
   fort_weapon_component_data<native><epic_internal> := struct<concrete> {}
 
+  @available { MinUploadedAtFNVersion := 4230 }
+  @preload
+  # The entity prefab for a creator customizable held item
+  held_item_template<public> := class<concrete><final>(weapon_entity) {
+    DescriptionComponent<override>: ?description_component = external {}
+
+    IconComponent<override>: ?icon_component = external {}
+
+    ItemComponent<override>: ?item_component = external {}
+
+    MeshComponent<override>: ?mesh_component = external {}
+
+    PoseModifierComponent<override>: ?item_owner_pose_modifier_component = external {}
+
+    RarityComponent<override>: ?rarity_component = external {}
+
+    WeaponComponent<override>: ?fort_weapon_component = external {}
+  }
+
   pistol_mesh<public> := class<final>(mesh_component) {
     Mesh<override>: mesh = external {}
   }
@@ -1801,6 +1910,9 @@ Armory<public> := module {
     ItemComponent<override>: ?item_component = external {}
 
     MeshComponent<override>: ?mesh_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4230 }
+    PoseModifierComponent<override>: ?item_owner_pose_modifier_component = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -1824,6 +1936,9 @@ Armory<public> := module {
 
     MeshComponent<override>: ?mesh_component = external {}
 
+    @available { MinUploadedAtFNVersion := 4230 }
+    PoseModifierComponent<override>: ?item_owner_pose_modifier_component = external {}
+
     @available { MinUploadedAtFNVersion := 4000 }
     RarityComponent<override>: ?rarity_component = external {}
 
@@ -1845,6 +1960,9 @@ Armory<public> := module {
     ItemComponent<override>: ?item_component = external {}
 
     MeshComponent<override>: ?mesh_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4230 }
+    PoseModifierComponent<override>: ?item_owner_pose_modifier_component = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
     RarityComponent<override>: ?rarity_component = external {}
@@ -1876,6 +1994,10 @@ Armory<public> := module {
     @field("Components")
     @available { MinUploadedAtFNVersion := 4000 }
     MeshComponent<native><epic_internal>: ?mesh_component = external {}
+
+    @field("Components")
+    @available { MinUploadedAtFNVersion := 4230 }
+    PoseModifierComponent<native><epic_internal>: ?item_owner_pose_modifier_component = external {}
 
     @field("Components")
     @available { MinUploadedAtFNVersion := 4000 }
@@ -11751,6 +11873,30 @@ FortSafeZone<public> := module {
 }
 
 Framework<public> := module {
+  # Verse path: /Fortnite.com/Framework
+  # Module import path: /Fortnite.com/Framework/AgentUtils
+  AgentUtils<epic_internal> := module {
+    # Suspends until the agent's cosmetic loadout has been applied to their pawn; reading it
+    # earlier yields the default character. Waits indefinitely - race against your own timeout if
+    # you need to give up. Allocates replicated textures per call, so cache the result.
+    (Agent: agent).GetDisplayInfo<native><epic_internal>()<suspends>: player_display_snapshot
+
+    using { /Verse.org/Assets }
+    using { /Verse.org/Colors }
+    using { /Verse.org/Simulation }
+    player_display_snapshot<native><epic_internal> := struct {
+      CurrentXP<native><public>: int
+
+      Image<native><public>: texture
+
+      LargeImage<native><public>: texture
+
+      SmallImage<native><public>: texture
+
+      SquadColor<native><public>: color
+    }
+  }
+
   # Module import path: /Fortnite.com/Framework/Analytics
   Analytics<epic_internal> := module {
     # Base class to inherit from to pass to analytics_attributes_request.AppendToAttributes to inject attributes in an analytics event
@@ -11811,7 +11957,6 @@ Framework<public> := module {
     IsCVarEnabled<native><epic_internal>(CVarName: string)<transacts><decides>: void
   }
 
-  # Verse path: /Fortnite.com/Framework
   # Module import path: /Fortnite.com/Framework/Competitive
   Competitive<epic_internal> := module {
     (Entity: entity).GetCompetitiveManager<native><epic_internal>()<transacts><decides>: competitive_manager
@@ -12529,32 +12674,35 @@ Itemization<public> := module {
   # `fort_br_inventory_weapon_hotbar_component` is the FNBR inventory for Fortnite weapons and gadgets.
   fort_br_inventory_weapon_hotbar_component<native><epic_internal> := class(fort_br_inventory_legacy_quickbar_component) {}
 
-  @experimental
   @hide_in_editor
-  fort_character_pose_modifier<epic_internal> := class<abstract><epic_internal>(character_pose_modifier) {}
+  # Owner poses let an item affect their owner's default animation stance.
+  #  For example, to make a character hold an item like a torch, or a 2-handed weapon.
+  fort_character_pose_modifier<native><epic_internal> := class<abstract><epic_internal> {
+    ProxyTable<native><epic_internal>: proxy_table
+  }
 
-  @experimental
+  @hide_in_editor
   fort_character_pose_modifier_assault_rifle<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
     ProxyTable<override>: proxy_table = external {}
   }
 
-  @experimental
-  fort_character_pose_modifier_bow<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
-    ProxyTable<override>: proxy_table = external {}
-  }
-
-  @experimental
+  @hide_in_editor
   fort_character_pose_modifier_fire_torch<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
     ProxyTable<override>: proxy_table = external {}
   }
 
-  @experimental
-  fort_character_pose_modifier_fishing_rod<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+  @hide_in_editor
+  fort_character_pose_modifier_pistol<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
     ProxyTable<override>: proxy_table = external {}
   }
 
-  @experimental
-  fort_character_pose_modifier_pistol<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+  @hide_in_editor
+  fort_character_pose_modifier_shotgun<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
+    ProxyTable<override>: proxy_table = external {}
+  }
+
+  @hide_in_editor
+  fort_character_pose_modifier_sub_machine_gun<epic_internal> := class<final><concrete>(fort_character_pose_modifier) {
     ProxyTable<override>: proxy_table = external {}
   }
 
@@ -12655,8 +12803,30 @@ Itemization<public> := module {
     ExpandItemComponents<native><epic_internal>()<converges>: void
   }
 
-  @experimental
-  fort_item_owner_pose_modifier_component<epic_internal> := class<final>(item_owner_pose_modifier_component) {}
+  @hide_in_editor
+  fort_item_owner_pose_modifier_component<native><epic_internal> := class<final><epic_internal>(item_owner_pose_modifier_component) {
+    OnAddedToScene<native><override>(): void
+
+    OnRemovingFromScene<native><override>(): void
+
+    OnRemovingFromSceneInternal<native><override>(): void
+
+    OnRep_ComponentData<native><epic_internal>(): void
+
+    SetEquippedPose<native><epic_internal>(InPose: ?fort_character_pose_modifier): void
+
+    @transient
+    @replicated("RepNotify")
+    var ComponentData<native><epic_internal>: fort_item_owner_pose_modifier_component_data = external {}
+
+    @editable
+    # Animation layer to apply when this item is equipped. This can be unset if the item doesn't need custom animation logic for its owner.
+    var<private> EquippedPose<native><epic_internal>: ?fort_character_pose_modifier = external {}
+  }
+
+  @replicatable
+  @import_as("/Script/ItemizationRuntime.FFortItemOwnerPoseModifierComponentData")
+  fort_item_owner_pose_modifier_component_data<native><epic_internal> := struct<concrete> {}
 
   @available { MinUploadedAtFNVersion := 4040 }
   @class_and_subclass_group_names("item")
@@ -12775,7 +12945,7 @@ Itemization<public> := module {
   @class_and_subclass_group_names("item")
   @experimental
   @hide_in_editor
-  item_attributes_component<native><final><epic_internal> := class<final_super>(component) {
+  item_attributes_component<native><epic_internal> := class<final><final_super>(component) {
     GetAmmoIcon<native><public>()<decides><reads>: texture
 
     GetCurrentAmmoValue<native><public>()<reads>: int
@@ -12809,6 +12979,9 @@ Itemization<public> := module {
 
   # Verse path: /Fortnite.com/Itemization
   play_animation_on_self<epic_internal> := class {}
+
+  @hide_in_editor
+  proxy_table<native><epic_internal> := class<unique><final><epic_internal>(asset) {}
 
   # Verse path: /Fortnite.com/Itemization
   using { /UnrealEngine.com/Itemization }
@@ -16354,6 +16527,21 @@ Items<public> := module {
   }
 
   @preload
+  SlapCandyCorn_BR_CH7S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    StackableComponent<override>: ?basic_stackable_component = external {}
+  }
+
+  @preload
   SlapJuice_BR_CH4S1_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
@@ -17349,6 +17537,18 @@ Items<public> := module {
 
   @preload
   WitchBroom_BR_CH2S4_Mythic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  WitchBroom_BR_CH6S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 
@@ -19978,7 +20178,7 @@ VerseInternalTesting<public> := module {
     }
 
     using { /Fortnite.com/Characters }
-    verse_internal_testing_utils<native><final><epic_internal> := class {
+    verse_internal_testing_utils<native><epic_internal> := class<final> {
       HasServerCommandLineOption<native><epic_internal>(Option: string)<decides><reads>: void
     }
   }
@@ -22625,6 +22825,18 @@ Weapons<public> := module {
 
   @preload
   DualSuppressedPistols_BR_CH3S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  EasyRidePumpkinLauncher_BR_CH7S4_Exotic<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 

@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.20-CL-58011042
+Generated from build: ++Fortnite+Release-42.30-CL-58813929
 #################################################
 #>
 
@@ -283,106 +283,106 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, Low, Natural
-  aura_voice<final><public> := class(voice_model) {}
+  aura_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, Med, Warm
-  battle_gamer_mae_voice<final><public> := class(voice_model) {}
+  battle_gamer_mae_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Comic, High, Warm
-  brite_bomber_voice<final><public> := class<epic_internal>(voice_model) {}
+  brite_bomber_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Natural
-  brute_gunner_voice<final><public> := class(voice_model) {}
+  brute_gunner_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Comic, High, Natural
-  chase_voice<final><public> := class(voice_model) {}
+  chase_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Warm
-  clover_swift_voice<final><public> := class(voice_model) {}
+  clover_swift_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  cuddle_team_leader_voice<final><public> := class<epic_internal>(voice_model) {}
+  cuddle_team_leader_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Warm
-  elmira_voice<final><public> := class(voice_model) {}
+  elmira_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Comic, Med, Natural
-  field_commander_voice<final><public> := class(voice_model) {}
+  field_commander_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Natural
-  fishstick_voice<final><public> := class<epic_internal>(voice_model) {}
+  fishstick_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Warm
-  guild_voice<final><public> := class(voice_model) {}
+  guild_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, Med, Natural
-  halley_voice<final><public> := class(voice_model) {}
+  halley_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, Med, Natural
-  haylee_skye_voice<final><public> := class<epic_internal>(voice_model) {}
+  haylee_skye_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Glamorous, Animated, warm
-  helsie_midnight_voice<final><public> := class(voice_model) {}
+  helsie_midnight_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  hope_voice<final><public> := class<epic_internal>(voice_model) {}
+  hope_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  jonesy_voice<final><public> := class<epic_internal>(voice_model) {}
+  jonesy_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Low, Warm
-  kor_voice<final><public> := class<epic_internal>(voice_model) {}
+  kor_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, High, Warm
-  lexa_hexbringer_voice<final><public> := class(voice_model) {}
+  lexa_hexbringer_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Glamorous, Med, Natural
-  magnus_voice<final><public> := class(voice_model) {}
+  magnus_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, Low, Gravelly
-  mancake_voice<final><public> := class<epic_internal>(voice_model) {}
+  mancake_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  mecha_team_leader_voice<final><public> := class<epic_internal>(voice_model) {}
+  mecha_team_leader_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  midas_voice<final><public> := class<epic_internal>(voice_model) {}
+  midas_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Med, Warm
-  moxie_voice<final><public> := class(voice_model) {}
+  moxie_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, High, Warm
-  munitions_master_voice<final><public> := class(voice_model) {}
+  munitions_master_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Glamorous, Low, Natural
-  nezumi_voice<final><public> := class(voice_model) {}
+  nezumi_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Comic, High, Natural
-  orin_voice<final><public> := class(voice_model) {}
+  orin_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Natural
-  peely_voice<final><public> := class<epic_internal>(voice_model) {}
+  peely_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # NPC Persona component
@@ -477,29 +477,29 @@ Conversations<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  raven_voice<final><public> := class<epic_internal>(voice_model) {}
+  raven_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, High, Natural
-  red_ruin_joni_voice<final><public> := class<epic_internal>(voice_model) {}
+  red_ruin_joni_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  revolt_voice<final><public> := class(voice_model) {}
+  revolt_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, High, Warm
-  sunspot_voice<final><public> := class(voice_model) {}
+  sunspot_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Low, Warm
-  terns_voice<final><public> := class(voice_model) {}
+  terns_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, High, Warm
-  the_imagined_voice<final><public> := class<epic_internal>(voice_model) {}
+  the_imagined_voice<public> := class<final><epic_internal>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  tomatohead_voice<final><public> := class<epic_internal>(voice_model) {}
+  tomatohead_voice<public> := class<final><epic_internal>(voice_model) {}
 
   # Verse path: /UnrealEngine.com/Conversations
   using { /Verse.org/Chat }
@@ -510,7 +510,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, High, Natural
-  ziggy_voice<final><public> := class<epic_internal>(voice_model) {}
+  ziggy_voice<public> := class<final><epic_internal>(voice_model) {}
 }
 
 Itemization<public> := module {

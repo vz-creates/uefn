@@ -739,7 +739,7 @@
 		"E70863686B234C5884391B7016265E91":
 		{
 			"FriendlyName": "FortniteRelease",
-			"Version": 20
+			"Version": 21
 		},
 		"EF0A537D90DA4CD2BCA16D6AE21E3589":
 		{
@@ -1186,6 +1186,7 @@
 			"/Script/Engine.MaterialExpressionEyeAdaptation",
 			"/Script/Engine.MaterialExpressionEyeAdaptationInverse",
 			"/Script/Engine.MaterialExpressionFeatureLevelSwitch",
+			"/Script/Engine.MaterialExpressionFloatToUInt",
 			"/Script/Engine.MaterialExpressionFloor",
 			"/Script/Engine.MaterialExpressionFmod",
 			"/Script/Engine.MaterialExpressionFontSample",
@@ -1340,6 +1341,7 @@
 			"/Script/Engine.MaterialExpressionTruncate",
 			"/Script/Engine.MaterialExpressionTruncateLWC",
 			"/Script/Engine.MaterialExpressionTwoSidedSign",
+			"/Script/Engine.MaterialExpressionUIntToFloat",
 			"/Script/Engine.MaterialExpressionVectorNoise",
 			"/Script/Engine.MaterialExpressionVectorParameter",
 			"/Script/Engine.MaterialExpressionVertexColor",
@@ -4353,6 +4355,7 @@
 			"/Script/UAF.RigUnit_MakeReferencePoseFromSkeletalMeshComponent",
 			"/Script/UAF.RigUnit_OverrideVariables",
 			"/Script/UAF.RigUnit_ResolveUniversalObjectLocator",
+			"/Script/UAF.RigUnit_UAFGetIncomingPose",
 			"/Script/UAF.RigUnit_UAFWriteInstancedSkinnedMeshPose",
 			"/Script/UAF.RigUnit_UAFWriteSystemOutput",
 			"/Script/UAF.RigVMDispatch_CallHoistedAccessorFunctionBase",
@@ -28336,6 +28339,8 @@
 			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_A/Blueprints/Asteria_CrateBarrel_Crate_Medium_A_Override.Asteria_CrateBarrel_Crate_Medium_A_Override_C",
 			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_A/Blueprints/Asteria_CrateBarrel_Crate_Small_A.Asteria_CrateBarrel_Crate_Small_A_C",
 			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_A/Blueprints/Asteria_CrateBarrel_Crate_Small_A_Override.Asteria_CrateBarrel_Crate_Small_A_Override_C",
+			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_A/Blueprints/FNEC_Asteria_CrateBarrel_Crate_Medium_A.FNEC_Asteria_CrateBarrel_Crate_Medium_A_C",
+			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_A/Blueprints/FNEC_Asteria_CrateBarrel_Crate_Small_A.FNEC_Asteria_CrateBarrel_Crate_Small_A_C",
 			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_Rustic_A/Blueprints/Asteria_CrateBarrel_Crate_Rustic_A.Asteria_CrateBarrel_Crate_Rustic_A_C",
 			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_Rustic_A/Blueprints/BP_Container_Boxes_B.BP_Container_Boxes_B_C",
 			"/Game/Environments/Asteria/Props/CrateBarrel/Kit_CrateBarrel_Crate_Rustic_A/Blueprints/BP_Container_Boxes_C.BP_Container_Boxes_C_C",

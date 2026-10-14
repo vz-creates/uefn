@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.20-CL-58011042
+Generated from build: ++Fortnite+Release-42.30-CL-58813929
 #################################################
 #>
 
@@ -1436,7 +1436,7 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera body settings, e.g. sensor/film settings, shutter speed, etc
-  camera_body<final><native><public> := class<computes> {
+  camera_body<native><public> := class<final><computes> {
     # The camera sensor sensitivity to light.
     ISO<native><public>: float = external {}
 
@@ -1491,7 +1491,7 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera lens settings
-  camera_lens<final><native><public> := class<computes> {
+  camera_lens<native><public> := class<final><computes> {
     # Number of blades of diaphragm.
     BladeCount<native><public>: int = external {}
 
@@ -1562,7 +1562,7 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  camera_state<final><native><public> := class<computes><epic_internal> {
+  camera_state<native><public> := class<final><computes><epic_internal> {
     @experimental
     # Physical camera body settings
     Body<native><public>: camera_body = external {}
@@ -3119,7 +3119,7 @@ Timeline<public> := module {
   timeline_element_point<native><public> := class<abstract>(timeline_element) {
     SetTime<native><public>(NewTime: float)<transacts>: void
 
-    @editable
+    @editable {}
     # The time of this point. May be +/-Inf.NaN will never be updated or queried.
     var<private> Time<native><public>: float
   }
@@ -3130,11 +3130,11 @@ Timeline<public> := module {
     # Called to modify the timeline's range by assigning its begin and end times.
     SetRange<native><public>(NewBeginTime: float, NewEndTime: float)<transacts>: void
 
-    @editable
+    @editable {}
     # The time this span begins. Defaults to 0.0.Must be <> NaN and <= EndTime in order for it to be updated or queriedMay be +/- Inf
     var<private> BeginTime<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The time this span ends. Defaults to Inf.Must be <> NaN and >= BeginTime in order for it to be updated or queriedMay be +/- Inf.
     var<private> EndTime<native><public>: float = external {}
   }
@@ -3405,6 +3405,8 @@ Verse<public> := module {
   MakeLocalizableValue<epic_internal>(V: string): localizable_string = external {}
 
   MakeMessageInternal<native><epic_internal>(K: string, D: string, S: [string]localizable_value)<converges>: message
+
+  MakeMessageLiteral<native><epic_internal>(K: string, D: string)<converges>: message
 
   @available { MinUploadedAtFNVersion := 3800 }
   MakeSuccess<public>(Result: success_type where success_type: type)<computes>: result(success_type, false) = external {}

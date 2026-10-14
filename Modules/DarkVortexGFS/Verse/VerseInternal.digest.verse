@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.20-CL-58011042
+Generated from build: ++Fortnite+Release-42.30-CL-58813929
 #################################################
 #>
 
@@ -238,6 +238,9 @@ Assets<public> := module {
   }
 
   texture_base<native><epic_internal> := class<computes><epic_internal>(asset) {}
+
+  @available { MinUploadedAtFNVersion := 4220 }
+  uaf_system<native><epic_internal> := class<final><epic_internal>(asset, animation_asset) {}
 }
 
 Chat<public> := module {
@@ -2306,6 +2309,12 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   # Module import path: /Verse.org/SceneGraph/UI
   (/Verse.org/SceneGraph:)UI<public> := module {
+    @available { MinUploadedAtFNVersion := 4210 }
+    (Margin: ui_margin).GetMemberValue<epic_internal>(MemberName: []char)<transacts>: float = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (Margin: ui_margin).WithMemberValue<epic_internal>(MemberName: []char, Value: float)<transacts>: ui_margin = external {}
+
     DefaultTextValue<localizes><epic_internal>: message = external {}
 
     using { /UnrealEngine.com/Temporary/UI }
@@ -2318,23 +2327,14 @@ SceneGraph<public> := module {
     @available { MinUploadedAtFNVersion := 4210 }
     # Layout hints for a child placed inside an absolute_container. Positions the child relative to the container's rendered size, independent of its flow siblings.
     absolute_container_element_component<native><epic_internal> := class(container_element_component) {
-      @editable
-      @replicated("")
-      @tool_tip("How this item is aligned along the horizontal axis within its containing block, after offsets are applied. Center and End require a finite container width; otherwise the item falls back to Start.")
       # How this item is aligned along the horizontal axis within its containing block, after offsets are applied. Center and End require a finite container width; otherwise the item falls back to Start.
-      var HorizontalAlignment<native><public>: ui_alignment = external {}
+      var HorizontalAlignment<public>: ui_alignment = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Inset from each edge of this item\'s containing block, in centimeters, applied before alignment.")
       # Inset from each edge of this item's containing block, in centimeters, applied before alignment.
-      var Offsets<native><public>: ui_margin = external {}
+      var Offsets<public>: ui_margin = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("How this item is aligned along the vertical axis within its containing block, after offsets are applied. Center and End require a finite container height; otherwise the item falls back to Start.")
       # How this item is aligned along the vertical axis within its containing block, after offsets are applied. Center and End require a finite container height; otherwise the item falls back to Start.
-      var VerticalAlignment<native><public>: ui_alignment = external {}
+      var VerticalAlignment<public>: ui_alignment = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4210 }
@@ -2398,57 +2398,36 @@ SceneGraph<public> := module {
       # Spacing between columns, in centimeters.
       var ColumnGap<public>: float = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Alignment of lines along the cross axis.")
       # Alignment of lines along the cross axis.
-      var ContentAlignment<native><public>: flex_content_alignment = external {}
+      var ContentAlignment<public>: flex_content_alignment = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Direction children flow along the main axis.")
       # Direction children flow along the main axis. Reversed directions (RowReverse, ColumnReverse) require a finite main-axis MaxSize; Inf silently disables reversal.
-      var FlexDirection<native><public>: flex_direction = external {}
+      var FlexDirection<public>: flex_direction = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Alignment of items along the main axis within each line.")
       # Alignment of items along the main axis within each line.
-      var LineAlignment<native><public>: flex_content_alignment = external {}
+      var LineAlignment<public>: flex_content_alignment = external {}
 
       # Spacing between rows, in centimeters.
       var RowGap<public>: float = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("How children wrap onto multiple lines.")
       # How children wrap onto multiple lines.
-      var WrapDirection<native><public>: flex_wrap = external {}
+      var WrapDirection<public>: flex_wrap = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4210 }
     # Layout hints for a child placed inside a flex_container.
     flex_container_element_component<native><epic_internal> := class(container_element_component) {
-      @editable
-      @replicated("")
-      @tool_tip("How this item is aligned along the cross axis (perpendicular to FlexDirection) within its line.")
       # How this item is aligned along the cross axis (perpendicular to FlexDirection) within its line.
-      var AlignSelf<native><public>: ui_alignment = external {}
+      var AlignSelf<public>: ui_alignment = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Alignment of this item along the main axis within an over-sized slot.")
       # Alignment of this item along the main axis within an over-sized slot.
-      var AlignSelfMajorAxis<native><public>: ui_alignment = external {}
+      var AlignSelfMajorAxis<public>: ui_alignment = external {}
 
       # Grow proportion along the main axis. If not set, the item does not grow. Negative values clamp to 0.
       var GrowProportion<public>: ?float = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Margin applied around this element within its line, in centimeters.")
       # Margin applied around this element within its line, in centimeters.
-      var Margin<native><public>: ui_margin = external {}
+      var Margin<public>: ui_margin = external {}
 
       # Shrink proportion along the main axis. Set to false to disable shrinking. Negative values clamp to 0.
       var ShrinkProportion<public>: ?float = external {}
@@ -2525,38 +2504,23 @@ SceneGraph<public> := module {
     @available { MinUploadedAtFNVersion := 4210 }
     # Layout hints for a child placed inside a grid_container.
     grid_container_element_component<native><epic_internal> := class(container_element_component) {
-      @editable
-      @replicated("")
-      @tool_tip("Column index of the cell this item occupies. 0 = first column. Negative values count from the end: -1 = last column, -2 = second-to-last. Out-of-range values clamp to the nearest valid column.")
       # Column index of this item's anchor cell. Zero-based from the start; negative values count from the end (-1 = last column). Out-of-range values are clamped to the nearest valid column.
-      var Column<native><public>: int = external {}
+      var Column<public>: int = external {}
 
       # Number of columns this item spans across, starting at Column.
       var ColumnSpan<public>: int = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("How this item is aligned along the horizontal axis within its cell.")
-      var HorizontalAlignment<native><public>: ui_alignment = external {}
+      var HorizontalAlignment<public>: ui_alignment = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Margin applied around this element within its cell, in centimeters.")
-      var Margin<native><public>: ui_margin = external {}
+      var Margin<public>: ui_margin = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("Row index of the cell this item occupies. 0 = first row. Negative values count from the end: -1 = last row, -2 = second-to-last. Out-of-range values clamp to the nearest valid row.")
       # Row index of this item's anchor cell. Zero-based from the start; negative values count from the end (-1 = last row). Out-of-range values are clamped to the nearest valid row.
-      var Row<native><public>: int = external {}
+      var Row<public>: int = external {}
 
       # Number of rows this item spans across, starting at Row.
       var RowSpan<public>: int = external {}
 
-      @editable
-      @replicated("")
-      @tool_tip("How this item is aligned along the vertical axis within its cell.")
-      var VerticalAlignment<native><public>: ui_alignment = external {}
+      var VerticalAlignment<public>: ui_alignment = external {}
     }
 
     @available { MinUploadedAtFNVersion := 4210 }
@@ -2920,7 +2884,7 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera body settings, e.g. sensor/film settings, shutter speed, etc
-  camera_body<final><native><public> := class<computes> {
+  camera_body<native><public> := class<final><computes> {
     @replicated("")
     # The camera sensor sensitivity to light.
     ISO<native><public>: float = external {}
@@ -3025,7 +2989,7 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera lens settings
-  camera_lens<final><native><public> := class<computes> {
+  camera_lens<native><public> := class<final><computes> {
     @replicated("")
     # Number of blades of diaphragm.
     BladeCount<native><public>: int = external {}
@@ -3112,7 +3076,7 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  camera_state<final><native><public> := class<computes><epic_internal> {
+  camera_state<native><public> := class<final><computes><epic_internal> {
     @experimental
     @replicated("")
     # Physical camera body settings
@@ -4007,7 +3971,7 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
-  has_collision_impl<native><final><epic_internal> := class<epic_internal> {
+  has_collision_impl<native><epic_internal> := class<final><epic_internal> {
     @experimental
     CollisionEnteredEventImpl<native><epic_internal>: listenable(generator(collision_hit)) = external {}
 
@@ -4061,7 +4025,7 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
-  has_dynamics_impl<native><final><epic_internal> := class<epic_internal> {
+  has_dynamics_impl<native><epic_internal> := class<final><epic_internal> {
     ApplyAngularImpulseImpl<native><epic_internal>(AngularImpulse: (/Verse.org/SpatialMath:)vector3): void
 
     ApplyForceImpl<native><epic_internal>(Force: (/Verse.org/SpatialMath:)vector3): void
@@ -4103,7 +4067,7 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
-  has_origin_impl<native><final><epic_internal> := class<epic_internal> {
+  has_origin_impl<native><epic_internal> := class<final><epic_internal> {
     GetOriginImpl<native><epic_internal>()<decides><reads>: presentation_origin
   }
 
@@ -4175,7 +4139,7 @@ SceneGraph<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
-  has_ue_physics_properties_impl<native><final><epic_internal> := class {
+  has_ue_physics_properties_impl<native><epic_internal> := class<final> {
     GetCollisionProfileNameImpl<native><epic_internal>()<reads>: string
 
     GetGravityEnabledImpl<native><epic_internal>()<reads>: logic
@@ -4800,6 +4764,9 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   mesh_part<native><epic_internal> := class<abstract><unique><epic_internal>(diagnosable) {
+    @available { MinUploadedAtFNVersion := 4200 }
+    ApplyShow<native><epic_internal>(NewShow: logic)<transacts>: void
+
     GetDiagnostic<override><native>()<reads>: diagnostic
 
     HasCollisionImpl<native><epic_internal>: has_collision_impl = external {}
@@ -6920,7 +6887,7 @@ Timeline<public> := module {
   timeline_element_point<native><public> := class<abstract>(timeline_element) {
     SetTime<native><public>(NewTime: float)<transacts>: void
 
-    @editable
+    @editable {}
     # The time of this point. May be +/-Inf.NaN will never be updated or queried.
     var<private> Time<native><public>: float
   }
@@ -6931,11 +6898,11 @@ Timeline<public> := module {
     # Called to modify the timeline's range by assigning its begin and end times.
     SetRange<native><public>(NewBeginTime: float, NewEndTime: float)<transacts>: void
 
-    @editable
+    @editable {}
     # The time this span begins. Defaults to 0.0.Must be <> NaN and <= EndTime in order for it to be updated or queriedMay be +/- Inf
     var<private> BeginTime<native><public>: float = external {}
 
-    @editable
+    @editable {}
     # The time this span ends. Defaults to Inf.Must be <> NaN and >= BeginTime in order for it to be updated or queriedMay be +/- Inf.
     var<private> EndTime<native><public>: float = external {}
   }
@@ -7269,6 +7236,8 @@ Verse<public> := module {
   MakeLocalizableValue<epic_internal>(V: string): localizable_string = external {}
 
   MakeMessageInternal<native><epic_internal>(K: string, D: string, S: [string]localizable_value)<converges>: message
+
+  MakeMessageLiteral<native><epic_internal>(K: string, D: string)<converges>: message
 
   @available { MinUploadedAtFNVersion := 3800 }
   MakeSuccess<public>(Result: success_type where success_type: type)<computes>: result(success_type, false) = external {}

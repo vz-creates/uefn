@@ -1245,7 +1245,7 @@
 			},
 			"LevelEditor.MainMenu.Tools": {
 				"AllowList": {
-					"+": ["TestAutomation", "VkContentResolution"]
+					"+": ["TestAutomation", "ValkyrieMemoryCalculation", "VkContentResolution"]
 				}
 			},
 			"LevelEditor.StatusBar.ToolBar": {

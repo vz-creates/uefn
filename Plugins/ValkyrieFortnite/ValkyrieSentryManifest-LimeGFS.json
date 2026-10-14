@@ -739,7 +739,7 @@
 		"E70863686B234C5884391B7016265E91":
 		{
 			"FriendlyName": "FortniteRelease",
-			"Version": 20
+			"Version": 21
 		},
 		"EF0A537D90DA4CD2BCA16D6AE21E3589":
 		{
@@ -1218,6 +1218,7 @@
 			"/Script/Engine.MaterialExpressionEyeAdaptation",
 			"/Script/Engine.MaterialExpressionEyeAdaptationInverse",
 			"/Script/Engine.MaterialExpressionFeatureLevelSwitch",
+			"/Script/Engine.MaterialExpressionFloatToUInt",
 			"/Script/Engine.MaterialExpressionFloor",
 			"/Script/Engine.MaterialExpressionFmod",
 			"/Script/Engine.MaterialExpressionFontSample",
@@ -1372,6 +1373,7 @@
 			"/Script/Engine.MaterialExpressionTruncate",
 			"/Script/Engine.MaterialExpressionTruncateLWC",
 			"/Script/Engine.MaterialExpressionTwoSidedSign",
+			"/Script/Engine.MaterialExpressionUIntToFloat",
 			"/Script/Engine.MaterialExpressionVectorNoise",
 			"/Script/Engine.MaterialExpressionVectorParameter",
 			"/Script/Engine.MaterialExpressionVertexColor",
@@ -4466,6 +4468,7 @@
 			"/Script/UAF.RigUnit_MakeReferencePoseFromSkeletalMeshComponent",
 			"/Script/UAF.RigUnit_OverrideVariables",
 			"/Script/UAF.RigUnit_ResolveUniversalObjectLocator",
+			"/Script/UAF.RigUnit_UAFGetIncomingPose",
 			"/Script/UAF.RigUnit_UAFWriteInstancedSkinnedMeshPose",
 			"/Script/UAF.RigUnit_UAFWriteSystemOutput",
 			"/Script/UAF.RigVMDispatch_CallHoistedAccessorFunctionBase",
@@ -8175,6 +8178,9 @@
 			"/Game/Animation/Game/Enemies/DeimosFiend/Locomotion/Idle.Idle",
 			"/Game/Animation/Game/MainPlayer/Menu/BR/Male_Commando_Idle_01_M.Male_Commando_Idle_01_M",
 			"/Game/Animation/Game/MainPlayer/Poses/QuestGiver_Poses/Male/Male_Pose_306.Male_Pose_306",
+			"/Game/Animation/Game/MainPlayerFN/ProxyTables/_Default/Pistol_PT.Pistol_PT",
+			"/Game/Animation/Game/MainPlayerFN/ProxyTables/Shotgun_CoreBurst_PT.Shotgun_CoreBurst_PT",
+			"/Game/Animation/Game/MainPlayerFN/ProxyTables/Torch_PT.Torch_PT",
 			"/Game/Animation/Settings/FortniteAnimBoneCompressionSettings.FortniteAnimBoneCompressionSettings",
 			"/Game/Animation/Settings/FortniteAnimCurveCompressionSettings.FortniteAnimCurveCompressionSettings",
 			"/Game/Animation/Settings/FortniteRecorderBoneCompression.FortniteRecorderBoneCompression",
@@ -18646,6 +18652,8 @@
 			"/RReels_Comp/SetupAssets/Maps/PID_FNEC_RReels_L_Building_b.PID_FNEC_RReels_L_Building_b",
 			"/RReels_Comp/SetupAssets/Maps/PID_FNEC_RReels_M_Amphitheater_a.PID_FNEC_RReels_M_Amphitheater_a",
 			"/RReels_Comp/SetupAssets/Maps/PID_FNEC_RReels_S_Building_a.PID_FNEC_RReels_S_Building_a",
+			"/SharedWeaponAnims/FlipperGameplayContet/CoreAR/CoreAR_PT.CoreAR_PT",
+			"/SharedWeaponAnims/ProxyTables/FlipperSMG_PT.FlipperSMG_PT",
 			"/Suburban_Composition/SetupAssets/Maps/PID_LME_BlueHouse_Gallery_a.PID_LME_BlueHouse_Gallery_a",
 			"/Suburban_Composition/SetupAssets/Maps/PID_LME_RedHouse_Gallery_a.PID_LME_RedHouse_Gallery_a",
 			"/Suburban_Composition/SetupAssets/Maps/PID_LME_SUB_Gallery_b.PID_LME_SUB_Gallery_b",

@@ -22,9 +22,9 @@
 		"bAddProjectExternalContentAllowed": false,
 		"bMultiPluginProjectAllowed": false,
 		"bMultiProjectAllowed": false,
-		"bModuleIdNamedPlugins": false,
+		"bModuleIdNamedPlugins": true,
 		"bOnlinePluginFriendlyNameAllowed": false,
-		"bShowingContentVersePath": false,
+		"bShowingContentVersePath": true,
 		"bRelaxedValidationAllowed": false,
 		"bModularTestingAllowed": false,
 		"bPythonUploadAllowed": false,
@@ -1397,6 +1397,7 @@
 			"/Script/Engine.MaterialExpressionEyeAdaptation":									{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionEyeAdaptationInverse":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionFeatureLevelSwitch":								{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/Engine.MaterialExpressionFloatToUInt":										{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionFloor":											{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionFmod":											{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionFontSample":										{ "Visible": true,	"Subclasses": "NativeOnly" },
@@ -1538,6 +1539,7 @@
 			"/Script/Engine.MaterialExpressionTruncate":										{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionTruncateLWC":										{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionTwoSidedSign":									{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/Engine.MaterialExpressionUIntToFloat":										{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionVectorNoise":										{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionVertexColor":										{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Engine.MaterialExpressionVertexInterpolator":								{ "Visible": true,	"Subclasses": "NativeOnly" },
@@ -2528,7 +2530,7 @@
 				"AllowList": [ "Compile", "SaveAsset", "FindInContentBrowser", "EditGlobalOptions", "EditClassDefaults" ]
 			},
 			"ContentBrowser.AddNewContextMenu": {
-				"AllowList": [ "", "ImportAsset", "NewFolder" ]
+				"AllowList": [ "", "ImportAsset", "NewFolder", "ValkyrieBrandedContent" ]
 			},
 			"ContentBrowser.FolderContextMenu.NewAsset": {
 				"AllowList": [ "", "ImportAsset" ]
@@ -2722,7 +2724,7 @@
 				"AllowList": [ "ValkyriePlay" ]
 			},
 			"LevelEditor.LevelEditorToolBar.User": {
-				"AllowList": [ "PlayerList", "GameFeatureSetButtonEntry", "GameFeatureSetButton" ]
+				"AllowList": [ "PlayerList", "GameFeatureSetButtonEntry", "GameFeatureSetButton", "GameFeatureSetSettingsButton" ]
 			},
 			"LevelEditor.LevelViewportToolBar.Options": {
 				"AllowList": [ "ToggleRealTime", "DisableRealtimeOverride", "DisableRealtimeOverrideSeparator", "ToggleStats", "ToggleFPS", "ToggleViewportToolbar", "FOVAngle", "FarViewPlane", "ScreenPercentage", "ToggleCinematicPreview", "ToggleGameView", "ToggleImmersive", "HighResScreenshot", "Bookmark", "Configs" ]
@@ -2958,6 +2960,7 @@
 					"TakeRecorder",
 					"TakeRecorderPanel",
 					"TakesBrowser",
+					"ValkyrieFortniteSwitchUniverse",
 					"ValkyrieProjectSettingsEditor",
 					"ValkyrieProjectSize",
 					"ValkyrieProjectAuroraEntitlementCatalog",
@@ -3019,6 +3022,7 @@
 					"BottomLeftModeTab",
 					"TopRightModeTab",
 					"BottomRightModeTab",
+					"ValkyrieFortniteSwitchUniverse",
 					"ValkyrieProjectSize",
 					"ValkyrieProjectAuroraEntitlementCatalog",
 					"ValkyrieProjectOfferLog",
@@ -4275,6 +4279,10 @@
 				"AllowList": [ "bAffectsLandscape", "TargetWaveMaskDepth", "MaxWaveHeightOffset", "CurveSettings", "WaterHeightmapSettings", "LayerWeightmapSettings", "WaterMaterial" ]
 			},
 			{
+				"Type": "/Script/Water.WaterBodyIsland",
+				"AllowList": [ "WaterCurveSettings", "WaterHeightmapSettings", "WaterWeightmapSettings" ]
+			},
+			{
 				"Type": "/Script/Water.WaterBodyOceanComponent",
 				"AllowList": [ "CollisionExtents", "OceanExtents" ]
 			},
@@ -4866,7 +4874,7 @@
 			},
 			{
 				"Type": "/Script/CRD_HUDController.EVerseSubscribableInputAction",
-				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint", "VehicleBoost", "VehicleHorn", "VehicleReverse", "VehicleSecondaryAbility", "VehicleSprint", "VehicleSwitchSeat", "VehicleThrottle", "Backpack", "MapPing", "ToggleAutofire", "ToggleMap", "MoveStick"]
+				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint", "VehicleBoost", "VehicleHorn", "VehicleReverse", "VehicleSecondaryAbility", "VehicleSprint", "VehicleSwitchSeat", "VehicleThrottle", "Backpack", "MapPing", "ToggleAutofire", "ToggleMap", "MoveStick", "Interact"]
 			}
 		]
 	},

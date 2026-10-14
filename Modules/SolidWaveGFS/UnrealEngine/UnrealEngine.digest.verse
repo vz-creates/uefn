@@ -8,18 +8,23 @@ Generated from build: ++Fortnite+Release-42.30-CL-58813929
 #>
 
 Abilities<public> := module {
+  using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
+  # Verse path: /UnrealEngine.com/Abilities
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
-  MakeAbilityEffectComponent<native><public>(component_type: castable_subtype(ability_effect_component))<converges>: component_type
+  MakeAbilityEffectComponent<public><native>(
+    component_type: castable_subtype(ability_effect_component)
+  )<converges>: component_type
 
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
   # Lives in the scene graph and is the high level description of an ability.
-  #  Knows if an ability can run, cooldowns, distance and targeting requirements etc...
-  ability<native><public>(
+  #  Knows if an ability can run, cooldowns, distance and targeting
+  #  requirements etc...
+  ability<public><native>(
     context_type: subtype(ability_context),
     ability_effect_type: subtype(ability_effect)
   ) := class<abstract>(has_icon) {
@@ -30,64 +35,69 @@ Abilities<public> := module {
       : context_type
     ): tuple(ability_effect_type, context_type, ability_effect_type) = external {}
 
-    BeginUseEvent<native><public>: listenable(entity) = external {}
+    BeginUseEvent<public><native>: listenable(entity) = external {}
 
     CanUse<public>(AbilityEffectParent: entity, AbilityContext: context_type)<decides><reads>: void = external {}
 
-    EndUseEvent<native><public>: listenable(entity) = external {}
+    EndUseEvent<public><native>: listenable(entity) = external {}
 
     MakeAbility<public>()<transacts>: ability_effect_type
 
     MakeContext<public>()<transacts>: context_type
 
-    Use<native_callable><final><public>(
+    Use<public><final><native_callable>(
       AbilityEffectParent: entity,
       AbilityContext: context_type
     ): ?ability_effect_type = external {}
 
-    var (/UnrealEngine.com/Abilities/ability:)Abilities_ability_VarVariance<private>: ?tuple(ability_effect_type) = external {}
+    var (/UnrealEngine.com/Abilities/ability:)Abilities_ability_VarVariance<private>: ?tuple(
+      ability_effect_type
+    ) = external {}
 
     var Icon<override>: texture = external {}
 
-    var<private> ActiveEffects<native><public>: []ability_effect_type
+    var<private> ActiveEffects<public><native>: []ability_effect_type
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
-  # Data passed on activation of an ability. Holds who fired, who helped, and what got hit.
+  # Data passed on activation of an ability. Holds who fired, who helped, and
+  # what got hit.
   #  Subclass to provide specific context for custom ability effects
-  ability_context<native><public> := class<concrete> {
-    var Instigator<native><public>: ?agent = external {}
+  ability_context<public><native> := class<concrete> {
+    var Instigator<public><native>: ?agent = external {}
 
-    var Participants<native><public>: []entity = external {}
+    var Participants<public><native>: []entity = external {}
 
-    var Targets<native><public>: []entity = external {}
+    var Targets<public><native>: []entity = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
-  # Prefab to provide a central location for handling desired ability and gameplay logic.
-  ability_effect<native><public> := class<concrete>(entity) {
-    AbilityComponent<native><public>: ability_effect_component = external {}
+  # Prefab to provide a central location for handling desired ability and
+  # gameplay logic.
+  ability_effect<public><native> := class<concrete>(entity) {
+    AbilityComponent<public><native>: ability_effect_component = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
-  # Guaranteed Ability component on Ability prefab entities. Handles Ability lifecycle.
-  ability_effect_component<native><public> := class<final_super>(component) {
-    CanCancel<native_callable><protected>(Reason: cancel_reason)<transacts><decides>: void = external {}
+  # Guaranteed Ability component on Ability prefab entities. Handles
+  # Ability lifecycle.
+  ability_effect_component<public><native> := class<final_super>(component) {
+    CanCancel<protected><native_callable>(Reason: cancel_reason)<transacts><decides>: void = external {}
 
-    Cancel<final><public>(Reason: cancel_reason)<transacts><decides>: void = external {}
+    Cancel<public><final>(Reason: cancel_reason)<transacts><decides>: void = external {}
 
-    EndUse<final><native_callable><protected>(Reason: ?cancel_reason)<transacts>: void = external {}
+    EndUse<protected><final><native_callable>(Reason: ?cancel_reason)<transacts>: void = external {}
 
-    OnBeginUse<native_callable><protected>()<transacts>: void = external {}
+    OnBeginUse<protected><native_callable>()<transacts>: void = external {}
 
-    OnEndUse<native><protected>(Reason: ?cancel_reason)<transacts>: void
+    OnEndUse<protected><native>(Reason: ?cancel_reason)<transacts>: void
 
-    var<protected> Ability<native><public>: ?ability(ability_context, ability_effect) = external {}
+    var<protected> Ability<public><native>: ?ability(ability_context, ability_effect) = external {}
 
-    var<protected> Context<native><public>: ?ability_context = external {}
+    var<protected> Context<public><native>: ?ability_context = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
@@ -96,15 +106,12 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
-  ability_removed_from_scene<native><public> := class(cancel_reason) {}
+  ability_removed_from_scene<public><native> := class(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4130 }
   @experimental
   # Lightweight tag explaining why an effect ended.
-  cancel_reason<native><public> := class<abstract><castable> {}
-
-  # Verse path: /UnrealEngine.com/Abilities
-  using { /Verse.org/Assets }
+  cancel_reason<public><native> := class<abstract><castable> {}
 }
 
 # Verse path: /UnrealEngine.com
@@ -113,14 +120,14 @@ Abilities<public> := module {
   using { /UnrealEngine.com/Temporary/SpatialMath }
   using { /Verse.org/Assets }
   using { /Verse.org/SpatialMath }
-  SpawnParticleSystem<native><public>(
+  SpawnParticleSystem<public><native>(
     Asset: particle_system,
     Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
     ?Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {},
     ?StartDelay: float = external {}
   )<transacts>: cancelable
 
-  SpawnParticleSystem<native><public>(
+  SpawnParticleSystem<public><native>(
     Asset: particle_system,
     Position: (/Verse.org/SpatialMath:)vector3,
     ?Rotation: (/Verse.org/SpatialMath:)rotation = external {},
@@ -131,16 +138,16 @@ Abilities<public> := module {
 # Verse path: /UnrealEngine.com
 # Module import path: /UnrealEngine.com/BasicShapes
 BasicShapes<public> := module {
-  cone<public> := class<final><public>(mesh_component) {}
+  cone<public> := class<public><final>(mesh_component) {}
 
   using { /Verse.org/SceneGraph }
-  cube<public> := class<final><public>(mesh_component) {}
+  cube<public> := class<public><final>(mesh_component) {}
 
-  cylinder<public> := class<final><public>(mesh_component) {}
+  cylinder<public> := class<public><final>(mesh_component) {}
 
-  plane<public> := class<final><public>(mesh_component) {}
+  plane<public> := class<public><final>(mesh_component) {}
 
-  sphere<public> := class<final><public>(mesh_component) {}
+  sphere<public> := class<public><final>(mesh_component) {}
 }
 
 # Verse path: /UnrealEngine.com
@@ -148,138 +155,177 @@ BasicShapes<public> := module {
 ControlInput<public> := module {
   @available { MinUploadedAtFNVersion := 3630 }
   @deprecated
-  # Deprecated: use 'GetPlayerInput' from the '/Verse.org/Input' module instead. Access input-related data and settings for a player.
-  (/UnrealEngine.com/ControlInput:)GetPlayerInput<native><public>(Player: player)<transacts><decides>: (/UnrealEngine.com/ControlInput:)player_input
+  # Deprecated: use 'GetPlayerInput' from the '/Verse.org/Input' module instead.
+  # Access input-related data and settings for a player.
+  (/UnrealEngine.com/ControlInput:)GetPlayerInput<public><native>(
+    Player: player
+  )<transacts><decides>: (/UnrealEngine.com/ControlInput:)player_input
 
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 3630 }
   @deprecated
-  # Deprecated: use 'input_events' from the '/Verse.org/Input' module instead. Input_events is a container for user input events which can be subscribed to.
-  #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an input_events object for a given player.
-  #   * Low-level notifications of current user input: DetectionBeginEvent, DetectionOngoingEvent, and DetectionEndEvent.
-  #   * High-level notifications of triggered events: ActivationTriggeredEvent and ActivationCanceledEvent.
+  # Deprecated: use 'input_events' from the '/Verse.org/Input' module instead.
+  # Input_events is a container for user input events which can be
+  # subscribed to.
+  #   * Use the 'GetPlayerInput' and 'GetInputEvents' functions to retrieve an
+  #     input_events object for a given player.
+  #   * Low-level notifications of current user input: DetectionBeginEvent,
+  #     DetectionOngoingEvent, and DetectionEndEvent.
+  #   * High-level notifications of triggered events: ActivationTriggeredEvent
+  #     and ActivationCanceledEvent.
   #
   #                         /—----------<-------\
   #  DetectionBeginEvent -> DetectionOngoingEvent -> ActivationTriggeredEvent -> DetectionEndEvent
   #            /\                         /\                                            /
   #              \---------------------> ActivationCanceledEvent ----------------------/
-  (/UnrealEngine.com/ControlInput:)input_events<native><public>(t: type) := class {
-    # This input has been canceled before activation. For example, if the key is released before a “Press and Hold” time threshold.
+  (/UnrealEngine.com/ControlInput:)input_events<public><native>(t: type) := class {
+    # This input has been canceled before activation. For example, if the key is
+    # released before a “Press and Hold” time threshold.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
     #                 2: elapsed seconds since detection began
-    ActivationCanceledEvent<native><public>: listenable(tuple(player, t, float)) = external {}
+    ActivationCanceledEvent<public><native>: listenable(tuple(player, t, float)) = external {}
 
-    # This input has met all required conditions and has successfully fired. Most of the time, you should bind to this event.
+    # This input has met all required conditions and has successfully fired.
+    # Most of the time, you should bind to this event.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
-    ActivationTriggeredEvent<native><public>: listenable(tuple(player, t)) = external {}
+    ActivationTriggeredEvent<public><native>: listenable(tuple(player, t)) = external {}
 
-    (/UnrealEngine.com/ControlInput/input_events:)ControlInput_input_events_Variance<private>(): tuple(t, t, t, t) = external {}
+    (/UnrealEngine.com/ControlInput/input_events:)ControlInput_input_events_Variance<private>(): tuple(
+      t,
+      t,
+      t,
+      t
+    ) = external {}
 
-    # Detection has started for this input e.g. a required key is now held down. Note: ActivationTriggeredEvent may also occur this frame,
-    #  but this event will always be fired first. DetectionBegin and DetectionEnd will always fire, regardless of whether the input is
+    # Detection has started for this input e.g. a required key is now held down.
+    # Note: ActivationTriggeredEvent may also occur this frame,
+    #  but this event will always be fired first. DetectionBegin and
+    #  DetectionEnd will always fire, regardless of whether the input is
     #  successful or canceled.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
-    DetectionBeginEvent<native><public>: listenable(tuple(player, t)) = external {}
+    DetectionBeginEvent<public><native>: listenable(tuple(player, t)) = external {}
 
-    # Detection has finished e.g. no required keys are now down. Will always fire as a pair with DetectionBegin.
+    # Detection has finished e.g. no required keys are now down. Will always
+    # fire as a pair with DetectionBegin.
     #  Tuple payload: 0: the player generating this event
     #                 1: elapsed seconds since detection began
-    DetectionEndEvent<native><public>: listenable(tuple(player, float)) = external {}
+    DetectionEndEvent<public><native>: listenable(tuple(player, float)) = external {}
 
-    # Detection for this input is still being processed. For example, a time threshold may not be met.
+    # Detection for this input is still being processed. For example, a time
+    # threshold may not be met.
     #  Tuple payload: 0: the player generating this event
     #                 1: the value generated by the physical input
     #                 2: elapsed seconds since detection began
-    DetectionOngoingEvent<native><public>: listenable(tuple(player, t, float)) = external {}
+    DetectionOngoingEvent<public><native>: listenable(tuple(player, t, float)) = external {}
   }
 
   @available { MinUploadedAtFNVersion := 3630 }
   @deprecated
-  # Deprecated: use 'player_input' from the '/Verse.org/Input' module instead. This is the main manager class for input-related settings and functions for a player.
-  (/UnrealEngine.com/ControlInput:)player_input<native><public> := class {
-    AddInputMapping<native><public>(InputMapping: input_mapping): void
+  # Deprecated: use 'player_input' from the '/Verse.org/Input' module instead.
+  # This is the main manager class for input-related settings and functions for
+  # a player.
+  (/UnrealEngine.com/ControlInput:)player_input<public><native> := class {
+    AddInputMapping<public><native>(InputMapping: input_mapping): void
 
-    GetInputEvents<native><public>(ActionToBind: input_action(t) where t: type): (/UnrealEngine.com/ControlInput:)input_events(t)
+    GetInputEvents<public><native>(
+      ActionToBind: input_action(t) where t: type
+    ): (/UnrealEngine.com/ControlInput:)input_events(t)
 
-    RemoveInputMapping<native><public>(InputMapping: input_mapping): void
+    RemoveInputMapping<public><native>(InputMapping: input_mapping): void
   }
 }
 
 Conversations<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  # Sets the persona the player will attempt to prompt when they use the relevant hotkey.
-  #  The persona must be in the voice channel with the player in order for the player to be able to successfully prompt.
-  (Player: player where member_info: subtype(has_voice_member_info)).SetConversationTarget<native><public>(
+  # Sets the persona the player will attempt to prompt when they use the
+  # relevant hotkey.
+  #  The persona must be in the voice channel with the player in order for the
+  #  player to be able to successfully prompt.
+  (Player: player where member_info: subtype(has_voice_member_info)).SetConversationTarget<public><native>(
     (local:)Persona: persona_component,
     Channel: voice_channel(member_info)
   )<transacts>: void
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Unbind player from prompting personas
-  (Player: player).ClearConversationTarget<native><public>()<transacts>: void
+  (Player: player).ClearConversationTarget<public><native>()<transacts>: void
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Retrieve the persona and channel the player is currently bound to prompt.
-  (Player: player).GetConversationTarget<native><public>()<decides><reads>: tuple(
+  (Player: player).GetConversationTarget<public><native>()<decides><reads>: tuple(
     persona_component,
     voice_channel(has_voice_member_info)
   )
 
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_character_limit_error<native><public> := class(ai_error) {}
+  ai_character_limit_error<public><native> := class(ai_error) {}
 
   @available { MinUploadedAtFNVersion := 4100 }
-  ai_description<constructor><public>(Description: string)<computes>: ai_description_attribute = external {}
+  ai_description<public><constructor>(Description: string)<computes>: ai_description_attribute = external {}
 
   @available { MinUploadedAtFNVersion := 4100 }
   @attribscope_data
   @customattribhandler
-  ai_description_attribute<public> := class<computes><internal>(attribute) {
+  ai_description_attribute<public> := class<internal><computes>(attribute) {
     Description<public>: string
   }
 
+  using { /Verse.org/Chat }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
+  # Verse path: /UnrealEngine.com/Conversations
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_error<native><public> := class<castable> {
-    Message<native><public>: message
+  ai_error<public><native> := class<castable> {
+    Message<public><native>: message
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_moderated_error<native><public> := class(ai_error) {}
+  ai_moderated_error<public><native> := class(ai_error) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  # Manages AI session state: conversation history, pinned entries, and registered capabilities (tools, signals, listenables).
-  #  History is automatically compacted by the runtime. Completed goals are summarized into history.
-  ai_session<native><public> := class<unique> {
+  # Manages AI session state: conversation history, pinned entries, and
+  # registered capabilities (tools, signals, listenables).
+  #  History is automatically compacted by the runtime. Completed goals are
+  #  summarized into history.
+  ai_session<public><native> := class<unique> {
     # Removes all the history events from the session.
-    ClearHistory<native><public>()<transacts>: void
+    ClearHistory<public><native>()<transacts>: void
 
     @available { MinUploadedAtFNVersion := 4100 }
-    # Sends instructions to the model with the session's full context (personality, pinned facts, history).
-    #  The response is parsed into response_type, which must be a struct containing only:
-    #  numeric types, messages, booleans, enums, agents, or structs/arrays of those types.
-    #  Field names and type names guide the model on how to fill out the structure.
-    Prompt<native><public>((local:)Prompt: message, response_type: type)<suspends>: result(response_type, ai_error)
+    # Sends instructions to the model with the session's full context
+    # (personality, pinned facts, history).
+    #  The response is parsed into response_type, which must be a struct
+    #  containing only:
+    #  numeric types, messages, booleans, enums, agents, or structs/arrays of
+    #  those types.
+    #  Field names and type names guide the model on how to fill out
+    #  the structure.
+    Prompt<public><native>((local:)Prompt: message, response_type: type)<suspends>: result(response_type, ai_error)
 
     @available { MinUploadedAtFNVersion := 4120 }
-    # Registers a fire-and-forget side-output the model can emit alongside any response, during prompts and goals.
+    # Registers a fire-and-forget side-output the model can emit alongside any
+    # response, during prompts and goals.
     #  When Required is true, the model must emit this every response.
     #  Returns a cancelable that unregisters the action.
-    RegisterAction<native><public>(Definition: prompt_binding_definition, Required: logic, output_type: type, Callback: type { _(: output_type): void })<transacts>: cancelable
+    RegisterAction<public><native>(
+      Definition: prompt_binding_definition,
+      Required: logic,
+      output_type: type,
+      Callback: type { _(: output_type): void }
+    )<transacts>: cancelable
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_throttled_error<native><public> := class(ai_error) {}
+  ai_throttled_error<public><native> := class(ai_error) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  ai_timeout_error<native><public> := class(ai_error) {}
+  ai_timeout_error<public><native> := class(ai_error) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, Low, Natural
@@ -291,7 +337,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Comic, High, Warm
-  brite_bomber_voice<public> := class<final><epic_internal>(voice_model) {}
+  brite_bomber_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Natural
@@ -306,7 +352,7 @@ Conversations<public> := module {
   clover_swift_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  cuddle_team_leader_voice<public> := class<final><epic_internal>(voice_model) {}
+  cuddle_team_leader_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Warm
@@ -318,7 +364,7 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, Med, Natural
-  fishstick_voice<public> := class<final><epic_internal>(voice_model) {}
+  fishstick_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Warm
@@ -330,21 +376,21 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, Med, Natural
-  haylee_skye_voice<public> := class<final><epic_internal>(voice_model) {}
+  haylee_skye_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Glamorous, Animated, warm
   helsie_midnight_voice<public> := class<final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  hope_voice<public> := class<final><epic_internal>(voice_model) {}
+  hope_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  jonesy_voice<public> := class<final><epic_internal>(voice_model) {}
+  jonesy_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Low, Warm
-  kor_voice<public> := class<final><epic_internal>(voice_model) {}
+  kor_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Whimsical, High, Warm
@@ -356,13 +402,13 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, Low, Gravelly
-  mancake_voice<public> := class<final><epic_internal>(voice_model) {}
+  mancake_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  mecha_team_leader_voice<public> := class<final><epic_internal>(voice_model) {}
+  mecha_team_leader_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  midas_voice<public> := class<final><epic_internal>(voice_model) {}
+  midas_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Narrator, Med, Warm
@@ -382,66 +428,77 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Refined, Med, Natural
-  peely_voice<public> := class<final><epic_internal>(voice_model) {}
+  peely_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # NPC Persona component
-  persona_component<native><public> := class<final_super>(component) {
-    # Listenable which is signaled when the spoken message is finalized (after moderation).
-    #  Contains the actual message delivered — either the original or the canned replacement.
+  persona_component<public><native> := class<final_super>(component) {
+    # Listenable which is signaled when the spoken message is finalized
+    # (after moderation).
+    #  Contains the actual message delivered — either the original or the
+    #  canned replacement.
     #  1/ The agent (if involved) that prompted the response.
     #  2/ The final message that was said.
-    CommitSayEvent<native><public>: listenable(tuple(?agent, message)) = external {}
+    CommitSayEvent<public><native>: listenable(tuple(?agent, message)) = external {}
 
     # The session which will process all this persona's prompts
-    # When the persona is in a voice channel, every session in that channel will automatically
-    # propagate conversation history entries to all sessions found in the channel.
-    # All and only conversation directly to or from a persona will be automatically recorded.
-    GetAISession<native><public>()<transacts>: ai_session
+    # When the persona is in a voice channel, every session in that channel will
+    # automatically propagate conversation history entries to all sessions found
+    # in the channel.
+    # All and only conversation directly to or from a persona will be
+    # automatically recorded.
+    GetAISession<public><native>()<transacts>: ai_session
 
     @available { MinUploadedAtFNVersion := 4000 }
     OnReceive<override>(SceneEvent: scene_event): logic = external {}
 
-    # Listenable which is signaled when the persona was requested to talk, either by a player or prompt and failed.
+    # Listenable which is signaled when the persona was requested to talk,
+    # either by a player or prompt and failed.
     #  Callback receives:
     #    1) The persona which had the failure
     #    2) The error
-    PromptFailureEvent<native><public>: listenable(ai_error) = external {}
+    PromptFailureEvent<public><native>: listenable(ai_error) = external {}
 
-    # Prompts the session with instructions and speaks the result to the channel parameter.
-    #  Fails if the interrupt rule prevents the prompt being submitted or the persona isn't in a channel.
-    PromptToTalk<native><public>((
+    # Prompts the session with instructions and speaks the result to the
+    # channel parameter.
+    #  Fails if the interrupt rule prevents the prompt being submitted or the
+    #  persona isn't in a channel.
+    PromptToTalk<public><native>((
       Instructions: message,
       Channel: voice_channel(member_info)
     ) where member_info: subtype(has_voice_member_info))<transacts><decides>: void
 
-    # Prompts the session with instructions and speaks the result to the channel parameter.
-    #  Fails if the interrupt rule prevents the prompt being submitted or the persona isn't in a channel.
+    # Prompts the session with instructions and speaks the result to the
+    # channel parameter.
+    #  Fails if the interrupt rule prevents the prompt being submitted or the
+    #  persona isn't in a channel.
     #  Override the interrupt rules for this prompt only.
-    PromptToTalk<native><public>((
+    PromptToTalk<public><native>((
       Instructions: message,
       PromptInterrupt: persona_interruption_rule,
       Channel: voice_channel(member_info)
     ) where member_info: subtype(has_voice_member_info))<transacts><decides>: void
 
-    SetPersonality<native><public>(NewPersonality: message)<transacts><decides>: void
+    SetPersonality<public><native>(NewPersonality: message)<transacts><decides>: void
 
-    SetVoice<native><public>(NewVoice: voice_model)<transacts><decides>: void
+    SetVoice<public><native>(NewVoice: voice_model)<transacts><decides>: void
 
     # Listenable which is signaled when the player starts prompting the persona.
-    StartHearEvent<native><public>: listenable(agent) = external {}
+    StartHearEvent<public><native>: listenable(agent) = external {}
 
-    # Listenable which is signaled when the persona begins speaking (before moderation resolves).
+    # Listenable which is signaled when the persona begins speaking (before
+    # moderation resolves).
     #  1/ The agent (if involved) that prompted the response.
     #  2/ Cancelable to stop the persona from talking.
-    StartSayEvent<native><public>: listenable(tuple(?agent, cancelable)) = external {}
+    StartSayEvent<public><native>: listenable(tuple(?agent, cancelable)) = external {}
 
-    # Listenable which is signaled when the player finishes prompting the persona.
-    StopHearEvent<native><public>: listenable(agent) = external {}
+    # Listenable which is signaled when the player finishes prompting
+    # the persona.
+    StopHearEvent<public><native>: listenable(agent) = external {}
 
     # Listenable which is signaled when the target stops talking.
     #  1/ logic that is true when interrupted
-    StopSayEvent<native><public>: listenable(logic) = external {}
+    StopSayEvent<public><native>: listenable(logic) = external {}
 
     # How the persona will handle overlapping prompts.
     var PromptInterruptionRule<public>: persona_interruption_rule = external {}
@@ -454,8 +511,9 @@ Conversations<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  # Defines the way the persona will handle attempts to prompt it while it is processing.
-  persona_interruption_rule<native><public> := enum<open> {
+  # Defines the way the persona will handle attempts to prompt it while it
+  # is processing.
+  persona_interruption_rule<public><native> := enum<open> {
     # Cannot be interrupted, will ignore any input until the finished.
     IgnoreUntilFinished
 
@@ -467,21 +525,23 @@ Conversations<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4120 }
-  # Describes a capability registered on a session. The Name and Description are provided to the AI in the prompt.
-  prompt_binding_definition<native><public> := struct {
+  # Describes a capability registered on a session. The Name and Description are
+  # provided to the AI in the prompt.
+  prompt_binding_definition<public><native> := struct {
     # Describes when/why the AI prompt should pick this capability.
-    Description<native><public>: message
+    Description<public><native>: message
 
-    # Human-readable name the AI prompt sees when deciding which capability to call.
-    Name<native><public>: message
+    # Human-readable name the AI prompt sees when deciding which capability
+    # to call.
+    Name<public><native>: message
   }
 
   @available { MinUploadedAtFNVersion := 4000 }
-  raven_voice<public> := class<final><epic_internal>(voice_model) {}
+  raven_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, High, Natural
-  red_ruin_joni_voice<public> := class<final><epic_internal>(voice_model) {}
+  red_ruin_joni_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   revolt_voice<public> := class<final>(voice_model) {}
@@ -496,305 +556,339 @@ Conversations<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Tough, High, Warm
-  the_imagined_voice<public> := class<final><epic_internal>(voice_model) {}
+  the_imagined_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
-  tomatohead_voice<public> := class<final><epic_internal>(voice_model) {}
-
-  # Verse path: /UnrealEngine.com/Conversations
-  using { /Verse.org/Chat }
+  tomatohead_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # The persona voice used when converting text-to-voice
-  voice_model<native><public> := class<abstract><epic_internal> {}
+  voice_model<public><native> := class<epic_internal><abstract> {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, High, Natural
-  ziggy_voice<public> := class<final><epic_internal>(voice_model) {}
+  ziggy_voice<public> := class<epic_internal><final>(voice_model) {}
 }
 
 Itemization<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
-  # Returns a failure reason (such as being full) if the provided item entity cannot be added. Does not consider sub-inventories.
-  (Inventory: inventory_component).CanAddItem<native><public>(
+  # Returns a failure reason (such as being full) if the provided item entity
+  # cannot be added. Does not consider sub-inventories.
+  (Inventory: inventory_component).CanAddItem<public><native>(
     Item: entity,
     ?AllowMergeItems: logic = external {}
   )<transacts>: result(false, []add_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Returns a failure reason (such as being full) if the provided item entity cannot be added. AddItemDistribute allows the item to enter sub-inventories.
-  (Inventory: inventory_component).CanAddItemDistribute<native><public>(
+  # Returns a failure reason (such as being full) if the provided item entity
+  # cannot be added. AddItemDistribute allows the item to enter sub-inventories.
+  (Inventory: inventory_component).CanAddItemDistribute<public><native>(
     Item: entity,
     ?AllowMergeItems: logic = external {}
   )<transacts>: result(false, []add_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  # Returns a failure reason if the provided item is not present or cannot be removed.
-  (Inventory: inventory_component).CanRemoveItem<native><public>(Item: entity)<transacts>: result(
-    false,
-    []remove_item_error
-  )
+  # Returns a failure reason if the provided item is not present or cannot
+  # be removed.
+  (Inventory: inventory_component).CanRemoveItem<public><native>(
+    Item: entity
+  )<transacts>: result(false, []remove_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  (Item: item_component).CanEquip<native><public>()<transacts>: result(false, []equip_item_error)
+  (Item: item_component).CanEquip<public><native>()<transacts>: result(false, []equip_item_error)
 
   @available { MinUploadedAtFNVersion := 3800 }
-  (Item: item_component).CanUnequip<native><public>()<transacts>: result(false, []unequip_item_error)
+  (Item: item_component).CanUnequip<public><native>()<transacts>: result(false, []unequip_item_error)
 
-  add_item_error<native><public> := class<computes> {}
+  add_item_error<public><native> := class<computes> {}
 
-  # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
-  # 'add_item_query_event' can be used to veto inventory choices, sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
-  add_item_query_event<native><public> := class<epic_internal>(scene_event) {
+  # When adding an item, 'find_inventory_event' is used as a first pass to find
+  # the best inventory for an item. It is sent downwards.
+  # 'add_item_query_event' can be used to veto inventory choices, sent upwards
+  # from the inventory (to its ancestors) and downwards from the item entity (to
+  # its children).
+  add_item_query_event<public><native> := class<epic_internal>(scene_event) {
     AddError<public>(Error: add_item_error): void = external {}
 
-    Inventory<native><public>: inventory_component
+    Inventory<public><native>: inventory_component
 
-    Item<native><public>: item_component
+    Item<public><native>: item_component
 
-    var<private> Errors<native><public>: []add_item_error = external {}
+    var<private> Errors<public><native>: []add_item_error = external {}
   }
 
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  add_item_result<native><public> := class<epic_internal> {
-    # Items that were newly added to this inventory as a result of the transaction.
-    AddedItems<native><public>: []entity
+  using { /Verse.org/SpatialMath }
+  # Verse path: /UnrealEngine.com/Itemization
+  add_item_result<public><native> := class<epic_internal> {
+    # Items that were newly added to this inventory as a result of
+    # the transaction.
+    AddedItems<public><native>: []entity
 
-    # Items whose stack size changed as a result of the transaction, and the previous stack size value.
-    ModifiedItems<native><public>: []tuple(entity, int)
+    # Items whose stack size changed as a result of the transaction, and the
+    # previous stack size value.
+    ModifiedItems<public><native>: []tuple(entity, int)
   }
 
-  change_equipped_result<native><public> := class<epic_internal> {
-    IsItemEquipped<native><public>: logic
+  change_equipped_result<public><native> := class<epic_internal> {
+    IsItemEquipped<public><native>: logic
 
-    ItemComponent<native><public>: item_component
+    ItemComponent<public><native>: item_component
   }
 
-  change_inventory_result<native><public> := class<epic_internal> {
-    CurrentInventory<native><public>: ?inventory_component
+  change_inventory_result<public><native> := class<epic_internal> {
+    CurrentInventory<public><native>: ?inventory_component
 
-    ItemComponent<native><public>: item_component
+    ItemComponent<public><native>: item_component
 
-    PreviousInventory<native><public>: ?inventory_component
+    PreviousInventory<public><native>: ?inventory_component
   }
 
-  equip_item_error<native><public> := class<computes> {}
+  equip_item_error<public><native> := class<computes> {}
 
-  # When equipping an item, 'equip_item_query_event' can be used to veto the equip. It is sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
-  equip_item_query_event<native><public> := class(scene_event) {
+  # When equipping an item, 'equip_item_query_event' can be used to veto the
+  # equip. It is sent upwards from the inventory (to its ancestors) and
+  # downwards from the item entity (to its children).
+  equip_item_query_event<public><native> := class(scene_event) {
     AddError<public>(Error: equip_item_error): void = external {}
 
-    Item<native><public>: item_component
+    Item<public><native>: item_component
 
-    var<private> Errors<native><public>: []equip_item_error = external {}
+    var<private> Errors<public><native>: []equip_item_error = external {}
   }
 
-  equip_item_result<native><public> := class<epic_internal> {
-    Item<native><public>: entity
+  equip_item_result<public><native> := class<epic_internal> {
+    Item<public><native>: entity
   }
 
-  # When adding an item, 'find_inventory_event' is used as a first pass to find the best inventory for an item. It is sent downwards.
-  # 'add_item_query_event' can be used to veto inventory choices. It is sent upwards.
-  find_inventory_event<native><public> := class<epic_internal>(scene_event) {
-    ItemComponent<native><public>: item_component
+  # When adding an item, 'find_inventory_event' is used as a first pass to find
+  # the best inventory for an item. It is sent downwards.
+  # 'add_item_query_event' can be used to veto inventory choices. It is
+  # sent upwards.
+  find_inventory_event<public><native> := class<epic_internal>(scene_event) {
+    ItemComponent<public><native>: item_component
 
-    var ChosenInventory<native><public>: ?inventory_component = external {}
+    var ChosenInventory<public><native>: ?inventory_component = external {}
 
-    var ChosenInventoryPriority<native><public>: float = external {}
+    var ChosenInventoryPriority<public><native>: float = external {}
   }
 
-  # Inventory components hold items. An entity with an inventory component can be considered to have an inventory.
+  # Inventory components hold items. An entity with an inventory component can
+  # be considered to have an inventory.
   # The inventory component controls which items can enter or exit.
   # They also determine whether an item can be equipped.
-  inventory_component<native><public> := class<final_super>(component) {
+  inventory_component<public><native> := class<final_super>(component) {
     @available { MinUploadedAtFNVersion := 3800 }
-    # Adds the item to this inventory only, ignoring sub-inventories. Fails if no items could be added.
-    AddItem<native><final><public>(
+    # Adds the item to this inventory only, ignoring sub-inventories. Fails if
+    # no items could be added.
+    AddItem<public><final><native>(
       Item: entity,
       ?AllowMergeItems: logic = external {}
     )<transacts>: result(add_item_result, []add_item_error)
 
     @available { MinUploadedAtFNVersion := 3800 }
-    # Adds the item to this inventory, including sub-inventories. Fails if no items could be added.
-    AddItemDistribute<native><final><public>(
+    # Adds the item to this inventory, including sub-inventories. Fails if no
+    # items could be added.
+    AddItemDistribute<public><final><native>(
       Item: entity,
       ?AllowMergeItems: logic = external {}
     )<transacts>: result(add_item_result, []add_item_error)
 
-    # Triggered when an item is added. Fires on this inventory, then propagates up to all ancestor inventories.
-    AddItemEvent<native><final><public>: listenable(add_item_result) = external {}
+    # Triggered when an item is added. Fires on this inventory, then propagates
+    # up to all ancestor inventories.
+    AddItemEvent<public><final><native>: listenable(add_item_result) = external {}
 
-    # Triggered when an item is equipped. Fires on this inventory, then propagates up to all ancestor inventories.
-    EquipItemEvent<native><final><public>: listenable(equip_item_result) = external {}
-
-    @available { MinUploadedAtFNVersion := 2930 }
-    # Returns a list of all sub-inventories within this inventory and its descendant inventories.
-    FindInventories<native><final><public>()<reads>: generator(inventory_component)
+    # Triggered when an item is equipped. Fires on this inventory, then
+    # propagates up to all ancestor inventories.
+    EquipItemEvent<public><final><native>: listenable(equip_item_result) = external {}
 
     @available { MinUploadedAtFNVersion := 2930 }
-    # Returns a list of all items within this inventory and its descendant inventories.
-    FindItems<native><final><public>()<reads>: generator(entity)
+    # Returns a list of all sub-inventories within this inventory and its
+    # descendant inventories.
+    FindInventories<public><final><native>()<reads>: generator(inventory_component)
 
-    # Returns a list of all items (of a specific type) within this inventory and its descendant inventories.
-    FindItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
+    @available { MinUploadedAtFNVersion := 2930 }
+    # Returns a list of all items within this inventory and its
+    # descendant inventories.
+    FindItems<public><final><native>()<reads>: generator(entity)
 
-    GetEquippedItems<final><native><public>(): []entity
+    # Returns a list of all items (of a specific type) within this inventory and
+    # its descendant inventories.
+    FindItems<public><final><native>(Type: castable_subtype(item_component))<reads>: []entity
+
+    GetEquippedItems<public><final><native>(): []entity
 
     # Returns a list of sub-inventories of this inventory only.
-    GetInventories<native><final><public>()<reads>: []inventory_component
+    GetInventories<public><final><native>()<reads>: []inventory_component
 
     # Returns a list of items within this inventory only.
-    GetItems<native><final><public>()<reads>: []entity
+    GetItems<public><final><native>()<reads>: []entity
 
     # Returns a list of items (of a specific type) within this inventory only.
-    GetItems<native><final><public>(Type: castable_subtype(item_component))<reads>: []entity
+    GetItems<public><final><native>(Type: castable_subtype(item_component))<reads>: []entity
 
     @available { MinUploadedAtFNVersion := 4000 }
     OnReceive<override><native>(SceneEvent: scene_event): logic
 
     @available { MinUploadedAtFNVersion := 3800 }
-    # Removes an item from this inventory or its descendent inventories. Fails if the item could not be removed.
-    RemoveItem<native><final><public>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
+    # Removes an item from this inventory or its descendent inventories. Fails
+    # if the item could not be removed.
+    RemoveItem<public><final><native>(Item: entity)<transacts>: result(remove_item_result, []remove_item_error)
 
-    # Triggered when an item is removed. Fires on this inventory, then propagates up to all ancestor inventories.
-    RemoveItemEvent<native><final><public>: listenable(remove_item_result) = external {}
+    # Triggered when an item is removed. Fires on this inventory, then
+    # propagates up to all ancestor inventories.
+    RemoveItemEvent<public><final><native>: listenable(remove_item_result) = external {}
 
-    # Triggered when an item is unequipped. Fires on this inventory, then propagates up to all ancestor inventories.
-    UnequipItemEvent<native><final><public>: listenable(unequip_item_result) = external {}
+    # Triggered when an item is unequipped. Fires on this inventory, then
+    # propagates up to all ancestor inventories.
+    UnequipItemEvent<public><final><native>: listenable(unequip_item_result) = external {}
   }
 
   # item_category is used to classify items.
-  item_category<native><public> := class<castable><concrete><unique><allocates> {}
+  item_category<public><native> := class<castable><concrete><unique><allocates> {}
 
-  # Anything using this component should be considered an item. Required to interact with inventories.
-  item_component<native><public> := class<final_super>(component) {
+  # Anything using this component should be considered an item. Required to
+  # interact with inventories.
+  item_component<public><native> := class<final_super>(component) {
     @editable
     # Add one or more category instances to help define and organize this item.
-    Categories<native><public>: []item_category = external {}
+    Categories<public><native>: []item_category = external {}
 
     # Broadcast when this item is equipped or unequipped.
-    ChangeEquippedEvent<native><final><public>: listenable(change_equipped_result) = external {}
+    ChangeEquippedEvent<public><final><native>: listenable(change_equipped_result) = external {}
 
     # Broadcast when this item changes inventory.
-    ChangeInventoryEvent<native><final><public>: listenable(change_inventory_result) = external {}
+    ChangeInventoryEvent<public><final><native>: listenable(change_inventory_result) = external {}
 
-    # Removes the item from its inventory and places it in the simulation world. Works on orphaned items i.e. outside the world or any inventory.
-    #  Fails if the item is already a pickup. The transform of the item will not be altered except to unparent it from any inventory.
-    (/UnrealEngine.com/Itemization/item_component:)Drop<native><public>()<transacts><decides>: void
+    # Removes the item from its inventory and places it in the simulation world.
+    # Works on orphaned items i.e. outside the world or any inventory.
+    #  Fails if the item is already a pickup. The transform of the item will not
+    #  be altered except to unparent it from any inventory.
+    (/UnrealEngine.com/Itemization/item_component:)Drop<public><native>()<transacts><decides>: void
 
-    # Removes the item from its inventory and places it in the simulation world. Works on orphaned items i.e. outside the world or any inventory.
-    #  Fails if the item is already in the world. The transform of the dropped item will be set to WorldTransform.
-    (/UnrealEngine.com/Itemization/item_component:)Drop<native><public>(WorldTransform: (/Verse.org/SpatialMath:)transform)<transacts><decides>: void
+    # Removes the item from its inventory and places it in the simulation world.
+    # Works on orphaned items i.e. outside the world or any inventory.
+    #  Fails if the item is already in the world. The transform of the dropped
+    #  item will be set to WorldTransform.
+    (/UnrealEngine.com/Itemization/item_component:)Drop<public><native>(
+      WorldTransform: (/Verse.org/SpatialMath:)transform
+    )<transacts><decides>: void
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to equip this item within the inventory it is currently in.
-    # Fails if not in an inventory or if equip_item_query_event contains any errors after querying.
-    Equip<final><native><public>()<transacts>: result(false, []equip_item_error)
+    # Fails if not in an inventory or if equip_item_query_event contains any
+    # errors after querying.
+    Equip<public><final><native>()<transacts>: result(false, []equip_item_error)
 
-    # Returns the inventory_component this item currently resides in. Fails if it cannot find a valid parent inventory.
-    GetParentInventory<native><final><public>()<decides><reads>: inventory_component
+    # Returns the inventory_component this item currently resides in. Fails if
+    # it cannot find a valid parent inventory.
+    GetParentInventory<public><final><native>()<decides><reads>: inventory_component
 
-    # Succeeds if this item is considered currently within an inventory and equipped.
-    IsEquipped<native><final><public>()<decides><reads>: void
+    # Succeeds if this item is considered currently within an inventory
+    # and equipped.
+    IsEquipped<public><final><native>()<decides><reads>: void
 
     OnBeginSimulation<override>(): void = external {}
 
     OnEndSimulation<override>(): void = external {}
 
-    # Fails if this item is already in an inventory, or the inventory cannot accept the item.
-    PickUp<native><public>(Inventory: inventory_component)<transacts><decides>: void
+    # Fails if this item is already in an inventory, or the inventory cannot
+    # accept the item.
+    PickUp<public><native>(Inventory: inventory_component)<transacts><decides>: void
 
     @available { MinUploadedAtFNVersion := 3800 }
     # Attempts to unequip this item.
-    # Fails if not in an inventory, not currently equipped or if unequip_item_query_event contains any errors after querying.
-    Unequip<final><native><public>()<transacts>: result(false, []unequip_item_error)
+    # Fails if not in an inventory, not currently equipped or if
+    # unequip_item_query_event contains any errors after querying.
+    Unequip<public><final><native>()<transacts>: result(false, []unequip_item_error)
   }
 
-  remove_item_error<native><public> := class<computes> {}
+  remove_item_error<public><native> := class<computes> {}
 
-  # Can be used to veto item removal. Sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
-  remove_item_query_event<native><public> := class<epic_internal>(scene_event) {
+  # Can be used to veto item removal. Sent upwards from the inventory (to its
+  # ancestors) and downwards from the item entity (to its children).
+  remove_item_query_event<public><native> := class<epic_internal>(scene_event) {
     AddError<public>(Error: remove_item_error): void = external {}
 
-    Inventory<native><public>: inventory_component
+    Inventory<public><native>: inventory_component
 
-    Item<native><public>: item_component
+    Item<public><native>: item_component
 
-    var<private> Errors<native><public>: []remove_item_error = external {}
+    var<private> Errors<public><native>: []remove_item_error = external {}
   }
 
-  remove_item_result<native><public> := class<epic_internal> {
+  remove_item_result<public><native> := class<epic_internal> {
     # The inventory which the item was removed from.
-    Inventory<native><public>: inventory_component
+    Inventory<public><native>: inventory_component
 
     # Item whose stack size changed as a result of the transaction.
-    ModifiedItem<native><public>: ?tuple(entity, int)
+    ModifiedItem<public><native>: ?tuple(entity, int)
 
     # Total stack count of items removed as a result of this transaction.
-    RemovedAmount<native><public>: int
+    RemovedAmount<public><native>: int
 
-    # Items that were removed from this inventory as a result of the transaction.
-    RemovedItems<native><public>: []entity
+    # Items that were removed from this inventory as a result of
+    # the transaction.
+    RemovedItems<public><native>: []entity
   }
 
-  unequip_item_error<native><public> := class<computes> {}
+  unequip_item_error<public><native> := class<computes> {}
 
-  # When unequipping an item, 'unequip_item_query_event' can be used to veto the unequip. It is sent upwards from the inventory (to its ancestors) and downwards from the item entity (to its children).
-  unequip_item_query_event<native><public> := class(scene_event) {
+  # When unequipping an item, 'unequip_item_query_event' can be used to veto the
+  # unequip. It is sent upwards from the inventory (to its ancestors) and
+  # downwards from the item entity (to its children).
+  unequip_item_query_event<public><native> := class(scene_event) {
     AddError<public>(Error: unequip_item_error): void = external {}
 
-    Item<native><public>: item_component
+    Item<public><native>: item_component
 
-    var<private> Errors<native><public>: []unequip_item_error = external {}
+    var<private> Errors<public><native>: []unequip_item_error = external {}
   }
 
-  unequip_item_result<native><public> := class<epic_internal> {
-    Item<native><public>: entity
+  unequip_item_result<public><native> := class<epic_internal> {
+    Item<public><native>: entity
   }
-
-  # Verse path: /UnrealEngine.com/Itemization
-  using { /Verse.org/SpatialMath }
 }
 
 JSON<public> := module {
   # Parse a JSON string returning a value with its contents
-  Parse<native><public>(JSONString: string)<transacts><decides>: value
+  Parse<public><native>(JSONString: string)<transacts><decides>: value
 
   # Verse path: /UnrealEngine.com/JSON
-  value<native><public> := class {
+  value<public><native> := class {
     # Retrieve an array value or fail if value is not a json array
-    AsArray<native><public>()<transacts><decides>: []value
+    AsArray<public><native>()<transacts><decides>: []value
 
     # Retrieve a float value or fail if value is not a json number
-    AsFloat<native><public>()<transacts><decides>: float
+    AsFloat<public><native>()<transacts><decides>: float
 
     # Retrieve an integer value or fail if value is not a json number
-    AsInt<native><public>()<transacts><decides>: int
+    AsInt<public><native>()<transacts><decides>: int
 
     # Retrieve an object value or fail if value is not null
-    AsNull<native><public>()<transacts><decides>: void
+    AsNull<public><native>()<transacts><decides>: void
 
     # Retrieve an object value or fail if value is not a json object
-    AsObject<native><public>()<transacts><decides>: [string]value
+    AsObject<public><native>()<transacts><decides>: [string]value
 
     # Retrieve an object value or fail if value is not a string
-    AsString<native><public>()<transacts><decides>: string
+    AsString<public><native>()<transacts><decides>: string
   }
 }
 
 Marketplace<public> := module {
   # Displays the Epic purchase UI to the player to purchase the `Offer`.
   # Returns true if an offer was purchased.
-  BuyOffer<native><public>(Player: player, Offer: offer)<suspends>: logic
+  BuyOffer<public><native>(Player: player, Offer: offer)<suspends>: logic
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Consumes a consumable `entitlement`.
   # Fails if:
   #  * The `entitlement` is not consumable.
   #  * The `Player` does not own requested `Count` of `entitlement`.
-  ConsumeEntitlement<native><public>(
+  ConsumeEntitlement<public><native>(
     Player: player,
     entitlement_type: concrete_subtype(entitlement),
     ?Count: int = external {}
@@ -802,117 +896,134 @@ Marketplace<public> := module {
 
   # Used to listen for entitlement change events during a game session.
   # Runtime error if `entitlement` is used directly.
-  GetEntitlementsChangedEvent<native><public>(
+  GetEntitlementsChangedEvent<public><native>(
     Player: player,
     entitlement_type: subtype(entitlement)
   ): listenable(tuple(player, []entitlement_change(entitlement_type)))
 
-  GetPriceVBucks<native><public>(P: price_vbucks): float
+  GetPriceVBucks<public><native>(P: price_vbucks): float
 
-  # Get all available `entitlement`s for `Player`, along with the number of those `entitlement`s.
+  # Get all available
+  # `entitlement`s for `Player`, along with the number of those `entitlement`s.
   # This includes finding `entitlement`s of derived types.
   # Calling GetPurchasedEntitlements(Player, entitlement) will suspend forever.
-  GetPurchasedEntitlements<native><public>(
+  GetPurchasedEntitlements<public><native>(
     Player: player,
     entitlement_type: subtype(entitlement)
   )<suspends>: []tuple(entitlement_type, int)
 
   @available { MinUploadedAtFNVersion := 3800 }
   # Grant an entitlement directly to `Player`.
-  # This function does not gate granting entitlements based on EntitlementDisclosures.
-  # Entitlements are always granted assuming they match the MaxCount requirement.
-  GrantEntitlement<native><public>(
+  # This function does not gate granting entitlements based
+  # on EntitlementDisclosures.
+  # Entitlements are always granted assuming they match the
+  # MaxCount requirement.
+  GrantEntitlement<public><native>(
     Player: player,
     entitlement_type: concrete_subtype(entitlement),
     ?Count: int = external {}
   )<suspends>: logic
 
-  MakePriceVBucks<native><public>(Amount: float)<converges>: price_vbucks
+  MakePriceVBucks<public><native>(Amount: float)<converges>: price_vbucks
 
   # Informs if usage of direct prompts to purchase is restricted for `Player`.
-  RestrictDirectPromptsToPurchase<native><public>(Player: player)<decides><reads>: void
+  RestrictDirectPromptsToPurchase<public><native>(Player: player)<decides><reads>: void
 
   # Informs if usage of paid random items is restricted for `Player`
   # due to platform, territory, age, or user configuration restrictions.
-  RestrictPaidRandomItems<native><public>(Player: player)<decides><reads>: void
+  RestrictPaidRandomItems<public><native>(Player: player)<decides><reads>: void
 
   # Shows the Epic provided store front contain the specified `Offers`.
-  ShowOffersDialog<native><public>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
+  ShowOffersDialog<public><native>(Player: player, Offers: []offer, ?Title: message = external {})<suspends>: void
 
-  # A `bundle_offer` allows you to bundle multiple other `offer`s into a single purchasable `offer`.
-  bundle_offer<native><public> := class<castable>(offer) {
-    Offers<native><public>: []tuple(offer, int) = external {}
+  # A `bundle_offer` allows you to bundle multiple
+  # other `offer`s into a single purchasable `offer`.
+  bundle_offer<public><native> := class<castable>(offer) {
+    Offers<public><native>: []tuple(offer, int) = external {}
   }
 
   # An entitlement that is tracked by the commerce system.
   #
-  #  * A player may only have one `entitlement` if the entitlement is not consumable.
+  #  * A player may only have one `entitlement` if the entitlement is
+  #    not consumable.
   #  * A player may have `MaxCount` of a consumable entitlement.
   #  * Your derived type must be <concrete> to be used by the purchase system.
-  #  * If the entitlement you are selling gives players a meaningful advantage in your island, you must set ConsequentialToGameplay to true.
-  entitlement<native><public> := class<castable>(has_icon, has_description) {
-    ConsequentialToGameplay<native><public>: logic = external {}
+  #  * If the entitlement you are selling gives players a meaningful advantage
+  #    in your island, you must set ConsequentialToGameplay to true.
+  entitlement<public><native> := class<castable>(has_icon, has_description) {
+    ConsequentialToGameplay<public><native>: logic = external {}
 
-    Consumable<native><public>: logic = external {}
+    Consumable<public><native>: logic = external {}
 
-    MaxCount<native><public>: int = external {}
+    MaxCount<public><native>: int = external {}
 
-    PaidArea<native><public>: logic = external {}
+    PaidArea<public><native>: logic = external {}
 
-    PaidRandomItem<native><public>: logic = external {}
+    PaidRandomItem<public><native>: logic = external {}
   }
 
   # Entitlements that have changed in quantity.
-  # This will also include entitlement changes triggered by moderation, refunds and other commerce operations.
-  entitlement_change<native><public>(t: type) := class<internal> {
+  # This will also include entitlement changes triggered by moderation, refunds
+  # and other commerce operations.
+  entitlement_change<public><native>(t: type) := class<internal> {
     # Change to the original quantity of entitlement.
-    Change<native><public>: int
+    Change<public><native>: int
 
     # Entitlement that has changed in quantity.
-    Entitlement<native><public>: t
+    Entitlement<public><native>: t
 
-    (/UnrealEngine.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>(): tuple(t) = external {}
+    (/UnrealEngine.com/Marketplace/entitlement_change:)Marketplace_entitlement_change_Variance<private>(): tuple(
+      t
+    ) = external {}
 
     # Total quantity of the entitlement now owned.
-    Quantity<native><public>: int
+    Quantity<public><native>: int
   }
 
   # An `entitlement_offer` allows an individual `entitlement` to be purchased.
-  entitlement_offer<native><public> := class<castable>(offer) {
+  entitlement_offer<public><native> := class<castable>(offer) {
     @available { MinUploadedAtFNVersion := 3800 }
     @editable
-    EntitlementType<native><public>: concrete_subtype(entitlement)
+    EntitlementType<public><native>: concrete_subtype(entitlement)
   }
 
-  # Offers are used to sell entitlements to players. See `entitlement_offer` and `bundle_offer` classes for more information.
-  offer<native><public> := class<abstract><castable><internal>(has_icon, has_description) {
-    # Override this method to restrict availability of an offer in certain regions and minimum ages.
+  # Offers are used to sell entitlements to players. See `entitlement_offer` and
+  # `bundle_offer` classes for more information.
+  offer<public><native> := class<internal><abstract><castable>(has_icon, has_description) {
+    # Override this method to restrict availability of an offer in certain
+    # regions and minimum ages.
     #
     # Parameters:
-    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent territories, or special
-    #                  area of geographical interest
-    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for the subdivision
-    #                  within a country, dependent territory, or special area of geographical interest.
-    #                  If subdivision information is unavailable for players in a region SubdivisionCode
-    #                  will be an empty string.
-    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows, Xbox, Luna, GeForceNow
+    #     CountryCode: ISO-3166-1 A-2 code for the country, dependent
+    #                  territories, or special area of geographical interest
+    #     SubdivisionCode: ISO-3166-2 code (excluding Country Code portion) for
+    #                  the subdivision within a country, dependent territory, or
+    #                  special area of geographical interest.
+    #                  If subdivision information is unavailable for players in
+    #                  a region SubdivisionCode will be an empty string.
+    #     PlatformFamily: Android, iOS, macOS, Nintendo, PlayStation, Windows,
+    #                     Xbox, Luna, GeForceNow
     #
     # Returns:
-    #     Fails if sale of this offer should not be allowed in this (CountryCode, SubdivisionCode)
+    #     Fails if sale of this offer should not be allowed in this
+    #     (CountryCode, SubdivisionCode)
     #     Minimum age of purchase in this (CountryCode, SubdivisionCode).
-    #     If minimum age is higher than the highest available age by region the offer will not be made
-    GetMinPurchaseAge<native_callable><public>(
+    #     If minimum age is higher than the highest available age by region the
+    #     offer will not be made
+    GetMinPurchaseAge<public><native_callable>(
       CountryCode: string,
       SubdivisionCode: string,
       PlatformFamily: string
     )<computes><decides>: int = external {}
 
     @editable
-    Price<native><public>: price_dimension
+    Price<public><native>: price_dimension
   }
 
   using { /Verse.org/SceneGraph }
-  offer_interactable_component<native><public> := class(interactable_component) {
+  using { /Verse.org/Simulation }
+  # Verse path: /UnrealEngine.com/Marketplace
+  offer_interactable_component<public><native> := class(interactable_component) {
     CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
 
     InteractMessage<override>(Agent: agent)<decides><reads>: message = external {}
@@ -928,97 +1039,97 @@ Marketplace<public> := module {
   }
 
   using { /Verse.org/Assets }
-  using { /Verse.org/Presentation }
-  price_dimension<native><public> := class<computes><abstract><epic_internal> {}
-
-  # Verse path: /UnrealEngine.com/Marketplace
-  price_vbucks<native><public> := class<final><computes><internal>(price_dimension) {}
-
-  # Verse path: /UnrealEngine.com/Marketplace
   using { /Verse.org/Native }
+  using { /Verse.org/Presentation }
+  # Verse path: /UnrealEngine.com/Marketplace
+  price_dimension<public><native> := class<epic_internal><computes><abstract> {}
 
   # Verse path: /UnrealEngine.com/Marketplace
-  using { /Verse.org/Simulation }
+  price_vbucks<public><native> := class<internal><final><computes>(price_dimension) {}
 }
 
+using { /Verse.org/Native }
+# Verse path: /UnrealEngine.com
 @available { MinUploadedAtFNVersion := 4110 }
 # Module import path: /UnrealEngine.com/Progression
 (/UnrealEngine.com:)Progression<public> := module {
   using { /Verse.org }
   @experimental
   # Standard quest that follows the "do x, get y" paradigm.
-  # Auto-completion: when Objective.IsComplete() succeeds, calls Complete() automatically.
+  # Auto-completion: when Objective.IsComplete() succeeds, calls
+  # Complete() automatically.
   # Auto-rewarding: on completion, rewards are granted to eligible participants
   # via GetRecipients() then GrantReward().
-  basic_quest<native><public> := class<abstract>((/Verse.org:)Progression.quest, has_icon, has_description) {
-    # Replaces the progression model on a live quest. Auto-completes if the new objective is
-    # already completed.
-    SetObjective<native><final><public>(InObjective: quest_objective)<transacts>: void
+  basic_quest<public><native> := class<abstract>((/Verse.org:)Progression.quest, has_icon, has_description) {
+    # Replaces the progression model on a live quest. Auto-completes if the new
+    # objective is already completed.
+    SetObjective<public><final><native>(InObjective: quest_objective)<transacts>: void
 
     # Rewards granted to eligible participants on completion.
-    var Rewards<native><public>: []quest_reward = external {}
+    var Rewards<public><native>: []quest_reward = external {}
 
     # Progression model for the quest.
-    var<private> Objective<native><public>: quest_objective
+    var<private> Objective<public><native>: quest_objective
   }
 
   using { /UnrealEngine.com/Marketplace }
   @experimental
   # Grants an entitlement to each eligible participant.
-  entitlement_quest_reward<native><public> := class(quest_reward) {
-    # Iterates EligibleParticipants, resolves each participant's agent as a player,
-    # and grants the entitlement via the platform entitlement service.
-    GrantReward<override><native><final>(EligibleParticipants: [](/Verse.org:)Progression.quest_participant)<transacts>: result(
-      void,
-      []grant_quest_reward_error
-    )
+  entitlement_quest_reward<public><native> := class(quest_reward) {
+    # Iterates EligibleParticipants, resolves each participant's agent as a
+    # player, and grants the entitlement via the platform entitlement service.
+    GrantReward<final><override><native>(
+      EligibleParticipants: [](/Verse.org:)Progression.quest_participant
+    )<transacts>: result(void, []grant_quest_reward_error)
 
     # The entitlement type to grant.
-    var Entitlement<native><public>: concrete_subtype(entitlement)
+    var Entitlement<public><native>: concrete_subtype(entitlement)
 
     # Quantity per participant.
-    var Quantity<native><public>: int = external {}
+    var Quantity<public><native>: int = external {}
   }
 
   @experimental
   # Returned when a reward cannot be granted.
-  grant_quest_reward_error<native><public> := class {}
+  grant_quest_reward_error<public><native> := class {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
   # Implement on a quest class to customize how it displays in the quest UI.
-  has_quest_presentation<native><public> := interface {
+  has_quest_presentation<public><native> := interface {
     # Whether players may favorite this quest to the HUD quest tracker.
-    var AllowFavorite<native><public>: logic
+    var AllowFavorite<public><native>: logic
 
-    # The categories this quest is grouped under in the quest UI. Empty = uncategorized.
-    var Categories<native><public>: []quest_category
+    # The categories this quest is grouped under in the quest UI.
+    # Empty = uncategorized.
+    var Categories<public><native>: []quest_category
 
-    # Whether HUD notifications play for this quest's granted/progress/completed moments.
-    var ShowNotification<native><public>: logic
+    # Whether HUD notifications play for this quest's
+    # granted/progress/completed moments.
+    var ShowNotification<public><native>: logic
   }
 
   @experimental
   # Tracks numeric progress toward a required count.
   # Complete when Progress >= RequiredCount.
-  progress_quest_objective<native><public> := class(quest_objective) {
+  progress_quest_objective<public><native> := class(quest_objective) {
     # Returns progress in "X / Y" format.
-    GetProgress<override><native><final>()<reads>: message
+    GetProgress<final><override><native>()<reads>: message
 
     # Succeeds if Progress >= RequiredCount.
-    IsComplete<override><native><final>()<decides><reads>: void
+    IsComplete<final><override><native>()<decides><reads>: void
 
     # Sets current progress. Clamped to [0, RequiredCount].
-    SetProgress<native><final><public>(Amount: float)<transacts>: void
+    SetProgress<public><final><native>(Amount: float)<transacts>: void
 
     # Sets the target count. Clamped to [1, MaxFloat].
-    SetRequiredCount<native><final><public>(Amount: float)<transacts>: void
+    SetRequiredCount<public><final><native>(Amount: float)<transacts>: void
 
     # Current progress toward RequiredCount.
-    var<private> Progress<native><public>: float = external {}
+    var<private> Progress<public><native>: float = external {}
 
     # Target count for completion.
-    var<private> RequiredCount<native><public>: float
+    var<private> RequiredCount<public><native>: float
   }
 
   using { /Verse.org/Assets }
@@ -1027,57 +1138,62 @@ Marketplace<public> := module {
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
   # A category in the quest UI.
-  quest_category<native><public> := class<abstract><unique><castable>(has_icon, has_description) {
+  quest_category<public><native> := class<abstract><unique><castable>(has_icon, has_description) {
     # The owning category that this category is considered nested under.
-    Parent<native><public>: ?quest_category = external {}
+    Parent<public><native>: ?quest_category = external {}
 
-    # Relative ordering among categories in the quest UI; lower values sort first.
-    SortOrder<native><public>: rational
+    # Relative ordering among categories in the quest UI; lower values
+    # sort first.
+    SortOrder<public><native>: rational
   }
 
   @experimental
   # Abstract base class for all quest objectives.
-  quest_objective<native><public> := class<abstract>(has_icon, has_description) {
+  quest_objective<public><native> := class<abstract>(has_icon, has_description) {
     # Signaled when this objective is considered complete.
-    CompleteEvent<native><final><public>: listenable(quest_objective) = external {}
+    CompleteEvent<public><final><native>: listenable(quest_objective) = external {}
 
     # Determines which participants can contribute to this objective.
     # Override to customize contributor selection.
     # Default: all participants where Info.Contributes = true.
-    GetContributors<native><native_callable><public>(Memberships: [](/Verse.org:)Progression.quest_membership)<reads>: [](/Verse.org:)Progression.quest_participant
+    GetContributors<public><native><native_callable>(
+      Memberships: [](/Verse.org:)Progression.quest_membership
+    )<reads>: [](/Verse.org:)Progression.quest_participant
 
     # Returns a progress message (e.g. "3 / 10").
-    GetProgress<native><native_callable><public>()<reads>: message
+    GetProgress<public><native><native_callable>()<reads>: message
 
     # Succeeds if this objective is currently complete.
-    IsComplete<native><native_callable><public>()<decides><reads>: void
+    IsComplete<public><native><native_callable>()<decides><reads>: void
 
     # Signaled when this objective's progress changes. Payload: this objective.
-    ProgressEvent<native><final><public>: listenable(quest_objective) = external {}
+    ProgressEvent<public><final><native>: listenable(quest_objective) = external {}
 
-    # Signals ProgressEvent. Call from a subclass to notify progress subscribers.
-    SignalProgressEvent<native><final><protected>()<transacts>: void
+    # Signals ProgressEvent. Call from a subclass to notify
+    # progress subscribers.
+    SignalProgressEvent<protected><final><native>()<transacts>: void
   }
 
   @experimental
   # Abstract base class for all quest rewards.
-  quest_reward<native><public> := class<abstract>(has_icon, has_description) {
+  quest_reward<public><native> := class<abstract>(has_icon, has_description) {
     # Determines which participants should receive this reward.
     # Override to customize recipient selection.
     # Default: all participants where Info.Receives = true.
-    GetRecipients<native><native_callable><public>(Memberships: [](/Verse.org:)Progression.quest_membership)<reads>: [](/Verse.org:)Progression.quest_participant
+    GetRecipients<public><native><native_callable>(
+      Memberships: [](/Verse.org:)Progression.quest_membership
+    )<reads>: [](/Verse.org:)Progression.quest_participant
 
     # Signaled after this reward has been granted to recipients.
-    GrantEvent<native><final><public>: listenable(tuple(
+    GrantEvent<public><final><native>: listenable(tuple(
       quest_reward,
       [](/Verse.org:)Progression.quest_participant
     )) = external {}
 
     # Grants this reward to the eligible participants.
-    GrantReward<native><native_callable><public>(EligibleParticipants: [](/Verse.org:)Progression.quest_participant)<transacts>: result(
-      void,
-      []grant_quest_reward_error
-    )
+    GrantReward<public><native><native_callable>(
+      EligibleParticipants: [](/Verse.org:)Progression.quest_participant
+    )<transacts>: result(void, []grant_quest_reward_error)
   }
 }
 
@@ -1086,43 +1202,45 @@ Social<public> := module {
   # Returns the party context for `InPlayer`.
   # Filters by the simulation_entity owning this player.
   # A player is always in a party of at least 1 (themselves).
-  (InPlayer: player).GetLocalParty<native><public>()<reads>: agent_group_interface(party_member_info)
+  (InPlayer: player).GetLocalParty<public><native>()<reads>: agent_group_interface(party_member_info)
 
   using { /Verse.org/AgentGroup }
   using { /Verse.org/Native }
-  @available { MinUploadedAtFNVersion := 4210 }
-  # Per-member info for party members. Can be extended with additional fields in future versions.
-  party_member_info<native><public> := class<epic_internal>(member_info_interface) {}
-
-  # Verse path: /UnrealEngine.com/Social
   using { /Verse.org/Simulation }
+  # Verse path: /UnrealEngine.com/Social
+  @available { MinUploadedAtFNVersion := 4210 }
+  # Per-member info for party members. Can be extended with additional fields in
+  # future versions.
+  party_member_info<public><native> := class<epic_internal>(member_info_interface) {}
 }
 
 Temporary<public> := module {
   # Verse path: /UnrealEngine.com/Temporary
   # Module import path: /UnrealEngine.com/Temporary/Curves
   Curves<public> := module {
-    editable_curve<native><public> := class<final><concrete> {
-      # Evaluates this float curve at the specified time and returns the result as a float
-      Evaluate<native><public>(Time: float): float
+    editable_curve<public><native> := class<final><concrete> {
+      # Evaluates this float curve at the specified time and returns the result
+      # as a float
+      Evaluate<public><native>(Time: float): float
     }
   }
 
   # Module import path: /UnrealEngine.com/Temporary/Diagnostics
   (/UnrealEngine.com/Temporary:)Diagnostics<public> := module {
     # debug draw class to draw debug shapes on screen.
-    debug_draw<native><public> := class {
+    debug_draw<public><native> := class {
       # Channel will be used to clear specific debug draw.
-      Channel<native><public>: subtype(debug_draw_channel) = external {}
+      Channel<public><native>: subtype(debug_draw_channel) = external {}
 
       # Clears all debug draw from this debug_draw instance.
-      Clear<native><public>()<transacts>: void
+      Clear<public><native>()<transacts>: void
 
       # Clears all debug draw for the channel.
-      ClearChannel<native><public>()<transacts>: void
+      ClearChannel<public><native>()<transacts>: void
 
-      # Draws an arrow pointing from Start to End locations, and using the provided draw parameters.
-      DrawArrow<native><public>(
+      # Draws an arrow pointing from Start to End locations, and using the
+      # provided draw parameters.
+      DrawArrow<public><native>(
         Start: (/Verse.org/SpatialMath:)vector3,
         End: (/Verse.org/SpatialMath:)vector3,
         ?ArrowSize: float = external {},
@@ -1132,7 +1250,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws an arrow pointing from Start to End locations, and using the provided draw parameters.
+      # Draws an arrow pointing from Start to End locations, and using the
+      # provided draw parameters.
       DrawArrow<public>(
         Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
@@ -1143,8 +1262,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a box at the named location, and using the provided draw parameters
-      DrawBox<native><public>(
+      # Draws a box at the named location, and using the provided
+      # draw parameters
+      DrawBox<public><native>(
         Center: (/Verse.org/SpatialMath:)vector3,
         Rotation: (/Verse.org/SpatialMath:)rotation,
         ?Extent: (/Verse.org/SpatialMath:)vector3 = external {},
@@ -1154,7 +1274,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a box at the named location, and using the provided draw parameters
+      # Draws a box at the named location, and using the provided
+      # draw parameters
       DrawBox<public>(
         Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
@@ -1165,8 +1286,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a capsule at the named location, and using the provided draw parameters.
-      DrawCapsule<native><public>(
+      # Draws a capsule at the named location, and using the provided
+      # draw parameters.
+      DrawCapsule<public><native>(
         Center: (/Verse.org/SpatialMath:)vector3,
         Rotation: (/Verse.org/SpatialMath:)rotation,
         ?Height: float = external {},
@@ -1177,7 +1299,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a capsule at the named location, and using the provided draw parameters.
+      # Draws a capsule at the named location, and using the provided
+      # draw parameters.
       DrawCapsule<public>(
         Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
@@ -1189,8 +1312,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a cone at the named location, and using the provided draw parameters.
-      DrawCone<native><public>(
+      # Draws a cone at the named location, and using the provided
+      # draw parameters.
+      DrawCone<public><native>(
         Origin: (/Verse.org/SpatialMath:)vector3,
         Direction: (/Verse.org/SpatialMath:)vector3,
         ?Height: float = external {},
@@ -1203,7 +1327,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a cone at the named location, and using the provided draw parameters.
+      # Draws a cone at the named location, and using the provided
+      # draw parameters.
       DrawCone<public>(
         Origin: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         Direction: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
@@ -1217,8 +1342,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a cylinder at the named location, and using the provided draw parameters.
-      DrawCylinder<native><public>(
+      # Draws a cylinder at the named location, and using the provided
+      # draw parameters.
+      DrawCylinder<public><native>(
         Start: (/Verse.org/SpatialMath:)vector3,
         End: (/Verse.org/SpatialMath:)vector3,
         ?NumSegments: int = external {},
@@ -1229,7 +1355,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a cylinder at the named location, and using the provided draw parameters.
+      # Draws a cylinder at the named location, and using the provided
+      # draw parameters.
       DrawCylinder<public>(
         Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
@@ -1241,8 +1368,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a line from Start to End locations, and using the provided draw parameters.
-      DrawLine<native><public>(
+      # Draws a line from Start to End locations, and using the provided
+      # draw parameters.
+      DrawLine<public><native>(
         Start: (/Verse.org/SpatialMath:)vector3,
         End: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
@@ -1251,7 +1379,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a line from Start to End locations, and using the provided draw parameters.
+      # Draws a line from Start to End locations, and using the provided
+      # draw parameters.
       DrawLine<public>(
         Start: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         End: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
@@ -1261,8 +1390,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a point at the named location, and using the provided draw parameters.
-      DrawPoint<native><public>(
+      # Draws a point at the named location, and using the provided
+      # draw parameters.
+      DrawPoint<public><native>(
         Position: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
         ?Thickness: float = external {},
@@ -1270,7 +1400,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a point at the named location, and using the provided draw parameters.
+      # Draws a point at the named location, and using the provided
+      # draw parameters.
       DrawPoint<public>(
         Position: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         ?Color: color = external {},
@@ -1279,8 +1410,9 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void = external {}
 
-      # Draws a sphere at the named location, and using the provided draw parameters.
-      DrawSphere<native><public>(
+      # Draws a sphere at the named location, and using the provided
+      # draw parameters.
+      DrawSphere<public><native>(
         Center: (/Verse.org/SpatialMath:)vector3,
         ?Radius: float = external {},
         ?Color: color = external {},
@@ -1290,7 +1422,8 @@ Temporary<public> := module {
         ?Duration: float = external {}
       )<transacts>: void
 
-      # Draws a sphere at the named location, and using the provided draw parameters.
+      # Draws a sphere at the named location, and using the provided
+      # draw parameters.
       DrawSphere<public>(
         Center: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
         ?Radius: float = external {},
@@ -1302,7 +1435,7 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Draws a 3D text using the provided draw parameters.
-      DrawText<native><public>(
+      DrawText<public><native>(
         Text: string,
         Position: (/Verse.org/SpatialMath:)vector3,
         ?Color: color = external {},
@@ -1324,20 +1457,20 @@ Temporary<public> := module {
       )<transacts>: void = external {}
 
       # Hide Debug Draw for the channel for all users.
-      HideChannel<native><public>()<transacts>: void
+      HideChannel<public><native>()<transacts>: void
 
       # Show Debug Draw for the channel for all users.
-      ShowChannel<native><public>()<transacts>: void
+      ShowChannel<public><native>()<transacts>: void
     }
 
     # debug_draw_channel is the base class used to define debug draw channels.
-    debug_draw_channel<native><public> := class<abstract> {}
+    debug_draw_channel<public><native> := class<abstract> {}
 
     using { /UnrealEngine.com/Temporary/SpatialMath }
     using { /Verse.org/Colors }
     using { /Verse.org/SpatialMath }
     # Enumerated presets for policies describing a desired draw duration.
-    debug_draw_duration_policy<native><public> := enum {
+    debug_draw_duration_policy<public><native> := enum {
       FiniteDuration
 
       Persistent
@@ -1346,28 +1479,38 @@ Temporary<public> := module {
     }
 
     # log class to send messages to the default log
-    log<native><public> := class {
-      # Channel class name will be added as a prefix used when printing the message e.g. '[log_channel]: #Message
-      Channel<native><public>: subtype(log_channel)
+    log<public><native> := class {
+      # Channel class name will be added as a prefix used when printing the
+      # message e.g. '[log_channel]: #Message
+      Channel<public><native>: subtype(log_channel)
 
-      # Sets the default log level of the displayed message. See log_level enum for more info on log levels. Defaults to log_level.Normal.
-      DefaultLevel<native><public>: log_level = external {}
+      # Sets the default log level of the displayed message. See log_level enum
+      # for more info on log levels. Defaults to log_level.Normal.
+      DefaultLevel<public><native>: log_level = external {}
 
       # Print `Message` diagnostic using the given log level.
-      (/UnrealEngine.com/Temporary/Diagnostics/log:)Print<public>(Message: diagnostic, ?Level: log_level = external {})<computes>: void = external {}
+      (/UnrealEngine.com/Temporary/Diagnostics/log:)Print<public>(
+        Message: diagnostic,
+        ?Level: log_level = external {}
+      )<computes>: void = external {}
 
       # Print `Message` using the given log level.
-      (/UnrealEngine.com/Temporary/Diagnostics/log:)Print<public>(Message: string, ?Level: log_level = external {})<computes>: void = external {}
+      (/UnrealEngine.com/Temporary/Diagnostics/log:)Print<public>(
+        Message: string,
+        ?Level: log_level = external {}
+      )<computes>: void = external {}
 
       # Prints the current script call stack using the given log level.
-      PrintCallStack<native><public>(?Level: log_level = external {})<computes>: void
+      PrintCallStack<public><native>(?Level: log_level = external {})<computes>: void
     }
 
-    # log_channel is the base class used to define log channels. When printing a message to a log, the log channel class name will be prefixed to the output message.
-    log_channel<native><public> := class<abstract> {}
+    # log_channel is the base class used to define log channels. When printing a
+    # message to a log, the log channel class name will be prefixed to the
+    # output message.
+    log_channel<public><native> := class<abstract> {}
 
     # log levels available for various log commands
-    log_level<native><public> := enum {
+    log_level<public><native> := enum {
       Debug
 
       Error
@@ -1380,45 +1523,79 @@ Temporary<public> := module {
     }
   }
 
-  # Stably sort `Array` using `Less` where `Less` succeeding indicates `Left` should precede `Right`
-  SortBy<native><public>((Array: []t, Less: type { _(: t, : t)<computes><decides>: void }) where t: type)<computes>: []t
+  # Stably sort `Array` using `Less` where `Less` succeeding indicates `Left`
+  # should precede `Right`
+  SortBy<public><native>((Array: []t, Less: type { _(: t, : t)<computes><decides>: void }) where t: type)<computes>: []t
 
   # Module import path: /UnrealEngine.com/Temporary/SpatialMath
   (/UnrealEngine.com/Temporary:)SpatialMath<public> := module {
-    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Y axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyLocalRotationY<public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
+    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation
+    # around the local +Y axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyLocalRotationY<public>(
+      AngleRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
-    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the local +Z axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyLocalRotationZ<public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
+    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation
+    # around the local +Z axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyLocalRotationZ<public>(
+      AngleRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
-    # Makes a `rotation` by applying `PitchUpRadians` of right-handed rotation around the local +Y axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyPitch<native><public>(PitchUpRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by applying `PitchUpRadians` of right-handed rotation
+    # around the local +Y axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyPitch<public><native>(
+      PitchUpRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `rotation` by applying `RollClockwiseRadians` of right-handed rotation around the local +X axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyRoll<native><public>(RollClockwiseRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by applying `RollClockwiseRadians` of right-handed
+    # rotation around the local +X axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyRoll<public><native>(
+      RollClockwiseRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +X axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationX<native><public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation
+    # around the world +X axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationX<public><native>(
+      AngleRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +Y axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationY<native><public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation
+    # around the world +Y axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationY<public><native>(
+      AngleRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation around the world +Z axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationZ<native><public>(AngleRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by applying `AngleRadians` of left-handed rotation
+    # around the world +Z axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyWorldRotationZ<public><native>(
+      AngleRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `rotation` by applying `YawRightRadians` of left-handed rotation around the local +Z axis to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyYaw<native><public>(YawRightRadians: float)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by applying `YawRightRadians` of left-handed rotation
+    # around the local +Z axis to `InitialRotation`.
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).ApplyYaw<public><native>(
+      YawRightRadians: float
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     # Makes a `rotation` by composing `AdditionalRotation` to `InitialRotation`.
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).RotateBy<native><public>(AdditionalRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).RotateBy<public><native>(
+      AdditionalRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `rotation` by composing the inverse of `RotationToRemove` from `InitialRotation`. such that InitialRotation = RotateBy(UnrotateBy(InitialRotation, RotationToRemove), RotationToRemove). This is equivalent to RotateBy(InitialRotation, InvertRotation(RotationToRemove))
-    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).UnrotateBy<native><public>(RotationToRemove: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by composing the inverse of `RotationToRemove` from
+    # `InitialRotation`. such that InitialRotation
+    # = RotateBy(UnrotateBy(InitialRotation, RotationToRemove),
+    # RotationToRemove). This is equivalent to
+    # RotateBy(InitialRotation, InvertRotation(RotationToRemove))
+    (InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).UnrotateBy<public><native>(
+      RotationToRemove: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     @vm_no_effect_token
     # Makes a `vector3` from the axis of `rotation`.
-    # If `rotation` is nearly identity, this will return the +X axis. See also `GetAngle`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetAxis<native><public>()<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    # If `rotation` is nearly identity, this will return the +X axis. See
+    # also `GetAngle`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetAxis<public><native>()<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     @vm_no_effect_token
     # Makes an `[]float` with three elements:
@@ -1426,50 +1603,79 @@ Temporary<public> := module {
     #  * *pitch* degrees of `rotation`
     #  * *roll* degrees of `rotation`
     # using the conventions of `MakeRotationFromYawPitchRollDegrees`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)GetYawPitchRollDegrees<native><public>()<reads>: []float
+    (
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    ).(/UnrealEngine.com/Temporary/SpatialMath:)GetYawPitchRollDegrees<public><native>()<reads>: []float
 
-    # Makes a `rotation` by inverting `Rotation` such that `ApplyRotation(Rotation, Rotation.Invert())) = IdentityRotation`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)Invert<native><public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    # Makes a `rotation` by inverting `Rotation` such
+    # that `ApplyRotation(Rotation, Rotation.Invert())) = IdentityRotation`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)Invert<public><native>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     # Returns `Rotation` if it does not contain `NaN`, `Inf` or `-Inf`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)IsFinite<native><public>()<decides><converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).(/UnrealEngine.com/Temporary/SpatialMath:)IsFinite<public><native>()<decides><converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     @vm_no_effect_token
-    # Returns the radians of `rotation` around the axis of `rotation`. See also `GetAxis`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetAngle<native><public>()<reads>: float
+    # Returns the radians of `rotation` around the axis of `rotation`. See
+    # also `GetAxis`.
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetAngle<public><native>()<reads>: float
 
-    # Makes a unit `vector3` pointing in the local space *forward* direction in world space coordinates.
-    # This is equivalent to: `RotateVector(Rotation, vector3{X:=1.0, Y:=0.0, Z:=0.0})`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetLocalForward<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    # Makes a unit `vector3` pointing in the local space *forward* direction in
+    # world space coordinates.
+    # This is equivalent
+    # to: `RotateVector(Rotation, vector3{X:=1.0, Y:=0.0, Z:=0.0})`.
+    (
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    ).GetLocalForward<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
-    # Makes a unit `vector3` pointing in the the local space *right* direction in world space coordinates.
-    # This is equivalent to: `RotateVector(Rotation, vector3{X:=0.0, Y:=1.0, Z:=0.0})`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetLocalRight<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    # Makes a unit `vector3` pointing in the the local space *right* direction
+    # in world space coordinates.
+    # This is equivalent
+    # to: `RotateVector(Rotation, vector3{X:=0.0, Y:=1.0, Z:=0.0})`.
+    (
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    ).GetLocalRight<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
-    # Makes a unit `vector3` pointing in the local space *up* direction in world space coordinates.
-    # This is equivalent to: `RotateVector(Rotation, vector3{X:=0.0, Y:=0.0, Z:=1.0})`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).GetLocalUp<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    # Makes a unit `vector3` pointing in the local space *up* direction in world
+    # space coordinates.
+    # This is equivalent
+    # to: `RotateVector(Rotation, vector3{X:=0.0, Y:=0.0, Z:=1.0})`.
+    (
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    ).GetLocalUp<public>()<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     @vm_no_effect_token
     # Makes a `vector3` by applying `Rotation` to `Vector`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).RotateVector<native><public>(Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).RotateVector<public><native>(
+      Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
     @vm_no_effect_token
     # Makes a `vector3` by applying the inverse of `Rotation` to `Vector`.
-    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).UnrotateVector<native><public>(Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    (Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation).UnrotateVector<public><native>(
+      Vector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
 
-    # Succeeds when each component of `V` is within `AbsoluteTolerance` of `0.0`.
-    (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostZero<public>(AbsoluteTolerance: float)<computes><decides>: void = external {}
+    # Succeeds when each component of `V` is within `AbsoluteTolerance`
+    # of `0.0`.
+    (
+      V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    ).(/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostZero<public>(
+      AbsoluteTolerance: float
+    )<computes><decides>: void = external {}
 
     # Returns `V` if all components are finite.
     # Fails if any of the components are not finite.
     (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)IsFinite<public>()<computes><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Returns the length of `V`.
-    (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)Length<public>()<reads>: float = external {}
+    (
+      V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    ).(/UnrealEngine.com/Temporary/SpatialMath:)Length<public>()<reads>: float = external {}
 
     # Returns the squared length of `V`.
-    (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).(/UnrealEngine.com/Temporary/SpatialMath:)LengthSquared<public>()<computes>: float = external {}
+    (
+      V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    ).(/UnrealEngine.com/Temporary/SpatialMath:)LengthSquared<public>()<computes>: float = external {}
 
     # Makes a unit length `vector3` pointing in the same direction of `V`.
     # Fails if `V.IsAlmostZero[] or not V.IsFinite[]`.
@@ -1481,8 +1687,11 @@ Temporary<public> := module {
     # Returns the length of `V` as if `V.Z = 0.0`.
     (V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3).LengthXY<public>()<reads>: float = external {}
 
-    # Succeeds when each component of `V` is within `AbsoluteTolerance` of `0.0`.
-    (V: vector2).(/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostZero<public>(AbsoluteTolerance: float)<computes><decides>: void = external {}
+    # Succeeds when each component of `V` is within `AbsoluteTolerance`
+    # of `0.0`.
+    (V: vector2).(/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostZero<public>(
+      AbsoluteTolerance: float
+    )<computes><decides>: void = external {}
 
     # Returns `V` if all components are finite.
     # Fails if any of the components are not finite.
@@ -1496,11 +1705,14 @@ Temporary<public> := module {
 
     # Makes a unit length `vector2` pointing in the same direction of `V`.
     # Fails if `V.IsAlmostZero[] or not V.IsFinite[]`.
-    (V: vector2).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<decides><reads>: vector2 = external {}
+    (
+      V: vector2
+    ).(/UnrealEngine.com/Temporary/SpatialMath:)MakeUnitVector<public>()<decides><reads>: vector2 = external {}
 
     @vm_no_effect_token
-    # Returns the 'smallest angular distance' between `Rotation1` and `Rotation2` in radians.
-    AngularDistance<native><public>(
+    # Returns the 'smallest angular distance' between `Rotation1` and
+    # `Rotation2` in radians.
+    AngularDistance<public><native>(
       Rotation1: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       Rotation2: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<reads>: float
@@ -1515,10 +1727,12 @@ Temporary<public> := module {
     (/UnrealEngine.com/Temporary/SpatialMath:)DegreesToRadians<public>(Degrees: float)<reads>: float = external {}
 
     @vm_no_effect_token
-    # Returns the 'distance' between `Rotation1` and `Rotation2`. The result will be between:
+    # Returns the 'distance' between `Rotation1` and `Rotation2`. The result
+    # will be between:
     #  * `0.0`, representing equivalent rotations and
-    #  * `1.0` representing rotations which are 180 degrees apart (i.e., the shortest rotation between them is 180 degrees around some axis).
-    (/UnrealEngine.com/Temporary/SpatialMath:)Distance<native><public>(
+    #  * `1.0` representing rotations which are 180 degrees apart (i.e., the
+    #    shortest rotation between them is 180 degrees around some axis).
+    (/UnrealEngine.com/Temporary/SpatialMath:)Distance<public><native>(
       Rotation1: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       Rotation2: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<reads>: float
@@ -1539,15 +1753,20 @@ Temporary<public> := module {
     )<reads>: float = external {}
 
     # Returns the squared Euclidean distance between `V1` and `V2`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)DistanceSquared<public>(V1: vector2, V2: vector2)<reads>: float = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)DistanceSquared<public>(
+      V1: vector2,
+      V2: vector2
+    )<reads>: float = external {}
 
-    # Returns the squared 2-D Euclidean distance between `V1` and `V2` by ignoring their difference in `Z`.
+    # Returns the squared 2-D Euclidean distance between `V1` and `V2` by
+    # ignoring their difference in `Z`.
     DistanceSquaredXY<public>(
       V1: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       V2: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<reads>: float = external {}
 
-    # Returns the 2-D Euclidean distance between `V1` and `V2` by ignoring the difference in `Z`.
+    # Returns the 2-D Euclidean distance between `V1` and `V2` by ignoring the
+    # difference in `Z`.
     DistanceXY<public>(
       V1: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       V2: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
@@ -1563,60 +1782,106 @@ Temporary<public> := module {
     (/UnrealEngine.com/Temporary/SpatialMath:)DotProduct<public>(V1: vector2, V2: vector2)<reads>: float = external {}
 
     # Returns the dot product of `V1` and `V2`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)DotProduct<public>(V1: vector2i, V2: vector2i)<computes>: int = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)DotProduct<public>(
+      V1: vector2i,
+      V2: vector2i
+    )<computes>: int = external {}
 
     # Makes a `vector2i` that is component-wise equal to `V1` and `V2`.
-    # Fails if any component of `V1` does not equal the corresponding component of `V2`.
+    # Fails if any component of `V1` does not equal the corresponding component
+    # of `V2`.
     Equals<public>(V1: vector2i, V2: vector2i)<computes><decides>: vector2i = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a `rotation` from /UnrealEngine.com/Temporary/SpatialMath to a `rotation` from /Verse.org/SpatialMath.
-    FromRotation<public>(InRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<reads>: (/Verse.org/SpatialMath:)rotation = external {}
+    # Util function for converting a `rotation` from
+    # /UnrealEngine.com/Temporary/SpatialMath to a `rotation`
+    # from /Verse.org/SpatialMath.
+    FromRotation<public>(
+      InRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<reads>: (/Verse.org/SpatialMath:)rotation = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a `rotation` from /Verse.org/SpatialMath to a `rotation` from /UnrealEngine.com/Temporary/SpatialMath.
-    FromRotation<public>(InRotation: (/Verse.org/SpatialMath:)rotation)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
+    # Util function for converting a `rotation` from /Verse.org/SpatialMath to a
+    # `rotation` from /UnrealEngine.com/Temporary/SpatialMath.
+    FromRotation<public>(
+      InRotation: (/Verse.org/SpatialMath:)rotation
+    )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
     @available { MinUploadedAtFNVersion := 3600 }
-    # Util function for converting a scalar `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
-    # Use this function when your vector indicates a magnitude on each axis but not a direction, such as when you convert a scale measurement rather than a translation or position.
-    FromScalarVector3<public>(InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
+    # Util function for converting a scalar `vector3` from
+    # /UnrealEngine.com/Temporary/SpatialMath to a `vector3`
+    # from /Verse.org/SpatialMath.
+    # Use this function when your vector indicates a magnitude on each axis but
+    # not a direction, such as when you convert a scale measurement rather than
+    # a translation or position.
+    FromScalarVector3<public>(
+      InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3600 }
-    # Util function for converting a scalar `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
-    # Use this function when your vector indicates a magnitude on each axis but not a direction, such as when you convert a scale measurement rather than a translation or position.
-    FromScalarVector3<public>(InVector3: (/Verse.org/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    # Util function for converting a scalar `vector3` from
+    # /Verse.org/SpatialMath to a `vector3`
+    # from /UnrealEngine.com/Temporary/SpatialMath.
+    # Use this function when your vector indicates a magnitude on each axis but
+    # not a direction, such as when you convert a scale measurement rather than
+    # a translation or position.
+    FromScalarVector3<public>(
+      InVector3: (/Verse.org/SpatialMath:)vector3
+    )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a `transform` from /UnrealEngine.com/Temporary/SpatialMath to a `transform` from /Verse.org/SpatialMath.
-    FromTransform<public>(InTransform: (/UnrealEngine.com/Temporary/SpatialMath:)transform)<reads>: (/Verse.org/SpatialMath:)transform = external {}
+    # Util function for converting a `transform` from
+    # /UnrealEngine.com/Temporary/SpatialMath to a `transform`
+    # from /Verse.org/SpatialMath.
+    FromTransform<public>(
+      InTransform: (/UnrealEngine.com/Temporary/SpatialMath:)transform
+    )<reads>: (/Verse.org/SpatialMath:)transform = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a `transform` from /Verse.org/SpatialMath to a `transform` from /UnrealEngine.com/Temporary/SpatialMath.
-    FromTransform<public>(InTransform: (/Verse.org/SpatialMath:)transform)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
+    # Util function for converting a `transform` from /Verse.org/SpatialMath to
+    # a `transform` from /UnrealEngine.com/Temporary/SpatialMath.
+    FromTransform<public>(
+      InTransform: (/Verse.org/SpatialMath:)transform
+    )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)transform = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a translation/position `vector3` from /UnrealEngine.com/Temporary/SpatialMath to a `vector3` from /Verse.org/SpatialMath.
-    FromVector3<public>(InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
+    # Util function for converting a translation/position `vector3` from
+    # /UnrealEngine.com/Temporary/SpatialMath to a `vector3`
+    # from /Verse.org/SpatialMath.
+    FromVector3<public>(
+      InVector3: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<reads>: (/Verse.org/SpatialMath:)vector3 = external {}
 
     @available { MinUploadedAtFNVersion := 3400 }
-    # Util function for converting a translation/position `vector3` from /Verse.org/SpatialMath to a `vector3` from /UnrealEngine.com/Temporary/SpatialMath.
-    FromVector3<public>(InVector3: (/Verse.org/SpatialMath:)vector3)<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    # Util function for converting a translation/position `vector3` from
+    # /Verse.org/SpatialMath to a `vector3`
+    # from /UnrealEngine.com/Temporary/SpatialMath.
+    FromVector3<public>(
+      InVector3: (/Verse.org/SpatialMath:)vector3
+    )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes the identity `rotation`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)IdentityRotation<native><public>()<converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    (/UnrealEngine.com/Temporary/SpatialMath:)IdentityRotation<public><native>()<converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Succeeds when each component of `V1` and `V2` are within `AbsoluteTolerance` of each other.
+    # Succeeds when each component of `V1` and `V2` are within
+    # `AbsoluteTolerance` of each other.
     (/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostEqual<public>(
       V1: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       V2: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       AbsoluteTolerance: float
     )<computes><decides>: void = external {}
 
-    # Succeeds when each component of `V1` and `V2` are within `AbsoluteTolerance` of each other.
-    (/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostEqual<public>(V1: vector2, V2: vector2, AbsoluteTolerance: float)<computes><decides>: void = external {}
+    # Succeeds when each component of `V1` and `V2` are within
+    # `AbsoluteTolerance` of each other.
+    (/UnrealEngine.com/Temporary/SpatialMath:)IsAlmostEqual<public>(
+      V1: vector2,
+      V2: vector2,
+      AbsoluteTolerance: float
+    )<computes><decides>: void = external {}
 
-    # Used to linearly interpolate/extrapolate between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all arguments are finite.
+    # Used to linearly interpolate/extrapolate between `From` (when
+    # `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all
+    # arguments are finite.
     # Returns `From*(1 - Parameter) + To*Parameter`.
     (/UnrealEngine.com/Temporary/SpatialMath:)Lerp<public>(
       From: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
@@ -1624,48 +1889,68 @@ Temporary<public> := module {
       Parameter: float
     )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
-    # Used to linearly interpolate/extrapolate between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all arguments are finite.
+    # Used to linearly interpolate/extrapolate between `From` (when
+    # `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that all
+    # arguments are finite.
     # Returns `From*(1 - Parameter) + To*Parameter`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)Lerp<public>(From: vector2, To: vector2, Parameter: float)<reads>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)Lerp<public>(
+      From: vector2,
+      To: vector2,
+      Parameter: float
+    )<reads>: vector2 = external {}
 
-    # Makes a new `rotation` from the component wise subtraction of the Euler angle components in `RotationA` by
-    # the Euler angle components in `RotationB` and ensures the returned value is normalized.
-    MakeComponentWiseDeltaRotation<native><public>(
+    # Makes a new `rotation` from the component wise subtraction of the Euler
+    # angle components in `RotationA` by the Euler angle components in
+    # `RotationB` and ensures the returned value is normalized.
+    MakeComponentWiseDeltaRotation<public><native>(
       RotationA: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       RotationB: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     @vm_no_effect_token
-    # Makes a `rotation` from `Axis` and `AngleRadians` using a left-handed sign convention (e.g. a positive rotation around +Z takes +X to +Y). If `Axis.IsAlmostZero[]`, make the identity rotation.
-    MakeRotation<native><public>(
+    # Makes a `rotation` from `Axis` and `AngleRadians` using a left-handed sign
+    # convention (e.g. a positive rotation around +Z takes +X to +Y). If
+    # `Axis.IsAlmostZero[]`, make the identity rotation.
+    MakeRotation<public><native>(
       Axis: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       AngleRadians: float
     )<reads><converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
     @vm_no_effect_token
-    # Makes a `rotation` by applying `YawRightDegrees`, `PitchUpDegrees`, and `RollClockwiseDegrees`, in that order:
-    #  * first a *yaw* about the Z axis with a positive angle indicating a clockwise rotation when viewed from above,
-    #  * then a *pitch* about the new Y axis with a positive angle indicating 'nose up',
-    #  * followed by a *roll* about the new X axis axis with a positive angle indicating a clockwise rotation when viewed along +X.
-    # Note that these conventions differ from `MakeRotation` but match `ApplyYaw`, `ApplyPitch`, and `ApplyRoll`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)MakeRotationFromYawPitchRollDegrees<native><public>(
+    # Makes a `rotation` by applying `YawRightDegrees`, `PitchUpDegrees`, and
+    # `RollClockwiseDegrees`, in that order:
+    #  * first a *yaw* about the Z axis with a positive angle indicating a
+    #    clockwise rotation when viewed from above,
+    #  * then a *pitch* about the new Y axis with a positive angle indicating
+    #    'nose up',
+    #  * followed by a *roll* about the new X axis axis with a positive angle
+    #    indicating a clockwise rotation when viewed along +X.
+    # Note that these conventions differ from `MakeRotation` but match
+    # `ApplyYaw`, `ApplyPitch`, and `ApplyRoll`.
+    (/UnrealEngine.com/Temporary/SpatialMath:)MakeRotationFromYawPitchRollDegrees<public><native>(
       YawRightDegrees: float,
       PitchUpDegrees: float,
       RollClockwiseDegrees: float
     )<reads><converges>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes the smallest angular `rotation` from `InitialRotation` to `FinalRotation` such that:
-    # `InitialRotation.RotateBy(MakeShortestRotationBetween(InitialRotation, FinalRotation)) = FinalRotation` and
-    # `MakeShortestRotationBetween(InitialRotation, FinalRotation)?.GetAngle()` is as small as possible.
-    (/UnrealEngine.com/Temporary/SpatialMath:)MakeShortestRotationBetween<native><public>(
+    # Makes the smallest angular `rotation` from `InitialRotation` to
+    # `FinalRotation` such that:
+    # `InitialRotation.RotateBy(MakeShortestRotationBetween(InitialRotation,
+    # FinalRotation)) = FinalRotation` and
+    # `MakeShortestRotationBetween(InitialRotation, FinalRotation)?.GetAngle()`
+    # is as small as possible.
+    (/UnrealEngine.com/Temporary/SpatialMath:)MakeShortestRotationBetween<public><native>(
       InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       FinalRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
     )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes the smallest angular `rotation` from `InitialVector` to `FinalVector` such that:
-    # `InitialVector.RotateBy(MakeShortestRotationBetween(InitialVector, Vector)) = FinalVector` and
-    # `MakeShortestRotationBetween(InitialVector, FinalVector)?.GetAngle()` is as small as possible.
-    (/UnrealEngine.com/Temporary/SpatialMath:)MakeShortestRotationBetween<native><public>(
+    # Makes the smallest angular `rotation` from `InitialVector` to
+    # `FinalVector` such that:
+    # `InitialVector.RotateBy(MakeShortestRotationBetween(InitialVector,
+    # Vector)) = FinalVector` and
+    # `MakeShortestRotationBetween(InitialVector, FinalVector)?.GetAngle()` is
+    # as small as possible.
+    (/UnrealEngine.com/Temporary/SpatialMath:)MakeShortestRotationBetween<public><native>(
       InitialVector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       FinalVector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<transacts>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
@@ -1673,30 +1958,44 @@ Temporary<public> := module {
     # Returns degrees from `Radians`.
     (/UnrealEngine.com/Temporary/SpatialMath:)RadiansToDegrees<public>(Radians: float)<reads>: float = external {}
 
-    # Makes a `vector3` by inverting the `SurfaceNormal` component of `Direction`.
+    # Makes a `vector3` by inverting the `SurfaceNormal` component
+    # of `Direction`.
     # Fails if `not SurfaceNormal.MakeUnitVector[]`.
     (/UnrealEngine.com/Temporary/SpatialMath:)ReflectVector<public>(
       Direction: (/UnrealEngine.com/Temporary/SpatialMath:)vector3,
       SurfaceNormal: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<decides><reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
-    # Makes a `vector2` by inverting the `SurfaceNormal` component of `Direction`.
+    # Makes a `vector2` by inverting the `SurfaceNormal` component
+    # of `Direction`.
     # Fails if `not SurfaceNormal.MakeUnitVector[]`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)ReflectVector<public>(Direction: vector2, SurfaceNormal: vector2)<decides><reads>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)ReflectVector<public>(
+      Direction: vector2,
+      SurfaceNormal: vector2
+    )<decides><reads>: vector2 = external {}
 
-    # Used to perform spherical linear interpolation between `From` (when `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects that `0.0 <= Parameter <= 1.0`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)Slerp<native><public>(
+    # Used to perform spherical linear interpolation between `From` (when
+    # `Parameter = 0.0`) and `To` (when `Parameter = 1.0`). Expects
+    # that `0.0 <= Parameter <= 1.0`.
+    (/UnrealEngine.com/Temporary/SpatialMath:)Slerp<public><native>(
       InitialRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       FinalRotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation,
       Parameter: float
     )<transacts><decides>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
 
-    # Makes a `string` representation of `rotation` in axis/degrees format with a left-handed sign convention.
-    # `ToString(MakeRotation(vector3{X:=1.0, Y:=0.0, Z:=0.0}, PiFloat/2.0))` produces the string: `"Axis: {x=1.000000,y=0.000000,z=0.000000} Angle: 90.000000"`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)ToString<public>(Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation)<reads>: string = external {}
+    # Makes a `string` representation of `rotation` in axis/degrees format with
+    # a left-handed sign convention.
+    # `ToString(MakeRotation(vector3{X:=1.0, Y:=0.0, Z:=0.0}, PiFloat/2.0))`
+    # produces the
+    # string: `"Axis: {x=1.000000,y=0.000000,z=0.000000} Angle: 90.000000"`.
+    (/UnrealEngine.com/Temporary/SpatialMath:)ToString<public>(
+      Rotation: (/UnrealEngine.com/Temporary/SpatialMath:)rotation
+    )<reads>: string = external {}
 
     # Makes a `string` representation of `V`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)ToString<public>(V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<reads>: string = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)ToString<public>(
+      V: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<reads>: string = external {}
 
     # Makes a `string` representation of `V`.
     (/UnrealEngine.com/Temporary/SpatialMath:)ToString<public>(V: vector2)<reads>: string = external {}
@@ -1716,7 +2015,8 @@ Temporary<public> := module {
       InVector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
     )<reads>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
-    # Makes a `vector3` by applying `InTransform` to `InVector` without applying `InTransform.Scale`.
+    # Makes a `vector3` by applying `InTransform` to `InVector` without
+    # applying `InTransform.Scale`.
     TransformVectorNoScale<public>(
       InTransform: (/UnrealEngine.com/Temporary/SpatialMath:)transform,
       InVector: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
@@ -1741,16 +2041,28 @@ Temporary<public> := module {
     )<computes>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector2` by multiplying the components of `Right` by `Left`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(Left: float, Right: vector2)<computes>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(
+      Left: float,
+      Right: vector2
+    )<computes>: vector2 = external {}
 
     # Makes a `vector2i` by multiplying the components of `Right` by `Left`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(Left: int, Right: vector2i)<computes>: vector2i = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(
+      Left: int,
+      Right: vector2i
+    )<computes>: vector2i = external {}
 
     # Makes a `vector2` by component-wise multiplication of `Left` and `Right`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(Left: vector2, Right: float)<computes>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(
+      Left: vector2,
+      Right: float
+    )<computes>: vector2 = external {}
 
     # Makes a `vector2i` by multiplying the components of `Left` by `Right`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(Left: vector2i, Right: int)<computes>: vector2i = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'*'<public>(
+      Left: vector2i,
+      Right: int
+    )<computes>: vector2i = external {}
 
     # Makes a `vector3` by component-wise addition of `L` and `R`.
     (/UnrealEngine.com/Temporary/SpatialMath:)operator'+'<public>(
@@ -1759,10 +2071,16 @@ Temporary<public> := module {
     )<computes>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector2` by component-wise addition of `Left` and `Right`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'+'<public>(Left: vector2, Right: vector2)<computes>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'+'<public>(
+      Left: vector2,
+      Right: vector2
+    )<computes>: vector2 = external {}
 
     # Makes a `vector2i` by component-wise addition of `Left` and `Right`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'+'<public>(Left: vector2i, Right: vector2i)<computes>: vector2i = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'+'<public>(
+      Left: vector2i,
+      Right: vector2i
+    )<computes>: vector2i = external {}
 
     # Makes a `vector3` by component-wise subtraction of `R` from `L`.
     (/UnrealEngine.com/Temporary/SpatialMath:)operator'-'<public>(
@@ -1771,10 +2089,16 @@ Temporary<public> := module {
     )<computes>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector2` by component-wise subtraction of `Right` from `Left`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'-'<public>(Left: vector2, Right: vector2)<computes>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'-'<public>(
+      Left: vector2,
+      Right: vector2
+    )<computes>: vector2 = external {}
 
     # Makes a `vector2i` by component-wise subtraction of `Right` from `Left`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'-'<public>(Left: vector2i, Right: vector2i)<computes>: vector2i = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'-'<public>(
+      Left: vector2i,
+      Right: vector2i
+    )<computes>: vector2i = external {}
 
     # Makes a `vector3` by component-wise division of `L` by `R`.
     (/UnrealEngine.com/Temporary/SpatialMath:)operator'/'<public>(
@@ -1789,13 +2113,21 @@ Temporary<public> := module {
     )<computes>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector2` by dividing the components of `Left` by `Right`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'/'<public>(Left: vector2, Right: float)<computes>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'/'<public>(
+      Left: vector2,
+      Right: float
+    )<computes>: vector2 = external {}
 
     # Makes a `vector2` by component-wise division of `Left` by `Right`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)operator'/'<public>(Left: vector2, Right: vector2)<computes>: vector2 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)operator'/'<public>(
+      Left: vector2,
+      Right: vector2
+    )<computes>: vector2 = external {}
 
     # Makes a `vector3` by inverting the signs of `Operand`.
-    (/UnrealEngine.com/Temporary/SpatialMath:)prefix'-'<public>(Operand: (/UnrealEngine.com/Temporary/SpatialMath:)vector3)<computes>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)prefix'-'<public>(
+      Operand: (/UnrealEngine.com/Temporary/SpatialMath:)vector3
+    )<computes>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
     # Makes a `vector2` by inverting the signs of `Operand`.
     (/UnrealEngine.com/Temporary/SpatialMath:)prefix'-'<public>(Operand: vector2)<computes>: vector2 = external {}
@@ -1809,51 +2141,51 @@ Temporary<public> := module {
     @editable
     @import_as("/Script/EpicGamesTemporary.FVerseRotation_Deprecated")
     # An abstract representation of an orientation change in 3d-space.
-    (/UnrealEngine.com/Temporary/SpatialMath:)rotation<native><public> := struct<concrete> {}
+    (/UnrealEngine.com/Temporary/SpatialMath:)rotation<public><native> := struct<concrete> {}
 
     # A combination of scale, rotation, and translation, applied in that order.
-    (/UnrealEngine.com/Temporary/SpatialMath:)transform<native><public> := struct<concrete><computes> {
+    (/UnrealEngine.com/Temporary/SpatialMath:)transform<public><native> := struct<concrete><computes> {
       @editable
       # The rotation of this `transform`.
-      Rotation<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
+      Rotation<public><native>: (/UnrealEngine.com/Temporary/SpatialMath:)rotation = external {}
 
       @editable
       # The scale of this `transform`.
-      Scale<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+      Scale<public><native>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
 
       @editable
       # The location of this `transform`.
-      Translation<native><public>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
+      Translation<public><native>: (/UnrealEngine.com/Temporary/SpatialMath:)vector3 = external {}
     }
 
     # 2-dimensional vector with `float` components.
-    vector2<native><public> := struct<concrete><computes><persistable> {
+    vector2<public><native> := struct<concrete><computes><persistable> {
       @editable
-      X<native><public>: float = external {}
+      X<public><native>: float = external {}
 
       @editable
-      Y<native><public>: float = external {}
+      Y<public><native>: float = external {}
     }
 
     # 2-dimensional vector with `int` components.
-    vector2i<native><public> := struct<concrete><computes><persistable> {
+    vector2i<public><native> := struct<concrete><computes><persistable> {
       @editable
-      X<native><public>: int = external {}
+      X<public><native>: int = external {}
 
       @editable
-      Y<native><public>: int = external {}
+      Y<public><native>: int = external {}
     }
 
     # 3-dimensional vector with `float` components.
-    (/UnrealEngine.com/Temporary/SpatialMath:)vector3<native><public> := struct<concrete><computes><persistable> {
+    (/UnrealEngine.com/Temporary/SpatialMath:)vector3<public><native> := struct<concrete><computes><persistable> {
       @editable
-      X<native><public>: float = external {}
+      X<public><native>: float = external {}
 
       @editable
-      Y<native><public>: float = external {}
+      Y<public><native>: float = external {}
 
       @editable
-      Z<native><public>: float = external {}
+      Z<public><native>: float = external {}
     }
   }
 
@@ -1866,37 +2198,52 @@ Temporary<public> := module {
     using { /Verse.org/Simulation }
     # Returns the `player_ui` associated with `Player`.
     # Fails if there is no `player_ui` associated with `Player`.
-    GetPlayerUI<native><public>(Player: player)<transacts><decides>: player_ui
+    GetPlayerUI<public><native>(Player: player)<transacts><decides>: player_ui
 
     # Make a canvas slot for fixed position widget.
-    # If Size is set, then the Offsets is calculated and the SizeToContent is set to false.
-    # If Size is not set, then Right and Bottom are set to zero and are not used. The widget size will be automatically calculated. The SizeToContent is set to true.
+    # If Size is set, then the Offsets is calculated and the SizeToContent is
+    # set to false.
+    # If Size is not set, then Right and Bottom are set to zero and are not
+    # used. The widget size will be automatically calculated. The SizeToContent
+    # is set to true.
     # The widget is not anchored and will not move if the parent is resized.
     # The Anchors is set to zero.
-    MakeCanvasSlot<native><public>(Widget: widget, Position: vector2, ?Size: vector2 = external {}, ?ZOrder: type { _X: int where 0 <= _X, _X <= 2147483647 } = external {}, ?Alignment: vector2 = external {})<computes>: canvas_slot
+    MakeCanvasSlot<public><native>(
+      Widget: widget,
+      Position: vector2,
+      ?Size: vector2 = external {},
+      ?ZOrder: type { _X: int where 0 <= _X, _X <= 2147483647 } = external {},
+      ?Alignment: vector2 = external {}
+    )<computes>: canvas_slot
 
-    # The anchors of a `widget` determine its the position and sizing relative to its parent.
-    # `anchor`s range from `(0.0, 0.0)` (left, top) to `(1.0, 1.0)` (right, bottom).
-    anchors<native><public> := struct<concrete><computes> {
-      # Holds the maximum anchors, (right, bottom). The valid range is between `0.0` and `1.0`.
-      Maximum<native><public>: vector2 = external {}
+    # The anchors of a `widget` determine its the position and sizing relative
+    # to its parent.
+    # `anchor`s range from `(0.0, 0.0)` (left, top) to `(1.0, 1.0)`
+    # (right, bottom).
+    anchors<public><native> := struct<concrete><computes> {
+      # Holds the maximum anchors, (right, bottom). The valid range is between
+      # `0.0` and `1.0`.
+      Maximum<public><native>: vector2 = external {}
 
-      # Holds the minimum anchors, (left, top). The valid range is between `0.0` and `1.0`.
-      Minimum<native><public>: vector2 = external {}
+      # Holds the minimum anchors, (left, top). The valid range is between `0.0`
+      # and `1.0`.
+      Minimum<public><native>: vector2 = external {}
     }
 
-    # Button is a container of a single child widget slot and fires the OnClick event when the button is clicked.
-    button<native><public> := class<final>(widget) {
+    # Button is a container of a single child widget slot and fires the OnClick
+    # event when the button is clicked.
+    button<public><native> := class<final>(widget) {
       HighlightEvent<public>(): listenable(widget_message) = external {}
 
       # Subscribable event that fires when the button is clicked.
       OnClick<public>(): listenable(widget_message) = external {}
 
       # Sets the child widget slot.
-      SetWidget<native><public>(InSlot: button_slot): void
+      SetWidget<public><native>(InSlot: button_slot): void
 
-      # The child widget of the button. Used only during initialization of the widget and not modified by SetSlot.
-      Slot<native><public>: button_slot
+      # The child widget of the button. Used only during initialization of the
+      # widget and not modified by SetSlot.
+      Slot<public><native>: button_slot
 
       UnhighlightEvent<public>(): listenable(widget_message) = external {}
 
@@ -1905,89 +2252,102 @@ Temporary<public> := module {
     }
 
     # Slot for button widget.
-    button_slot<native><public> := struct {
+    button_slot<public><native> := struct {
       # Horizontal alignment of the widget inside the slot.
-      HorizontalAlignment<native><public>: horizontal_alignment = external {}
+      HorizontalAlignment<public><native>: horizontal_alignment = external {}
 
-      # Empty distance in pixels that surrounds the widget inside the slot. Assumes 1080p resolution.
-      Padding<native><public>: margin = external {}
+      # Empty distance in pixels that surrounds the widget inside the slot.
+      # Assumes 1080p resolution.
+      Padding<public><native>: margin = external {}
 
       # Vertical alignment of the widget inside the slot.
-      VerticalAlignment<native><public>: vertical_alignment = external {}
+      VerticalAlignment<public><native>: vertical_alignment = external {}
 
       # The widget assigned to this slot.
-      Widget<native><public>: widget
+      Widget<public><native>: widget
     }
 
-    # Canvas is a container widget that allows for arbitrary positioning of widgets in the canvas' slots.
-    canvas<native><public> := class<final>(widget) {
+    # Canvas is a container widget that allows for arbitrary positioning of
+    # widgets in the canvas' slots.
+    canvas<public><native> := class<final>(widget) {
       # Adds a new child slot to the canvas.
-      AddWidget<native><public>(Slot: canvas_slot): void
+      AddWidget<public><native>(Slot: canvas_slot): void
 
       # Removes a slot containing the given widget.
-      RemoveWidget<native><public>(Widget: widget): void
+      RemoveWidget<public><native>(Widget: widget): void
 
-      # The child widgets of the canvas. Used only during initialization of the widget and not modified by Add/RemoveWidget.
-      Slots<native><public>: []canvas_slot = external {}
+      # The child widgets of the canvas. Used only during initialization of the
+      # widget and not modified by Add/RemoveWidget.
+      Slots<public><native>: []canvas_slot = external {}
     }
 
     # Slot for a canvas widget.
-    canvas_slot<native><public> := struct {
+    canvas_slot<public><native> := struct {
       # Alignment is the pivot/origin point of the widget.
-      # Starting in the upper left at (0.0,0.0), ending in the lower right at (1.0,1.0).
-      Alignment<native><public>: vector2 = external {}
+      # Starting in the upper left at (0.0,0.0), ending in the lower right
+      # at (1.0,1.0).
+      Alignment<public><native>: vector2 = external {}
 
       # The border for the margin and how the widget is resized with its parent.
       # Values are defined between 0.0 and 1.0.
-      Anchors<native><public>: anchors = external {}
+      Anchors<public><native>: anchors = external {}
 
       # The offset that defined the size and position of the widget.
-      # When the anchors are well defined, the Offsets.Left represent the distance in pixels from the Anchors Minimum.X, the Offsets.Bottom represent the distance in pixel from the Anchors Maximum.Y, effectively controlling the desired widget size. When the anchors are not well defined, the Offsets.Left and Offsets.Top represent the widget position and Offsets.Right and Offset.Bottom represent the widget size.
-      Offsets<native><public>: margin = external {}
+      # When the anchors are well defined, the Offsets.Left represent the
+      # distance in pixels from the Anchors Minimum.X, the Offsets.Bottom
+      # represent the distance in pixel from the Anchors Maximum.Y, effectively
+      # controlling the desired widget size. When the anchors are not well
+      # defined, the Offsets.Left and Offsets.Top represent the widget position
+      # and Offsets.Right and Offset.Bottom represent the widget size.
+      Offsets<public><native>: margin = external {}
 
-      # When true we use the widget's desired size. The size calculated by the Offsets is ignored.
-      SizeToContent<native><public>: logic = external {}
+      # When true we use the widget's desired size. The size calculated by the
+      # Offsets is ignored.
+      SizeToContent<public><native>: logic = external {}
 
       # The widget assigned to this slot.
-      Widget<native><public>: widget
+      Widget<public><native>: widget
 
       # Z Order of this slot relative to other slots in this canvas panel.
       # Higher values are rendered last (and so they will appear to be on top)
-      ZOrder<native><public>: type { _X: int where 0 <= _X, _X <= 2147483647 } = external {}
+      ZOrder<public><native>: type { _X: int where 0 <= _X, _X <= 2147483647 } = external {}
     }
 
     # A solid color widget.
-    color_block<native><public> := class<final>(widget) {
-      # The color of the widget. Used only during initialization of the widget and not modified by SetColor.
-      DefaultColor<native><public>: color = external {}
+    color_block<public><native> := class<final>(widget) {
+      # The color of the widget. Used only during initialization of the widget
+      # and not modified by SetColor.
+      DefaultColor<public><native>: color = external {}
 
-      # The size this widget desired to be displayed in. Used only during initialization of the widget and not modified by SetDesiredSize.
-      DefaultDesiredSize<native><public>: vector2 = external {}
+      # The size this widget desired to be displayed in. Used only during
+      # initialization of the widget and not modified by SetDesiredSize.
+      DefaultDesiredSize<public><native>: vector2 = external {}
 
-      # The opacity of the widget. Used only during initialization of the widget and not modified by SetOpacity.
-      DefaultOpacity<native><public>: type { _X: float where 0.000000 <= _X, _X <= 1.000000 } = external {}
+      # The opacity of the widget. Used only during initialization of the widget
+      # and not modified by SetOpacity.
+      DefaultOpacity<public><native>: type { _X: float where 0.000000 <= _X, _X <= 1.000000 } = external {}
 
       # Gets the widget's color.
-      GetColor<native><public>(): color
+      GetColor<public><native>(): color
 
       # Gets the size this widget desired to be displayed in.
-      GetDesiredSize<native><public>(): vector2
+      GetDesiredSize<public><native>(): vector2
 
       # Gets the widget's opacity.
-      GetOpacity<native><public>(): type { _X: float where 0.000000 <= _X, _X <= 1.000000 }
+      GetOpacity<public><native>(): type { _X: float where 0.000000 <= _X, _X <= 1.000000 }
 
       # Sets the widget's color.
-      SetColor<native><public>(InColor: color): void
+      SetColor<public><native>(InColor: color): void
 
       # Sets the size this widget desired to be displayed in.
-      SetDesiredSize<native><public>(InDesiredSize: vector2): void
+      SetDesiredSize<public><native>(InDesiredSize: vector2): void
 
       # Sets the widgets's opacity.
-      SetOpacity<native><public>(InOpacity: type { _X: float where 0.000000 <= _X, _X <= 1.000000 }): void
+      SetOpacity<public><native>(InOpacity: type { _X: float where 0.000000 <= _X, _X <= 1.000000 }): void
     }
 
     # `widget` horizontal alignment mode.
-    horizontal_alignment<native><public> := enum {
+    horizontal_alignment<public><native> := enum {
       # Center `widget` horizontally within the slot.
       Center
 
@@ -2002,7 +2362,7 @@ Temporary<public> := module {
     }
 
     # Tiling options values
-    image_tiling<native><public> := enum {
+    image_tiling<public><native> := enum {
       # Repeat/Wrap the image to fill the available space.
       Repeat
 
@@ -2010,54 +2370,59 @@ Temporary<public> := module {
       Stretch
     }
 
-    # Specifies the gap outside each edge separating a `widget` from its neighbors.
-    # Distance is measured in units where `1.0` unit is the width of a pixel at 1080p resolution.
-    margin<native><public> := struct<concrete><computes> {
+    # Specifies the gap outside each edge separating a `widget` from
+    # its neighbors.
+    # Distance is measured in units where `1.0` unit is the width of a pixel at
+    # 1080p resolution.
+    margin<public><native> := struct<concrete><computes> {
       # The bottom edge spacing.
-      Bottom<native><public>: float = external {}
+      Bottom<public><native>: float = external {}
 
       # The left edge spacing.
-      Left<native><public>: float = external {}
+      Left<public><native>: float = external {}
 
       # The right edge spacing.
-      Right<native><public>: float = external {}
+      Right<public><native>: float = external {}
 
       # The top edge spacing.
-      Top<native><public>: float = external {}
+      Top<public><native>: float = external {}
     }
 
     # A widget to display a material.
-    material_block<native><public> := class(widget) {
-      # The size this widget desired to be displayed in. Used only during initialization of the widget and not modified by SetDesiredSize.
-      DefaultDesiredSize<native><public>: vector2 = external {}
+    material_block<public><native> := class(widget) {
+      # The size this widget desired to be displayed in. Used only during
+      # initialization of the widget and not modified by SetDesiredSize.
+      DefaultDesiredSize<public><native>: vector2 = external {}
 
-      # The image to render. Used only during initialization of the widget and not modified by SetImage.
-      DefaultImage<native><public>: material
+      # The image to render. Used only during initialization of the widget and
+      # not modified by SetImage.
+      DefaultImage<public><native>: material
 
-      # Tinting applied to the image. Used only during initialization of the widget and not modified by SetTint.
-      DefaultTint<native><public>: color = external {}
+      # Tinting applied to the image. Used only during initialization of the
+      # widget and not modified by SetTint.
+      DefaultTint<public><native>: color = external {}
 
       # Gets the size this widget desired to be displayed in.
-      GetDesiredSize<native><public>(): vector2
+      GetDesiredSize<public><native>(): vector2
 
       # Gets the image to render.
-      GetImage<native><public>(): material
+      GetImage<public><native>(): material
 
       # Gets the tint applied to the image.
-      GetTint<native><public>(): color
+      GetTint<public><native>(): color
 
       # Sets the size this widget desired to be displayed in.
-      SetDesiredSize<native><public>(InDesiredSize: vector2): void
+      SetDesiredSize<public><native>(InDesiredSize: vector2): void
 
       # Sets the image to render.
-      SetImage<native><public>(InImage: material): void
+      SetImage<public><native>(InImage: material): void
 
       # Sets the tint applied to the image.
-      SetTint<native><public>(InColor: color): void
+      SetTint<public><native>(InColor: color): void
     }
 
     # Used by`widget` orientation modes.
-    orientation<native><public> := enum {
+    orientation<public><native> := enum {
       # Orient `widget`s from left to right.
       Horizontal
 
@@ -2066,157 +2431,182 @@ Temporary<public> := module {
     }
 
     # Overlay is a container consisting of widgets stacked on top of each other.
-    overlay<native><public> := class<final>(widget) {
+    overlay<public><native> := class<final>(widget) {
       # Add a new child slot to the overlay. Slots are added at the end.
-      AddWidget<native><public>(Slot: overlay_slot): void
+      AddWidget<public><native>(Slot: overlay_slot): void
 
       # Removes a slot containing the given widget
-      RemoveWidget<native><public>(Widget: widget): void
+      RemoveWidget<public><native>(Widget: widget): void
 
-      # The child widgets of the overlay. Used only during initialization of the widget and not modified by Add/RemoveWidget.
-      Slots<native><public>: []overlay_slot = external {}
+      # The child widgets of the overlay. Used only during initialization of the
+      # widget and not modified by Add/RemoveWidget.
+      Slots<public><native>: []overlay_slot = external {}
     }
 
     # Slot for an overlay widget
-    overlay_slot<native><public> := struct {
+    overlay_slot<public><native> := struct {
       # Horizontal alignment of the widget inside the slot.
-      # This alignment is only applied after the layout space for the widget slot is created and determines the widget alignment within that space.
-      HorizontalAlignment<native><public>: horizontal_alignment = external {}
+      # This alignment is only applied after the layout space for the widget
+      # slot is created and determines the widget alignment within that space.
+      HorizontalAlignment<public><native>: horizontal_alignment = external {}
 
-      # Empty distance in pixels that surrounds the widget inside the slot. Assumes 1080p resolution.
-      Padding<native><public>: margin = external {}
+      # Empty distance in pixels that surrounds the widget inside the slot.
+      # Assumes 1080p resolution.
+      Padding<public><native>: margin = external {}
 
       # Vertical alignment of the widget inside the slot.
-      # This alignment is only applied after the layout space for the widget slot is created and determines the widget alignment within that space.
-      VerticalAlignment<native><public>: vertical_alignment = external {}
+      # This alignment is only applied after the layout space for the widget
+      # slot is created and determines the widget alignment within that space.
+      VerticalAlignment<public><native>: vertical_alignment = external {}
 
       # The widget assigned to this slot.
-      Widget<native><public>: widget
+      Widget<public><native>: widget
     }
 
     # The main interface for adding and removing `widget`s to a player's UI.
-    player_ui<native><public> := class<final><epic_internal> {
-      # Adds `Widget` to this `player_ui` using default `player_ui_slot` configuration options.
-      AddWidget<native><public>(Widget: widget): void
+    player_ui<public><native> := class<epic_internal><final> {
+      # Adds `Widget` to this `player_ui` using default `player_ui_slot`
+      # configuration options.
+      AddWidget<public><native>(Widget: widget): void
 
-      # Adds `Widget` to this `player_ui` using `Slot` for configuration options.
-      AddWidget<native><public>(Widget: widget, Slot: player_ui_slot): void
+      # Adds `Widget` to this `player_ui` using `Slot` for
+      # configuration options.
+      AddWidget<public><native>(Widget: widget, Slot: player_ui_slot): void
 
       # Removes `Widget` from this `player_ui`.
-      RemoveWidget<native><public>(Widget: widget): void
+      RemoveWidget<public><native>(Widget: widget): void
 
-      # Sets the user's focus on this `Widget`. The target `Widget`must be focusable, otherwise this has no effect.
-      # If `SetFocus` is called before `AddWidget`, the `widget` will be focused after `AddWidget` is called,
-      # unless a SetFocus is called on a different `widget` by the time `AddWidget` is called.
-      SetFocus<native><public>(Widget: widget): void
+      # Sets the user's focus on this `Widget`. The target `Widget`must be
+      # focusable, otherwise this has no effect.
+      # If `SetFocus` is called before `AddWidget`, the `widget` will be focused
+      # after `AddWidget` is called, unless a SetFocus is called on a different
+      # `widget` by the time `AddWidget` is called.
+      SetFocus<public><native>(Widget: widget): void
     }
 
     # `widget` creation configuration options.
-    player_ui_slot<native><public> := struct {
+    player_ui_slot<public><native> := struct {
       # Controls `widget` input event consumption.
-      InputMode<native><public>: ui_input_mode = external {}
+      InputMode<public><native>: ui_input_mode = external {}
 
-      # Controls `widget` rendering order. Greater values will be draw in front of lesser values.
-      ZOrder<native><public>: type { _X: int where 0 <= _X, _X <= 2147483647 } = external {}
+      # Controls `widget` rendering order. Greater values will be draw in front
+      # of lesser values.
+      ZOrder<public><native>: type { _X: int where 0 <= _X, _X <= 2147483647 } = external {}
     }
 
-    # Stack box is a container of a list of widgets stacked either vertically or horizontally.
-    stack_box<native><public> := class<final>(widget) {
+    # Stack box is a container of a list of widgets stacked either vertically
+    # or horizontally.
+    stack_box<public><native> := class<final>(widget) {
       # Add a new child slot to the stack box. Slots are added at the end.
-      AddWidget<native><public>(Slot: stack_box_slot): void
+      AddWidget<public><native>(Slot: stack_box_slot): void
 
-      # The orientation of the stack box. Either stack widgets horizontal or vertical.
-      Orientation<native><public>: orientation
+      # The orientation of the stack box. Either stack widgets horizontal
+      # or vertical.
+      Orientation<public><native>: orientation
 
       # Removes a slot containing the given widget
-      RemoveWidget<native><public>(Widget: widget): void
+      RemoveWidget<public><native>(Widget: widget): void
 
-      # The child widgets of the stack box. Used only during initialization of the widget and not modified by Add/RemoveWidget.
-      Slots<native><public>: []stack_box_slot = external {}
+      # The child widgets of the stack box. Used only during initialization of
+      # the widget and not modified by Add/RemoveWidget.
+      Slots<public><native>: []stack_box_slot = external {}
     }
 
     # Slot for a stack_box widget
-    stack_box_slot<native><public> := struct {
+    stack_box_slot<public><native> := struct {
       # The available space will be distributed proportionally.
       # If not set, the slot will use the desired size of the widget.
-      Distribution<native><public>: ?float = external {}
+      Distribution<public><native>: ?float = external {}
 
       # Horizontal alignment of the widget inside the slot.
-      # This alignment is only applied after the layout space for the widget slot is created and determines the widget alignment within that space.
-      HorizontalAlignment<native><public>: horizontal_alignment = external {}
+      # This alignment is only applied after the layout space for the widget
+      # slot is created and determines the widget alignment within that space.
+      HorizontalAlignment<public><native>: horizontal_alignment = external {}
 
-      # Empty distance in pixels that surrounds the widget inside the slot. Assumes 1080p resolution.
-      Padding<native><public>: margin = external {}
+      # Empty distance in pixels that surrounds the widget inside the slot.
+      # Assumes 1080p resolution.
+      Padding<public><native>: margin = external {}
 
       # Vertical alignment of the widget inside the slot.
-      # This alignment is only applied after the layout space for the widget slot is created and determines the widget alignment within that space.
-      VerticalAlignment<native><public>: vertical_alignment = external {}
+      # This alignment is only applied after the layout space for the widget
+      # slot is created and determines the widget alignment within that space.
+      VerticalAlignment<public><native>: vertical_alignment = external {}
 
       # The widget assigned to this slot.
-      Widget<native><public>: widget
+      Widget<public><native>: widget
     }
 
     # Base widget for text widget.
-    text_base<native><public> := class<abstract>(widget) {
-      # The justification to display to the user. Used only during initialization of the widget and not modified by SetJustification.
-      DefaultJustification<native><public>: text_justification = external {}
+    text_base<public><native> := class<abstract>(widget) {
+      # The justification to display to the user. Used only during
+      # initialization of the widget and not modified by SetJustification.
+      DefaultJustification<public><native>: text_justification = external {}
 
-      # The policy that determine what happens when the text is longer than its allowed length.
-      # Used only during initialization of the widget and not modified by SetOverflowPolicy.
-      DefaultOverflowPolicy<native><public>: text_overflow_policy = external {}
+      # The policy that determine what happens when the text is longer than its
+      # allowed length.
+      # Used only during initialization of the widget and not modified
+      # by SetOverflowPolicy.
+      DefaultOverflowPolicy<public><native>: text_overflow_policy = external {}
 
-      # The text to display to the user. Used only during initialization of the widget and not modified by SetText.
-      DefaultText<native><localizes><public>: message = external {}
+      # The text to display to the user. Used only during initialization of the
+      # widget and not modified by SetText.
+      DefaultText<public><native><localizes>: message = external {}
 
-      # The color of the displayed text. Used only during initialization of the widget and not modified by SetTextColor.
-      DefaultTextColor<native><public>: color = external {}
+      # The color of the displayed text. Used only during initialization of the
+      # widget and not modified by SetTextColor.
+      DefaultTextColor<public><native>: color = external {}
 
-      # The opacity of the displayed text. Used only during initialization of the widget and not modified by SetTextOpacity.
-      DefaultTextOpacity<native><public>: type { _X: float where 0.000000 <= _X, _X <= 1.000000 } = external {}
+      # The opacity of the displayed text. Used only during initialization of
+      # the widget and not modified by SetTextOpacity.
+      DefaultTextOpacity<public><native>: type { _X: float where 0.000000 <= _X, _X <= 1.000000 } = external {}
 
-      # The size of the displayed text. Used only during initialization of the widget and not modified by SetTextSize.
-      DefaultTextSize<native><public>: float = external {}
+      # The size of the displayed text. Used only during initialization of the
+      # widget and not modified by SetTextSize.
+      DefaultTextSize<public><native>: float = external {}
 
       # Gets the text justification in the widget.
-      GetJustification<native><public>(): text_justification
+      GetJustification<public><native>(): text_justification
 
-      # Gets the policy that determine what happens when the text is longer than its allowed length.
-      GetOverflowPolicy<native><public>(): text_overflow_policy
+      # Gets the policy that determine what happens when the text is longer than
+      # its allowed length.
+      GetOverflowPolicy<public><native>(): text_overflow_policy
 
       # Gets the text currently in the widget.
-      GetText<native><public>(): string
+      GetText<public><native>(): string
 
       # Gets the color of the displayed text.
-      GetTextColor<native><public>(): color
+      GetTextColor<public><native>(): color
 
       # Gets the opacity of the displayed text.
-      GetTextOpacity<native><public>(): type { _X: float where 0.000000 <= _X, _X <= 1.000000 }
+      GetTextOpacity<public><native>(): type { _X: float where 0.000000 <= _X, _X <= 1.000000 }
 
       # Gets the size of the displayed text.
-      GetTextSize<native><public>(): float
+      GetTextSize<public><native>(): float
 
       # Sets the text justification in the widget.
-      SetJustification<native><public>(InJustification: text_justification): void
+      SetJustification<public><native>(InJustification: text_justification): void
 
-      # Sets the policy that determine what happens when the text is longer than its allowed length.
-      SetOverflowPolicy<native><public>(InOverflowPolicy: text_overflow_policy): void
+      # Sets the policy that determine what happens when the text is longer than
+      # its allowed length.
+      SetOverflowPolicy<public><native>(InOverflowPolicy: text_overflow_policy): void
 
       # Sets the text displayed in the widget.
-      SetText<native><public>(InText: message): void
+      SetText<public><native>(InText: message): void
 
       # Sets the color of the displayed text.
-      SetTextColor<native><public>(InColor: color): void
+      SetTextColor<public><native>(InColor: color): void
 
       # Sets the opacity of the displayed text.
-      SetTextOpacity<native><public>(InOpacity: type { _X: float where 0.000000 <= _X, _X <= 1.000000 }): void
+      SetTextOpacity<public><native>(InOpacity: type { _X: float where 0.000000 <= _X, _X <= 1.000000 }): void
 
       # Sets the size of the displayed text.
-      SetTextSize<native><public>(InSize: float): void
+      SetTextSize<public><native>(InSize: float): void
 
       # Whether the text should be automatically wrapped.
       var AutoWrap<public>: logic = external {}
 
-      # Whether text wraps onto a new line when it's length exceeds this width; if this value is zero or negative, no wrapping occurs.
+      # Whether text wraps onto a new line when it's length exceeds this width;
+      # if this value is zero or negative, no wrapping occurs.
       var WrapWidth<public>: float = external {}
 
       # The wrapping policy to determine where the line can be broken.
@@ -2227,8 +2617,9 @@ Temporary<public> := module {
     #   Left: Justify the text logically to the left based on current culture.
     #   Center: Justify the text in the center.
     #   Right: Justify the text logically to the right based on current culture.
-    # The Left and Right value will flip when the local culture is right-to-left.
-    text_justification<native><public> := enum {
+    # The Left and Right value will flip when the local culture
+    # is right-to-left.
+    text_justification<public><native> := enum {
       Center
 
       InvariantLeft
@@ -2243,65 +2634,72 @@ Temporary<public> := module {
     # Text overflow policy values:
     #   Clip: Overflowing text will be clipped.
     #   Ellipsis: Overflowing text will be replaced with an ellipsis.
-    text_overflow_policy<native><public> := enum {
+    text_overflow_policy<public><native> := enum {
       Clip
 
       Ellipsis
     }
 
     # Text wrapping policy values:
-    #   LineBreak: Allows breaking a line only at line-break iterator for wrapping.
+    #   LineBreak: Allows breaking a line only at line-break iterator
+    #              for wrapping.
     #   PerCharacter: Allows breaking a line after any character for wrapping.
-    text_wrapping_policy<native><public> := enum {
+    text_wrapping_policy<public><native> := enum {
       LineBreak
 
       PerCharacter
     }
 
     # A widget to display a texture.
-    texture_block<native><public> := class(widget) {
-      # The size this widget desired to be displayed in. Used only during initialization of the widget and not modified by SetDesiredSize.
-      DefaultDesiredSize<native><public>: vector2 = external {}
+    texture_block<public><native> := class(widget) {
+      # The size this widget desired to be displayed in. Used only during
+      # initialization of the widget and not modified by SetDesiredSize.
+      DefaultDesiredSize<public><native>: vector2 = external {}
 
-      # The horizontal tiling option. Used only during initialization of the widget and not modified by SetTiling.
-      DefaultHorizontalTiling<native><public>: image_tiling = external {}
+      # The horizontal tiling option. Used only during initialization of the
+      # widget and not modified by SetTiling.
+      DefaultHorizontalTiling<public><native>: image_tiling = external {}
 
-      # The image to render. Used only during initialization of the widget and not modified by SetImage.
-      DefaultImage<native><public>: texture
+      # The image to render. Used only during initialization of the widget and
+      # not modified by SetImage.
+      DefaultImage<public><native>: texture
 
-      # Tinting applied to the image. Used only during initialization of the widget and not modified by SetTint.
-      DefaultTint<native><public>: color = external {}
+      # Tinting applied to the image. Used only during initialization of the
+      # widget and not modified by SetTint.
+      DefaultTint<public><native>: color = external {}
 
-      # The vertical tiling option. Used only during initialization of the widget and not modified by SetTiling.
-      DefaultVerticalTiling<native><public>: image_tiling = external {}
+      # The vertical tiling option. Used only during initialization of the
+      # widget and not modified by SetTiling.
+      DefaultVerticalTiling<public><native>: image_tiling = external {}
 
       # Gets the size this widget desired to be displayed in.
-      GetDesiredSize<native><public>(): vector2
+      GetDesiredSize<public><native>(): vector2
 
       # Gets the image to render.
-      GetImage<native><public>(): texture
+      GetImage<public><native>(): texture
 
       # Gets the tiling option.
-      GetTiling<native><public>(): tuple(image_tiling, image_tiling)
+      GetTiling<public><native>(): tuple(image_tiling, image_tiling)
 
       # Gets the tint applied to the image.
-      GetTint<native><public>(): color
+      GetTint<public><native>(): color
 
       # Sets the size this widget desired to be displayed in.
-      SetDesiredSize<native><public>(InDesiredSize: vector2): void
+      SetDesiredSize<public><native>(InDesiredSize: vector2): void
 
       # Sets the image to render.
-      SetImage<native><public>(InImage: texture): void
+      SetImage<public><native>(InImage: texture): void
 
-      # Sets the tiling option when the image is smaller than the allocated size.
-      SetTiling<native><public>(InHorizontalTiling: image_tiling, InVerticalTiling: image_tiling): void
+      # Sets the tiling option when the image is smaller than the
+      # allocated size.
+      SetTiling<public><native>(InHorizontalTiling: image_tiling, InVerticalTiling: image_tiling): void
 
       # Sets the tint applied to the image.
-      SetTint<native><public>(InColor: color): void
+      SetTint<public><native>(InColor: color): void
     }
 
     # `widget` input consumption mode.
-    ui_input_mode<native><public> := enum {
+    ui_input_mode<public><native> := enum {
       # `widget` consumes all inputs
       All
 
@@ -2310,7 +2708,7 @@ Temporary<public> := module {
     }
 
     # `widget` vertical alignment mode.
-    vertical_alignment<native><public> := enum {
+    vertical_alignment<public><native> := enum {
       # Align `widget` to the bottom of the slot.
       Bottom
 
@@ -2325,40 +2723,45 @@ Temporary<public> := module {
     }
 
     # Base class for all UI elements drawn on the `player`'s screen.
-    widget<native><public> := class<abstract><unique><epic_internal> {
+    widget<public><native> := class<epic_internal><abstract><unique> {
       # Returns the `widget`'s parent `widget`.
-      # Fails if no parent exists, such as if this `widget` is not in the `player_ui` or is itself the root `widget`.
-      GetParentWidget<native><public>()<transacts><decides>: widget
+      # Fails if no parent exists, such as if this `widget` is not in the
+      # `player_ui` or is itself the root `widget`.
+      GetParentWidget<public><native>()<transacts><decides>: widget
 
-      # Returns the `widget` that added this `widget` to the `player_ui`. The root `widget` will return itself.
+      # Returns the `widget` that added this `widget` to the `player_ui`. The
+      # root `widget` will return itself.
       # Fails if this `widget` is not in the `player_ui`.
-      GetRootWidget<native><public>()<transacts><decides>: widget
+      GetRootWidget<public><native>()<transacts><decides>: widget
 
       # Returns the current `widget_visibility` state.
-      GetVisibility<native><public>(): widget_visibility
+      GetVisibility<public><native>(): widget_visibility
 
       # `true` if this `widget` can be modified interactively by the player.
-      IsEnabled<native><public>(): logic
+      IsEnabled<public><native>(): logic
 
-      # Enables or disables whether the `player` can interact with this `widget`.
-      SetEnabled<native><public>(InIsEnabled: logic): void
+      # Enables or disables whether the `player` can interact with
+      # this `widget`.
+      SetEnabled<public><native>(InIsEnabled: logic): void
 
-      # Shows or hides the `widget` without removing itself from the containing `player_ui`.
+      # Shows or hides the `widget` without removing itself from the
+      # containing `player_ui`.
       # See `widget_visibility` for details.
-      SetVisibility<native><public>(InVisibility: widget_visibility): void
+      SetVisibility<public><native>(InVisibility: widget_visibility): void
     }
 
     # Parameters for `event`s signalled by a `widget`.
-    widget_message<native><public> := struct {
+    widget_message<public><native> := struct {
       # The `player` that triggered the `event`.
-      Player<native><public>: player
+      Player<public><native>: player
 
       # The `widget` that triggered the `event`.
-      Source<native><public>: widget
+      Source<public><native>: widget
     }
 
-    # Used by `widget.SetVisibility` determine how a `widget` is shown in the user interface.
-    widget_visibility<native><public> := enum {
+    # Used by `widget.SetVisibility` determine how a `widget` is shown in the
+    # user interface.
+    widget_visibility<public><native> := enum {
       # The `widget` is invisible and does not occupy layout space.
       Collapsed
 
@@ -2372,14 +2775,14 @@ Temporary<public> := module {
 }
 
 WebAPI<public> := module {
-  MakeClient<native><public>(ClientId: client_id)<converges>: client
+  MakeClient<public><native>(ClientId: client_id)<converges>: client
 
-  body_response<native><public> := class<internal>(response) {
-    GetBody<native><public>()<computes>: string
+  body_response<public><native> := class<internal>(response) {
+    GetBody<public><native>()<computes>: string
   }
 
-  client<native><public> := class<final><computes><internal> {
-    Get<native><public>(Path: string)<suspends>: response
+  client<public><native> := class<internal><final><computes> {
+    Get<public><native>(Path: string)<suspends>: response
   }
 
   # Verse path: /UnrealEngine.com/WebAPI
@@ -2394,10 +2797,7 @@ WebAPI<public> := module {
   # Example:
   #     my_client_id<internal> := class<final><computes>(client_id)
   #     MyClient<internal> := MakeClient(my_client_id)
-  client_id<native><public> := class<abstract><computes> {}
+  client_id<public><native> := class<abstract><computes> {}
 
-  response<native><public> := class<internal> {}
+  response<public><native> := class<internal> {}
 }
-
-# Verse path: /UnrealEngine.com
-using { /Verse.org/Native }

@@ -23,6 +23,7 @@
 		"bModularTestingAllowed": true,
 		"bPythonUploadAllowed": true,
 		"bForkAllowed": true,
+		"bInterProjectRedirectorsAllowed": true,
 		"bProjectRenameAllowed": true,
 		"TeamMembershipInvitationPermission": "IndividualAndEmailDomains"
 	},
@@ -799,8 +800,7 @@
 	},
 	"ValkyrieUMGSettings": {
 		"AllowedPaletteWidgets": {
-			"+": [
-				"/Script/UMG.SafeZone",
+			"+": [				
 				"/FNE_UI/UILibrary/Buttons/UEFN_Button_Stylable.UEFN_Button_Stylable_C",
 				"/Game/Valkyrie/UMG/UEFN_InputModeWidgetSwitcher.UEFN_InputModeWidgetSwitcher_C"
 			]
@@ -1148,8 +1148,6 @@
 			"/Script/GameplayCameras.DollyFramingCameraNode":			{  },
 			"/Script/GameplayCameras.PanningFramingCameraNode":			{  },
 			"/Script/Niagara.NiagaraDataInterfacePropertyInterface":			{ "Visible": true },
-			"/Script/UMG.SafeZone":										{ "Visible": true },
-			"/Script/UMG.SafeZoneSlot":									{  },
 			"/Script/ItemizationCoreRuntime.InventorySetupDataNativeBasic":		{ "Visible": true },
 			"/Script/ItemizationCoreRuntime.ItemAttachmentDefinition":			{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/ItemizationCoreRuntime.ItemComponentData_Ability":			{ "Visible": true },
@@ -1330,7 +1328,7 @@
 			},
 			"LevelEditor": {
 				"AllowList": {
-					"+": [ "VkContentResolution" ]
+					"+": [ "VkContentResolution", "ValkyrieMemoryCalculation" ]
 				}
 			},
 			"ChaosVisualDebuggerTab": {
@@ -1428,16 +1426,6 @@
 					"DefaultAudioBank",
 					"DefaultAudioBankPriority",
 					"AmbientName"
-				]
-			},
-			{
-				"Type": "/Script/UMG.SafeZoneSlot",
-				"DenyList": [
-					"Padding",
-					"HAlign",
-					"VAlign",
-					"bIsTitleSafe",
-					"SafeAreaScale"
 				]
 			},
 			{

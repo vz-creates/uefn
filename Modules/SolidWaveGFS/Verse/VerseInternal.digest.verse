@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.30-CL-58813929
+Generated from build: ++Fortnite+Release-42.40-CL-59247843
 #################################################
 #>
 
@@ -260,13 +260,16 @@ Assets<public> := module {
 
   texture_base<epic_internal><native> := class<epic_internal><computes>(asset) {}
 
+  @available { MinUploadedAtFNVersion := 4240 }
+  uaf_shared_variables<epic_internal><native> := class<epic_internal>(asset, animation_asset) {}
+
   @available { MinUploadedAtFNVersion := 4220 }
   uaf_system<epic_internal><native> := class<epic_internal><final>(asset, animation_asset) {}
 }
 
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
+  # Registers a `chat_channel` to the simulation this `entity` belongs to.
   # Fails if the channel's `agent_group` already has more members than the
   # channel type's limit.
   # * Voice Chat Max Size = 80 participants.
@@ -276,19 +279,24 @@ Chat<public> := module {
   ): result(void, add_channel_error)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  # Deregisters a `voice_channel` or `text channel` from
-  # the `simulation_entity`.
+  # Deregisters a `chat_channel` from the simulation this `entity` belongs to.
   (Entity: entity where MemberInfo: subtype(member_info_interface)).RemoveChatChannel<public><native>(
     Channel: chat_channel(MemberInfo)
   ): result(void, remove_channel_error)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  # Unregisters and removes all members from all voice channels currently on
+  # Unregisters and removes all members from all chat channels currently on
   # the simulation.
   (Entity: entity).ClearChatChannels<epic_internal><native>(): void
 
+  @available { MinUploadedAtFNVersion := 4240 }
+  # Returns the `text_channel`s registered on the simulation this `entity`
+  # belongs to
+  (Entity: entity).GetTextChannels<public><native>()<reads>: []text_channel(has_text_member_info)
+
   @available { MinUploadedAtFNVersion := 4000 }
-  # Returns the registered voice channels on the `simulation_entity`
+  # Returns the `voice_channel`s registered on the simulation this `entity`
+  # belongs to
   (Entity: entity).GetVoiceChannels<public><native>()<reads>: []voice_channel(has_voice_member_info)
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -320,6 +328,7 @@ Chat<public> := module {
   add_channel_error<public> := class<computes> {}
 
   using { /Verse.org/AgentGroup }
+  using { /Verse.org/Colors }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
@@ -361,6 +370,23 @@ Chat<public> := module {
   # starting a game.
   default_member_info<epic_internal> := class(has_voice_member_info) {}
 
+  @available { MinUploadedAtFNVersion := 4240 }
+  # Used to specify permissions and other settings for a `text_channel`.
+  has_text_member_info<public><native> := interface(member_info_interface) {
+    GetCanSendEpicInternal<epic_internal>()<reads>: logic = external {}
+
+    GetMessageStyleEpicInternal<epic_internal>()<reads>: ?text_message_style = external {}
+
+    # Determines if the participant can send text messages to the channel.
+    # If false, the participant can still see users and messages in the text
+    # chat widget.
+    var CanSend<public>: logic = external {}
+
+    # The text styling for this participant in the channel.
+    # If false, `MessageStyle` as defined by the channel is used.
+    var MessageStyle<public>: ?text_message_style = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
   # Used to specify permissions and other settings for a voice_channel.
   has_voice_member_info<public><native> := interface(member_info_interface) {
@@ -377,6 +403,95 @@ Chat<public> := module {
   # Error returned when a channel cannot be removed via the
   # `RemoveChatChannel` function.
   remove_channel_error<public> := class<computes> {}
+
+  @available { MinUploadedAtFNVersion := 4240 }
+  # A `text_channel` defines a group of agents who can communicate via
+  # text chat.
+  # An agent can be a member of more than one `text_channel`.
+  # Text channels can accommodate 100 members of the channel's `Group`. Agents
+  # beyond this limit are not included in the chat.
+  # A chat participant in a `text_channel` may be restricted from text chat
+  # based on parental controls and/or user settings.
+  text_channel<public><native>(member_info: subtype(has_text_member_info)) := class<final>(chat_channel(member_info)) {
+    AddTextChannelSubscription<epic_internal>(NewSubscription: cancelable): void = external {}
+
+    CancelSubscriptions<epic_internal><native_callable>(): void = external {}
+
+    (/Verse.org/Chat/text_channel:)Chat_text_channel_Variance<private>(
+      : member_info,
+      : member_info,
+      : member_info
+    ): tuple() = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Chat/text_channel:)Chat_text_channel_Variance_Inherited<private>(): tuple(member_info) = external {}
+
+    # Disables users from communicating on the channel.
+    Disable<override><native>(): void
+
+    # Allows users to communicate on the channel.
+    Enable<override><native>(): void
+
+    GetChannelName<epic_internal><native_callable>()<reads>: message = external {}
+
+    GetMembersWithStyleOverride<epic_internal><native_callable>()<reads>: []agent = external {}
+
+    GetMessageStyleOverrideForMember<epic_internal><native_callable>(
+      Agent: agent
+    )<reads>: ?text_message_style = external {}
+
+    GetSendingAgents<epic_internal><native_callable>()<reads>: []agent = external {}
+
+    # Returns if any user can communicate on the channel.
+    IsEnabled<override><native>()<transacts><decides>: void
+
+    OnAddMemberEvent<epic_internal><native>(Agent: agent, MemberInfo: member_info)<transacts>: void
+
+    OnMemberInfoChangeEvent<epic_internal><native>(Agent: agent, MemberInfo: member_info)<transacts>: void
+
+    OnRemoveMemberEvent<epic_internal><native>(Agent: agent, MemberInfo: member_info)<transacts>: void
+
+    SetupSubscriptions<epic_internal>(): void = external {}
+
+    # Message color and name presentation for the channel.
+    # A member carrying their own `MessageStyle` overrides this one.
+    var MessageStyle<public>: text_message_style = external {}
+
+    # The color of system and platform messages sent to the chat feed.
+    # For example, when a user starts writing to a chat channel, a system
+    # message tells them so, "Now chatting in Team Red."
+    var SystemMessageColor<public>: color = external {}
+
+    var TextChannelSubscriptions<epic_internal>: []cancelable = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4240 }
+  text_manager_component<epic_internal><native> := class<final_super>(component) {
+    AddTextChannel<epic_internal><native_callable>(
+      TextChannel: text_channel(has_text_member_info)
+    )<decides>: void = external {}
+
+    RemoveTextChannel<epic_internal><native_callable>(
+      TextChannel: text_channel(has_text_member_info)
+    )<decides>: void = external {}
+
+    var TextChannelsOnSimulation<epic_internal><native>: []text_channel(has_text_member_info) = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4240 }
+  # Defines text message styling for text messages in a `text_channel`.
+  # Only affects new messages.
+  text_message_style<public><native> := class<concrete> {
+    # A message printed after a user's name in the chat feed.
+    # This message is always wrapped in square brackets "[]".
+    # If false, no extra message is added to the message.
+    # For example, in the message "Jonesy [Tilted Towers]: gg", the text "Tilted
+    # Towers" would be the message provided here.
+    ContextMessage<public><native>: ?message = external {}
+
+    # The text color of messages sent to the chat feed.
+    TextColor<public><native>: color = external {}
+  }
 
   @available { MinUploadedAtFNVersion := 4000 }
   # A `voice_channel` defines a group of agents who can communicate via
@@ -1154,11 +1269,7 @@ Input<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  # Diagnostic helper for verifying client-side code execution. Logs the
-  # timestamp and the current net mode to LogVerseInput. Call from a Verse
-  # function to confirm the same Verse code runs on both server and client — the
-  # log line will appear once with NetMode=DedicatedServer/ListenServer and once
-  # with NetMode=Client (or just NetMode=Standalone in PIE single-process).
+  # Logs the timestamp and current net mode to LogVerseInput.
   VerseInput_TestPredictsPing<epic_internal><native>()<transacts>: void
 
   # Flags for input devices currently available to the player. Updates at
@@ -1467,7 +1578,7 @@ Predicts<public> := module {
 
   PredictsDebugRegisterFunc<epic_internal><native>(
     __dupe___unnamed_parameter_0: int,
-    __dupe___unnamed_parameter_1: type { _()<predicts>: void }
+    __dupe___unnamed_parameter_1: type { _(): void }
   )<transacts>: int
 
   PredictsDebugRemoveClientWithID<epic_internal><native>(ClientID: int)<transacts>: void
@@ -1484,7 +1595,7 @@ Predicts<public> := module {
 
   PredictsDebugUseReachabilityBasedReplication<epic_internal><native>()<transacts>: void
 
-  PredictsIsRunningOnServer<epic_internal><native>()<transacts><decides><predicts>: void
+  PredictsIsRunningOnServer<epic_internal><native>()<transacts><decides>: void
 
   PredictsServerMarkObjectField<epic_internal><native>(Obj: any, FieldName: string)<transacts>: void
 
@@ -2576,6 +2687,13 @@ SceneGraph<public> := module {
   @experimental
   MakeSkeletonModifierStack<epic_internal><native>()<converges>: modifier_stack(skeleton)
 
+  RouteUAFSharedVariableSet<epic_internal><native>(
+    Component: has_uaf_shared_variables,
+    Asset: animation_asset,
+    PropertyName: string,
+    NewValue: any
+  )<transacts>: void
+
   using { /Verse.org/SceneGraph }
   # Verse path: /Verse.org/SceneGraph
   @available { MinUploadedAtFNVersion := 3800 }
@@ -3327,6 +3445,11 @@ SceneGraph<public> := module {
 
     # Returns the current camera transform if available.
     GetActiveCameraTransform<epic_internal><native>()<decides><reads>: (/Verse.org/SpatialMath:)transform
+
+    @replicated("")
+    @experimental
+    @available { MinUploadedAtFNVersion := 4230 }
+    var UseCameraLocationAsAudioListenerPosition<epic_internal><native>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
@@ -4592,6 +4715,12 @@ SceneGraph<public> := module {
     SkeletalAnimation<epic_internal>: modifier_stack(skeleton)
   }
 
+  has_uaf_shared_variables<epic_internal><native> := interface<epic_internal> {
+    InternalAsset<epic_internal>: animation_asset
+
+    SetProperty<epic_internal>(PropertyName: string, NewValue: any)<transacts>: void = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   has_ue_physics_properties<epic_internal><native> := interface<epic_internal> {
@@ -4960,8 +5089,7 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Epic internal-only camera_modifier class that is free of the restrictions
-  # temporarily in place on camera_modifier
+  # Epic internal-only camera_modifier class that supports client execution.
   internal_camera_modifier<epic_internal><native> := class(camera_modifier) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -5895,6 +6023,32 @@ SceneGraph<public> := module {
     var MeshEntity<epic_internal><native>: ?entity = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4240 }
+  @experimental
+  # Follows the skeletal animation of another entity's animation source, so e.g.
+  # this mesh follows another mesh. SourceEntity's skeletal-animation stack
+  # output is republished as this stack's incoming skeleton.
+  proxy_skeleton_modifier<epic_internal><native> := class<epic_internal><final>(
+    proxy_skeleton_modifier_base,
+    modifier(skeleton)
+  ) {
+    Evaluate<native><override>(InValue: skeleton)<reads>: skeleton
+
+    @editable
+    # The retargeting method applied to the followed skeletal animation. Unset
+    # means plain remapping.
+    var RetargetMethod<epic_internal><native>: ?skeletal_animation_retarget_method = external {}
+
+    @editable
+    @replicated("RepNotify")
+    # The entity whose skeletal animation to follow. While unset or unresolved,
+    # this mesh stays on its reference pose.
+    var SourceEntity<epic_internal><native>: ?entity = external {}
+  }
+
+  @import_as("/Script/EntitySkeletalAnimation.UEntityProxySkeletonModifierBase")
+  proxy_skeleton_modifier_base<epic_internal><native> := class<epic_internal> {}
+
   @available { MinUploadedAtFNVersion := 4000 }
   rare_rarity<public> := class<allocates>(uncommon_rarity) {
     Color<override>: color = external {}
@@ -6075,7 +6229,6 @@ SceneGraph<public> := module {
   @experimental
   # A modifier of skeletons, used to animate meshes using skeletal animation
   skeletal_animation<public><native> := class<epic_internal><castable>(skeletal_animation_base, modifier(skeleton)) {
-    @editable
     @replicated("")
     # Controls if the `skeletal_animation` should play automatically
     # when created.
@@ -6097,6 +6250,7 @@ SceneGraph<public> := module {
 
     GetSeconds<epic_internal><native>()<reads>: float
 
+    @replicated("RepNotify")
     InternalAsset<epic_internal><native>: animation_asset = external {}
 
     Pause<epic_internal><native>()<transacts>: void
@@ -6126,6 +6280,16 @@ SceneGraph<public> := module {
 
   @import_as("/Script/EntitySkeletalAnimation.UEntitySkeletalAnimationBase")
   skeletal_animation_base<epic_internal><native> := class<epic_internal> {}
+
+  @experimental
+  # A method used to retarget skeletal animation between different skeletons.
+  # Unset on a proxy_skeleton_modifier means plain remapping.
+  skeletal_animation_retarget_method<epic_internal><native> := class<epic_internal><abstract>(
+    skeletal_animation_retarget_method_base
+  ) {}
+
+  @import_as("/Script/EntitySkeletalAnimation.USkeletalAnimationRetargetMethodBase")
+  skeletal_animation_retarget_method_base<epic_internal><native> := class<epic_internal> {}
 
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
@@ -6507,6 +6671,14 @@ SceneGraph<public> := module {
     # alternate origin than the default parent entity
     var Origin<public>: ?origin = external {}
   }
+
+  @display_name("Translation Retarget")
+  @experimental
+  # Retargets bone translations using the per-bone retarget modes authored on
+  # the target skeleton.
+  translation_retarget_method<epic_internal><native> := class<epic_internal><final>(
+    skeletal_animation_retarget_method
+  ) {}
 
   @available { MinUploadedAtFNVersion := 4100 }
   @replicatable

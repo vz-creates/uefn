@@ -83,6 +83,7 @@
 	"VerseFortniteAbilities":
 	{
 		"assets": [
+			"GameplayCues/GCNL_StatusEffect_Burn",
 			"VerseFortniteAbilities"
 		],
 		"epicInternalAssets": []
@@ -1247,7 +1248,6 @@
 	"VerseSocialSynergyFortnite":
 	{
 		"assets": [
-			"Levels/VerseSocialSynergyFortnite_LevelOverlay",
 			"VerseSocialSynergyFortnite"
 		],
 		"epicInternalAssets": []

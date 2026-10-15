@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.30-CL-58813929
+Generated from build: ++Fortnite+Release-42.40-CL-59247843
 #################################################
 #>
 
@@ -140,7 +140,7 @@ Assets<public> := module {
 
 Chat<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
-  # Registers a `voice_channel` or `text_channel` to the `simulation_entity`.
+  # Registers a `chat_channel` to the simulation this `entity` belongs to.
   # Fails if the channel's `agent_group` already has more members than the
   # channel type's limit.
   # * Voice Chat Max Size = 80 participants.
@@ -150,14 +150,19 @@ Chat<public> := module {
   ): result(void, add_channel_error)
 
   @available { MinUploadedAtFNVersion := 4000 }
-  # Deregisters a `voice_channel` or `text channel` from
-  # the `simulation_entity`.
+  # Deregisters a `chat_channel` from the simulation this `entity` belongs to.
   (Entity: entity where MemberInfo: subtype(member_info_interface)).RemoveChatChannel<public><native>(
     Channel: chat_channel(MemberInfo)
   ): result(void, remove_channel_error)
 
+  @available { MinUploadedAtFNVersion := 4240 }
+  # Returns the `text_channel`s registered on the simulation this `entity`
+  # belongs to
+  (Entity: entity).GetTextChannels<public><native>()<reads>: []text_channel(has_text_member_info)
+
   @available { MinUploadedAtFNVersion := 4000 }
-  # Returns the registered voice channels on the `simulation_entity`
+  # Returns the `voice_channel`s registered on the simulation this `entity`
+  # belongs to
   (Entity: entity).GetVoiceChannels<public><native>()<reads>: []voice_channel(has_voice_member_info)
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -166,6 +171,7 @@ Chat<public> := module {
   add_channel_error<public> := class<computes> {}
 
   using { /Verse.org/AgentGroup }
+  using { /Verse.org/Colors }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
@@ -188,6 +194,19 @@ Chat<public> := module {
     Name<public>: message
   }
 
+  @available { MinUploadedAtFNVersion := 4240 }
+  # Used to specify permissions and other settings for a `text_channel`.
+  has_text_member_info<public><native> := interface(member_info_interface) {
+    # Determines if the participant can send text messages to the channel.
+    # If false, the participant can still see users and messages in the text
+    # chat widget.
+    var CanSend<public>: logic = external {}
+
+    # The text styling for this participant in the channel.
+    # If false, `MessageStyle` as defined by the channel is used.
+    var MessageStyle<public>: ?text_message_style = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 4000 }
   # Used to specify permissions and other settings for a voice_channel.
   has_voice_member_info<public><native> := interface(member_info_interface) {
@@ -201,6 +220,58 @@ Chat<public> := module {
   # Error returned when a channel cannot be removed via the
   # `RemoveChatChannel` function.
   remove_channel_error<public> := class<computes> {}
+
+  @available { MinUploadedAtFNVersion := 4240 }
+  # A `text_channel` defines a group of agents who can communicate via
+  # text chat.
+  # An agent can be a member of more than one `text_channel`.
+  # Text channels can accommodate 100 members of the channel's `Group`. Agents
+  # beyond this limit are not included in the chat.
+  # A chat participant in a `text_channel` may be restricted from text chat
+  # based on parental controls and/or user settings.
+  text_channel<public><native>(member_info: subtype(has_text_member_info)) := class<final>(chat_channel(member_info)) {
+    (/Verse.org/Chat/text_channel:)Chat_text_channel_Variance<private>(
+      : member_info,
+      : member_info,
+      : member_info
+    ): tuple() = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Chat/text_channel:)Chat_text_channel_Variance_Inherited<private>(): tuple(member_info) = external {}
+
+    # Disables users from communicating on the channel.
+    Disable<override><native>(): void
+
+    # Allows users to communicate on the channel.
+    Enable<override><native>(): void
+
+    # Returns if any user can communicate on the channel.
+    IsEnabled<override><native>()<transacts><decides>: void
+
+    # Message color and name presentation for the channel.
+    # A member carrying their own `MessageStyle` overrides this one.
+    var MessageStyle<public>: text_message_style = external {}
+
+    # The color of system and platform messages sent to the chat feed.
+    # For example, when a user starts writing to a chat channel, a system
+    # message tells them so, "Now chatting in Team Red."
+    var SystemMessageColor<public>: color = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4240 }
+  # Defines text message styling for text messages in a `text_channel`.
+  # Only affects new messages.
+  text_message_style<public><native> := class<concrete> {
+    # A message printed after a user's name in the chat feed.
+    # This message is always wrapped in square brackets "[]".
+    # If false, no extra message is added to the message.
+    # For example, in the message "Jonesy [Tilted Towers]: gg", the text "Tilted
+    # Towers" would be the message provided here.
+    ContextMessage<public><native>: ?message = external {}
+
+    # The text color of messages sent to the chat feed.
+    TextColor<public><native>: color = external {}
+  }
 
   @available { MinUploadedAtFNVersion := 4000 }
   # A `voice_channel` defines a group of agents who can communicate via
@@ -1003,7 +1074,7 @@ Native<public> := module {
 # Verse path: /Verse.org
 # Module import path: /Verse.org/Predicts
 Predicts<public> := module {
-  PredictsIsRunningOnServer<epic_internal><native>()<transacts><decides><predicts>: void
+  PredictsIsRunningOnServer<epic_internal><native>()<transacts><decides>: void
 
   PredictsServerRegisterObject<epic_internal><native>(__dupe___unnamed_parameter_0: any)<transacts>: any
 }

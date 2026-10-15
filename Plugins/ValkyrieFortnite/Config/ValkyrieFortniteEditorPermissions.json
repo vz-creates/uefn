@@ -29,6 +29,7 @@
 		"bModularTestingAllowed": false,
 		"bPythonUploadAllowed": false,
 		"bForkAllowed": false,
+		"bInterProjectRedirectorsAllowed": true,
 		"bProjectRenameAllowed": false,
 		"bModuleApiAllowed": false,
 		"DefaultProjectReferencedContent": []
@@ -401,6 +402,7 @@
 			"/Script/UMG.UniformGridPanel",
 			"/Script/UMG.WidgetSwitcher",
 			"/Script/UMG.WrapBox",
+			"/Script/UMG.SafeZone",
 			"/Script/FNE_UILibrary.ActionWidget",
 			"/Game/Valkyrie/UMG/UEFN_Button_Loud.UEFN_Button_Loud",
 			"/Game/Valkyrie/UMG/UEFN_Button_Quiet.UEFN_Button_Quiet",
@@ -2353,6 +2355,8 @@
 			"/Script/UMG.WidgetTree":											{  },
 			"/Script/UMG.WrapBox":												{ "Visible": true },
 			"/Script/UMG.WrapBoxSlot":											{  },
+			"/Script/UMG.SafeZone":												{ "Visible": true },
+			"/Script/UMG.SafeZoneSlot":											{  },
 			"/Script/UnrealEd.CubeBuilder":										{  },
 			"/Script/UnrealEd.CylinderBuilder":									{  },
 			"/Script/UnrealEd.EdGraphNode_Comment":								{ "Visible": true },
@@ -3776,7 +3780,7 @@
 			},
 			{
 				"Type": "/Script/CRD_HUDController.DeveloperLayoutButtonProxy",
-				"AllowList": [ "Action", "bHideFromLayout", "bOverrideIcon", "IconBrush"]
+				"AllowList": [ "Action", "bHideFromLayout", "bOverrideIcon", "IconBrush", "bApplyCanvasTransform"]
 			},
 			{
 				"Type": "/Script/UMG.GridPanel",
@@ -4717,7 +4721,11 @@
 			},
 			{
 				"Type": "/Game/Valkyrie/UMG/UEFN_Slider.UEFN_Slider_C",
-				"AllowList": [ "Value" ]
+				"AllowList": [ "Value", "OnHighlight", "OnUnhighlight" ]
+			},
+			{
+				"Type": "/Script/UMG.SafeZoneSlot",
+				"DenyList": [ "Padding", "HAlign", "VAlign", "bIsTitleSafe", "SafeAreaScale" ]
 			},
 			{
 				"Type": "/Script/Creative_TemporaryTeamsRuntime.FortUserOptionComponent_TemporaryTeams",
@@ -4874,7 +4882,7 @@
 			},
 			{
 				"Type": "/Script/CRD_HUDController.EVerseSubscribableInputAction",
-				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint", "VehicleBoost", "VehicleHorn", "VehicleReverse", "VehicleSecondaryAbility", "VehicleSprint", "VehicleSwitchSeat", "VehicleThrottle", "Backpack", "MapPing", "ToggleAutofire", "ToggleMap", "MoveStick", "Interact"]
+				"AllowList": ["Jump", "Shoot", "Crouch", "Reload", "SecondaryAbility", "Sprint", "VehicleBoost", "VehicleHorn", "VehicleReverse", "VehicleSecondaryAbility", "VehicleSprint", "VehicleSwitchSeat", "VehicleThrottle", "Backpack", "MapPing", "ToggleAutofire", "ToggleMap", "MoveStick", "Interact", "AlternateUse"]
 			}
 		]
 	},

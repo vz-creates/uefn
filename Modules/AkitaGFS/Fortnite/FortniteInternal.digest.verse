@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.30-CL-58813929
+Generated from build: ++Fortnite+Release-42.40-CL-59247843
 #################################################
 #>
 
@@ -965,11 +965,9 @@ AI<public> := module {
 Abilities<public> := module {
   @available { MinUploadedAtFNVersion := 4200 }
   @hide_in_editor
-  @experimental
   ability_target_query<public><native> := class {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_animation_element_span<public><native> := class<concrete>(fort_ability_timeline_element_span) {
     @editable {}
     AnimationLayer<public><native>: play_animation_layer = external {}
@@ -977,16 +975,15 @@ Abilities<public> := module {
     @editable {}
     AnimationSequence<public><native>: animation_sequence = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     (/Fortnite.com/Abilities/fort_ability_animation_element_span:)EaseIn<public><native>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     (/Fortnite.com/Abilities/fort_ability_animation_element_span:)EaseOut<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_ability_attach_socket<public><native> := enum {
+  fort_ability_attach_socket<public><native> := enum<open> {
     Chest
 
     Head
@@ -1003,8 +1000,7 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_ability_attribute<epic_internal><native> := enum<open> {
+  fort_ability_attribute<public><native> := enum<open> {
     Gravity
 
     MaxHealth
@@ -1015,8 +1011,7 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_ability_attribute_modifier<epic_internal><native> := enum<open> {
+  fort_ability_attribute_modifier<public><native> := enum<open> {
     Add
 
     Multiply
@@ -1025,8 +1020,7 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_ability_attribute_modifier_point<epic_internal><native> := class<concrete>(fort_ability_timeline_element_point) {
+  fort_ability_attribute_modifier_point<public><native> := class<final><concrete>(fort_ability_timeline_element_point) {
     @editable {}
     ApplyToInstigator<public><native>: logic = external {}
 
@@ -1036,13 +1030,12 @@ Abilities<public> := module {
     @editable {}
     AttributeModifiers<public><native>: []fort_attribute_modifier = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     Duration<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_ability_attribute_modifier_span<epic_internal><native> := class<concrete>(fort_ability_timeline_element_span) {
+  fort_ability_attribute_modifier_span<public><native> := class<final><concrete>(fort_ability_timeline_element_span) {
     @editable {}
     ApplyToInstigator<public><native>: logic = external {}
 
@@ -1054,9 +1047,8 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_damage_point<public><native> := class<concrete>(fort_ability_timeline_element_point) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     Amount<public><native>: float = external {}
 
     @editable {}
@@ -1064,9 +1056,8 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_heal_point<public><native> := class<concrete>(fort_ability_timeline_element_point) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     Amount<public><native>: float = external {}
 
     @editable {}
@@ -1074,7 +1065,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_particle_system_element_point<public><native> := class(fort_ability_timeline_element_point) {
     @editable {}
     ParticleSystem<public><native>: particle_system = external {}
@@ -1084,7 +1074,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_particle_system_element_span<public><native> := class<concrete>(fort_ability_timeline_element_span) {
     @editable {}
     ParticleSystem<public><native>: particle_system = external {}
@@ -1094,7 +1083,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   # Fires a projectile defined by a projectile_template.
   fort_ability_projectile_point<public><native> := class<concrete>(fort_ability_timeline_element_point) {
     @editable {}
@@ -1108,66 +1096,55 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_remove_item_participant_point<public><native> := class<concrete>(fort_ability_timeline_element_point) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_sound_element_point<public><native> := class(fort_ability_timeline_element_point) {
     @editable {}
     Sound<public><native>: sound_wave = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_sound_element_span<public><native> := class<concrete>(fort_ability_timeline_element_span) {
     @editable {}
     Sound<public><native>: sound_wave = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   @replicatable
   @import_as("/Script/GameplayAbilities.FGameplayAbilitySpecHandle")
   fort_ability_spec_handle<public><native> := struct<concrete> {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_status_effect_burn_point<public><native> := class<final>(fort_ability_status_effect_point) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     var DamagePerSecond<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_status_effect_icy_feet_point<public><native> := class<final>(fort_ability_status_effect_point) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_status_effect_pepper_point<public><native> := class<final>(fort_ability_status_effect_point) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @hide_in_editor
-  @experimental
   fort_ability_status_effect_point<public><native> := class(fort_ability_timeline_element_point) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     var StatusEffectDuration<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_status_effect_removal_point<public><native> := class<final>(fort_ability_timeline_element_point) {
     @editable {}
     StatusEffects<public><native>: []concrete_subtype(fort_ability_status_effect_point) = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_ability_status_effect_slap_point<public><native> := class<final>(fort_ability_status_effect_point) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
   @hide_in_editor
-  @experimental
   fort_ability_timeline_element_point<public><native> := class<concrete>((/Verse.org:)Timeline.timeline_element_point) {
     @replicated("")
     var Time<override>: float = external {}
@@ -1175,20 +1152,18 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @hide_in_editor
-  @experimental
   fort_ability_timeline_element_span<public><native> := class<concrete>((/Verse.org:)Timeline.timeline_element_span) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     @replicated("")
     var BeginTime<override>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     @replicated("")
     var EndTime<override>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_attribute_modifier<epic_internal><native> := struct<concrete> {
+  fort_attribute_modifier<public><native> := struct<concrete> {
     @editable {}
     Attribute<public><native>: fort_ability_attribute = external {}
 
@@ -1200,19 +1175,15 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_cancel_reason_canceled<public><native> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_cancel_reason_ended<public><native> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_cancel_reason_invalid<public><native> := class<final><castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_damage_behavior<public><native> := enum<open> {
     EffectiveDamage
 
@@ -1222,7 +1193,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_heal_behavior<public><native> := enum<open> {
     EffectiveHealth
 
@@ -1233,7 +1203,6 @@ Abilities<public> := module {
 
   @available { MinUploadedAtFNVersion := 4200 }
   @class_and_subclass_group_names("item")
-  @experimental
   fort_item_ability_component<public><native> := class<final><final_super>(component) {
     AddItemAbility<public><native>(InAbility: ability(ability_context, ability_effect))<transacts>: void
 
@@ -1265,17 +1234,15 @@ Abilities<public> := module {
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   # Verse path: /Fortnite.com/Abilities
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   @replicatable
   @import_as("/Script/VerseFortniteAbilities.FFortItemAbilityComponentData")
   fort_item_ability_component_data<public><native> := struct<concrete> {}
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   # The base projectile component defining its behavior.
   fort_projectile_component<public><native> := class<final_super>(component) {
-    # The agent that fired this projectile.
-    GetInstigator<public><native>()<transacts><decides>: agent
+    # The entity that fired this projectile.
+    GetInstigator<public><native>()<transacts><decides>: entity
 
     # The entity this projectile originated from (e.g. the weapon/launcher or
     # ability effect).
@@ -1289,27 +1256,33 @@ Abilities<public> := module {
 
     SetGravity<public><native>(Val: float): void
 
+    SetLifetimeAfterStop<public><native>(Val: float): void
+
     SetRange<public><native>(Val: float): void
 
     SetSpeed<public><native>(Val: float): void
 
-    @editable
+    @editable_number(float) {}
     # Fall rate (cm/s^2). 0 = no gravity.
     var<private> Gravity<public><native>: float = external {}
 
-    @editable
+    @editable_number(float) { MinValue := option { 0.000000 } }
+    # How long (seconds) the projectile stays in the world after it stops before
+    # it despawns.
+    var<private> LifetimeAfterStop<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 } }
     # Distance before the projectile is cleared from the scene (cm).
     var<private> Range<public><native>: float = external {}
 
-    @editable
+    @editable_number(float) { MinValue := option { 0.000000 } }
     # Speed the projectile travels (cm/s).
     var<private> Speed<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_reticle_ability_target_query<public><native> := class<concrete>(ability_target_query) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     @replicated("")
     Range<public><native>: float = external {}
 
@@ -1319,8 +1292,10 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  fort_target_query_affiliation<public><native> := enum {
+  fort_self_ability_target_query<public><native> := class(ability_target_query) {}
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  fort_target_query_affiliation<public><native> := enum<open> {
     Friendly
 
     Hostile
@@ -1329,7 +1304,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_template_ability<public><native> := class(ability(ability_context, fort_template_ability_effect)) {
     MakeAbility<override>()<transacts>: fort_template_ability_effect = external {}
 
@@ -1356,7 +1330,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   # Prefab to provide a central location for handling desired ability and
   # gameplay logic.
   fort_template_ability_effect<public><native> := class<concrete>(ability_effect) {
@@ -1365,7 +1338,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_template_ability_effect_component<public><native> := class(ability_effect_component) {
     CanCancel<override>(Reason: cancel_reason)<transacts><decides>: void = external {}
 
@@ -1375,13 +1347,13 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   fort_wedge_ability_target_query<public><native> := class<concrete>(ability_target_query) {
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 6.283185 } }
+    @units("Radians")
     @replicated("")
-    CentralAngle<public><native>: float = external {}
+    Angle<public><native>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 } }
     @replicated("")
     Radius<public><native>: float = external {}
 
@@ -1391,7 +1363,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   # Result payload for a projectile impact.
   projectile_impact_result<public><native> := struct<concrete> {
     # The entity that was hit, if the impact was against one (false for
@@ -1406,7 +1377,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
   # Base entity for a spawnable projectile.
   projectile_template<public><native> := class<internal><concrete>(entity) {
     @field("Components")
@@ -1414,10 +1384,6 @@ Abilities<public> := module {
     # Can be changed in derived entities.
     ProjectileComponent<public><native>: ?fort_projectile_component = external {}
   }
-
-  @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  self_ability_target_query<public><native> := class(ability_target_query) {}
 }
 
 # Module import path: /Fortnite.com/Animation
@@ -2048,6 +2014,11 @@ Armory<public> := module {
     RarityComponent<override>: ?rarity_component = external {}
 
     WeaponComponent<override>: ?fort_weapon_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4240 }
+  torch_mesh<public> := class<final>(mesh_component) {
+    Mesh<override>: mesh = external {}
   }
 
   @hide_in_editor
@@ -27188,6 +27159,42 @@ Weapons<public> := module {
 
   @preload
   FuryAssaultRifle_BR_CH6S1_Uncommon<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  GatekeeperShotgun_BR_CH7S2_Legendary<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  GatekeeperShotgun_BR_CH7S4_Epic<public> := class<final><concrete>(fort_item_definition_entity) {
+    @available { MinUploadedAtFNVersion := 4020 }
+    IconComponent<override>: ?icon_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4000 }
+    ItemComponent<override>: item_component = external {}
+
+    @available { MinUploadedAtFNVersion := 4020 }
+    RarityComponent<override>: ?rarity_component = external {}
+  }
+
+  @preload
+  GatekeeperShotgun_BR_CH7S4_Rare<public> := class<final><concrete>(fort_item_definition_entity) {
     @available { MinUploadedAtFNVersion := 4020 }
     IconComponent<override>: ?icon_component = external {}
 

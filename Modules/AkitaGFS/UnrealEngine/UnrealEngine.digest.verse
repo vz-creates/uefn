@@ -3,24 +3,12 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.30-CL-58813929
+Generated from build: ++Fortnite+Release-42.40-CL-59247843
 #################################################
 #>
 
 Abilities<public> := module {
-  using { /Verse.org/Assets }
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  # Verse path: /UnrealEngine.com/Abilities
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
-  MakeAbilityEffectComponent<public><native>(
-    component_type: castable_subtype(ability_effect_component)
-  )<converges>: component_type
-
-  @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   # Lives in the scene graph and is the high level description of an ability.
   #  Knows if an ability can run, cooldowns, distance and targeting
   #  requirements etc...
@@ -56,16 +44,19 @@ Abilities<public> := module {
 
     var Icon<override>: texture = external {}
 
-    var<private> ActiveEffects<public><native>: []ability_effect_type
+    var<private> ActiveEffects<public><native>: []ability_effect_type = external {}
   }
 
+  using { /Verse.org/Assets }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  # Verse path: /UnrealEngine.com/Abilities
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   # Data passed on activation of an ability. Holds who fired, who helped, and
   # what got hit.
   #  Subclass to provide specific context for custom ability effects
   ability_context<public><native> := class<concrete> {
-    var Instigator<public><native>: ?agent = external {}
+    var Instigator<public><native>: ?entity = external {}
 
     var Participants<public><native>: []entity = external {}
 
@@ -73,7 +64,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   # Prefab to provide a central location for handling desired ability and
   # gameplay logic.
   ability_effect<public><native> := class<concrete>(entity) {
@@ -81,7 +71,6 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   # Guaranteed Ability component on Ability prefab entities. Handles
   # Ability lifecycle.
   ability_effect_component<public><native> := class<final_super>(component) {
@@ -101,15 +90,12 @@ Abilities<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   ability_ended<public> := class<castable>(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   ability_removed_from_scene<public><native> := class(cancel_reason) {}
 
   @available { MinUploadedAtFNVersion := 4130 }
-  @experimental
   # Lightweight tag explaining why an effect ended.
   cancel_reason<public><native> := class<abstract><castable> {}
 }

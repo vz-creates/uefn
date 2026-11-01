@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.40-CL-59247843
+Generated from build: ++Fortnite+Release-43.00-CL-59596594
 #################################################
 #>
 
@@ -262,6 +262,7 @@ Conversations<public> := module {
   }
 
   using { /Verse.org/Chat }
+  using { /Verse.org/Diagnostics }
   using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
@@ -275,6 +276,7 @@ Conversations<public> := module {
   ai_moderated_error<public><native> := class(ai_error) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @export_metadata { Category := "PublishingMutators"; Key := "Conversations"; Value := "" }
   # Manages AI session state: conversation history, pinned entries, and
   # registered capabilities (tools, signals, listenables).
   #  History is automatically compacted by the runtime. Completed goals are
@@ -417,6 +419,7 @@ Conversations<public> := module {
   peely_voice<public> := class<epic_internal><final>(voice_model) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
+  @export_metadata { Category := "PublishingMutators"; Key := "Conversations"; Value := "" }
   # NPC Persona component
   persona_component<public><native> := class<final_super>(component) {
     # Listenable which is signaled when the spoken message is finalized
@@ -554,6 +557,308 @@ Conversations<public> := module {
   @available { MinUploadedAtFNVersion := 4000 }
   # Cinematic, High, Natural
   ziggy_voice<public> := class<epic_internal><final>(voice_model) {}
+}
+
+HealthPipeline<public> := module {
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A health adjustment delivered as damage; cast to distinguish in OnReceive.
+  damage_event<public><native> := class(health_adjustment_event) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Categorizes an adjustment or result entry as damage.
+  damage_tag<public><native> := class(health_adjustment_tag) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A health adjustment delivered as healing; cast to distinguish in OnReceive.
+  healing_event<public><native> := class(health_adjustment_event) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Categorizes an adjustment or result entry as healing.
+  healing_tag<public><native> := class(health_adjustment_tag) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A context object passed through the adjustment pipeline in the scene_event
+  #  to provide the instigator and contributing entities.
+  health_adjustment_context<public><native> := class<concrete> {
+    var Contributors<public><native>: []entity = external {}
+
+    var Instigator<public><native>: ?entity = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # The health delta to apply plus categories describing the adjustment.
+  health_adjustment_entry<public><native> := class<final><concrete><reads> {
+    Categories<public><native>: []tag = external {}
+
+    HealthDelta<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Adjustments are scene events: senders build them and deliver
+  # with entity.SendUp;
+  #  receivers (health_component) process them in OnReceive.
+  #  Modifiers is the event LAYER stack, supplied by the sender (gather from
+  #  contributors however your game sees fit) before the event is sent.
+  health_adjustment_event<public><native> := class<epic_internal><abstract>(scene_event) {
+    Context<public><native>: health_adjustment_context = external {}
+
+    Entries<public><native>: []health_adjustment_entry = external {}
+
+    var Modifiers<public>: health_adjustment_modifier_stack = external {}
+
+    var Result<public><native>: ?health_adjustment_result = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Modifiers evaluate individual adjustment entries: real entry in, modified
+  # entry out
+  #  (health_adjustment_entry is <reads>-constructible, so a <reads> body can
+  #  build the modified entry).
+  #  Evaluation state (Context/Target/Pool) is delivered through vars at the
+  #  time of adjustment evaluation.
+  health_adjustment_modifier<public> := class(modifier(health_adjustment_entry)) {
+    Evaluate<override>(InValue: health_adjustment_entry)<reads>: health_adjustment_entry = external {}
+
+    PostEvaluate<public>()<transacts>: void = external {}
+
+    PreEvaluate<public>(
+      InContext: ?health_adjustment_context,
+      InTarget: ?entity,
+      InPool: ?health_pool_entry
+    )<transacts>: void = external {}
+
+    var Context<protected>: ?health_adjustment_context = external {}
+
+    var Pool<protected>: ?health_pool_entry = external {}
+
+    var Target<protected>: ?entity = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # An ordered stack of health adjustment modifiers.
+  #  Itself a modifier, so stacks nest; the Pre/PostEvaluate broadcasts forward
+  #  evaluation state down the chain.
+  health_adjustment_modifier_stack<public> := class(modifier_stack(health_adjustment_entry)) {
+    AddModifier<override>(
+      Modifier: modifier(health_adjustment_entry),
+      Position: rational
+    )<transacts>: cancelable = external {}
+
+    PostEvaluate<public>()<transacts>: void = external {}
+
+    PreEvaluate<public>(
+      InContext: ?health_adjustment_context,
+      InTarget: ?entity,
+      InPool: ?health_pool_entry
+    )<transacts>: void = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # The outcome of a processed health adjustment event.
+  health_adjustment_result<public><native> := class<final><concrete> {
+    var Excess<public><native>: []health_adjustment_entry = external {}
+
+    var Results<public><native>: []health_adjustment_result_entry = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A slice of an adjustment as applied to one pool.
+  #  Categories carries the entry's direction - damage_tag when the pool was
+  #  damaged, healing_tag when it was healed - alongside the adjustment's tags.
+  health_adjustment_result_entry<public><native> := class<final><concrete> {
+    var Categories<public><native>: []tag = external {}
+
+    var HealthDelta<public><native>: float = external {}
+
+    var PoolTag<public><native>: ?health_pool_tag = external {}
+  }
+
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/Simulation/Tags }
+  # Verse path: /UnrealEngine.com/HealthPipeline
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Base tag type categorizing health adjustments.
+  health_adjustment_tag<public><native> := class<epic_internal>(tag) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # The default health component: processes damage and healing scene events
+  # against an ordered array of health pools.
+  #
+  # ==============================================================================
+  # Scene Events
+  #
+  #   Senders BUILD the adjustment event themselves and deliver it with SendUp:
+  #
+  #     Event := damage_event:
+  #         Context := health_adjustment_context{Instigator := option{Agent}}
+  #         Entries := array{health_adjustment_entry{HealthDelta := 70.0}}
+  #     Target.SendUp(Event)
+  #     DealtResult := Event.Result
+  #
+  #   The event's Modifiers stack is supplied by the sender - gather modifiers
+  #   from contributors however your game sees fit before sending.
+  #
+  #   OnReceive consumes the first damage_event/healing_event that reaches this
+  #   component: pools are adjusted, the event's Result is set, OnDamaged or
+  #   OnHealed is signaled with that result, and OnDied is signaled when the
+  #   adjustments took IsAlive from succeeding to failing.
+  #
+  # ==============================================================================
+  # The Math - Layer-Factor Multiplication
+  #
+  #   Pools are processed in order; within each pool, entries are processed in
+  #   order. Per (pool, entry), three modifier stack LAYERS are consulted:
+  #
+  #     1. the event's stack     (Event.Modifiers, supplied by the sender)
+  #     2. the pool's stack      (Pool.DamageModifiers / Pool.HealingModifiers)
+  #     3. the component's stack (DamageModifiers / HealingModifiers)
+  #
+  #   Each layer independently evaluates the REAL entry with natural semantics -
+  #   a stack's modifiers chain internally, and the whole stack's output folds
+  #   to ONE factor:
+  #
+  #     Factor = Stack.Evaluate(Entry).HealthDelta / Entry.HealthDelta
+  #
+  #   The layer factors MULTIPLY: Multiplier = FEvent * FPool * FComponent. A
+  #   factor of 1.0 is naturally inert; a 0 from ANY layer zeroes the multiplier
+  #   and NULLIFIES the entry (a 0-delta result entry is recorded and nothing
+  #   remains to continue on); a negative factor flips the direction.
+  #
+  # ==============================================================================
+  # Application, Unwind, and Excess
+  #
+  #     Scaled = Remaining * Multiplier
+  #
+  #   The pool is first gated by its CanProcessAdjustment. The SIGN of Scaled
+  #   then decides direction: in a damage_event a positive Scaled damages the
+  #   pool toward 0 while a negative Scaled heals it toward MaxValue (a
+  #   healing_event mirrors this). Scaled is negative when the entry's
+  #   HealthDelta or the folded multiplier is negative - a negative HealthDelta
+  #   entry is valid input and starts in the reversed direction. A pool with no
+  #   capacity in that direction is skipped and the entry continues on
+  #   unchanged.
+  #
+  #   What the pool absorbs is recorded as a result entry carrying the pool's
+  #   Tag, the entry's Categories, and the direction actually applied
+  #   (damage_tag or healing_tag). Overflow UNWINDS by dividing the multiplier
+  #   back out - Remaining = (Scaled - Absorbed) / Multiplier - and continues to
+  #   the next pool, where the layers are consulted again. Whatever survives
+  #   every pool lands in Result.Excess at its unwound value.
+  #
+  #   Example: a 70 damage entry against shields at 50 carrying a 2x pool trait,
+  #   with a 3x record on the event: multiplier 2 * 3 = 6, so 420 to apply;
+  #   shields absorb 50; the remaining 370 unwinds to ~61.7 and continues to
+  #   the next pool at THAT pool's multipliers.
+  health_component<public><native> := class<final_super>(component) {
+    # Appends a pool (applied after the existing pools).
+    AddHealthPool<public><native_callable>(Pool: health_pool_entry)<transacts>: void = external {}
+
+    # The first pool whose identity Tag is an instance of PoolTag; fails
+    #  when none match.
+    GetHealthPool<public>(PoolTag: castable_subtype(health_pool_tag))<decides><reads>: health_pool_entry = external {}
+
+    # The health pools, in adjustment-application order.
+    GetHealthPools<public>()<reads>: []health_pool_entry = external {}
+
+    # Succeeds while the component is alive; override to change the gate.
+    IsAlive<public>()<decides><reads>: void = external {}
+
+    # Signaled after a damage event is processed, with the result that
+    # was applied.
+    OnDamaged<public><final><native>: listenable(health_adjustment_result) = external {}
+
+    # Signaled when an adjustment takes IsAlive from succeeding to failing.
+    OnDied<public><final><native>: listenable(tuple()) = external {}
+
+    # Signaled after a healing event is processed, with the result that
+    # was applied.
+    OnHealed<public><final><native>: listenable(health_adjustment_result) = external {}
+
+    # Adjustments arrive as scene events (senders build them and SendUp to
+    #  the target). A processed event is consumed to stop it climbing past the
+    #  first health component; unhandled events keep traversing.
+    OnReceive<override>(SceneEvent: scene_event): logic = external {}
+
+    # Removes the given pool instance (health_pool_entry is unique).
+    RemoveHealthPool<public><native_callable>(Pool: health_pool_entry)<transacts>: void = external {}
+
+    # Signals OnDamaged and broadcasts the native delegate mirror;
+    #  native because the underlying event signal is no_rollback.
+    SignalDamaged<protected><native>(Result: health_adjustment_result)<transacts>: void
+
+    # Signals OnDied and broadcasts the native delegate mirror;
+    #  native because the underlying event signal is no_rollback.
+    SignalDied<protected><native>()<transacts>: void
+
+    # Signals OnHealed and broadcasts the native delegate mirror;
+    #  native because the underlying event signal is no_rollback.
+    SignalHealed<protected><native>(Result: health_adjustment_result)<transacts>: void
+
+    # Component-layer damage modifier stack.
+    var DamageModifiers<public>: health_adjustment_modifier_stack = external {}
+
+    # Component-layer healing modifier stack.
+    var HealingModifiers<public>: health_adjustment_modifier_stack = external {}
+
+    @editable {}
+    # The health pools associated w/ this health component; adjustments are
+    #  applied to each pool in this order.
+    var<protected> HealthPools<public><native>: []health_pool_entry = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A pool of health that can be damaged and/or healed.
+  #  Pool identifier is the Tag: define one health_pool_tag subclass per
+  #  pool type
+  #  (e.g. shields_pool_tag := class(health_pool_tag)) - conditional matching
+  #  and result entries reference pools by that tag. Pools carry their own
+  #  modifier stacks, evaluated as the pool LAYER.
+  health_pool_entry<public><native> := class<concrete><unique> {
+    # Gates whether this pool processes an adjustment entry; the default
+    #  processes everything - override for pool-specific rules (e.g. shields
+    #  refuse Penetrating entries).
+    CanProcessAdjustment<public>(Adjustment: health_adjustment_entry)<decides><reads>: void = external {}
+
+    @editable
+    # The pool's identity tag; fixed at setup (non-var) so identity cannot
+    #  change while the pool is live.
+    Tag<public><native>: health_pool_tag = external {}
+
+    @editable
+    var CurrentValue<public><native>: float = external {}
+
+    # Pool-layer damage modifier stack.
+    var DamageModifiers<public>: health_adjustment_modifier_stack = external {}
+
+    # Pool-layer healing modifier stack.
+    var HealingModifiers<public>: health_adjustment_modifier_stack = external {}
+
+    @editable
+    var MaxValue<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Pool identity: define one subclass per pool type and set an instance as the
+  # pool's Tag.
+  #  Conditional matching and result entries reference pools by it.
+  health_pool_tag<public><native> := class(tag) {}
 }
 
 Itemization<public> := module {
@@ -790,6 +1095,9 @@ Itemization<public> := module {
     # unequip_item_query_event contains any errors after querying.
     Unequip<public><final><native>()<transacts>: result(false, []unequip_item_error)
   }
+
+  # Item component setting owner pose data for this item.
+  item_owner_pose_modifier_component<public><native> := class<epic_internal><final_super>(component) {}
 
   remove_item_error<public><native> := class<computes> {}
 
@@ -1036,150 +1344,237 @@ Marketplace<public> := module {
 
 using { /Verse.org/Native }
 # Verse path: /UnrealEngine.com
-@available { MinUploadedAtFNVersion := 4110 }
+@available { MinUploadedAtFNVersion := 4300 }
 # Module import path: /UnrealEngine.com/Progression
 (/UnrealEngine.com:)Progression<public> := module {
   using { /Verse.org }
-  @experimental
-  # Standard quest that follows the "do x, get y" paradigm.
-  # Auto-completion: when Objective.IsComplete() succeeds, calls
-  # Complete() automatically.
-  # Auto-rewarding: on completion, rewards are granted to eligible participants
-  # via GetRecipients() then GrantReward().
-  basic_quest<public><native> := class<abstract>((/Verse.org:)Progression.quest, has_icon, has_description) {
-    # Replaces the progression model on a live quest. Auto-completes if the new
-    # objective is already completed.
-    SetObjective<public><final><native>(InObjective: quest_objective)<transacts>: void
+  # A quest that auto-completes when its `Objective` is or becomes `Complete`,
+  # and grants its `Rewards` once over the quest's live memberships on a
+  # succeeding completion.
+  # Represents the "Do X, Get Y" paradigm for goal setting: for example, pick up
+  # 5 apples, where each apple picked up adds progress, and on completion a
+  # reward is distributed to the participants set to receive.
+  basic_quest<public><native> := class<abstract>(
+    (/Verse.org:)Progression.quest,
+    (/Verse.org:)Progression.has_objective,
+    has_quest_rewards
+  ) {
+    # Succeeds if this quest may be activated: this quest's own errors
+    # concatenated with the inner `Objective`'s `CanActivate` errors.
+    CanActivate<override><native><native_callable>()<reads>: result(void, [](/Verse.org:)Progression.objective_error)
 
-    # Rewards granted to eligible participants on completion.
-    var Rewards<public><native>: []quest_reward = external {}
+    # Succeeds if this quest may be completed: this quest's own errors
+    # concatenated with the inner `Objective`'s `CanComplete` errors.
+    CanComplete<override><native><native_callable>(
+      Reason: (/Verse.org:)Progression.complete_objective_reason
+    )<reads>: result(void, [](/Verse.org:)Progression.objective_error)
 
-    # Progression model for the quest.
-    var<private> Objective<public><native>: quest_objective
+    # Succeeds if this quest may be deactivated: this quest's own errors
+    # concatenated with the inner `Objective`'s `CanDeactivate` errors.
+    CanDeactivate<override><native><native_callable>()<reads>: result(void, [](/Verse.org:)Progression.objective_error)
+
+    # Called when a participant abandons this quest; withdraws an
+    # `agent_quest_participant` membership's `Objective` contribution,
+    # mirroring `OnJoin`.
+    OnAbandon<override><native><native_callable>(
+      Participant: (/Verse.org:)Progression.quest_participant,
+      Info: (/Verse.org:)Progression.quest_participant_info
+    )<transacts>: void
+
+    # Called when this quest activates; propagates the activation to
+    # the `Objective`.
+    OnActivate<override><native><native_callable>()<transacts>: void
+
+    # Called when this quest completes; grants `Rewards` only for
+    # a `succeed_objective_reason`.
+    OnComplete<override><native><native_callable>(
+      Reason: (/Verse.org:)Progression.complete_objective_reason
+    )<transacts>: void
+
+    # Called when this quest deactivates; propagates to the `Objective`.
+    OnDeactivate<override><native><native_callable>()<transacts>: void
+
+    # Called when a participant joins this quest; enrolls
+    # `agent_quest_participant` memberships as `Objective` contributors when
+    # `Info` has `Contribute` and that `Objective` tracks them.
+    OnJoin<override><native><native_callable>(
+      Participant: (/Verse.org:)Progression.quest_participant,
+      Info: (/Verse.org:)Progression.quest_participant_info
+    )<transacts>: void
+
+    # Writes `Objective`, moves the contributing agents across and activates it
+    # if this quest is still running; completes this quest if the new objective
+    # is already complete.
+    SetObjective<final><override><native>(InObjective: (/Verse.org:)Progression.objective)<transacts>: void
+
+    # Writes `Rewards` and refreshes what this quest shows in the quest UI.
+    SetRewards<final><override><native>(InRewards: []quest_reward)<transacts>: void
   }
 
   using { /UnrealEngine.com/Marketplace }
-  @experimental
   # Grants an entitlement to each eligible participant.
   entitlement_quest_reward<public><native> := class(quest_reward) {
-    # Iterates EligibleParticipants, resolves each participant's agent as a
-    # player, and grants the entitlement via the platform entitlement service.
-    GrantReward<final><override><native>(
-      EligibleParticipants: [](/Verse.org:)Progression.quest_participant
-    )<transacts>: result(void, []grant_quest_reward_error)
-
     # The entitlement type to grant.
-    var Entitlement<public><native>: concrete_subtype(entitlement)
+    Entitlement<public><native>: concrete_subtype(entitlement)
 
-    # Quantity per participant.
-    var Quantity<public><native>: int = external {}
+    # Skips memberships whose participant is not a player agent.
+    OnGrant<final><override><native>(Memberships: [](/Verse.org:)Progression.quest_membership)<transacts>: void
+
+    # Quantity per participant; `1` by default, not clamped or validated.
+    Quantity<public><native>: int = external {}
   }
 
-  @experimental
-  # Returned when a reward cannot be granted.
-  grant_quest_reward_error<public><native> := class {}
+  # Implement on a quest to control presentation settings.
+  has_quest_presentation<public><native> := interface(has_icon, has_description) {
+    # Sets `AllowFavorite` and refreshes this quest in the quest UI; an
+    # unchanged write does nothing.
+    SetAllowFavorite<public><final><native_callable>(InAllowFavorite: logic)<transacts>: void = external {}
 
-  @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  # Implement on a quest class to customize how it displays in the quest UI.
-  has_quest_presentation<public><native> := interface {
-    # Whether players may favorite this quest to the HUD quest tracker.
-    var AllowFavorite<public><native>: logic
+    # Sets `Categories` and refreshes this quest in the quest UI; an unchanged
+    # write does nothing.
+    SetCategories<public><final><native_callable>(InCategories: []quest_category)<transacts>: void = external {}
 
-    # The categories this quest is grouped under in the quest UI.
-    # Empty = uncategorized.
-    var Categories<public><native>: []quest_category
+    # Sets `ShowNotification` and refreshes this quest in the quest UI; an
+    # unchanged write does nothing.
+    SetShowNotification<public><final><native_callable>(InShowNotification: logic)<transacts>: void = external {}
 
-    # Whether HUD notifications play for this quest's
-    # granted/progress/completed moments.
-    var ShowNotification<public><native>: logic
+    # Whether players may favorite this quest.
+    # Write it with `SetAllowFavorite`.
+    var<private> AllowFavorite<public><native>: logic
+
+    # The categories this quest is grouped under; an empty array leaves
+    # it uncategorized.
+    # Write it with `SetCategories`.
+    var<private> Categories<public><native>: []quest_category
+
+    # Whether notifications play for this quest.
+    # Write it with `SetShowNotification`.
+    var<private> ShowNotification<public><native>: logic
   }
 
-  @experimental
-  # Tracks numeric progress toward a required count.
-  # Complete when Progress >= RequiredCount.
-  progress_quest_objective<public><native> := class(quest_objective) {
-    # Returns progress in "X / Y" format.
+  # Implemented by quests that carry a reward list.
+  has_quest_rewards<public><native> := interface {
+    # Succeeds if `Membership` may receive `Reward` from this quest; the default
+    # accepts everyone.
+    # A refusal drops that membership from that reward's list and is not
+    # an error.
+    CanReceive<public>(
+      Membership: (/Verse.org:)Progression.quest_membership,
+      Reward: quest_reward
+    )<reads>: result(void, []quest_reward_error) = external {}
+
+    # Grants every reward in `Rewards`, in array order, to the memberships whose
+    # `Info` has `Receive` and that `CanReceive` accepts for it, and returns the
+    # recipients of each reward whose `Grant` succeeded.
+    # An error means not everything was granted: rewards whose `Grant` succeeded
+    # stay granted, and the errors are every failing `Grant`'s, concatenated.
+    GrantRewards<public><final><native_callable>(
+      Memberships: [](/Verse.org:)Progression.quest_membership
+    )<transacts>: result([quest_reward][](/Verse.org:)Progression.quest_membership, []quest_reward_error) = external {}
+
+    # Returns what `GrantRewards` would grant right now.
+    # A reward whose `CanGrant` refuses is omitted, and an empty list is a
+    # reward that pays nobody.
+    PreviewRewards<public><final>(
+      Memberships: [](/Verse.org:)Progression.quest_membership
+    )<reads>: [quest_reward][](/Verse.org:)Progression.quest_membership = external {}
+
+    # Replaces the reward list; nothing is granted and no event fires.
+    SetRewards<public><native_callable>(InRewards: []quest_reward)<transacts>: void = external {}
+
+    # The rewards `GrantRewards` pays to eligible memberships.
+    # Write it with `SetRewards`.
+    var<protected> Rewards<public><native>: []quest_reward = external {}
+  }
+
+  # Tracks numeric progress toward a required threshold; complete
+  # when `Progress >= RequiredProgress`.
+  # A commanded `Complete()` succeeds at any progress and does not advance it.
+  progress_objective<public><native> := class((/Verse.org:)Progression.objective) {
+    # Returns progress in `"X / Y"` format.
     GetProgress<final><override><native>()<reads>: message
 
-    # Succeeds if Progress >= RequiredCount.
-    IsComplete<final><override><native>()<decides><reads>: void
+    # Sets current progress, clamped to `[0, RequiredProgress]`.
+    SetProgress<public><final><native>(InProgress: float)<transacts>: void
 
-    # Sets current progress. Clamped to [0, RequiredCount].
-    SetProgress<public><final><native>(Amount: float)<transacts>: void
+    # Sets the target progress; a negative or NaN value becomes `0`.
+    # Lowering it below `Progress` re-clamps `Progress` to the new target and
+    # fires `ProgressEvent`.
+    SetRequiredProgress<public><final><native>(InRequiredProgress: float)<transacts>: void
 
-    # Sets the target count. Clamped to [1, MaxFloat].
-    SetRequiredCount<public><final><native>(Amount: float)<transacts>: void
-
-    # Current progress toward RequiredCount.
+    # Current progress toward `RequiredProgress`; an authored value is clamped
+    # to `[0, RequiredProgress]` at activation.
+    # Write it with `SetProgress`.
     var<private> Progress<public><native>: float = external {}
 
-    # Target count for completion.
-    var<private> RequiredCount<public><native>: float
+    # Target progress for completion; an authored value is not clamped, and `0`
+    # reads complete from activation.
+    # Write it with `SetRequiredProgress`.
+    var<private> RequiredProgress<public><native>: float
   }
 
   using { /Verse.org/Assets }
-  using { /Verse.org/Native }
   using { /Verse.org/Presentation }
-  @available { MinUploadedAtFNVersion := 4200 }
-  @experimental
-  # A category in the quest UI.
+  # A category to represent a set of quests, usually for UI purposes.
   quest_category<public><native> := class<abstract><unique><castable>(has_icon, has_description) {
-    # The owning category that this category is considered nested under.
+    # The category this one is nested under; `false` is a top-level category.
     Parent<public><native>: ?quest_category = external {}
 
-    # Relative ordering among categories in the quest UI; lower values
-    # sort first.
+    # Relative ordering among categories; lower values sort first.
     SortOrder<public><native>: rational
   }
 
-  @experimental
-  # Abstract base class for all quest objectives.
-  quest_objective<public><native> := class<abstract>(has_icon, has_description) {
-    # Signaled when this objective is considered complete.
-    CompleteEvent<public><final><native>: listenable(quest_objective) = external {}
+  # A unit of payout a quest hands to its memberships. Subclass it to grant
+  # anything: an item, currency, experience or an unlock.
+  #   * Grant 100 gold to every participant set to receive when the
+  #     quest completes.
+  #   * Unlock the next area for the whole server.
+  #   * Grant a bonus reward to participants whose membership `Info` matches
+  #     a condition.
+  quest_reward<public><native> := class<abstract><unique><castable>(has_icon, has_description) {
+    # Succeeds if this reward may be granted at all; the default succeeds, and a
+    # veto is an error return.
+    CanGrant<public><native><native_callable>()<reads>: result(void, []quest_reward_error)
 
-    # Determines which participants can contribute to this objective.
-    # Override to customize contributor selection.
-    # Default: all participants where Info.Contributes = true.
-    GetContributors<public><native><native_callable>(
+    # Succeeds if `Membership` may receive this reward; the default succeeds,
+    # and a refusal drops that membership from the grant and is not an error
+    # on `Grant`.
+    CanReceive<public><native><native_callable>(
+      Membership: (/Verse.org:)Progression.quest_membership
+    )<reads>: result(void, []quest_reward_error)
+
+    # Grants this reward over `Memberships` and returns the ones it handed to
+    # `OnGrant`: asks `CanGrant`, keeps the memberships `CanReceive` accepts,
+    # collapses duplicates and hands that set to `OnGrant`.
+    # A `CanGrant` refusal is the only error: nothing is delivered and the
+    # guard's own errors come back.
+    Grant<public><final><native>(
       Memberships: [](/Verse.org:)Progression.quest_membership
-    )<reads>: [](/Verse.org:)Progression.quest_participant
+    )<transacts>: result([](/Verse.org:)Progression.quest_membership, []quest_reward_error)
 
-    # Returns a progress message (e.g. "3 / 10").
-    GetProgress<public><native><native_callable>()<reads>: message
+    # Signaled after `Grant` handed its recipients to `OnGrant`.
+    GrantEvent<public><final><native>: listenable(quest_reward_grant_event_data) = external {}
 
-    # Succeeds if this objective is currently complete.
-    IsComplete<public><native><native_callable>()<decides><reads>: void
+    # Delivers this reward over `Memberships`, the ones `CanReceive` accepted.
+    OnGrant<protected><native_callable>(Memberships: [](/Verse.org:)Progression.quest_membership)<transacts>: void
 
-    # Signaled when this objective's progress changes. Payload: this objective.
-    ProgressEvent<public><final><native>: listenable(quest_objective) = external {}
-
-    # Signals ProgressEvent. Call from a subclass to notify
-    # progress subscribers.
-    SignalProgressEvent<protected><final><native>()<transacts>: void
+    # Returns the memberships `Grant` would pay right now; runs no payout and
+    # fires nothing.
+    Preview<public><final><native>(
+      Memberships: [](/Verse.org:)Progression.quest_membership
+    )<reads>: [](/Verse.org:)Progression.quest_membership
   }
 
-  @experimental
-  # Abstract base class for all quest rewards.
-  quest_reward<public><native> := class<abstract>(has_icon, has_description) {
-    # Determines which participants should receive this reward.
-    # Override to customize recipient selection.
-    # Default: all participants where Info.Receives = true.
-    GetRecipients<public><native><native_callable>(
-      Memberships: [](/Verse.org:)Progression.quest_membership
-    )<reads>: [](/Verse.org:)Progression.quest_participant
+  # Returned when a reward cannot be granted.
+  quest_reward_error<public><native> := class<abstract><computes><castable> {}
 
-    # Signaled after this reward has been granted to recipients.
-    GrantEvent<public><final><native>: listenable(tuple(
-      quest_reward,
-      [](/Verse.org:)Progression.quest_participant
-    )) = external {}
+  # Delivered by `quest_reward.GrantEvent`.
+  quest_reward_grant_event_data<public><native> := struct<epic_internal> {
+    # The memberships the reward was issued to, which may be empty.
+    Recipients<public><native>: [](/Verse.org:)Progression.quest_membership
 
-    # Grants this reward to the eligible participants.
-    GrantReward<public><native><native_callable>(
-      EligibleParticipants: [](/Verse.org:)Progression.quest_participant
-    )<transacts>: result(void, []grant_quest_reward_error)
+    # The reward that was granted.
+    Reward<public><native>: quest_reward
   }
 }
 

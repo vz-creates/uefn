@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-42.40-CL-59247843
+Generated from build: ++Fortnite+Release-43.00-CL-59596594
 #################################################
 #>
 
@@ -21,10 +21,7 @@ AgentGroup<public> := module {
   ) {
     # Attempt to add the given agent to this agent group.This function returns a
     # result that will either succeed or return an error.
-    AddMember<public>(
-      Agent: agent,
-      MemberInfo: member_info
-    )<transacts>: result(comparable, add_member_error) = external {}
+    AddMember<public>(Agent: agent, MemberInfo: member_info)<transacts>: result(void, add_member_error) = external {}
 
     # Signalled whenever an agent successfully joins this agent group.Passes in
     # the agent that joined along with their member_info.
@@ -33,7 +30,7 @@ AgentGroup<public> := module {
     AddMemberInternal<epic_internal><final><native_callable>(
       Agent: agent,
       MemberInfo: member_info
-    )<transacts>: result(comparable, add_member_error) = external {}
+    )<transacts>: result(void, add_member_error) = external {}
 
     (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_Variance<private>(
       : member_info,
@@ -61,7 +58,7 @@ AgentGroup<public> := module {
 
     # Attempt to remove the given agent from this agent group.This function
     # returns a result that will either succeed or return an error.
-    RemoveMember<public>(Agent: agent)<transacts>: result(comparable, remove_member_error) = external {}
+    RemoveMember<public>(Agent: agent)<transacts>: result(void, remove_member_error) = external {}
 
     # Signalled whenever an agent successfully leaves this agent group.Passes in
     # the agent that left along with their member_info.
@@ -69,7 +66,7 @@ AgentGroup<public> := module {
 
     RemoveMemberInternal<epic_internal><final><native_callable>(
       Agent: agent
-    )<transacts>: result(comparable, remove_member_error) = external {}
+    )<transacts>: result(void, remove_member_error) = external {}
 
     var (/Verse.org/AgentGroup/agent_group:)AgentGroup_agent_group_VarVariance<private>: ?tuple(
       member_info
@@ -138,17 +135,11 @@ Assets<public> := module {
   animation_sequence<public><native> := class<epic_internal><final><computes>(asset, animation_asset) {}
 
   asset<epic_internal><native> := class<epic_internal><computes> {
-    Async_Load<epic_internal><native>(): sticky_event(void)
-
     GetAssetType<epic_internal><native>()<transacts><decides>: subtype(asset)
-
-    GetAsyncLoadEvent<epic_internal><native>()<decides>: sticky_event(void)
 
     InitializeNetworkReplication<epic_internal><native>()<transacts>: void
 
     SetPath<epic_internal><native>(InPath: string)<transacts>: void
-
-    SyncLoad<epic_internal><native>(): logic
   }
 
   @attribscope_class
@@ -162,7 +153,6 @@ Assets<public> := module {
 
   using { /Verse.org/Colors }
   using { /Verse.org/Native }
-  using { /Verse.org/Restricted }
   using { /Verse.org/Simulation }
   @attribscope_class
   @customattribhandler
@@ -219,8 +209,6 @@ Assets<public> := module {
     SetFloatProperty<epic_internal><native>(PropertyName: string, NewFloat: float)<transacts>: void
 
     SetTextureProperty<epic_internal><native>(PropertyName: string, NewTexture: texture)<transacts>: void
-
-    bUsesGetSetters<epic_internal><native>: logic = external {}
   }
 
   material_like<epic_internal><native> := interface<epic_internal><computes> {}
@@ -312,15 +300,13 @@ Chat<public> := module {
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Used in native to create a channel result when registering a channel.
-  MakeAddChannelResult<epic_internal><native_callable>(
-    IsSuccess: logic
-  ): result(comparable, add_channel_error) = external {}
+  MakeAddChannelResult<epic_internal><native_callable>(IsSuccess: logic): result(void, add_channel_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Used in native to create a channel result when unregistering a channel.
   MakeRemoveChannelResult<epic_internal><native_callable>(
     IsSuccess: logic
-  ): result(comparable, remove_channel_error) = external {}
+  ): result(void, remove_channel_error) = external {}
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Error returned when a channel cannot be added via the
@@ -1053,19 +1039,18 @@ Colors<public> := module {
 
 # Module import path: /Verse.org/Concurrency
 Concurrency<public> := module {
+  awaitable<public>() := awaitable(void)
+
   using { /Verse.org/Native }
-  @cpp_name("verse::awaitable")
   # A parametric interface implemented by events with a `payload` that can be
   # waited on. Matched with `signalable.`
-  awaitable<public><native>(payload: type) := interface {
+  awaitable<public>(payload: type) := interface {
     # Suspends the current task until resumed by a matching call to
     # `signalable.Signal`. Returns the event `payload`.
     Await<public>()<suspends>: payload
 
     (/Verse.org/Concurrency/awaitable:)Concurrency_awaitable_Variance<private>(): tuple(payload) = external {}
   }
-
-  awaitable<public>() := awaitable(void)
 
   @cpp_name("verse::task")
   task<public><native>(t: type) := class<final><abstract>(awaitable(t)) {
@@ -1104,11 +1089,11 @@ Diagnostics<public> := module {
   @attribscope_function
   @attribscope_interface
   export_metadata<epic_internal> := class<computes>(attribute) {
-    Category<epic_internal>: string
+    Category<public>: string
 
-    Key<epic_internal>: string
+    Key<public>: string
 
-    Value<epic_internal>: string
+    Value<public>: string
   }
 }
 
@@ -1231,7 +1216,6 @@ Input<public> := module {
     PointerSelect<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
     @available { MinUploadedAtFNVersion := 4120 }
-    @experimental
     PointerZoom<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
     @available { MinUploadedAtFNVersion := 4000 }
@@ -1269,7 +1253,7 @@ Input<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  # Logs the timestamp and current net mode to LogVerseInput.
+  # Logs the timestamp and the current net mode to LogVerseInput.
   VerseInput_TestPredictsPing<epic_internal><native>()<transacts>: void
 
   # Flags for input devices currently available to the player. Updates at
@@ -1402,6 +1386,10 @@ Input<public> := module {
     @deprecated { Message := "Use GetInputEvents." }
     MakeLogicPredictsInputEvents<epic_internal>(): predicts_input_events(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    @experimental
+    MakeScreenOrientationChangeEvent<epic_internal><native_callable>(): listenable(screen_orientation) = external {}
+
     MakeVector3InputEvents<epic_internal><native_callable>(): input_events(
       (/Verse.org/SpatialMath:)vector3
     ) = external {}
@@ -1417,6 +1405,21 @@ Input<public> := module {
     # executing events.
     RemoveInputMapping<public><native>(InputMapping: input_mapping): void
 
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Signaled after the player's device settles into a new orientation. Sends
+    # the new `screen_orientation`, which matches `ScreenOrientation`. Never
+    # signaled on a device with no orientation sensor.
+    ScreenOrientationChangeEvent<epic_internal><native>: listenable(screen_orientation) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Whether the player's device may use portrait orientation in addition to
+    # landscape. Defaults to `false`, so every experience supports landscape.
+    # Only a device with an orientation sensor acts on a change; every other
+    # platform always stays in `Landscape`.
+    var SupportsPortrait<epic_internal><native>: logic = external {}
+
     # The set of input device capabilities currently available to the player,
     # updated at runtime as devices connect or disconnect.
     var<internal> AvailableInputDevices<public><native>: available_input_devices = external {}
@@ -1424,6 +1427,12 @@ Input<public> := module {
     # The player's current preferred input method, updated when the player
     # switches between keyboard/mouse, gamepad, or touch.
     var<internal> PreferredInputMethod<public><native>: input_method = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    # The orientation the player's device is in. Reports `Landscape` on a device
+    # with no orientation sensor.
+    var<internal> ScreenOrientation<epic_internal><native>: screen_orientation = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
@@ -1445,6 +1454,18 @@ Input<public> := module {
     ) = external {}
 
     TriggerActivationEvent<epic_internal>: listenable(tuple(?player, t)) = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # The screen orientation of a player's device, reported
+  # by `player_input.ScreenOrientation`.
+  screen_orientation<epic_internal><native> := enum {
+    # The device is wider than it is tall.
+    Landscape
+
+    # The device is taller than it is wide.
+    Portrait
   }
 }
 
@@ -1514,6 +1535,163 @@ Native<public> := module {
   validate_asset_path_attribute<epic_internal> := class<internal><computes>(attribute) {}
 }
 
+Perception<public> := module {
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  # Verse path: /Verse.org/Perception
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Common fields on every sense detection event.
+  sense_detection_event<public> := class(scene_event) {
+    # The entity this perception attributes to.
+    DetectedEntity<public>: entity
+
+    # Whether this event begins, ends, or is a single instant detection.
+    DetectionState<public>: sense_detection_state
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Detection lifecycle stage carried on every perception event.
+  sense_detection_state<public><native> := enum<open> {
+    # Continuous detection begins.
+    Active
+
+    # Continuous detection ends.
+    Inactive
+
+    # A single fire-and-done detection with no begin/end pairing.
+    Instant
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Touch perception data. Carries the underlying collision_hit verbatim so
+  # consumers get impulse, contact location, normal, other-entity reference, and
+  # any other collision fields the platform exposes.
+  touch_data<epic_internal> := class<castable> {
+    # The collision hit that produced this detection.
+    Hit<epic_internal>: collision_hit
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Touch perception event. DetectionState is Active on the first mesh_part
+  # contact with an emitter, Inactive when the last separates. TouchData is a
+  # snapshot fixed at the transition; for values tracking the ongoing contact
+  # call Detector.GetCurrentTouchData during Active. Cast an incoming
+  # scene_event via touch_detection_event[E] for typed access.
+  touch_detection_event<public> := class<epic_internal>(sense_detection_event) {
+    # Active or Inactive; touch is continuous and never emits Instant.
+    DetectionState<override>: sense_detection_state
+
+    # The detector that felt the touch.
+    Detector<public>: touch_detector_component
+
+    # The emitter that was touched.
+    Emitter<public>: touch_emitter_component
+
+    # Snapshot of the contact for this transition.
+    TouchData<epic_internal>: touch_data
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Marks an entity as something that perceives touch. Sources collision events
+  # from its Meshes. The detector defers subscribing to those mesh events until
+  # it has at least one subscriber, and tears the subscriptions down when the
+  # last subscriber cancels.
+  touch_detector_component<public> := class<final_super>(component) {
+    # Add mesh components to the detector's collision-event sources. If the
+    # detector currently has active subscribers, the collision listeners are
+    # re-wired immediately to include the new meshes.
+    AddMeshComponents<public>(NewMeshes: []mesh_component)<transacts>: void = external {}
+
+    # Return the latest touch_data cached for Emitter. Succeeds while this
+    # detector has an open contact with it, fails otherwise. Refreshed on every
+    # continuing-collide signal.
+    GetCurrentTouchData<epic_internal>(Emitter: touch_emitter_component)<transacts><decides>: touch_data = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnSimulate<override>()<suspends>: void = external {}
+
+    # Remove mesh components from the detector's collision-event sources. If the
+    # detector currently has active subscribers, the collision listeners are
+    # re-wired to drop the removed meshes.
+    RemoveMeshComponents<public>(TargetMeshes: []mesh_component)<transacts>: void = external {}
+
+    # Subscribe Receiver to touch events from this detector. Filter runs against
+    # each event; deciding delivers to Receiver.OnReceive (via SendDown). Cancel
+    # the returned cancelable to unsubscribe. On the first subscriber the
+    # detector wires up its mesh collision listeners.
+    Subscribe<public>(Receiver: entity, Filter: touch_filter)<transacts>: cancelable = external {}
+
+    # Continuing-collide callbacks received; steady while a contact is live.
+    var DebugContinuedFires<epic_internal>: int = external {}
+
+    # Contacts closed by an emitter announcing its removal rather than by
+    # an end-collide.
+    var DebugEmitterClosed<epic_internal>: int = external {}
+
+    # Begin-collide hits with no touch_emitter_component anywhere up
+    # the ancestry.
+    var DebugEmitterMissed<epic_internal>: int = external {}
+
+    # Begin-collide hits whose other party resolved to a touch_emitter_component
+    # up the ancestry.
+    var DebugEmitterResolved<epic_internal>: int = external {}
+
+    # Events handed to the dispatch queue: one per accepting subscriber
+    # per event.
+    var DebugEnqueued<epic_internal>: int = external {}
+
+    # Begin-collide callbacks received.
+    var DebugEnterFires<epic_internal>: int = external {}
+
+    # End-collide callbacks received.
+    var DebugExitFires<epic_internal>: int = external {}
+
+    # Live collide listeners: three per collidable mesh_part while subscribed,
+    # zero otherwise.
+    var DebugListenerCount<epic_internal>: int = external {}
+
+    # Hits with no identifiable mesh_part, where residency falls back to closing
+    # on the first end-collide.
+    var DebugPartUnresolved<epic_internal>: int = external {}
+
+    @editable
+    # Mesh components whose collision events feed this detector. Multiple meshes
+    # suit entities like vehicles with many collision-participating meshes but
+    # one touch listener. Left empty, the detector uses a mesh_component on its
+    # own entity at simulation start.
+    var<private> Meshes<public>: []mesh_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Marks an entity as something that can be touched. Placement matters:
+  # collisions look upward through the scene graph from the colliding entity to
+  # find the nearest ancestor bearing a touch_emitter_component; a collision
+  # with no touch_emitter anywhere in the ancestry fires no event.
+  touch_emitter_component<public> := class<final_super>(component) {
+    # The entity this emitter attributes perceptions to. Defaults to the
+    # emitter's own entity; override for dynamic attribution.
+    GetRepresentedEntity<public>()<transacts>: entity = external {}
+
+    OnRemovingFromScene<override>(): void = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Predicate invoked per touch_detection_event; deciding delivers the event to
+  # the subscriber.
+  touch_filter<public> := type { _(: touch_detection_event)<decides><reads>: void }
+}
+
 @cpp_name("verse::VerseNative_Verse_org_Persona_module_impl")
 # Module import path: /Verse.org/Persona
 Persona<epic_internal> := module {
@@ -1546,7 +1724,7 @@ Predicts<public> := module {
 
   PredictsDebugCallFunc<epic_internal><native>(__dupe___unnamed_parameter_0: int)<transacts>: void
 
-  PredictsDebugCheckClientAbortedContentScopeAndReset<epic_internal><native>()<transacts><decides>: void
+  PredictsDebugCheckClientAbortedContextAndReset<epic_internal><native>()<transacts><decides>: void
 
   PredictsDebugClientMode<epic_internal><native>(NodeID: int)<transacts><decides>: void
 
@@ -1578,7 +1756,7 @@ Predicts<public> := module {
 
   PredictsDebugRegisterFunc<epic_internal><native>(
     __dupe___unnamed_parameter_0: int,
-    __dupe___unnamed_parameter_1: type { _(): void }
+    __dupe___unnamed_parameter_1: type { _()<predicts>: void }
   )<transacts>: int
 
   PredictsDebugRemoveClientWithID<epic_internal><native>(ClientID: int)<transacts>: void
@@ -1589,13 +1767,22 @@ Predicts<public> := module {
 
   PredictsDebugServerMode<epic_internal><native>()<transacts>: void
 
+  PredictsDebugSetCircuitBreakerParams<epic_internal><native>(Capacity: float, LeakRate: float)<transacts>: void
+
+  PredictsDebugSetClientCallLimits<epic_internal><native>(
+    TimeoutSeconds: float,
+    MaxLoopIterations: int
+  )<transacts>: void
+
+  PredictsDebugSetPredictsEnabledCVar<epic_internal><native>(Enabled: logic)<transacts>: void
+
   PredictsDebugTryCallFunc<epic_internal><native>(__dupe___unnamed_parameter_0: int)<transacts>: logic
 
   PredictsDebugUnregisterFunc<epic_internal><native>(__dupe___unnamed_parameter_0: int)<transacts>: void
 
   PredictsDebugUseReachabilityBasedReplication<epic_internal><native>()<transacts>: void
 
-  PredictsIsRunningOnServer<epic_internal><native>()<transacts><decides>: void
+  PredictsIsRunningOnServer<epic_internal><native>()<transacts><decides><predicts>: void
 
   PredictsServerMarkObjectField<epic_internal><native>(Obj: any, FieldName: string)<transacts>: void
 
@@ -1646,59 +1833,91 @@ Presentation<public> := module {
 
 using { /Verse.org/Native }
 # Verse path: /Verse.org
-@available { MinUploadedAtFNVersion := 4110 }
+@available { MinUploadedAtFNVersion := 4300 }
 # Module import path: /Verse.org/Progression
 Progression<public> := module {
-  @experimental
-  MakeAbandonQuestErrorResult<epic_internal><native_callable>(): result(void, []abandon_quest_error) = external {}
+  ComposeActivationGuardResult<epic_internal><native_callable>(
+    QuestRefused: logic,
+    Objective: objective
+  ): result(void, []objective_error) = external {}
 
-  @experimental
-  MakeAbandonQuestSuccessResult<epic_internal><native_callable>(): result(
-    comparable,
-    []abandon_quest_error
-  ) = external {}
+  ComposeCompletionGuardResult<epic_internal><native_callable>(
+    QuestRefused: logic,
+    Objective: objective,
+    Reason: complete_objective_reason
+  ): result(void, []objective_error) = external {}
 
-  @experimental
-  MakeJoinQuestErrorResult<epic_internal><native_callable>(): result(void, []join_quest_error) = external {}
+  ComposeDeactivationGuardResult<epic_internal><native_callable>(
+    QuestRefused: logic,
+    Objective: objective
+  ): result(void, []objective_error) = external {}
 
-  @experimental
-  MakeJoinQuestSuccessResult<epic_internal><native_callable>(): result(comparable, []join_quest_error) = external {}
+  MakeAbandonQuestErrorResult<epic_internal><native_callable>(): result(void, []quest_error) = external {}
 
-  @experimental
+  MakeAbandonQuestErrorResultFrom<epic_internal><native_callable>(
+    Error: quest_error
+  ): result(void, []quest_error) = external {}
+
+  MakeActivateObjectiveErrorResult<epic_internal><native_callable>(): result(void, []objective_error) = external {}
+
+  MakeAddQuestErrorResultFrom<epic_internal><native_callable>(
+    Error: add_quest_error
+  ): result(quest, []add_quest_error) = external {}
+
+  MakeCompleteObjectiveErrorResult<epic_internal><native_callable>(): result(void, []objective_error) = external {}
+
+  MakeDeactivateObjectiveErrorResult<epic_internal><native_callable>(): result(void, []objective_error) = external {}
+
+  MakeJoinQuestErrorResult<epic_internal><native_callable>(): result(quest_membership, []quest_error) = external {}
+
+  MakeJoinQuestErrorResultFrom<epic_internal><native_callable>(
+    Error: quest_error
+  ): result(quest_membership, []quest_error) = external {}
+
+  MakeJoinQuestSuccessResult<epic_internal><native_callable>(
+    Membership: quest_membership
+  ): result(quest_membership, []quest_error) = external {}
+
+  MakeObjectiveSuccessResult<epic_internal><native_callable>(): result(void, []objective_error) = external {}
+
+  MakeQuestSuccessResult<epic_internal><native_callable>(): result(void, []quest_error) = external {}
+
   MakeRevokeQuestErrorResult<epic_internal><native_callable>(): result(void, []remove_quest_error) = external {}
 
-  @experimental
-  MakeRevokeQuestSuccessResult<epic_internal><native_callable>(): result(comparable, []remove_quest_error) = external {}
+  MakeRevokeQuestErrorResultFrom<epic_internal><native_callable>(
+    Error: remove_quest_error
+  ): result(void, []remove_quest_error) = external {}
 
-  @experimental
-  # Returned when a participant cannot abandon a quest.
-  abandon_quest_error<public><native> := class {}
+  MakeRevokeQuestSuccessResult<epic_internal><native_callable>(): result(void, []remove_quest_error) = external {}
 
-  @experimental
-  abandon_quest_not_joined_error<epic_internal><native> := class<epic_internal>(abandon_quest_error) {}
+  abandon_quest_error<epic_internal><native> := class<epic_internal>(quest_error) {}
 
-  @experimental
   abandon_quest_vetoed_error<epic_internal><native> := class<epic_internal>(abandon_quest_error) {}
 
-  @experimental
+  activate_objective_error<epic_internal><native> := class<epic_internal>(objective_error) {}
+
   add_quest_error<epic_internal><native> := class<epic_internal> {}
 
-  @experimental
   add_quest_vetoed_error<epic_internal><native> := class<epic_internal>(add_quest_error) {}
 
-  @experimental
-  # A quest participant backed by an agent (player, NPC, AI, etc.).
-  agent_quest_participant<public><native> := class<final>(quest_participant) {
+  # A quest participant backed by an agent.
+  agent_quest_participant<public><native> := class(quest_participant) {
     # The agent this participant represents.
     Agent<public><native>: agent
   }
+
+  complete_objective_error<epic_internal><native> := class<epic_internal>(objective_error) {}
+
+  # Why an objective completed.
+  complete_objective_reason<public><native> := class<abstract><castable> {}
+
+  deactivate_objective_error<epic_internal><native> := class<epic_internal>(objective_error) {}
 
   using { /Verse.org/AgentGroup }
   using { /Verse.org/Assets }
   using { /Verse.org/Presentation }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
-  @experimental
   epic_quest_participant_component<epic_internal><native> := class<epic_internal>(quest_participant_component) {
     ClearTrackedQuests<epic_internal><final><native>()<transacts>: void
 
@@ -1713,51 +1932,185 @@ Progression<public> := module {
     var<private> TrackedQuests<epic_internal><native>: []quest = external {}
   }
 
-  @experimental
+  # The objective's work can no longer be accomplished.
+  fail_objective_reason<public><native> := class(complete_objective_reason) {}
+
   failed_quest_completion<epic_internal><native> := class(quest_completion_context) {}
 
-  @experimental
-  join_quest_already_joined_error<epic_internal><native> := class<epic_internal>(join_quest_error) {}
+  # Implemented by types that hold an `objective`.
+  has_objective<public><native> := interface {
+    # Native read of `Objective` for the contributor walk; creators read the
+    # field directly.
+    GetObjective<epic_internal><final><native_callable>()<reads>: objective = external {}
 
-  @experimental
-  # Returned when a participant cannot join a quest.
-  join_quest_error<public><native> := class {}
+    # Replaces the objective.
+    SetObjective<public><native_callable>(InObjective: objective)<transacts>: void = external {}
 
-  @experimental
-  join_quest_invalid_state_error<epic_internal><native> := class<epic_internal>(join_quest_error) {}
+    # The objective this type holds.
+    # Write it with `SetObjective`.
+    var<protected> Objective<public><native>: objective
+  }
 
-  @experimental
+  # Implement on an objective whose activation-scoped registrations belong to a
+  # scene entity; container objectives implement it as a pass-through to
+  # their children.
+  has_objective_anchor<epic_internal><native> := interface {
+    # Records 'InAnchor' as the entity this objective's activation-scoped
+    # registrations belong to; a later call re-anchors the next activation. An
+    # override replaces this body, so it must write Anchor itself.
+    SetAnchor<epic_internal><native_callable>(InAnchor: entity)<transacts>: void = external {}
+
+    # The anchor recorded by SetAnchor, or false when none has been set. Write
+    # it with SetAnchor.
+    var<protected> Anchor<epic_internal><native>: ?entity = external {}
+  }
+
+  # Implement on an objective type that tracks contributing agents.
+  has_objective_contributors<public><native> := interface {
+    # Records `Agent` as a contributor.
+    AddContributor<public><native_callable>(Agent: agent)<transacts>: void = external {}
+
+    # Records that `Agent` no longer contributes.
+    RemoveContributor<public><native_callable>(Agent: agent)<transacts>: void = external {}
+
+    # Contributing agents, one record per `AddContributor` call.
+    # Write them through `AddContributor` / `RemoveContributor`.
+    var<protected> Contributors<public><native>: []agent = external {}
+  }
+
+  join_quest_error<epic_internal><native> := class<epic_internal>(quest_error) {}
+
   join_quest_vetoed_error<epic_internal><native> := class<epic_internal>(join_quest_error) {}
 
-  @experimental
-  # A completable goal.
-  # Call Complete() to mark the quest as done and fire CompleteEvent.
-  quest<public><native> := class<abstract><castable><unique> {
-    # Signaled when a participant abandons this quest.
+  # A unit of trackable work with an `Inactive`, `Active` and `Complete`
+  # lifecycle. Use it for anything from an objective that simply tracks a number
+  # to a complex nested objective made of other objectives.
+  #   * Eliminate 10 enemies: one counter that completes at its target.
+  #   * Hold the point for 60 seconds: time accumulated while a condition holds.
+  #   * Clear the dungeon: nested objectives that complete in sequence
+  #     or together.
+  objective<public><native> := class<abstract><castable><unique> {
+    # Starts this objective; returns an error when it is already running or its
+    # type refuses to start it, otherwise the errors `CanActivate` returned.
+    Activate<public><final><native>()<transacts>: result(void, []objective_error)
+
+    # Signaled when this objective is activated.
+    ActivateEvent<public><final><native>: listenable(objective) = external {}
+
+    # Succeeds if this objective may be activated; the default succeeds.
+    # Veto by returning errors.
+    CanActivate<public><native><native_callable>()<reads>: result(void, []objective_error)
+
+    # Succeeds if this objective may be completed for `Reason`; the
+    # default succeeds.
+    # Veto by returning errors.
+    CanComplete<public><native><native_callable>(
+      Reason: complete_objective_reason
+    )<reads>: result(void, []objective_error)
+
+    # Succeeds if this objective may be deactivated; the default succeeds.
+    # Veto by returning errors.
+    CanDeactivate<public><native><native_callable>()<reads>: result(void, []objective_error)
+
+    CanProgress<epic_internal><native><native_callable>()<decides><reads>: void
+
+    # Reports this objective as complete for `Reason`; returns an error when its
+    # type refuses the report, otherwise the errors `CanComplete` returned.
+    Complete<public><final><native>(Reason: complete_objective_reason)<transacts>: result(void, []objective_error)
+
+    # Signaled when this objective completes.
+    CompleteEvent<public><final><native>: listenable(objective_complete_event_data) = external {}
+
+    # Stops this objective; returns an error when it is not running, otherwise
+    # the errors `CanDeactivate` returned.
+    Deactivate<public><final><native>()<transacts>: result(void, []objective_error)
+
+    # Signaled when this objective is deactivated.
+    DeactivateEvent<public><final><native>: listenable(objective) = external {}
+
+    # Returns a `message` describing progress, for example `"3 / 10"`.
+    GetProgress<public><native><native_callable>()<reads>: message
+
+    # Called when this objective starts.
+    OnActivate<protected><native><native_callable>()<transacts>: void
+
+    # Called after this objective is complete, possibly more than once.
+    OnComplete<protected><native><native_callable>(Reason: complete_objective_reason)<transacts>: void
+
+    # Called when this objective stops.
+    OnDeactivate<protected><native><native_callable>()<transacts>: void
+
+    # Signaled when this objective's progress changes.
+    ProgressEvent<public><final><native>: listenable(objective) = external {}
+
+    # Signals `ProgressEvent`.
+    SignalProgressEvent<protected><final><native>()<transacts>: void
+
+    # This objective's lifecycle state.
+    var<private> State<public><native>: objective_state = external {}
+  }
+
+  # Delivered by `objective.CompleteEvent`.
+  objective_complete_event_data<public><native> := struct<epic_internal> {
+    # The objective that completed.
+    Objective<public><native>: objective
+
+    # Why it completed.
+    Reason<public><native>: complete_objective_reason
+  }
+
+  # Returned when an objective lifecycle call cannot be honored.
+  objective_error<public><native> := class<abstract><computes><castable> {}
+
+  # Lifecycle state of an objective.
+  objective_state<public><native> := enum<open> {
+    # The objective is running and has not completed.
+    Active
+
+    # The objective has completed.
+    Complete
+
+    # The objective is not running and has not completed.
+    Inactive
+  }
+
+  # A completable goal with dynamic participation and terminal completion state.
+  # Participants join and abandon over time, each with its own `Contribute`,
+  # `Observe` and `Receive` info, and the quest completes once.
+  #   * A mission system where every player in the game works toward one
+  #     shared goal.
+  #   * A tutorial quest line that guides a player through the mechanics of your
+  #     game, one quest after another.
+  #   * An achievement system where each player owns a quest and progresses
+  #     toward it alone.
+  quest<public><native> := class<abstract>(objective) {
+    # Removes `Participant` from this quest; a refusal returns an error, and a
+    # `CanAbandon` veto returns that guard's own errors.
+    Abandon<public><final><native>(Participant: quest_participant)<transacts>: result(void, []quest_error)
+
+    # Signaled when a participant abandons this quest; sends the
+    # removed `quest_membership`.
     AbandonEvent<public><final><native>: listenable(quest_membership) = external {}
 
-    Activate<epic_internal><final><native>()<transacts>: void
-
-    CanAbandon<epic_internal><native><native_callable>(
-      QuestParticipant: quest_participant
-    )<reads>: result(void, []abandon_quest_error)
+    # Succeeds if `Participant` may abandon this quest; `Info` is the
+    # participation the dropped membership held, and the default succeeds.
+    # Veto by returning errors.
+    CanAbandon<public><native><native_callable>(
+      Participant: quest_participant,
+      Info: quest_participant_info
+    )<reads>: result(void, []quest_error)
 
     CanAdd<epic_internal><native><native_callable>(Manager: quest_manager_component)<decides><reads>: void
 
-    CanJoin<epic_internal><native><native_callable>(
-      QuestParticipant: quest_participant
-    )<reads>: result(void, []join_quest_error)
+    # Succeeds if `Participant` may join this quest under `Info`; the
+    # default succeeds.
+    # Veto by returning errors.
+    CanJoin<public><native><native_callable>(
+      Participant: quest_participant,
+      Info: quest_participant_info
+    )<reads>: result(void, []quest_error)
 
     CanRemove<epic_internal><native><native_callable>(Manager: quest_manager_component)<decides><reads>: void
-
-    # Marks this quest as completed. Fires CompleteEvent.
-    # Idempotent — no-op if already completed.
-    Complete<public><final><native>()<transacts>: void
-
-    # Signaled when this quest completes.
-    CompleteEvent<public><final><native>: listenable(quest) = external {}
-
-    Deactivate<epic_internal><final><native>()<transacts>: void
 
     Fail<epic_internal><final><native>()<transacts>: void
 
@@ -1767,34 +2120,52 @@ Progression<public> := module {
 
     IsActive<epic_internal><final><native>()<decides><reads>: void
 
-    # Succeeds if this quest is completed.
-    IsComplete<public><final><native>()<decides><reads>: void
+    # Adds `Participant` with `Info` to this quest and returns the new
+    # membership; a refusal returns an error, and a `CanJoin` veto returns that
+    # guard's own errors.
+    (/Verse.org/Progression/quest:)Join<public><final><native>(
+      Participant: quest_participant,
+      Info: quest_participant_info
+    )<transacts>: result(quest_membership, []quest_error)
 
-    # Signaled when a participant joins this quest.
+    # Signaled when a participant joins this quest; sends the
+    # new `quest_membership`.
     JoinEvent<public><final><native>: listenable(quest_membership) = external {}
 
-    OnAbandon<epic_internal><native><native_callable>(QuestParticipant: quest_participant): void
+    MarkQuestViewDirty<epic_internal><final><native>()<transacts>: void
 
-    OnActivate<epic_internal><native><native_callable>(): void
+    # Called when a participant abandons this quest.
+    OnAbandon<protected><native><native_callable>(
+      Participant: quest_participant,
+      Info: quest_participant_info
+    )<transacts>: void
 
     OnAdd<epic_internal><native><native_callable>(Manager: quest_manager_component): void
 
-    OnComplete<epic_internal><native><native_callable>(): void
+    # Called when this quest completes.
+    OnComplete<override><native><native_callable>(Reason: complete_objective_reason)<transacts>: void
 
-    OnDeactivate<epic_internal><native><native_callable>(): void
-
-    OnJoin<epic_internal><native><native_callable>(QuestParticipant: quest_participant): void
+    # Called when a participant joins this quest.
+    OnJoin<protected><native><native_callable>(
+      Participant: quest_participant,
+      Info: quest_participant_info
+    )<transacts>: void
 
     OnRemove<epic_internal><native><native_callable>(Manager: quest_manager_component): void
 
+    # Moves this quest and its memberships into `InCollection`; no `JoinEvent`
+    # or `AbandonEvent` fires.
+    SetCollection<public><final><native>(InCollection: quest_collection)<transacts>: void
+
     StateChangedEvent<epic_internal><final><native>: listenable(tuple(quest, quest_state, quest_state)) = external {}
 
-    var<private> OwningCollection<epic_internal><native>: ?quest_collection = external {}
+    # The collection this quest belongs to; an archetype must name one.
+    # Write it with `SetCollection`.
+    var<private> Collection<public><native>: quest_collection
 
     var<private> OwningManager<epic_internal><native>: ?quest_manager_component = external {}
   }
 
-  @experimental
   quest_bundle<epic_internal><native> := class<epic_internal><unique>(has_icon, has_description) {
     GetCompletedCount<epic_internal><final><native>()<reads>: int
 
@@ -1805,36 +2176,37 @@ Progression<public> := module {
     var Quests<epic_internal><native>: []quest
   }
 
-  @experimental
-  # The source of truth for quest participation.
+  # The source of truth for quest participation. Home quests in one collection
+  # per scope: per player, per team or shared by the whole session.
+  #   * Per player: each player's own quest log and achievements.
+  #   * Per team: a team's missions, joined by a team participant.
+  #   * Shared: one collection every participant joins for a server-wide goal.
   quest_collection<public><native> := class<unique> {
-    # Signaled when a participant abandons any quest in this collection.
+    # Signaled when a participant abandons any quest in this collection; sends
+    # the removed `quest_membership`.
     AbandonEvent<public><final><native>: listenable(quest_membership) = external {}
-
-    # Removes 'Participant' from 'Quest'.
-    AbandonQuest<public><final><native>(
-      Quest: quest,
-      Participant: quest_participant
-    )<transacts>: result(void, []abandon_quest_error)
 
     ActivateEvent<epic_internal><final><native>: listenable(quest) = external {}
 
-    # Signaled when any quest in this collection completes.
-    CompleteEvent<public><final><native>: listenable(quest) = external {}
+    # Signaled once when a quest in this collection completes.
+    CompleteEvent<public><final><native>: listenable(quest_complete_event_data) = external {}
 
     DeactivateEvent<epic_internal><final><native>: listenable(quest) = external {}
 
-    # Signaled when a participant joins any quest in this collection.
+    # Signaled when a participant joins any quest in this collection; sends the
+    # new `quest_membership`.
     JoinEvent<public><final><native>: listenable(quest_membership) = external {}
 
-    # Adds 'Participant' to 'Quest' with the given participation info.
-    JoinQuest<public><final><native>(
-      Quest: quest,
-      Participant: quest_participant,
-      Info: quest_participant_info
-    )<transacts>: result(void, []join_quest_error)
+    # Called when a participant abandons a quest in this collection.
+    # Not called when `SetCollection` moves a quest out.
+    OnAbandon<protected><native><native_callable>(Membership: quest_membership)<transacts>: void
 
-    OnComplete<epic_internal><native><native_callable>(Quest: quest): void
+    # Called once when a quest in this collection completes.
+    OnComplete<protected><native><native_callable>(Quest: quest, Reason: complete_objective_reason)<transacts>: void
+
+    # Called when a participant joins a quest in this collection.
+    # Not called when `SetCollection` moves a quest in.
+    OnJoin<protected><native><native_callable>(Membership: quest_membership)<transacts>: void
 
     # All memberships indexed by participant.
     var<private> Participants<public><native>: [quest_participant][]quest_membership = external {}
@@ -1843,10 +2215,20 @@ Progression<public> := module {
     var<private> Quests<public><native>: [quest][]quest_membership = external {}
   }
 
-  @experimental
+  # Delivered by `quest_collection.CompleteEvent`.
+  quest_complete_event_data<public><native> := struct<epic_internal> {
+    # The quest that completed.
+    Quest<public><native>: quest
+
+    # Why it completed.
+    Reason<public><native>: complete_objective_reason
+  }
+
   quest_completion_context<epic_internal><native> := class {}
 
-  @experimental
+  # Returned when a quest membership call cannot be honored.
+  quest_error<public><native> := class<abstract><computes><castable> {}
+
   quest_granter_component<epic_internal><native> := class<epic_internal><final_super>(component) {
     CanGrant<epic_internal><native><native_callable>(Manager: quest_manager_component)<decides><reads>: void
 
@@ -1859,12 +2241,11 @@ Progression<public> := module {
     QuestsToGrant<epic_internal><native>: []subtype(quest)
   }
 
-  @experimental
   quest_manager_component<epic_internal><native> := class<epic_internal><final_super>(component) {
     AbandonQuest<epic_internal><native><native_callable>(
       Quest: quest,
       Participant: quest_participant
-    )<transacts>: result(void, []abandon_quest_error)
+    )<transacts>: result(void, []quest_error)
 
     AddQuest<epic_internal><native><native_callable>(Quest: quest): void
 
@@ -1884,7 +2265,7 @@ Progression<public> := module {
       Quest: quest,
       Participant: quest_participant,
       Info: quest_participant_info
-    )<transacts>: result(void, []join_quest_error)
+    )<transacts>: result(quest_membership, []quest_error)
 
     OnAdd<epic_internal><native><native_callable>(Quest: quest): void
 
@@ -1899,10 +2280,9 @@ Progression<public> := module {
     var<private> Quests<epic_internal><native>: []quest = external {}
   }
 
-  @experimental
   # Record binding a quest to a participant with participation info.
-  quest_membership<public><native> := class {
-    # The participation info describing this participant's role.
+  quest_membership<public><native> := class<epic_internal><final> {
+    # This membership's live participation info.
     Info<public><native>: quest_participant_info
 
     # The participant in this membership.
@@ -1912,56 +2292,94 @@ Progression<public> := module {
     Quest<public><native>: quest
   }
 
-  @experimental
-  # Abstract base class for quest participants.
-  quest_participant<public><native> := class<abstract><unique> {
-    # Signaled when this participant abandons a quest.
+  # Delivered by `quest_participant.CompleteEvent`.
+  quest_membership_complete_event_data<public><native> := struct<epic_internal> {
+    # This participant's membership in the quest that completed.
+    Membership<public><native>: quest_membership
+
+    # Why the quest completed.
+    Reason<public><native>: complete_objective_reason
+  }
+
+  # An identity that joins quests and holds memberships.
+  # `agent_quest_participant` is a single agent; subclass `quest_participant`
+  # for any other identity, such as a team, and enroll its agents from `OnJoin`
+  # and `OnAbandon`.
+  #   * A player: one participant per player, each owning its own quests.
+  #   * A team: one participant for the team, so its members share a
+  #     single membership.
+  #   * The match: one participant every player in the game contributes to.
+  quest_participant<public><native> := class<abstract><unique><castable> {
+    # Signaled when this participant abandons a quest; sends the
+    # removed `quest_membership`.
     AbandonEvent<public><final><native>: listenable(quest_membership) = external {}
 
-    CanAbandon<epic_internal><native><native_callable>(Quest: quest)<reads>: result(void, []abandon_quest_error)
+    CanAbandon<epic_internal><native><native_callable>(Quest: quest)<reads>: result(void, []quest_error)
 
-    CanJoin<epic_internal><native><native_callable>(Quest: quest)<reads>: result(void, []join_quest_error)
+    CanJoin<epic_internal><native><native_callable>(Quest: quest)<reads>: result(void, []quest_error)
 
     # Signaled when a quest this participant is in completes.
-    CompleteEvent<public><final><native>: listenable(quest_membership) = external {}
+    CompleteEvent<public><final><native>: listenable(quest_membership_complete_event_data) = external {}
 
     GetParticipatingQuests<epic_internal><final><native>()<reads>: []quest
 
-    # Signaled when this participant joins a quest.
+    # Signaled when this participant joins a quest; sends the
+    # new `quest_membership`.
     JoinEvent<public><final><native>: listenable(quest_membership) = external {}
 
-    OnAbandon<epic_internal><native><native_callable>(Quest: quest): void
+    # Called as this participant abandons `Quest`, before the membership is
+    # removed; `Info` is the participation the dropped membership held.
+    OnAbandon<protected><native><native_callable>(Quest: quest, Info: quest_participant_info)<transacts>: void
 
     OnActivate<epic_internal><native><native_callable>(Quest: quest): void
 
-    OnComplete<epic_internal><native><native_callable>(Quest: quest): void
+    # Called after a quest this participant is in has completed.
+    OnComplete<protected><native><native_callable>(
+      Quest: quest,
+      Info: quest_participant_info,
+      Reason: complete_objective_reason
+    )<transacts>: void
 
     OnDeactivate<epic_internal><native><native_callable>(Quest: quest): void
 
-    OnJoin<epic_internal><native><native_callable>(Quest: quest): void
+    # Called after this participant has joined `Quest`.
+    OnJoin<protected><native><native_callable>(Quest: quest, Info: quest_participant_info)<transacts>: void
 
     var<private> Memberships<epic_internal><native>: []quest_membership = external {}
   }
 
-  @experimental
   quest_participant_component<epic_internal><native> := class<epic_internal><final_super>(component) {
     Participant<epic_internal><native>: agent_quest_participant
   }
 
-  @experimental
   # Describes how a participant relates to a quest.
-  quest_participant_info<public><native> := class(member_info_interface) {
-    # Can this participant make progress on the quest.
-    var Contributes<public><native>: logic = external {}
+  quest_participant_info<public><native> := class<castable>(member_info_interface) {
+    # Sets `Contribute`, enrolling or withdrawing this participant's
+    # contribution on the quest that holds this info.
+    SetContribute<public><final><native>(InContribute: logic)<transacts>: void
 
-    # Can this participant observe quest state.
-    var Observes<public><native>: logic = external {}
+    # Sets `Observe`, enrolling or withdrawing this participant as an observer
+    # of the quest that holds this info.
+    SetObserve<public><final><native>(InObserve: logic)<transacts>: void
 
-    # Can this participant receive rewards on quest completion.
-    var Receives<public><native>: logic = external {}
+    # Sets `Receive`, enrolling or withdrawing this participant as a reward
+    # recipient of the quest that holds this info.
+    SetReceive<public><final>(InReceive: logic)<transacts>: void = external {}
+
+    # Whether this participant may make progress on the quest; `true`
+    # by default.
+    # Write it with `SetContribute`.
+    var<private> Contribute<public><native>: logic = external {}
+
+    # Whether this participant may observe quest state; `true` by default.
+    # Write it with `SetObserve`.
+    var<private> Observe<public><native>: logic = external {}
+
+    # Whether this participant may receive rewards; `true` by default.
+    # Write it with `SetReceive`.
+    var<private> Receive<public><native>: logic = external {}
   }
 
-  @experimental
   quest_state<epic_internal><native> := enum<open><persistable> {
     Active
 
@@ -1970,11 +2388,12 @@ Progression<public> := module {
     Inactive
   }
 
-  @experimental
   remove_quest_error<epic_internal><native> := class<epic_internal> {}
 
-  @experimental
   remove_quest_vetoed_error<epic_internal><native> := class<epic_internal>(remove_quest_error) {}
+
+  # The objective's work was accomplished.
+  succeed_objective_reason<public><native> := class(complete_objective_reason) {}
 }
 
 # Module import path: /Verse.org/Random
@@ -2011,7 +2430,7 @@ Restricted<public> := module {
       : t,
       : t,
       : t
-    ): tuple(t, t, t, t) = external {}
+    ): tuple(t, t, t, t, t, t, t) = external {}
 
     Signal<native><override>(__dupe___unnamed_parameter_2: t): void
   }
@@ -2080,6 +2499,12 @@ SceneGraph<public> := module {
     Volume: collision_volume
   )<transacts>: generator(sweep_hit) = external {}
 
+  (Entity: entity).FindSweepHitsPredicts<epic_internal>(
+    Displacement: (/Verse.org/SpatialMath:)vector3,
+    StartGlobalTransform: (/Verse.org/SpatialMath:)transform,
+    Volume: collision_volume
+  )<transacts>: generator(sweep_hit) = external {}
+
   @available { MinUploadedAtFNVersion := 3800 }
   # Get the players that this entity is currently be presented to. False
   # = presentable to everyone, array = presentable to no one.
@@ -2143,6 +2568,10 @@ SceneGraph<public> := module {
     component_type: castable_subtype(component)
   )<transacts>: generator(entity)
 
+  (InEntity: entity).FindAncestorEntitiesWithComponentPredicts<epic_internal><native>(
+    component_type: castable_subtype(component)
+  )<transacts>: generator(entity)
+
   # Finds all ancestor entities to `InEntity` that has any tags of
   # type `tag_type`.
   # The order of the returned entities is unspecified and subject to change.
@@ -2187,6 +2616,8 @@ SceneGraph<public> := module {
   # have a transform_component it will return the transform of the first parent
   # that has a transform
   (InEntity: entity).GetGlobalTransform<public><native>()<transacts>: (/Verse.org/SpatialMath:)transform
+
+  (InEntity: entity).GetGlobalTransformPredicts<epic_internal><native>()<transacts>: (/Verse.org/SpatialMath:)transform
 
   # Returns the bounds of this entity by accumulating bounded components,
   # including owned entities, in local space.
@@ -2266,15 +2697,24 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  CloneCameraBody<epic_internal><constructor>(CameraBody: camera_body)<computes>: camera_body = external {}
+  # Constructor that clones an existing camera_body. Useful for writing camera
+  # modifiers as it makes it easier to create a camera_body that is a copy of
+  # another with some values modified.
+  CloneCameraBody<public><constructor>(CameraBody: camera_body)<computes>: camera_body = external {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  CloneCameraLens<epic_internal><constructor>(CameraLens: camera_lens)<computes>: camera_lens = external {}
+  # Constructor that clones an existing camera_lens. Useful for writing camera
+  # modifiers as it makes it easier to create a camera_lens that is a copy of
+  # another with some values modified.
+  CloneCameraLens<public><constructor>(CameraLens: camera_lens)<computes>: camera_lens = external {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  CloneCameraState<epic_internal><constructor>(CameraState: camera_state)<computes>: camera_state = external {}
+  # Constructor that clones an existing camera_state. Useful for writing camera
+  # modifiers as it makes it easier to create a camera_state that is a copy of
+  # another with some values modified.
+  CloneCameraState<public><constructor>(CameraState: camera_state)<computes>: camera_state = external {}
 
   # Module import path: /Verse.org/SceneGraph/CollisionChannels
   # The set of built-in collision_channels. This is a closed set for now.
@@ -2409,15 +2849,26 @@ SceneGraph<public> := module {
     SocketName: string
   )<decides><reads>: presentation_origin
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  GetComponent_Internal<epic_internal><native>(Component: t where t: subtype(component))<decides><reads>: t
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  GetEntity_Internal<epic_internal><native>(Entity: entity)<decides><reads>: entity
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  GetMeshPart_Internal<epic_internal><native>(MeshPart: mesh_part)<decides><reads>: mesh_part
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  GetOrMakeDummyMeshPartHandle<epic_internal>(Cache: mesh_part_cache): mesh_part_handle = external {}
+
   GetPhysicsSceneForEntity<epic_internal><native>(Entity: entity)<transacts><decides>: physics_scene_component
 
   @available { MinUploadedAtFNVersion := 4000 }
   # Helper function to aide in initializing the Entity pointer for components
   # during component field construction inside a verse class
   GetSelfEntityForComponentInitialization<epic_internal><native>()<converges>: entity
-
-  @available { MinUploadedAtFNVersion := 4110 }
-  GlobalModifierPosition<public>: rational = external {}
 
   @available { MinUploadedAtFNVersion := 4100 }
   # Module import path: /Verse.org/SceneGraph/HasCollisionInvalids
@@ -2677,15 +3128,289 @@ SceneGraph<public> := module {
     ) {}
   }
 
+  @available { MinUploadedAtFNVersion := 4230 }
+  @experimental
+  MakeCameraModifierStack<epic_internal><native>()<converges>: modifier_stack(camera_state)
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @deprecated { Message := "Internal factory for native hit construction. Read the hit through SourceMeshHandle/TargetMeshHandle instead." }
+  @experimental
+  MakeCollisionHit<epic_internal><native_callable>(
+    SourceMeshPartHandleData: mesh_part_handle_data,
+    TargetMeshPartHandleData: mesh_part_handle_data,
+    InSourceComponent: component,
+    InTargetComponent: component,
+    InContactPoints: []contact_point,
+    InMeshPartCache: ?mesh_part_cache
+  ): collision_hit = external {}
+
   MakeCollisionMaterial<epic_internal><native>(
     StaticFriction: float,
     DynamicFriction: float,
     Restitution: float
   )<converges>: collision_material
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  MakeMeshPartHandle<epic_internal><constructor>(
+    MeshPartHandleData: mesh_part_handle_data
+  ): mesh_part_handle = external {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @deprecated { Message := "Internal factory for native hit construction. Read the hit through SourceMeshHandle/TargetMeshHandle instead." }
+  @experimental
+  MakeOverlapHit<epic_internal><native_callable>(
+    SourceMeshPartHandleData: mesh_part_handle_data,
+    TargetMeshPartHandleData: mesh_part_handle_data,
+    InSourceComponent: ?component,
+    InTargetComponent: component,
+    InSourceGlobalTransform: (/Verse.org/SpatialMath:)transform,
+    InSourceVolume: collision_volume,
+    InTargetVolume: collision_element,
+    InMeshPartCache: ?mesh_part_cache
+  ): overlap_hit = external {}
+
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   MakeSkeletonModifierStack<epic_internal><native>()<converges>: modifier_stack(skeleton)
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @deprecated { Message := "Internal factory for native hit construction. Read the hit through SourceMeshHandle/TargetMeshHandle instead." }
+  @experimental
+  MakeSweepHit<epic_internal><native_callable>(
+    SourceMeshPartHandleData: mesh_part_handle_data,
+    TargetMeshPartHandleData: mesh_part_handle_data,
+    InSourceComponent: ?component,
+    InTargetComponent: component,
+    InSourceStartGlobalTransform: (/Verse.org/SpatialMath:)transform,
+    InSourceHitTranslation: (/Verse.org/SpatialMath:)vector3,
+    InSourceHitDistance: float,
+    InContactPosition: (/Verse.org/SpatialMath:)vector3,
+    InContactNormal: (/Verse.org/SpatialMath:)vector3,
+    InContactFaceNormal: (/Verse.org/SpatialMath:)vector3,
+    InSourceVolume: collision_volume,
+    InTargetVolume: collision_element,
+    InMeshPartCache: ?mesh_part_cache
+  ): sweep_hit = external {}
+
+  # Verse path: /Verse.org/SceneGraph
+  # Module import path: /Verse.org/SceneGraph/Movement
+  Movement<epic_internal> := module {
+    (DataCollection: movement_data_collection).AddData<public><native>(
+      MoveData: movement_data
+    )<reads>: movement_data_collection
+
+    (DataCollection: movement_data_collection).FindData<public><native>(
+      t: castable_subtype(movement_data)
+    )<decides><reads>: t
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    allows_move_modification<public><native> := interface {
+      @editable
+      ModifierPipeline<public>: move_modifier_pipeline = external {}
+    }
+
+    frame_params<public><native> := struct<reads> {
+      DeltaTime<native>: float
+
+      InitialState<native>: movement_state = external {}
+
+      StartTime<native>: float
+
+      TagsInterface<native>: has_tags
+    }
+
+    modal_movement_component<public><native> := class(movement_component) {
+      ApplyMove<final><override><native>(ProposedMove: proposed_move, FrameParams: frame_params)<reads>: movement_state
+
+      GetActiveModeChangedEvent<public>()<reads>: listenable(on_mode_changed_payload) = external {}
+
+      OnBeginSimulation<override>(): void = external {}
+
+      ProposeMove<final><override>(FrameParams: frame_params)<reads>: proposed_move = external {}
+
+      TryActivateMode<protected><native>(ModeType: subtype(movement_mode))<transacts><decides>: void
+
+      TryAddMovementMode<public>(
+        MakeModeFunc: type { _(: movement_mode_base)<transacts><decides>: t } where t: subtype(movement_mode)
+      )<transacts><decides>: t = external {}
+
+      @editable
+      var<protected> DefaultModes<public><native>: []movement_mode = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    move_modifier<public><native> := class<abstract><castable>(modifier(proposed_move)) {
+      @editable
+      Duration<protected><native>: float = external {}
+
+      GetBaseMove<protected><native>()<reads>: proposed_move
+
+      GetFrameInfo<protected><native>()<reads>: frame_params
+
+      GetStartTime<public><native>()<reads>: ?float
+
+      IsFinalPass<protected>()<decides><reads>: void = external {}
+
+      IsFinished<public><native_callable>(FrameParams: frame_params)<decides><reads>: void = external {}
+
+      OnEnd<protected><native_callable>()<transacts>: void = external {}
+
+      OnStart<protected><native_callable>()<transacts>: void = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    move_modifier_phase<public><native> := class(move_modifier_stack) {
+      (/Verse.org/Verse/modifier_stack:)AddModifier<override>(
+        Modifier: modifier(proposed_move),
+        Position: rational
+      )<transacts>: cancelable = external {}
+
+      (/Verse.org/SceneGraph/Movement/move_modifier_phase:)AddModifier<public>(
+        Modifier: move_modifier
+      )<transacts>: cancelable = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    move_modifier_pipeline<public><native> := class(move_modifier_stack) {
+      Additive<public><native>: move_modifier_phase = external {}
+
+      Base<public><native>: move_modifier_prioritized_phase = external {}
+
+      Limit<public><native>: move_modifier_prioritized_phase = external {}
+
+      ModifyMove<public><native>(BaseMove: proposed_move)<reads>: proposed_move
+
+      Override<public><native>: move_modifier_prioritized_phase = external {}
+
+      Standard<public><native>: move_modifier_prioritized_phase = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    move_modifier_prioritized_phase<public><native> := class(move_modifier_phase) {
+      Environmental<public><native>: move_modifier_phase = external {}
+
+      Forced<public><native>: move_modifier_phase = external {}
+
+      Gameplay<public><native>: move_modifier_phase = external {}
+    }
+
+    @available { MinUploadedAtFNVersion := 4100 }
+    @experimental
+    move_modifier_stack<public><native> := class<internal><abstract>(modifier_stack(proposed_move)) {
+      AddModifier<override>(Modifier: modifier(proposed_move), Position: rational)<transacts>: cancelable = external {}
+
+      AddPhase<public>(Phase: move_modifier_phase)<transacts>: cancelable = external {}
+
+      Evaluate<final><override><native>(InValue: proposed_move)<reads>: proposed_move
+    }
+
+    move_result<public><native> := struct<concrete><reads> {
+      FinalState<native>: movement_state = external {}
+
+      YieldInfo<native>: ?yield_info = external {}
+    }
+
+    movement_component<public><native> := class<final_super>(component) {
+      ApplyMove<protected><native_callable>(
+        ProposedMove: proposed_move,
+        FrameParams: frame_params
+      )<reads>: movement_state = external {}
+
+      ApplyMove_TempPredicts<protected><native><native_callable>(
+        ProposedMove: proposed_move,
+        FrameParams: frame_params
+      )<reads>: movement_state
+
+      GetLatestMoveState<public><native>()<reads>: movement_state
+
+      ProposeMove<protected><native_callable>(FrameParams: frame_params)<reads>: proposed_move = external {}
+
+      ProposeMove_TempPredicts<protected><native_callable>(
+        FrameParams: frame_params
+      )<reads>: proposed_move = external {}
+
+      @editable
+      UseTempPredictsAPI<epic_internal><native>: logic = external {}
+
+      var TrajectoryGenerationEnabled<epic_internal>: logic = external {}
+    }
+
+    @import_as("/Script/VerseMovement.UVerseMovementData")
+    movement_data<public><native> := class<castable><final_super_base><computes><abstract> {}
+
+    @import_as("/*.FVerseMovementDataCollection")
+    movement_data_collection<public><native> := struct<concrete><computes> {}
+
+    movement_mode<public><native> := class<final_super><abstract>(movement_mode_base, cancelable) {
+      Cancel<override><native>()<transacts>: void
+
+      Parent<override>: movement_mode_base
+    }
+
+    movement_mode_base<public><native> := class<final_super><abstract>(state) {
+      ApplyMove<public><native><native_callable>(
+        FrameParams: frame_params,
+        CumulativeMove: proposed_move
+      )<reads>: move_result
+
+      CanEnter<public><native_callable>(MoveState: movement_state)<decides><reads>: void = external {}
+
+      ProposeMove<public><native><native_callable>(FrameParams: frame_params)<reads>: proposed_move
+    }
+
+    @import_as("/*.FVerseMovementState")
+    movement_state<public><native> := struct<concrete><reads> {
+      AngularVelocity<native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      LinearVelocity<native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      Location<native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      Orientation<native>: (/Verse.org/SpatialMath:)rotation = external {}
+
+      StateData<native>: movement_data_collection = external {}
+    }
+
+    on_mode_changed_payload<public><native> := struct<computes> {
+      NewMode<native>: movement_mode_base
+
+      PreviousMode<native>: movement_mode_base
+    }
+
+    proposed_move<public><native> := struct<concrete><computes> {
+      AngularVelocity<native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+      LinearVelocity<native>: (/Verse.org/SpatialMath:)vector3 = external {}
+    }
+
+    using { /Verse.org/Native }
+    using { /Verse.org/Simulation }
+    using { /Verse.org/Simulation/Tags }
+    using { /Verse.org/SpatialMath }
+    using { /Verse.org/StateMachine }
+    root_movement_mode<public><native> := class<final_super>(movement_mode_base) {
+      ApplyMove<final><override>(
+        FrameParams: frame_params,
+        CumulativeMove: proposed_move
+      )<reads>: move_result = external {}
+
+      CanEnter<final><override>(MoveState: movement_state)<decides><reads>: void = external {}
+
+      ProposeMove<final><override>(FrameParams: frame_params)<reads>: proposed_move = external {}
+    }
+
+    yield_info<public><native> := struct<computes> {
+      SuggestedMode<native>: ?subtype(movement_mode) = external {}
+
+      TimeUsed<native>: float = external {}
+    }
+  }
 
   RouteUAFSharedVariableSet<epic_internal><native>(
     Component: has_uaf_shared_variables,
@@ -2694,7 +3419,9 @@ SceneGraph<public> := module {
     NewValue: any
   )<transacts>: void
 
+  using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   # Verse path: /Verse.org/SceneGraph
   @available { MinUploadedAtFNVersion := 3800 }
   # Module import path: /Verse.org/SceneGraph/UI
@@ -3039,6 +3766,36 @@ SceneGraph<public> := module {
       var Proportion<public>: float = external {}
     }
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Sets the size of the widget it is attached to, in centimeters: a preferred
+    # size, a smallest and a largest. Never exceeds the size the parent allows.
+    size_constraint_component<epic_internal><native> := class<final_super>(component) {
+      # Preferred height in centimeters, clamped by MinHeight and MaxHeight. If
+      # not set, the height comes from the content. Measured before
+      # any rotation.
+      var Height<public>: ?float = external {}
+
+      # Largest height in centimeters, unlimited by default. If MinHeight is
+      # larger, MinHeight wins.
+      var MaxHeight<public>: float = external {}
+
+      # Largest width in centimeters, unlimited by default. If MinWidth is
+      # larger, MinWidth wins.
+      var MaxWidth<public>: float = external {}
+
+      # Smallest height in centimeters, never exceeding the height the
+      # parent allows.
+      var MinHeight<public>: float = external {}
+
+      # Smallest width in centimeters, never exceeding the width the
+      # parent allows.
+      var MinWidth<public>: float = external {}
+
+      # Preferred width in centimeters, clamped by MinWidth and MaxWidth. If not
+      # set, the width comes from the content. Measured before any rotation.
+      var Width<public>: ?float = external {}
+    }
+
     @available { MinUploadedAtFNVersion := 4000 }
     skew_text_effect<epic_internal><native> := class(text_effect) {
       @editable
@@ -3196,8 +3953,29 @@ SceneGraph<public> := module {
     bSimulatedPhysicSleep<native>: logic = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4110 }
-  VisualModifierPosition<public>: rational = external {}
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # A value interpolator that first accelerates up to a maximum speed, and then
+  # decelerates before reaching the target value.
+  acceleration_deceleration_camera_value_interpolation_settings<epic_internal><native> := class<concrete>(
+    camera_value_interpolation_settings
+  ) {
+    @experimental
+    @replicated("")
+    # The acceleration rate at the start of interpolation.
+    Acceleration<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The deceleration rate at the end of interpolation.
+    Deceleration<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The maximum speed reachable during interpolation.
+    MaxSpeed<public><native>: float = external {}
+  }
 
   @replicatable
   @import_as("/Script/Entity.FActorOriginData")
@@ -3223,8 +4001,209 @@ SceneGraph<public> := module {
     PreviousAgent<native>: ?agent = external {}
   }
 
-  using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
+  using { /Verse.org/Assets }
+  # Verse path: /Verse.org/SceneGraph
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that attaches the camera to a target entity
+  attach_to_entity_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # Modify the render location to attach to the target's location?'
+    var AttachToLocation<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Modify the render rotation to attach to the target's rotation?'
+    var AttachToRotation<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Entity to attach to.
+    var TargetEntity<public><native>: entity = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # A camera node that can rotate the camera in yaw and pitch based on
+  # player input.
+  auto_rotate_camera_modifier_settings<epic_internal><native> := class<concrete> {
+    @experimental
+    @replicated("")
+    # Whether to auto-rotate pitch.
+    AutoRotatePitch<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Whether to auto-rotate yaw.
+    AutoRotateYaw<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    @units("Radians")
+    # The minimum player-induced/manual rotation in radians, to
+    # deactivate auto-rotation.
+    DeactivationThreshold<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The direction to re-align towards
+    Direction<public><native>: camera_auto_rotate_direction = external {}
+
+    @experimental
+    @replicated("")
+    # The time in seconds, to wait before re-aligning.
+    WaitTime<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Whether to enable auto-rotation
+    var Enable<public><native>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Base class for nodes that frame a target
+  base_framing_camera_modifier<epic_internal><native> := class<abstract>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # Whether to frame the target with the ideal framing immediately on the
+    # first frame.
+    InitializeWithIdealFraming<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
+    var DeadZoneScreenSpaceBottom<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
+    var DeadZoneScreenSpaceLeft<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
+    var DeadZoneScreenSpaceRight<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
+    var DeadZoneScreenSpaceTop<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The time spent ramping down the reframing after entering the dead zone. If
+    # set to zero or a negative value, reframing will immediately stop once the
+    # target has entered the dead zone. Otherwise, the ReframeDampingFactor will
+    # interpolate towards zero over the specified amount of seconds.
+    var DisengageTimeSeconds<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The ideal horizontal screen-space position of the target.
+    var IdealFramingLocationScreenSpaceLeft<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The ideal vertical screen-space position of the target.
+    var IdealFramingLocationScreenSpaceUp<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # If valid, the recentering damping factor will interpolate between
+    # LowReframeDampingFactor and ReframeDampingFactor as the target moves
+    # between the ideal target position and the boundaries of the hard-zone.
+    # If invalid, no interpolation occurs and the damping factor is always equal
+    # to ReframeDampingFactor.
+    var LowReframeDampingFactor<public><native>: ?float = external {}
+
+    @experimental
+    @replicated("")
+    # The time spent ramping up the reframing after exiting the dead zone. If
+    # set to zero or a negative value, reframing will immediately restart once
+    # the target has exited the dead zone. Otherwise the ReframeDampingFactor
+    # will interpolate from zero to its desired value over the specified amount
+    # of seconds.
+    var ReengageTimeSeconds<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The damping factor for how fast the framing recenters on the target.
+    var ReframeDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
+    var SoftZoneScreenSpaceBottom<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
+    var SoftZoneScreenSpaceLeft<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
+    var SoftZoneScreenSpaceRight<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
+    var SoftZoneScreenSpaceTop<public><native>: float = external {}
+
+    @experimental
+    # Targets to frame, mapping each target entity to the weight it contributes
+    # to the framing calculation.
+    var TargetEntities<public>: [entity]float = external {}
+
+    @experimental
+    @replicated("")
+    # How far ahead to look in time when attempting to anticipate the movement
+    # of the target.
+    var TargetMovementAnticipationTimeSeconds<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    @display_name("TargetEntities")
+    var WeightedTargets<protected><native>: []weighted_target_entity = external {}
+  }
+
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   # Verse path: /Verse.org/SceneGraph
   # An interactable component with a composable feature set.
@@ -3304,6 +4283,50 @@ SceneGraph<public> := module {
     split_prefab_type<public><native>: castable_concrete_subtype(entity) = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # A camera node that can rotate the camera in yaw and pitch based on
+  # player input.
+  boom_arm_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # Optional auto rotation settings
+    AutoRotateSettings<public><native>: ?auto_rotate_camera_modifier_settings = external {}
+
+    @experimental
+    @replicated("")
+    # Interpolation settings to use for changing the boom length based on its
+    # pivot's movements.
+    BoomLengthInterpolationSettings<public><native>: camera_value_interpolation_settings = external {}
+
+    @experimental
+    @replicated("")
+    # If true, the boom arm's rotation will add to the existing rotation instead
+    # of being absolute.
+    IsRotationAdditive<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # The offset of the boom. Rotation occurs at the base (i.e. before
+    # the offset).
+    var BoomOffset<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    @experimental
+    @replicated("")
+    # The maximum amount of backward movement the interpolator can introduce,
+    # expressed as a factor of the default boom length. If the value is less
+    # than 0.0 then there is no limit.
+    var MaxBackwardInterpolationFactor<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The maximum amount of forward movement the interpolator can introduce,
+    # expressed as a factor of the default boom length. If the value is less
+    # than 0.0 then there is no limit.
+    var MaxForwardInterpolationFactor<public><native>: float = external {}
+  }
+
   # Implemented by classes whose instances can provide a bounds.
   bounded<epic_internal><native> := interface {
     # Returns the associated bounded box for this object, in world space.
@@ -3324,12 +4347,22 @@ SceneGraph<public> := module {
     Valid<native>: logic = external {}
   }
 
-  using { /Verse.org/Assets }
-  # Verse path: /Verse.org/SceneGraph
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  camera_auto_rotate_direction<epic_internal><native> := enum<open> {
+    Facing
+
+    Movement
+
+    MovementOrFacing
+
+    ZeroDirection
+  }
+
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera body settings, e.g. sensor/film settings, shutter speed, etc
-  camera_body<public><native> := class<final><computes> {
+  camera_body<public><native> := class<computes> {
     @replicated("")
     # The camera sensor sensitivity to light.
     ISO<public><native>: float = external {}
@@ -3360,11 +4393,21 @@ SceneGraph<public> := module {
   # Represents the physical body, lens of the camera and other cinematographic
   # qualities, such as sensor size, aspect ratio lock/constraint, focal length,
   # focus distance, post-process settings, etc.
-  camera_component<public><native> := class<final_super><abstract>(component, has_camera_modifier) {
+  camera_component<public><native> := class<final_super><abstract>(component) {
     AddCameraModifier<epic_internal><native_callable>(
       Modifier: camera_modifier,
       Priority: rational
     ): cancelable = external {}
+
+    @editable
+    @replicated("")
+    @experimental
+    # Camera modifiers allow the behavior of a camera to be modified with
+    # custom logic.
+    # A camera modifier has an Evaluate function that takes in the current state
+    # of the camera (taking into account all previously executed modifiers) and
+    # returns the desired output camera state
+    CameraModifiers<public><native>: modifier_stack(camera_state) = external {}
 
     @experimental
     # Get transition to use when entering this camera mode to transition to the
@@ -3435,16 +4478,101 @@ SceneGraph<public> := module {
   @experimental
   # Responsible for selecting a camera and blending when the active
   # camera changes.
-  # Also allows global settings to be shared between different cameras (such as
-  # post process settings) and modifications to the final blended camera state,
-  # such as camera shakes
+  # The execution of the camera director is split into multiple layers.
+  #
+  #  * The Pre-Camera layer - These modifiers run before everything else and
+  #    allow default values to be set before the rest of the camera
+  #    system evaluates.
+  #  * The Main layer - The camera_component with the highest priority (defined
+  #    by the priority given to AddCamera) executes here.
+  #  * The Post-Camera layer - These modifiers run on the accumulated result of
+  #    the PreCamera and Main layers. This layer runs after any blending that
+  #    may occur between active cameras, if we are currently transitioning
+  #    between active camera_components. Intended to be the final Gameplay state
+  #    of the camera system.
+  #  * The Presentation layer - These modifiers run on the accumulated result of
+  #    the PreCamera, Main layer and Post-Camera layers. Intended for cosmetic
+  #    effects like camera shake, that don't affect gameplay. '
+  #
+  # Since a camera_director_component is a camera_component, camera directors
+  # can be nested.
+  # If the active camera is a camera director, then each layer of the entire
+  # active camera system will be evaluated in order.
+  # The entire Pre-Camera layer of all directors will evaluate, starting with
+  # the outermost director.
+  # The active camera of the innermost director will then evaluate, followed by
+  # any modifiers on the Main layer of the camera_director_component (the
+  # CameraModifiers modifier stack we inherit from camera_component).
+  # The entire Post-Camera layer of all directors will evaluate, starting with
+  # the outermost director.
+  # The entire Presentation layer of all directors will evaluate, starting with
+  # the outermost director.
   camera_director_component<public><native> := class<final_super>(camera_component) {
     # Add a camera to the director. The camera with the highest priority will be
     # chosen to be the active camera
     AddCamera<public><native>(Camera: camera_component, Priority: rational)<transacts><decides>: cancelable
 
+    @available { MinUploadedAtFNVersion := 4230 }
+    @experimental
+    AddPostCameraLayerModifier<epic_internal><native_callable>(
+      Modifier: camera_modifier,
+      Priority: rational
+    ): cancelable = external {}
+
+    @available { MinUploadedAtFNVersion := 4230 }
+    @experimental
+    AddPreCameraLayerModifier<epic_internal><native_callable>(
+      Modifier: camera_modifier,
+      Priority: rational
+    ): cancelable = external {}
+
+    @available { MinUploadedAtFNVersion := 4230 }
+    @experimental
+    AddPresentationLayerModifier<epic_internal><native_callable>(
+      Modifier: camera_modifier,
+      Priority: rational
+    ): cancelable = external {}
+
     # Returns the current camera transform if available.
     GetActiveCameraTransform<epic_internal><native>()<decides><reads>: (/Verse.org/SpatialMath:)transform
+
+    @editable
+    @replicated("")
+    @experimental
+    @available { MinUploadedAtFNVersion := 4230 }
+    # Modifier stack containing modifiers that should run after the Pre-Camera
+    # and Main layers (the active camera_component) have been evaluated.
+    # In the case where we are blending between cameras, the Post Camera
+    # modifiers will run on the blended output state after all blending cameras
+    # have been evaluated.
+    # The Post Camera layer is useful for modifiers that you don't want to run
+    # multiple times when blending. Such as collision detection, or
+    # weapon recoil.
+    PostCameraModifiers<public><native>: modifier_stack(camera_state) = external {}
+
+    @editable
+    @replicated("")
+    @experimental
+    @available { MinUploadedAtFNVersion := 4230 }
+    # Modifier stack containing modifiers that should run on the Pre-Camera
+    # layer before any camera_components are evaluated.
+    # Useful for setting default values that you want to be shared by the entire
+    # camera system.
+    PreCameraModifiers<public><native>: modifier_stack(camera_state) = external {}
+
+    @editable
+    @replicated("")
+    @experimental
+    @available { MinUploadedAtFNVersion := 4230 }
+    # Modifier stack containing modifiers that should run after the Pre-Camera,
+    # Main and Post-Camera layers.
+    # The Presentation layer is intended to be used for purely cosmetic effects
+    # like camera shake. In future the intention is that you can use the
+    # PostCameraModifiers layer to define the "Gameplay" state of the camera
+    # system (for uses like aiming and character movement).
+    # Purely cosmetic effects that you don't want to affect the player's aim or
+    # movement direction can live in the Presentation layer.
+    PresentationCameraModifiers<public><native>: modifier_stack(camera_state) = external {}
 
     @replicated("")
     @experimental
@@ -3455,7 +4583,7 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera lens settings
-  camera_lens<public><native> := class<final><computes> {
+  camera_lens<public><native> := class<computes> {
     @replicated("")
     # Number of blades of diaphragm.
     BladeCount<public><native>: int = external {}
@@ -3516,6 +4644,9 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Base class for objects that can modify camera state.
+  # You can also implement the modifier(camera_state) interface directly, but
+  # camera_modifier provides an convenient, overridable Tick function for
+  # modifiers that need to maintain state (since Evaluate is <reads>).
   camera_modifier<public><native> := class(modifier(camera_state)) {
     Evaluate<override><native_callable>(InValue: camera_state)<reads>: camera_state = external {}
 
@@ -3535,6 +4666,16 @@ SceneGraph<public> := module {
     Evaluate<native><override>(InValue: camera_state)<reads>: camera_state
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  camera_offset_space<epic_internal><native> := enum<open> {
+    CameraSpace
+
+    PivotSpace
+
+    WorldSpace
+  }
+
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   camera_projection_mode<public><native> := enum<open> {
@@ -3545,7 +4686,7 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  camera_state<public><native> := class<epic_internal><final><computes> {
+  camera_state<public><native> := class<final><computes> {
     @experimental
     @replicated("")
     # Physical camera body settings
@@ -3624,6 +4765,13 @@ SceneGraph<public> := module {
     PreviousYawPitch
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # A camera value interpolator allows a camera modifier to control how a given
+  # value is interpolated to a given target.
+  camera_value_interpolation_settings<epic_internal><native> := class<concrete> {}
+
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
   cancelable_impl_internal<epic_internal> := class<epic_internal>(cancelable) {
@@ -3665,6 +4813,25 @@ SceneGraph<public> := module {
     # Note that light shapes which intersect shadow casting geometry can cause
     # shadowing artifacts.
     var SourceRadius<public>: float = external {}
+  }
+
+  @experimental
+  # Procedural capsule geometry.
+  capsule_mesh_component<epic_internal><native> := class<epic_internal><final_super>(mesh_component) {
+    OnInitializedInternal<native><override>(): void
+
+    # Sets `Radius` and `Height` together.
+    SetSize<epic_internal><native>(InRadius: float, InHeight: float)<transacts>: void
+
+    # Length of the cylindrical mid-section in centimeters.
+    var Height<epic_internal>: float = external {}
+
+    # Translation applied to the capsule in the component's local space,
+    # in centimeters.
+    var Offset<epic_internal>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # Radius of the capsule in centimeters.
+    var Radius<epic_internal>: float = external {}
   }
 
   change_icon_component_event<epic_internal> := class(scene_event) {
@@ -3750,12 +4917,21 @@ SceneGraph<public> := module {
     var CollisionProfile<public>: collision_profile = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4100 }
+  @available { MinUploadedAtFNVersion := 4300 }
   @experimental
+  # The result of a collision in the physics engine.
+  # See has_collision::GetCollisionEvent()
   collision_hit<epic_internal><native> := struct<epic_internal> {
-    CollisionVolumes<public><native>: collision_volume_pair
-
+    # Array of physical contact points between the two meshes/mesh_parts.
     ContactPoints<public><native>: []contact_point
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the source end of the hit
+    SourceMeshHandle<public>: mesh_part_handle
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the target end of the hit
+    TargetMeshHandle<public>: mesh_part_handle
   }
 
   # Specifies how a collision volume pair should interact.
@@ -3812,6 +4988,47 @@ SceneGraph<public> := module {
     GetChannelInteraction<public><native>: collision_channel_to_interaction = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that pushes the camera out of world collision.
+  collision_push_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # Interpolation settings to use when pulling camera in, towards the
+    # pivot point.
+    PullInterpolationSettings<public><native>: camera_value_interpolation_settings = external {}
+
+    @experimental
+    @replicated("")
+    # Interpolation settings to use when pushing camera out, away from the
+    # pivot point.
+    PushInterpolationSettings<public><native>: camera_value_interpolation_settings = external {}
+
+    @experimental
+    @replicated("")
+    # Sphere radius to use for collision shape cast.
+    var CollisionSphereRadius<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Collision will ignore the specified entities only.
+    var IgnoreEntities<public><native>: []entity = external {}
+
+    @experimental
+    @replicated("")
+    # Collision will ignore the specified entities and all their descendants. If
+    # an entity is in both arrays, then this one takes precedence as being in
+    # IgnoreEntities doesn't specifically exclude an entity's descendants from
+    # being included, it just doesn't add them'.
+    var IgnoreEntitiesAndDescendants<public><native>: []entity = external {}
+
+    @experimental
+    @replicated("")
+    # World-space offset from the target to the line trace's end..
+    var SafePositionOffset<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
   # A collision sphere.
   collision_sphere<public><native> := class(collision_element) {
     # The radius of the sphere
@@ -3840,7 +5057,6 @@ SceneGraph<public> := module {
   collision_volume_internal<epic_internal><native> := class<epic_internal><concrete>(collision_element) {}
 
   @available { MinUploadedAtFNVersion := 4100 }
-  @experimental
   collision_volume_pair<epic_internal><native> := struct<epic_internal> {
     SourceComponent<public><native>: component
 
@@ -4011,11 +5227,23 @@ SceneGraph<public> := module {
     var<private> TickEvents<protected>: tick_events = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Refers to a component of type `t` without granting access to it.
+  component_handle<public>(t: subtype(component)) := class<epic_internal><computes>(entity_handle) {
+    Component<epic_internal>: ?t = external {}
+
+    # Returns the component this handle refers to. Fails if it is unset or
+    # not accessible.
+    GetComponent<public>()<decides><reads>: t = external {}
+
+    (/Verse.org/SceneGraph/component_handle:)SceneGraph_component_handle_Variance<private>(): tuple(t, t) = external {}
+  }
+
   component_query_iterator_interface<epic_internal><native> := interface<epic_internal> {
     NextValue<public><native_callable>()<transacts><decides>: component
   }
 
-  @available { MinUploadedAtFNVersion := 4100 }
+  @available { MinUploadedAtFNVersion := 4300 }
   @experimental
   contact_point<epic_internal><native> := struct<epic_internal> {
     ContactDepth<public><native>: float = external {}
@@ -4030,6 +5258,20 @@ SceneGraph<public> := module {
   # Internal component used to flag an entity as the source of a Content Scope
   content_scope_component<epic_internal><native> := class<final><final_super>(component) {}
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # A value interpolator that uses a spring-mass system to converge towards the
+  # target value.
+  critical_damper_camera_value_interpolation_settings<epic_internal><native> := class<concrete>(
+    camera_value_interpolation_settings
+  ) {
+    @experimental
+    @replicated("")
+    # The damping factor of the spring-mass system.
+    DampingFactor<public><native>: float = external {}
+  }
+
   @experimental
   damageable_component<epic_internal><native> := class<final_super>(component) {
     @experimental
@@ -4037,6 +5279,57 @@ SceneGraph<public> := module {
 
     @experimental
     DamagedEvent<public><final><native>: listenable(float) = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that smooths the camera's rotation. Each axis is damped
+  # independently, so a camera can ease into a new yaw while pitching
+  # immediately. A damping factor of zero leaves that axis undamped.
+  dampen_rotation_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # Damping factor for the camera pitch.
+    var PitchDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor for the camera roll.
+    var RollDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor for the camera yaw.
+    var YawDampingFactor<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that smooths the camera's movement. Each axis is damped
+  # independently, so a camera can lag behind vertically while tracking
+  # laterally without delay. A damping factor of zero leaves that axis undamped.
+  dampen_translation_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # The space the damping axes are measured in.
+    DampenSpace<public><native>: camera_offset_space = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor for camera movement along the Forward axis.
+    var ForwardDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor for camera movement along the Left axis.
+    var LeftDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Damping factor for camera movement along the Up axis.
+    var UpDampingFactor<public><native>: float = external {}
   }
 
   # Used to place a decal in the scene.
@@ -4144,6 +5437,47 @@ SceneGraph<public> := module {
     # Angle subtended by light source in degrees (also known as angular
     # diameter). Defaults to 0.5357 which is the angle for our sun.
     var SourceAngleDegrees<public>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that frames a target by moving along a sideways rail
+  # (left/right relative to the camera transform) and optionally also up
+  # and down..
+  dolly_framing_camera_modifier<epic_internal><native> := class<concrete>(base_framing_camera_modifier) {
+    @experimental
+    @replicated("")
+    # Whether the dolly can move horizontally.
+    CanMoveHorizontally<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Whether the dolly can move vertically.
+    CanMoveVertically<public><native>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  #  Double infinite impulse response filter interpolator.
+  double_infinite_impulse_response_camera_value_interpolation_settings<epic_internal><native> := class<concrete>(
+    camera_value_interpolation_settings
+  ) {
+    @experimental
+    @replicated("")
+    # The intermediate speed of interpolation.
+    IntermediateSpeed<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # The primary speed of interpolation.
+    PrimarySpeed<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Whether to use fixed-step evaluation.
+    UseFixedStep<public><native>: logic = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4100 }
@@ -4430,6 +5764,16 @@ SceneGraph<public> := module {
     SendUp<public><final><native><native_callable>(SceneEvent: scene_event): logic
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Refers to an entity without granting access to it.
+  entity_handle<public> := class<epic_internal><computes> {
+    Entity<epic_internal>: ?entity = external {}
+
+    # Returns the entity this handle refers to. Fails if the entity is
+    # not accessible.
+    GetEntity<public>()<decides><reads>: entity = external {}
+  }
+
   # class to provide alternative origin to the 'transform_component' as
   # an entity
   entity_origin<public><native> := class<final>(origin) {
@@ -4534,21 +5878,12 @@ SceneGraph<public> := module {
     ChangedToGear<public><native>: int
   }
 
-  @available { MinUploadedAtFNVersion := 4110 }
-  @experimental
-  # Interface for classes that own a camera modifier stack.
-  has_camera_modifier<public><native> := interface {
-    @editable
-    @replicated("")
-    @experimental
-    CameraModifiers<public>: modifier_stack(camera_state) = external {}
-  }
-
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   has_collision<epic_internal><native> := interface<epic_internal>(has_mesh_part_support) {
+    @available { MinUploadedAtFNVersion := 4300 }
     @experimental
-    GetBeginCollideEvent<epic_internal><final><native_callable>(): listenable(generator(collision_hit)) = external {}
+    GetBeginCollisionEvent<epic_internal><final><native_callable>(): listenable(generator(collision_hit)) = external {}
 
     @experimental
     GetBeginOverlapEvent<epic_internal><final><native_callable>(): listenable(generator(overlap_hit)) = external {}
@@ -4556,23 +5891,27 @@ SceneGraph<public> := module {
     # True if any associated physics objects are physically collidable
     GetCollidable<epic_internal><final><native_callable>()<reads>: logic = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     @deprecated
     @experimental
     GetCollisionEnteredEvent<epic_internal><final><native_callable>(): listenable(generator(
       collision_hit
     )) = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     @experimental
     GetCollisionEvent<epic_internal><final><native_callable>(): listenable(generator(collision_hit)) = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     @deprecated
     @experimental
     GetCollisionExitedEvent<epic_internal><final><native_callable>(): listenable(generator(collision_hit)) = external {}
 
     GetCollisionMaterial<epic_internal><final><native_callable>()<reads>: collision_material = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     @experimental
-    GetEndCollideEvent<epic_internal><final><native_callable>(): listenable(generator(collision_hit)) = external {}
+    GetEndCollisionEvent<epic_internal><final><native_callable>(): listenable(generator(collision_hit)) = external {}
 
     @experimental
     GetEndOverlapEvent<epic_internal><final><native_callable>(): listenable(generator(overlap_hit)) = external {}
@@ -4594,23 +5933,44 @@ SceneGraph<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   has_collision_impl<epic_internal><native> := class<epic_internal><final> {
     @experimental
-    CollisionEnteredEventImpl<epic_internal><native>: listenable(generator(collision_hit)) = external {}
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionEnteredEventImpl<epic_internal><final><native>: listenable(generator(collision_hit)) = external {}
 
     @experimental
-    CollisionEventImpl<epic_internal><native>: listenable(generator(collision_hit)) = external {}
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionEnteredEventProxy<epic_internal><final>: listenable(generator(collision_hit)) = external {}
 
     @experimental
-    CollisionExitedEventImpl<epic_internal><native>: listenable(generator(collision_hit)) = external {}
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionEventImpl<epic_internal><final><native>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionEventProxy<epic_internal><final>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionExitedEventImpl<epic_internal><final><native>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionExitedEventProxy<epic_internal><final>: listenable(generator(collision_hit)) = external {}
 
     GetCollidableImpl<epic_internal><native>()<reads>: logic
 
     GetCollisionMaterialImpl<epic_internal><native>()<reads>: collision_material
 
     @experimental
-    OverlapEnteredEventImpl<epic_internal><native>: listenable(generator(overlap_hit)) = external {}
+    OverlapEnteredEventImpl<epic_internal><final><native>: listenable(generator(overlap_hit)) = external {}
 
     @experimental
-    OverlapExitedEventImpl<epic_internal><native>: listenable(generator(overlap_hit)) = external {}
+    OverlapEnteredEventProxy<epic_internal><final>: listenable(generator(overlap_hit)) = external {}
+
+    @experimental
+    OverlapExitedEventImpl<epic_internal><final><native>: listenable(generator(overlap_hit)) = external {}
+
+    @experimental
+    OverlapExitedEventProxy<epic_internal><final>: listenable(generator(overlap_hit)) = external {}
 
     SetCollidableImpl<epic_internal><native>(In: logic): void
 
@@ -4872,6 +6232,24 @@ SceneGraph<public> := module {
     Color<override>: color = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Infinite impulse response filter interpolator.
+  infinite_impulse_response_camera_value_interpolation_settings<epic_internal><native> := class<concrete>(
+    camera_value_interpolation_settings
+  ) {
+    @experimental
+    @replicated("")
+    # The speed of interpolation.
+    Speed<public><native>: float = external {}
+
+    @experimental
+    @replicated("")
+    # Whether to use fixed-step evaluation.
+    UseFixedStep<public><native>: logic = external {}
+  }
+
   # Used to handle general interaction.
   interactable_component<public><native> := class<final_super>(component, enableable) {
     # Returns whether the specified agent can interact.
@@ -4920,7 +6298,7 @@ SceneGraph<public> := module {
 
     # Attempt to start an interaction. Fails if the agent does not pass the
     # CanInteract function.
-    Start<public><final><native>(Agent: agent)<transacts><decides>: void
+    Start<public><final>(Agent: agent)<transacts><decides>: void = external {}
 
     # Event fires when a successful interaction starts. Sends the interacting
     # agent. InteractDuration at or below 0 makes this event identical
@@ -4969,41 +6347,39 @@ SceneGraph<public> := module {
     # which was previously affected by the cooldown.
     ExpiredEvent<public><native>: listenable(agent) = external {}
 
-    # Get the remaining shared cooldown duration in seconds, affecting
-    # all agents.
-    GetRemainingDurationForAgent<epic_internal><native>(
-      __dupe___unnamed_parameter_0: accessor,
-      Agent: agent
-    )<transacts>: float
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Get the remaining per agent cooldown duration in seconds, for the agent
+    # supplied. Returns zero when that agent has no cooldown running.
+    GetRemainingDurationForAgent<public><final><native>(Agent: agent)<transacts>: float
 
-    # Set the remaining shared cooldown duration in seconds, affecting
-    # all agents.
-    SetRemainingDurationForAgent<epic_internal><native>(
-      __dupe___unnamed_parameter_0: accessor,
-      Agent: agent,
-      InRemainingDuration: float
-    )<transacts>: void
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Set the remaining per agent cooldown duration in seconds, for the agent
+    # supplied.When a cooldown starts on the component for an agent, if there is
+    # an in progress interaction for that agent, it is canceled.
+    SetRemainingDurationForAgent<public><final><native>(Agent: agent, InRemainingDuration: float)<transacts>: void
 
     @editable
     # The duration in seconds after a successful interaction, before the
     # interacting agent can initiate a subsequent interaction.
     # This is only used if the duration is greater than 0.0. Modifying this does
-    # not affect any RemainingPerAgentCooldownDuration.
+    # not affect the cooldown remaining for an agent already on cooldown.
     # This property gives other agents time to interact, when there is a limited
     # number of Simultaneous Interactors.
     var Duration<public><native>: float = external {}
 
-    # The cooldown remaining, in seconds, before a particular agent is able to
-    # initiate an interaction on this component.
+    @deprecated { Message := "Use `GetRemainingDurationForAgent` instead." }
+    # Deprecated. The cooldown remaining, in seconds, before a particular agent
+    # is able to initiate an interaction on this component. Use
+    # GetRemainingDurationForAgent instead.
     var<private> RemainingDuration<public><native>: [agent]float = external {}
   }
 
   # Used to set an interaction duration.
   interactable_duration<public><native> := class<concrete> {
-    # Interact duration getter.
+    # InteractDuration getter.
     GetInteractDuration<epic_internal><native>(__dupe___unnamed_parameter_0: accessor)<transacts>: float
 
-    # Max Simultaneous Interactors duration getter.
+    # MaxSimultaneousInteractors getter.
     GetMaxSimultaneousInteractors<epic_internal><native>(__dupe___unnamed_parameter_0: accessor)<transacts>: ?int
 
     # Returns an agent’s remaining duration, in seconds, for interaction. Fails
@@ -5011,23 +6387,22 @@ SceneGraph<public> := module {
     # when called multiple times within a transaction.
     GetRemainingInteractDurationForAgent<public><final><native>(Agent: agent)<decides><reads>: float
 
-    # Interact duration setter.
+    # InteractDuration setter.
     SetInteractDuration<epic_internal><native>(
       __dupe___unnamed_parameter_0: accessor,
-      InRemainingDuration: float
+      InInteractDuration: float
     )<transacts>: void
 
-    # Max Simultaneous Interactors duration setter.
+    # MaxSimultaneousInteractors setter.
     SetMaxSimultaneousInteractors<epic_internal><native>(
       __dupe___unnamed_parameter_0: accessor,
-      InRemainingDuration: ?int
+      InMaxSimultaneousInteractors: ?int
     )<transacts>: void
 
     # Sets an agent’s remaining duration, in seconds, for interaction. Fails if
     # the agent is not interacting with this component.
     SetRemainingInteractDurationForAgent<public><final><native>(Agent: agent, RemainingDuration: float)<transacts>: void
 
-    @editable
     # The number of seconds an agent must spend interacting with the object to
     # successfully complete an interaction.
     # 0.0 or less results in an immediate successful interaction.
@@ -5037,25 +6412,12 @@ SceneGraph<public> := module {
     # If the subtraction were zero or less it will immediately conclude.
     var InteractDuration<public>: float = external {}
 
-    @editable
     # The max number of simultaneous interactors. A value of false is unlimited.
     # This value represents how many agents may have active interactions.
     # If this changes to a value less than the current number of active
     # interactions, those interactions are not canceled but new interactions
     # will not start.
     var MaxSimultaneousInteractors<public>: ?int = external {}
-
-    @replicated("")
-    @editable
-    @display_name("Interact Duration")
-    # Internal InteractDuration value.
-    var _InteractDuration<epic_internal><native>: float = external {}
-
-    @replicated("")
-    @editable
-    @display_name("MaxSimultaneousInteractors")
-    # Internal Max Simultaneous Interactors value.
-    var _MaxSimultaneousInteractors<epic_internal><native>: ?int = external {}
   }
 
   # Used to set a limit of times to interact.
@@ -5067,6 +6429,9 @@ SceneGraph<public> := module {
     # Get the maximum number of successful interactions possible.
     GetMaxSuccessfulInteractions<epic_internal><native>(__dupe___unnamed_parameter_0: accessor)<transacts>: ?int
 
+    # Get the number of successful interactions.
+    GetSuccessfulInteractionCount<epic_internal><native>(__dupe___unnamed_parameter_0: accessor)<transacts>: int
+
     # Update the maximum number of successful interactions possible, a value of
     # false is unlimited.
     # If the current number of tracked interactions is greater than the value
@@ -5074,6 +6439,12 @@ SceneGraph<public> := module {
     SetMaxSuccessfulInteractions<epic_internal><native>(
       __dupe___unnamed_parameter_0: accessor,
       InMaxSuccessfulInteractions: ?int
+    )<transacts>: void
+
+    # Set the number of successful interactions.
+    SetSuccessfulInteractionCount<epic_internal><native>(
+      __dupe___unnamed_parameter_0: accessor,
+      InSuccessfulInteractionCount: int
     )<transacts>: void
 
     # The number of times the component can be successfully interacted with. A
@@ -5089,7 +6460,9 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Epic internal-only camera_modifier class that supports client execution.
+  # Epic internal-only camera_modifier class that is free of the restrictions
+  # temporarily in place on camera_modifier until we have full
+  # <predicts> support
   internal_camera_modifier<epic_internal><native> := class(camera_modifier) {}
 
   @available { MinUploadedAtFNVersion := 4000 }
@@ -5097,7 +6470,7 @@ SceneGraph<public> := module {
     Color<override>: color = external {}
   }
 
-  @hide_in_editor { CVar := "LevelEntity.ShowLevelEntityInOutliner"; Hidden := false }
+  @hide_in_editor
   level_entity<epic_internal><native> := class<concrete><unique><transacts>(entity) {}
 
   level_subsim_component<epic_internal><native> := class<final_super>(component) {
@@ -5264,9 +6637,9 @@ SceneGraph<public> := module {
   }
 
   map_ready_component<epic_internal><native> := class<final_super>(component) {
-    AddDependency<public><native_callable>(Event: sticky_event(comparable)): void = external {}
+    AddDependency<public><native_callable>(Event: sticky_event(void)): void = external {}
 
-    MapReadyEvent<public>: sticky_event(comparable) = external {}
+    MapReadyEvent<public>: sticky_event(void) = external {}
   }
 
   # Used to render a `mesh` at the location of this entity. A mesh is a set of
@@ -5290,18 +6663,18 @@ SceneGraph<public> := module {
 
     @experimental
     @transient
-    @available { MinUploadedAtFNVersion := 4100 }
+    @available { MinUploadedAtFNVersion := 4300 }
     CollisionEnteredEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
 
     @experimental
     @transient
-    @available { MinUploadedAtFNVersion := 4100 }
+    @available { MinUploadedAtFNVersion := 4300 }
     CollisionEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
 
     @experimental
     @transient
-    @available { MinUploadedAtFNVersion := 4100 }
-    CollisionExitedEvent<epic_internal><native>: listenable(generator(collision_volume_pair)) = external {}
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionExitedEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
 
     # Disables rendering of this mesh.
     Disable<native><override>(): void
@@ -5321,6 +6694,8 @@ SceneGraph<public> := module {
 
     # Returns the bounded box of this component, in world space.
     GetBoundedGlobalBox<override><native>()<reads>: bounded_box
+
+    GetBoundedGlobalBoxPredicts<epic_internal><native>()<reads>: bounded_box
 
     # Returns the bounded box of this component, in local space.
     GetBoundedLocalBox<override><native>()<reads>: bounded_box
@@ -5356,12 +6731,6 @@ SceneGraph<public> := module {
 
     OnUninitializingInternal<native><override>(): void
 
-    ___PropertyInterface_On_Collidable_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Queryable_Changed<epic_internal>(): void = external {}
-
-    ___PropertyInterface_On_Visible_Changed<epic_internal>(): void = external {}
-
     @editable { EpicOnly := true }
     @category("Epic Internal")
     # Controls whether the mesh should influence indirect lighting.
@@ -5386,6 +6755,12 @@ SceneGraph<public> := module {
     @category("Epic Internal")
     # Whether this component should be affected by lighting in channel 2.
     var AffectedByLightingChannel2<epic_internal><native>: logic = external {}
+
+    # When enabled, this mesh's collision can contribute to AI navigation. Still
+    # requires collision that blocks pawns. Use with care: NPCs will not route
+    # around meshes that do not affect navigation. Server-authoritative: this
+    # value is not replicated.
+    var CanAffectNavigation<public>: logic = external {}
 
     @editable { EpicOnly := true }
     @category("Epic Internal")
@@ -5426,6 +6801,13 @@ SceneGraph<public> := module {
 
     @editable { EpicOnly := true }
     @category("Epic Internal")
+    # Value (0-255) written to the stencil buffer in the CustomDepth pass when
+    # RenderCustomDepth is enabled (requires project setting or
+    # r.CustomDepth == 3).
+    var CustomDepthStencilValue<epic_internal><native>: int = external {}
+
+    @editable { EpicOnly := true }
+    @category("Epic Internal")
     @experimental
     # Minimum scalability `r.DetailMode` tier required to render this mesh. If
     # the current scalability tier is lower than this value, no render scene
@@ -5454,6 +6836,12 @@ SceneGraph<public> := module {
     @experimental
     # Whether this mesh should allow decals.
     var ReceivesDecals<epic_internal><native>: logic = external {}
+
+    @editable { EpicOnly := true }
+    @category("Epic Internal")
+    # If true, this mesh is rendered into the CustomDepth pass (used for
+    # outlines and other stencil-based effects).
+    var RenderCustomDepth<epic_internal><native>: logic = external {}
 
     @editable { EpicOnly := true }
     @category("Epic Internal")
@@ -5488,27 +6876,51 @@ SceneGraph<public> := module {
     HasUEPhysicsPropertiesImpl<epic_internal><native>: has_ue_physics_properties_impl = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4100 }
-  @experimental
-  mesh_part_collision_element<epic_internal><native> := class<epic_internal><concrete>(collision_element) {
+  @available { MinUploadedAtFNVersion := 4300 }
+  mesh_part_cache<epic_internal><native> := class<epic_internal> {
+    var DummyMeshPartHandle<epic_internal>: ?mesh_part_handle = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Refers to the mesh_component and optional mesh_part at one end of a
+  # sweep_hit, overlap_hit or collision_hit, without granting access to them.
+  mesh_part_handle<public> := class<epic_internal><final><computes>(component_handle(mesh_component)) {
+    @available { MinUploadedAtFNVersion := 4300 }
     @experimental
-    MeshParts<epic_internal><native>: []mesh_part = external {}
+    # Returns the mesh_part this handle refers to. Fails if it is unset or
+    # not accessible.
+    GetMeshPart<epic_internal>()<decides><reads>: mesh_part = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    MeshPart<epic_internal>: ?mesh_part = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  mesh_part_handle_data<epic_internal><native> := struct<epic_internal> {
+    Entity<public><native>: ?entity
+
+    MeshComponent<public><native>: ?mesh_component
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    MeshPart<public><native>: ?mesh_part
   }
 
   @experimental
   # The modular vehicle simulation component simulates vehicle behaviour
   modular_vehicle_component<epic_internal><native> := class<epic_internal><final_super>(component) {
     @experimental
-    @available { MinUploadedAtFNVersion := 4100 }
+    @available { MinUploadedAtFNVersion := 4300 }
     CollisionEnteredEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
 
     @experimental
-    @available { MinUploadedAtFNVersion := 4100 }
+    @available { MinUploadedAtFNVersion := 4300 }
     CollisionEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
 
     @experimental
-    @available { MinUploadedAtFNVersion := 4100 }
-    CollisionExitedEvent<epic_internal><native>: listenable(generator(collision_volume_pair)) = external {}
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionExitedEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
 
     @experimental
     ModuleAddedEvent<epic_internal><final><native>: listenable(module_info) = external {}
@@ -5649,6 +7061,28 @@ SceneGraph<public> := module {
     NextValue<native><override>()<transacts><decides>: entity
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that offsets the camera in the specified space.
+  offset_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # The space in which to apply the offset. Constant - baked in when the
+    # camera node is created.
+    OffsetSpace<public><native>: camera_offset_space = external {}
+
+    @experimental
+    @replicated("")
+    # The rotation offset to apply to the camera.
+    var RotationOffset<public><native>: (/Verse.org/SpatialMath:)rotation = external {}
+
+    @experimental
+    @replicated("")
+    # The translation offset to apply to the camera.
+    var TranslationOffset<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
   # Interface to provide alternative origin to an entity which is defaulted to
   # its parent. See `transform_component`
   origin<public><native> := interface<epic_internal> {
@@ -5689,14 +7123,38 @@ SceneGraph<public> := module {
     # The source volume transform
     SourceGlobalTransform<public><native>: (/Verse.org/SpatialMath:)transform
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the source end of the hit
+    SourceMeshHandle<public>: mesh_part_handle
+
     # The source volume (query input)
     SourceVolume<public><native>: collision_volume
 
     # The component that was hit by SourceVolume
     TargetComponent<public><native>: component
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the target end of the hit
+    TargetMeshHandle<public>: mesh_part_handle
+
     # The volume that was hit by SourceVolume
     TargetVolume<public><native>: collision_element
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that frames a target by rotating in place.
+  panning_framing_camera_modifier<epic_internal><native> := class<concrete>(base_framing_camera_modifier) {
+    @experimental
+    @replicated("")
+    # Whether the camera can rotate vertically (pitch).
+    CanPitch<public><native>: logic = external {}
+
+    @experimental
+    @replicated("")
+    # Whether the camera can rotate laterally (yaw).
+    CanYaw<public><native>: logic = external {}
   }
 
   # Used to spawn a `particle_system` at the location of this entity. The
@@ -5832,14 +7290,15 @@ SceneGraph<public> := module {
     @editable
     @replicated("")
     @experimental
-    # Horizontal field of view in degrees, specified for an aspect ratio of 16:9
+    @units("Radians")
+    # Horizontal field of view in radians, specified for an aspect ratio of 16:9
     # /nThis is then to calculate an effective horizontal field of view for the
     # display’s real aspect ratio /nIf for example the screen is an ultrawide
     # (21:9, or 32:9 being common ultrawide aspect ratios) then in practice the
     # actual field of view will be wider. This is known as the Hor+ view scaling
     # method and is generally accepted to be the best solution for
     # ultrawide displays.
-    var FieldOfViewDegrees<public><native>: float = external {}
+    var FieldOfView<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
@@ -5941,6 +7400,12 @@ SceneGraph<public> := module {
       QueryTraceVector: (/Verse.org/SpatialMath:)vector3
     )<transacts>: generator(sweep_hit)
 
+    FindShapeSweepHitsPredicts<epic_internal><native>(
+      QueryShape: collision_volume,
+      QueryTransform: (/Verse.org/SpatialMath:)transform,
+      QueryTraceVector: (/Verse.org/SpatialMath:)vector3
+    )<transacts>: generator(sweep_hit)
+
     OnAddedToSceneInternal<native><override>(): void
 
     OnInitializedInternal<native><override>(): void
@@ -5973,6 +7438,14 @@ SceneGraph<public> := module {
     # player, passing UserData to the callbacks.
     InvalidatePlayerPrimitiveData<epic_internal>(UserData: player_primitive_data_payload): void = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # A simple value interpolator that immediately "pops" to the target value.
+  pop_value_camera_value_interpolation_settings<epic_internal><native> := class<concrete>(
+    camera_value_interpolation_settings
+  ) {}
 
   @hide_in_editor
   # Marks an entity that can be possessed by an agent.
@@ -6221,6 +7694,32 @@ SceneGraph<public> := module {
 
   # An event which can be sent through the scene graph.
   scene_event<public><native> := interface {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that sets the camera's rotation, replacing whatever the
+  # camera state arrived with rather than offsetting it. The rotation is always
+  # in world space.
+  set_rotation_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # The world-space rotation to set on the camera.
+    var Rotation<public><native>: (/Verse.org/SpatialMath:)rotation = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @hide_in_editor
+  # Camera modifier that sets the camera's translation, replacing whatever the
+  # camera state arrived with rather than offsetting it. The translation is
+  # always in world space.
+  set_translation_camera_modifier<epic_internal><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @replicated("")
+    # The world-space translation to set on the camera.
+    var Translation<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
 
   @hide_in_editor { CVar := "SimulationEntity.AllowCustomSimulationEntities"; Hidden := false }
   simulation_entity<epic_internal><native> := class<concrete><unique><transacts>(entity) {}
@@ -6563,6 +8062,10 @@ SceneGraph<public> := module {
     # SourceVolume when it touches TargetVolume.
     SourceHitTranslation<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the source end of the hit
+    SourceMeshHandle<public>: mesh_part_handle
+
     # The source volume transform at the start of the sweep.
     SourceStartGlobalTransform<public><native>: (/Verse.org/SpatialMath:)transform
 
@@ -6571,6 +8074,10 @@ SceneGraph<public> := module {
 
     # The component that was hit by SourceVolume.
     TargetComponent<public><native>: component
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the target end of the hit
+    TargetMeshHandle<public>: mesh_part_handle
 
     # The volume that was hit by SourceVolume.
     TargetVolume<public><native>: collision_element
@@ -6641,17 +8148,25 @@ SceneGraph<public> := module {
     StartPhysics<epic_internal><native>: execution_listenable = external {}
   }
 
-  transform_bridge_offset_info<epic_internal><native> := struct {}
-
-  # Implemented by components that want to offset the entity transform from the
-  # actor transform mirrored by a transform_component_bridge.
+  # Implemented by components that want to place the entity transform somewhere
+  # other than the actor transform mirrored by a transform_component_bridge.
   transform_bridge_offset_interface<epic_internal><native> := interface<epic_internal> {
-    # Returns the world space translation to add to the actor transform to
-    # produce the entity transform, or false if this component doesn't
-    # contribute an offset.
-    GetTransformOffset<protected><native_callable>(
-      Info: transform_bridge_offset_info
-    )<reads>: ?(/Verse.org/SpatialMath:)vector3
+    # Returns where the entity transform sits relative to the actor, or false if
+    # this component doesn't pick an origin.
+    GetTransformOrigin<protected><native_callable>()<reads>: ?transform_bridge_origin
+  }
+
+  # Verse path: /Verse.org/SceneGraph
+  # Where the entity transform sits relative to the actor mirrored by
+  # a transform_component_bridge.
+  transform_bridge_origin<epic_internal><native> := enum {
+    # The entity transform matches the actor transform; for a pawn, the middle
+    # of its capsule.
+    Center
+
+    # The entity transform sits at the bottom of the actor's collision; for a
+    # pawn, the bottom of its capsule.
+    Ground
   }
 
   # Stores the transforms for an entity, which are used to position the entity.
@@ -6803,6 +8318,19 @@ SceneGraph<public> := module {
     WheelTouchChangeEvent<epic_internal><final><native>: listenable(wheel_touch_change_info) = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @replicatable
+  # A target entity paired with the weight it contributes to a
+  # framing calculation.
+  weighted_target_entity<epic_internal><native> := struct<concrete> {
+    @editable
+    Entity<public><native>: entity = external {}
+
+    @editable
+    Weight<public><native>: float = external {}
+  }
+
   @experimental
   # wheel contact event
   wheel_touch_change_info<epic_internal><native> := struct<epic_internal> {
@@ -6849,19 +8377,30 @@ Simulation<public> := module {
     # Succeeds if Left and Right are equal.
     Equals<epic_internal><native>(Left: tag, Right: tag)<transacts><decides>: void
 
+    @deprecated { Message := "Part of the old `tag_container` API. To \"compare\" sets of tags use `tag_set` in combination with a setup of `[]castable_concrete_subtype(tag)`." }
     # Succeeds if all tags in Left are found in Right and all tags in Right are
     # found in Left.
     Equals<epic_internal><native>(Left: tag_container, Right: tag_container)<transacts><decides>: void
+
+    @experimental
+    # Returns the `tag` types selected in `TagTypeInfoContainer`, ready for use
+    # with the `has_tags` queries.
+    # Entries that do not name a valid, concrete `tag` type are skipped.
+    GetTagTypes<epic_internal><native>(
+      TagTypeInfoContainer: tag_type_info_container
+    )<transacts>: []castable_concrete_subtype(tag)
 
     # Utility function to allow for easy construction from editor
     # exposable tag_type_info
     MakeTag<epic_internal><native>(TagTypeInfo: tag_type_info)<transacts><decides>: tag
 
+    @deprecated { Message := "Part of the old `tag_container` API. Use `has_tags` via entity or the experimental `tag_set` instead.." }
     # Create a tag container from an array of tags.
     MakeTagContainer<epic_internal><native>(InTags: []tag)<transacts>: tag_container
 
+    @deprecated { Message := "Part of the old `tag_container` API. Use the experimental `GetTagTypes` and the `has_tags` interface instead." }
     # Utility function to allow for easy construction from editor
-    # exposable tag_type_info_container
+    # exposable `tag_type_info_container`
     MakeTagContainer<epic_internal><native>(
       TagTypeInfoContainer: tag_type_info_container
     )<transacts><decides>: tag_container
@@ -6872,6 +8411,7 @@ Simulation<public> := module {
     # Get a string representation of the tag. Useful for debugging.
     (/Verse.org/Simulation/Tags:)ToString<epic_internal><native>(__dupe___unnamed_parameter_0: tag)<computes>: string
 
+    @deprecated { Message := "Part of the old `tag_container` API. Use `has_tags` via entity or the experimental `tag_set` instead.." }
     # Returns abbreviated human readable Tag list. Useful for debugging.
     (/Verse.org/Simulation/Tags:)ToString<epic_internal><native>(
       __dupe___unnamed_parameter_0: tag_container
@@ -6920,6 +8460,7 @@ Simulation<public> := module {
     # an objects classification.
     tag<public><native> := class<abstract><castable> {}
 
+    @deprecated { Message := "`tag_container` is part of the old tag API. Use `has_tags` via entity or the experimental `tag_set` instead." }
     # A mutable collection of tags.
     tag_container<epic_internal><native> := class<concrete>(tag_view) {
       # Add the specified tag to the container.
@@ -7008,6 +8549,7 @@ Simulation<public> := module {
     # such an instance from the same container.
     tag_key<public><native> := struct<internal><uht_comparable> {}
 
+    @deprecated { Message := "`tag_search_criteria` is part of the old tag API. Use `FindCreativeObjectsWithTag` with a `tag` type instead." }
     # Advanced tag search criteria
     tag_search_criteria<public><native> := class {
       # Tags that may NOT be on the object. All items with these tags are
@@ -7093,6 +8635,7 @@ Simulation<public> := module {
     # to editor
     tag_type_info_container<epic_internal><native> := struct<concrete> {}
 
+    @deprecated { Message := "`tag_view` is part of the old tag API. Use the `has_tags` interface instead." }
     # A queryable collection of tags.
     tag_view<public><native> := interface<epic_internal> {
       # Determine if TagToCheck is present in this container, also checking
@@ -7369,7 +8912,13 @@ Simulation<public> := module {
   @attribscope_class
   @attribscope_data
   @customattribhandler
-  field_attribute<epic_internal> := class<internal><computes>(attribute) {}
+  field_attribute<epic_internal> := class<epic_internal><computes>(attribute) {
+    Access<epic_internal>: string = external {}
+
+    AccessScopes<epic_internal>: []string = external {}
+
+    FieldName<epic_internal>: string
+  }
 
   @attribscope_class
   @customattribhandler
@@ -7957,13 +9506,78 @@ Temporary<public> := module {
 @available { MinUploadedAtFNVersion := 4200 }
 # Module import path: /Verse.org/Timeline
 Timeline<public> := module {
+  @available { MinUploadedAtFNVersion := 4300 }
+  MakeTimelineUpdateErrorResult<epic_internal><native_callable>(
+    Interrupt: ?timeline_update_interrupt
+  ): result(void, ?timeline_update_interrupt) = external {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  MakeTimelineUpdateSuccessResult<epic_internal><native_callable>(): result(
+    void,
+    ?timeline_update_interrupt
+  ) = external {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # A timeline is a 1-dimensional arrangement of elements that pertain to
+  # specific times or ranges of time that define update behaviorbased on a given
+  # update range or delta-time. `timeline` can only be updated with an explicit
+  # range and has no discernable 'current'time or other state, allowing them to
+  # be composed together.See `playable_timeline` for a timeline implementation
+  # that supports playback.
+  timeline<epic_internal><native> := class(timeline_base) {
+    # Add an timeline element to this timeline.To be replaced by
+    # AddDynamicField<timeline_element_field> once field reflection
+    # is available.
+    AddElement<epic_internal><final><native>(Element: timeline_element)<transacts><decides>: cancelable
+
+    # End this timeline by calling End on any `timeline_element_span` that has
+    # had `Begin` called on it, but has not been ended yet.An optional reason
+    # can be provided, indicating why the timeline has ended.
+    End<epic_internal><final><native>(Reason: ?timeline_finish_reason): void
+
+    # Retrieve all the elements on this timeline
+    GetElements<epic_internal><final><native>()<reads>: []timeline_element
+
+    # Update this timeline by processing all elements for the specified range,
+    # and any end events relating to elements that overlapped the previous
+    # update range, but not the new range (if any).The provided range will be
+    # dissected at the time of any `timeline_element_point` or
+    # `timeline_element_span` Begin/End, with each dissection resulting in a
+    # full update of the timelineEvents are raised in chronological order from
+    # `Range.BeginTime` to `Range.EndTime`.Recursion/re-entrancy is supported
+    # and well defined: outer calls to this function will be immediately
+    # interrupted and return an error result,allowing timeline elements to
+    # 'jump' to a different time and have the current update cycle
+    # be interrupted.
+    Update<epic_internal><final><native>(
+      Range: timeline_update_range
+    )<transacts>: result(void, ?timeline_update_interrupt)
+
+    # Specifies the order of the first element that can possibly be updated in
+    # this timeline. 0 if the timeline is empty.
+    var<private> FirstElementOrder<epic_internal><native>: rational = external {}
+
+    # Specifies the order of the last element that can possibly be updated in
+    # this timeline. 0 if the timeline is empty.
+    var<private> LastElementOrder<epic_internal><native>: rational = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @import_as("/Script/VerseTimeline.UVerseTimelineBase")
+  timeline_base<epic_internal><native> := class {}
+
   @available { MinUploadedAtFNVersion := 4200 }
   # Abstract definition of any element that can be added to a timeline.See
   # timeline_element_point and timeline_element_span.
-  timeline_element<public><native> := class(timeline_element_base_cancelable) {}
+  timeline_element<public><native> := class<abstract>(timeline_element_base_cancelable) {
+    @editable
+    # Defines how this element's behavior should be ordered along with other
+    # elements on the same timeline.Element Begin/Update functions are sorted in
+    # ascending order using `Order`, while End functions are sorted in
+    # descending order.
+    Order<public><native>: rational = external {}
+  }
 
-  using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 4200 }
   @import_as("/Script/VerseTimeline.UVerseTimelineElementBase")
   timeline_element_base<epic_internal><native> := class<epic_internal> {}
@@ -7974,10 +9588,29 @@ Timeline<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  # A timeline element that occupies a single point in time.
+  # A timeline element that occupies a single point in time.Guaranteed to only
+  # update once when updated with continuous update ranges.
   timeline_element_point<public><native> := class<abstract>(timeline_element) {
+    @editable
+    # Indicates whether this point should be updated when thetimeline is being
+    # updated in a backwards direction
+    CanUpdateBackwards<epic_internal><native>: logic = external {}
+
+    @editable
+    # Indicates whether this point should be updated when thetimeline is being
+    # updated in a forwards direction
+    CanUpdateForwards<epic_internal><native>: logic = external {}
+
+    # Sets this point's time.
     SetTime<public><native>(NewTime: float)<transacts>: void
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Called when the timeline is updated with a range that overlaps this
+    # point.Returns an optional interrupt reason that prematurely terminates the
+    # current update loop when set.
+    Update<epic_internal><native><native_callable>(): ?timeline_update_interrupt
+
+    @editable
     @editable {}
     # The time of this point. May be +/-Inf.NaN will never be updated
     # or queried.
@@ -7985,21 +9618,88 @@ Timeline<public> := module {
   }
 
   @available { MinUploadedAtFNVersion := 4200 }
-  # A timeline element that spans a range of time.
+  # A timeline element that spans a range of time.Begin/Update/End will be
+  # called in that order for each element. For any given update of its owning
+  # timeline, span events are called with the following semantics:    - End is
+  # called on any elements that have ended this update    - For each element
+  # existing at the current range, Begin is called (if necessary), then
+  # UpdateZero-duration spans will never have Begin/Update/End called on
+  # them.Therefore, spans are guaranteed to have at least one Update call
+  # in-between a Begin and End call
   timeline_element_span<public><native> := class<abstract>(timeline_element) {
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Called when the timeline's update range, specified by `Range` first enters
+    # this element's spanReturns an optional interrupt reason that prematurely
+    # terminates the current update when set.
+    Begin<epic_internal><native><native_callable>(): ?timeline_update_interrupt
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Called when this element will no longer update having previously had
+    # `Begin` called.This may happen if an Update occurs that causes the time to
+    # leave this span, or if the timeline itself is ended.If this span is being
+    # ended by way of a call to `(timeline:)Update` with a well defined range,
+    # `Range` specifies what was supplied, otherwise it is unset.`Reason`
+    # specifies an optional reason for the element being ended, which includes
+    # being interrupted or terminated prematurely.
+    End<epic_internal><native><native_callable>(Reason: ?timeline_finish_reason): void
+
     # Called to modify the timeline's range by assigning its begin and
     # end times.
     SetRange<public><native>(NewBeginTime: float, NewEndTime: float)<transacts>: void
 
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Called when the timeline is updated with a range that overlaps this span's
+    # range.Returns an optional interrupt reason that prematurely terminates the
+    # current update loop when set.
+    Update<epic_internal><native><native_callable>(Range: timeline_update_range): ?timeline_update_interrupt
+
+    @editable
     @editable {}
     # The time this span begins. Defaults to 0.0.Must be <> NaN and <= EndTime
     # in order for it to be updated or queriedMay be +/- Inf
     var<private> BeginTime<public><native>: float = external {}
 
+    @editable
     @editable {}
     # The time this span ends. Defaults to Inf.Must be <> NaN and >= BeginTime
     # in order for it to be updated or queriedMay be +/- Inf.
     var<private> EndTime<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Indicates that a timeline update was not run because the timeline is
+  # currently being ended.
+  timeline_end_in_progress_update_interrupt<epic_internal><native> := class(timeline_update_interrupt) {}
+
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Base class for all finish reasons that are supplied to timeline.End.
+  timeline_finish_reason<epic_internal><native> := class {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Indicates that a timeline update was interrupted by a re-entrant
+  # update call.
+  timeline_reentrant_update_interrupt<epic_internal><native> := class(timeline_update_interrupt) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Class that indicates the reason behind why a timeline's update
+  # was interrupted.
+  timeline_update_interrupt<epic_internal><native> := class {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Structure used to represent a playback range within a timeline, encoding
+  # both the range and direction as two floatsNote that PreviousTime will be
+  # >= CurrentTime when playing in reverse.+/- Inf are valid values.The presence
+  # of any NaN is considered invalid. Such ranges will yield no new updates, and
+  # will `End` any spans that have been Begun.
+  timeline_update_range<epic_internal><native> := struct<computes> {
+    # The current time. Note this can be <= EndTime when playing in reverse
+    CurrentTime<public><native>: float
+
+    # The start of the range. Note this can be >= EndTime when playing
+    # in reverse
+    PreviousTime<public><native>: float
   }
 }
 
@@ -8126,6 +9826,17 @@ Verse<public> := module {
     ElementsToInsert: []t
   )<computes><decides>: []t = external {}
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Returns the last element in `Input` if one exists.
+  # Fails if `Input.Length = 0`.
+  (Input: []t where t: type).Last<public>()<computes><decides>: t = external {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Returns the element at the position `OffsetFromLast` before the last element
+  # of `Input`.
+  # Fails if Input.Length <= OffsetFromLast, or if OffsetFromLast is negative.
+  (Input: []t where t: type).Last<public>(OffsetFromLast: int)<computes><decides>: t = external {}
+
   # Makes an `array` by removing `Input`'s elements from `StartIndex`
   # to `StopIndex-1`.
   # Succeeds if `0 <= StartIndex <= StopIndex <= Input.Length`.
@@ -8228,7 +9939,6 @@ Verse<public> := module {
   Clamp<public>(Val: float, A: float, B: float)<computes>: float = external {}
 
   using { /Verse.org/Concurrency }
-  using { /Verse.org/Native }
   # Makes a flattened `array` by concatenating the elements of `Arrays`.
   Concatenate<public>(Arrays: [][]t where t: type)<computes>: []t = external {}
 
@@ -8384,6 +10094,12 @@ Verse<public> := module {
 
   MakeMessageLiteral<epic_internal><native>(K: string, D: string)<converges>: message
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Construct a new proxy listenable object by wrapping another listenable.
+  MakeProxyListenable<public><native>(
+    L: listenable(payload) where payload: type
+  )<reads><converges>: proxy_listenable(payload)
+
   @available { MinUploadedAtFNVersion := 3800 }
   MakeSuccess<public>(
     Result: success_type where success_type: type
@@ -8453,6 +10169,11 @@ Verse<public> := module {
   # Fails if `not IsFinite(Val)`.
   Round<public><native>(Val: float)<decides><reads>: int
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Globally accessible clock object that returns the number of seconds  January
+  # 1, 1970 UTC, ignoring leap seconds.
+  SecondsSinceEpochClock<public>: clock = external {}
+
   # Returns the sign of `Val`:
   #  * `1.0` if `Val > 0.0`
   #  * `0.0` if `Val = 0.0`
@@ -8514,13 +10235,12 @@ Verse<public> := module {
   # Returns `String` without modification.
   ToString<public>(String: string)<computes>: string = external {}
 
-  # Prints the Verse runtime callstack with warning `Message`.
-  Warn<epic_internal><native>(Message: string)<computes>: void
-
+  @cpp_name("::Eaccessor")
   accessor<epic_internal><native> := enum {
     Dummy
   }
 
+  @cpp_name("verse::cancelable")
   # Implemented by classes that allow users to cancel an operation. For example,
   # calling `subscribable.Subscribe` with a callback returns a `cancelable`
   # object. Calling `Cancel` on the return object unsubscribes the callback.
@@ -8530,6 +10250,7 @@ Verse<public> := module {
   }
 
   @experimental
+  @cpp_name("verse::classifiable_subset")
   # A `classifiable_subset` is a container that holds a set of elements. A
   # classifiable_subset can hold multiple elements of the same type.
   classifiable_subset<public><native>(element_type: type) := class<internal><final><computes>(diagnosable) {
@@ -8546,6 +10267,7 @@ Verse<public> := module {
   }
 
   @experimental
+  @cpp_name("verse::classifiable_subset_key")
   # A `classifiable_subset_key` is used to remove dynamically added elements
   # from a `classifiable_subset`. The returned key will also work in resulting
   # sets from usage of the `+` operator as well as `FilterByType`.
@@ -8563,6 +10285,7 @@ Verse<public> := module {
   }
 
   @experimental
+  @cpp_name("verse::classifiable_subset_var")
   # TEMPORARY. Acts as a wrapper class for a classifiable_subset until `ref`
   # keyword exists. This wrapper class will be removed once
   # https://jira.it.epicgames.com/browse/SOL-7982 is complete.
@@ -8580,12 +10303,23 @@ Verse<public> := module {
     Write<public><native>(InSet: classifiable_subset(element_type))<writes>: void
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @cpp_name("verse::clock")
+  # A clock is an object that represents a current time.
+  clock<public><native> := interface<epic_internal><computes> {
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Get the current time from this clock
+    GetSeconds<public>()<reads>: float
+  }
+
+  @cpp_name("verse::diagnosable")
   # Provides a hook for class-specific ToDiagnostic behavior; ToDiagnostic will
   # call this interface when provided a class that implements it.
   diagnosable<epic_internal><native> := interface<computes> {
     GetDiagnostic<epic_internal><native_callable>()<reads>: diagnostic
   }
 
+  @cpp_name("verse::diagnostic")
   # An opaque diagnostic message that only shows up in diagnostic logs. The
   # format of the diagnostic may change at any time without warning and may not
   # be inspected by Verse code.
@@ -8595,12 +10329,14 @@ Verse<public> := module {
     String<epic_internal><native>: string
   }
 
+  @cpp_name("verse::disposable")
   # Implemented by classes whose instances have limited lifetimes.
   disposable<public><native> := interface {
     # Cleans up this object.
     Dispose<public>(): void
   }
 
+  @cpp_name("verse::enableable")
   # Implemented by classes whose instances can be enabled and disabled.
   enableable<public><native> := interface<public> {
     # Disable this object.
@@ -8613,9 +10349,16 @@ Verse<public> := module {
     IsEnabled<public>()<transacts><decides>: void
   }
 
+  @cpp_name("verse::event")
   # A *recurring*, successively signaled parametric `event` with a `payload`
   # allowing a simple mechanism to coordinate between concurrent tasks.
-  event<public><native>(t: type) := class(event_base_intrnl, signalable(t), awaitable(t)) {
+  event<public><native>(t: type) := class(
+    event_base_intrnl,
+    signalable(t),
+    awaitable(t),
+    @available { MinUploadedAtFNVersion := 4300 }
+    listenable(t)
+  ) {
     # Suspends the current task until another task calls `Signal`.
     # If called during another invocation of `Signal`, the the task will still
     # suspend and resume during the next call to `Signal`.
@@ -8629,24 +10372,32 @@ Verse<public> := module {
     # will transfer control to the next suspended task.
     Signal<native><override>(Val: t): void
 
-    (/Verse.org/Verse/event:)Verse_event_Variance<private>(: t): tuple(t) = external {}
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Registers `Callback` to be invoked each time `Signal` is called.
+    # Call `Cancel` on the returned `cancelable` to unregister `Callback`.
+    Subscribe<native><override>(Callback: type { _(: t): void })<transacts>: cancelable
+
+    (/Verse.org/Verse/event:)Verse_event_Variance<private>(: t): tuple(t, t) = external {}
 
     @available { MinUploadedAtFNVersion := 4210 }
-    (/Verse.org/Verse/event:)Verse_event_Variance_Inherited<private>(: t): tuple(t, t) = external {}
+    (/Verse.org/Verse/event:)Verse_event_Variance_Inherited<private>(: t): tuple(t, t, t) = external {}
   }
 
   # A *recurring*, successively signaled event allowing a simple mechanism to
   # coordinate between concurrent tasks.
   event<public>() := event(tuple())
 
+  @cpp_name("verse::event_base_intrnl")
   event_base_intrnl<epic_internal><native> := class {}
 
+  @cpp_name("verse::invalidatable")
   # Implemented by classes whose instances can become invalid at runtime.
   invalidatable<public><native> := interface(disposable) {
     # Succeeds if this object is still valid.
     IsValid<public>()<transacts><decides>: void
   }
 
+  @cpp_name("verse::listenable")
   # A parametric interface combining `awaitable` and `subscribable`.
   listenable<public><native>(payload: type) := interface(awaitable(payload), subscribable(payload)) {
     @available { MinUploadedAtFNVersion := 4210 }
@@ -8660,19 +10411,26 @@ Verse<public> := module {
   # A parameterless interface combining `awaitable` and `subscribable`.
   listenable<public>() := listenable(tuple())
 
+  @cpp_name("verse::locale")
   # Used for message localization.
   locale<public><native> := struct<epic_internal> {}
 
+  @cpp_name("verse::localizable_float")
   localizable_float<epic_internal><native> := class<internal>(localizable_value) {}
 
+  @cpp_name("verse::localizable_int")
   localizable_int<epic_internal><native> := class<internal>(localizable_value) {}
 
+  @cpp_name("verse::localizable_message")
   localizable_message<epic_internal><native> := class<internal>(localizable_value) {}
 
+  @cpp_name("verse::localizable_string")
   localizable_string<epic_internal><native> := class<internal>(localizable_value) {}
 
+  @cpp_name("verse::localizable_value")
   localizable_value<epic_internal><native> := class {}
 
+  @cpp_name("verse::message")
   # A localizable text message.
   message<public><native> := class<epic_internal> {
     DefaultText<epic_internal><native>: string = external {}
@@ -8682,7 +10440,6 @@ Verse<public> := module {
     Substitutions<epic_internal><native>: [string]localizable_value = external {}
   }
 
-  using { /Verse.org/Simulation }
   using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
@@ -8770,7 +10527,100 @@ Verse<public> := module {
   # diagnostic message.
   operator'+'<public>(Lhs: string, Rhs: diagnostic)<computes>: diagnostic = external {}
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  @cpp_name("verse::playable")
+  # This interface describes any abstract playable object in Verse that has
+  # Play/Pause/Resume/Stop semantics
+  playable<public><native> := interface {
+    # Pause updating. Calling Pause() when IsPaused = true should do nothing.
+    Pause<public>(): void
+
+    # Called after the playable transitions from `not IsPaused` to `IsPaused`.
+    PauseEvent<public><final>: listenable(tuple()) = external {}
+
+    # Begin updating from the starting state. Subsequent calls to Play()
+    # should restart.
+    Play<public>(): void
+
+    # Called after the playable transitions from `not IsPlaying` to `IsPlaying`.
+    PlayEvent<public><final>: listenable(tuple()) = external {}
+
+    # Resume updating. Calling Resume() when IsPaused = false should do nothing.
+    Resume<public>(): void
+
+    # Called after the playable transitions from `IsPaused` to `not IsPaused`.
+    ResumeEvent<public><final>: listenable(tuple()) = external {}
+
+    # Internal event used to signal when this playable has been paused
+    SignalablePauseEvent<protected><final>: event(tuple()) = external {}
+
+    # Internal event used to signal when this playable has begun playing
+    SignalablePlayEvent<protected><final>: event(tuple()) = external {}
+
+    # Internal event used to signal when this playable has been resumed
+    SignalableResumeEvent<protected><final>: event(tuple()) = external {}
+
+    # Internal event used to signal when this playable has been stopped
+    SignalableStopEvent<protected><final>: event(playable_stop_reason) = external {}
+
+    # Pause, and reset to the initial state.
+    # Should pass the `Explicit` reason to the `StopEvent`.
+    # Should do nothing if `not IsPlaying`.
+    Stop<public>(): void
+
+    # Called when updating when the playable has finished or `Stop` has
+    # been called.
+    # Supplies a reason for stopping, such as "finished" or
+    # "stopped explicitly".
+    StopEvent<public><final>: listenable(playable_stop_reason) = external {}
+
+    # Indicates whether this playable is currently paused.
+    var<protected> IsPaused<public>: logic = external {}
+
+    # Indicates whether this playable is currently playing.
+    var<protected> IsPlaying<public>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Enum used to describe why a playable stopped.
+  playable_stop_reason<public> := enum<open> {
+    # Stopped because Stop() was called.
+    Explicit
+
+    # Stopped when naturally finished.
+    Finished
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @cpp_name("verse::proxy_listenable(payload)")
+  # A listenable class that proxies to an inner implementation to
+  # prevent casting.
+  proxy_listenable<public><native>(payload: type) := class<internal>(listenable(payload)) {
+    # Await the signal of the underlying listenable.Identical in behavior to
+    # awaiting the underlying listenable directly if it were accessible.
+    Await<override>()<suspends>: payload = external {}
+
+    # Subscribe to the underlying listenable with the specified
+    # callback.Identical in behavior to subscribing to the underlying listenable
+    # directly if it were accessible.
+    Subscribe<override>(Callback: type { _(: payload): void })<transacts>: cancelable = external {}
+
+    (/Verse.org/Verse/proxy_listenable:)Verse_proxy_listenable_Variance<private>(): tuple(
+      payload,
+      payload
+    ) = external {}
+
+    @available { MinUploadedAtFNVersion := 4210 }
+    (/Verse.org/Verse/proxy_listenable:)Verse_proxy_listenable_Variance_Inherited<private>(): tuple(
+      payload,
+      payload,
+      payload
+    ) = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 3800 }
+  @cpp_name("verse::result")
   # Implemented by classes that provide a result for an operation, which can
   # fail or be successful
   result<public><native>(success_type: type, error_type: type) := interface<internal><computes> {
@@ -8783,6 +10633,14 @@ Verse<public> := module {
     (/Verse.org/Verse/result:)Verse_result_Variance<private>(): tuple(success_type, error_type) = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  # Internal object that represents a clock as the number of seconds since
+  # January 1, 1970 UTC via `GetSecondsSinceEpoch`.
+  seconds_since_epoch_clock<epic_internal> := class<computes>(clock) {
+    GetSeconds<override>()<reads>: float = external {}
+  }
+
+  @cpp_name("verse::showable")
   # Implemented by classes whose instances can change visibility to be shown
   # or hidden.
   showable<public><native> := interface {
@@ -8790,6 +10648,7 @@ Verse<public> := module {
     var Show<public>: logic
   }
 
+  @cpp_name("verse::signalable")
   # A parametric interface implemented by events with a `payload` that can
   # be signaled.
   # Can be used with `awaitable`, `subscribable`, or both (see: `listenable`).
@@ -8802,6 +10661,7 @@ Verse<public> := module {
     (/Verse.org/Verse/signalable:)Verse_signalable_Variance<private>(: payload): tuple() = external {}
   }
 
+  @cpp_name("verse::subscribable")
   # A parametric interface implemented by events with a `payload` that can be
   # subscribed to.
   # Matched with `signalable.`
@@ -8819,6 +10679,7 @@ Verse<public> := module {
 
   subscribable_event_intrnl<epic_internal>() := subscribable_event_intrnl(tuple())
 
+  @cpp_name("verse::subscribable_event_intrnl")
   subscribable_event_intrnl<epic_internal><native>(t: type) := class(event(t), listenable(t)) {
     Signal<native><override>(Val: t): void
 
@@ -8834,6 +10695,37 @@ Verse<public> := module {
     (/Verse.org/Verse/subscribable_event_intrnl:)Verse_subscribable_event_intrnl_Variance_Inherited<private>(
       : t
     ): tuple(t, t, t) = external {}
+  }
+
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  # Verse path: /Verse.org/Verse
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  timer<public> := class(clock, playable) {
+    GetSeconds<final><override>()<reads>: float = external {}
+
+    Pause<override>(): void = external {}
+
+    Play<override>(): void = external {}
+
+    @editable
+    ReferenceClock<public>: clock
+
+    Resume<override>(): void = external {}
+
+    SetSeconds<public>(NewSeconds: float): void = external {}
+
+    Stop<override>(): void = external {}
+
+    @editable
+    var EndSeconds<public>: float = external {}
+
+    @editable
+    var PlayRate<public>: float = external {}
+
+    @editable
+    var StartSeconds<public>: float = external {}
   }
 }
 

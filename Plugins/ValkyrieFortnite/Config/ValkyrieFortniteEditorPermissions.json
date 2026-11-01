@@ -9,7 +9,8 @@
 	"AdditionalFeatures": [
 		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-FAB.json",
 		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-MetaHuman.json",
-		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioLive.json"
+		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-AudioLive.json",
+		"Plugins/ValkyrieFortnite/Config/ValkyrieEditorConfig-GaussianSplat.json"
 	],
 
 	"_comment_ValkyrieProjectSettings": "General settings to apply to user-created projects",
@@ -19,19 +20,22 @@
 		"bLocalizationEnabled": true,
 		"bAutoLocalizationEnabled": true,
 		"bManualLocalizationEnabled": true,
-		"bAddProjectExternalContentAllowed": false,
 		"bMultiPluginProjectAllowed": false,
-		"bMultiProjectAllowed": false,
+		"bSharedModuleFeatureSetAvailable": false,
+		"bMultiProjectAllowed": true,
 		"bModuleIdNamedPlugins": true,
 		"bOnlinePluginFriendlyNameAllowed": false,
 		"bShowingContentVersePath": true,
 		"bRelaxedValidationAllowed": false,
 		"bModularTestingAllowed": false,
 		"bPythonUploadAllowed": false,
-		"bForkAllowed": false,
+		"bForkAllowed": true,
+		"bOrgForkAllowed": false,
 		"bInterProjectRedirectorsAllowed": true,
 		"bProjectRenameAllowed": false,
-		"bModuleApiAllowed": false,
+		"bModuleApiAllowed": true,
+		"bPublicModuleApiAllowed": false,
+		"bModulePlayabilityMismatchAllowed": false,
 		"DefaultProjectReferencedContent": []
 	},
 	"_comment_ValkyrieBlueprintGraph": "Properties related to BP graphs, which may include data for Anim Graphs, Control Rig, etc.",
@@ -149,6 +153,8 @@
 			"/Script/CoreUObject.RandomStream",
 			"/Script/CoreUObject.Ray",
 			"/Script/CoreUObject.Rotator",
+			"/Script/CoreUObject.SoftObjectPath",
+			"/Script/CoreUObject.SoftClassPath",
 			"/Script/CoreUObject.Timespan",
 			"/Script/CoreUObject.Transform",
 			"/Script/CoreUObject.Vector",
@@ -454,12 +460,29 @@
 			"/Game/Blueprints/Blutilities/UEFNToolkit/StaticMesh_AssetActions.StaticMesh_AssetActions_C"
 		]
 	},
+	"ValkyriePCGSettings": {
+		"bEnableLimitedPermissionsInRestrictedMode": true,
+		"bAllowGPUExecution": true
+	},
 	"ValkyrieExperimentalSettings": {
 		"bAllowAccessToExperimentalInventorySettings": true
 	},
+	"_comment_ValkyrieToolsetSettings": "Hidden AI toolsets and tools. 'Module.Toolset' hides a whole toolset, 'Module.Toolset.Tool' a single tool. Rows wrapped in forward slashes are regular expressions; anything else is a case-insensitive substring, so qualify a row enough not to catch a longer name.",
+	"ValkyrieToolsetSettings": {
+		"DeniedToolPatterns": [],
+		"DeniedSkillPaths": [
+			"/AnimationAssistantToolset/Python/animation_toolset/skills/director_PY.SequencerDirectorSkill",
+			"/AnimationAssistantToolset/Python/animation_toolset/skills/sequencer_gameplay_PY.SequencerGameplaySkill",
+			"/MetaSoundToolset/Python/metasound_toolset/skills/fundamentals_PY.MetaSoundFundamentalsSkill",
+			"/MetaSoundToolset/Python/metasound_toolset/skills/workflows_PY.MetaSoundWorkflowsSkill",
+			"/MetaSoundToolset/Python/metasound_toolset/skills/trigger_topology_PY.MetaSoundTriggerTopologySkill",
+			"/MetaSoundToolset/Python/metasound_toolset/skills/paged_graphs_PY.MetaSoundPagedGraphsSkill",
+			"/MetaSoundToolset/Python/metasound_toolset/skills/recipes_PY.MetaSoundRecipesSkill",
+			"/MetaSoundToolset/Python/metasound_toolset/skills/performance_PY.MetaSoundPerformanceSkill"
+		]
+	},
 	"_comment_ValkyrieEditorSettings": "Properties related to core editor functionality, restricting editor views/controls, allow lists for assets and classes, etc.",
 	"ValkyrieEditorSettings": {
-		"bShowConsole": false,
 		"bEnableContextAwareness": false,
 		"bShowValidateProjectMenuEntry": true,
 		"ReadOnlyAssetsPermission" : "All",
@@ -480,12 +503,14 @@
 			"PersonaSkeletonSelection",
 			"EM_AssetPlacementEdMode",
 			"EM_ActorPicker",
+			"EM_TedsViewportPicker",
 			"EM_SceneDepthPicker",
 			"SequencerToolsEditMode",
 			"StaticMeshEditorEdMode",
 			"PhysicsAssetEditor",
 			"EditMode.SubTrackEditMode",
-			"ValkyrieFortniteScriptableToolsEditorMode"
+			"ValkyrieFortniteScriptableToolsEditorMode",
+			"EM_PCGEditorMode"
 		],
 		"AllowedImportExtensions": [
 			"abc",
@@ -514,6 +539,10 @@
 			"tga",
 			"tif",
 			"tiff",
+			"usd",
+			"usda",
+			"usdc",
+			"usdz",
 			"wav"
 		],
 		"_comment_AllowedRemoteCommands": "Console commands allowed to be executed remotely.",
@@ -590,9 +619,14 @@
 					"BugReports"
 				]
 			},
-			"Plugins": {
+			"AgenticWorkflows": {
 				"Names": [
 					"Model Context Protocol"
+				]
+			},
+			"Plugins": {
+				"Names": [
+					"PCGEditorMode"
 				]
 			},
 			"ContentEditors": {
@@ -600,7 +634,8 @@
 					"CurveEditor",
 					"LevelSequenceEditor",
 					"VerseEditor",
-					"PCGEditor"
+					"PCGEditor",
+					"EntityPrefabEditor"
 				]
 			},
 			"Advanced": {
@@ -619,8 +654,9 @@
 			"/Script/ControlRig.ControlRigRuntimeAsset":		{ "Rules": ["View","Create"] },
 			"/Script/ControlRig.ControlRigPoseAsset":			{ "Rules": ["View","Create"] },
 			"/Script/ControlRig.ControlRigShapeLibrary":		{ "Rules": ["View","Create"] },
-			"/Script/OptimusCore.OptimusDeformer":            	{ "Rules": ["View"] },
-			"/Script/ChaosClothAssetEngine.ChaosClothAsset":	{ "Rules": ["View"] },
+			"/Script/OptimusCore.OptimusDeformer":				{ "Rules": ["View"] },
+			"/Script/ChaosClothAssetEngine.ChaosClothAsset":	{ "Rules": ["View", "Create", "Import"] },
+			"/Script/ChaosOutfitAssetEngine.ChaosOutfitAsset":	{ "Rules": ["View", "Create", "Import"] },
 			"/Script/CoreUObject.ObjectRedirector":				{ "Rules": ["View","Create"] },
 			"/Script/IKRig.IKRigDefinition":					{ "Rules": ["View","Create"] },
 			"/Script/IKRig.IKRetargeter":						{ "Rules": ["View","Create"] },
@@ -638,7 +674,7 @@
 			"/Script/Engine.DataAsset":							{ "Rules": ["View","Create"] },
 			"/Script/Engine.DataLayerAsset":					{ "Rules": ["View","Create"] },
 			"/Script/Engine.DataTable":							{ "Rules": ["View"] },
-			"/Script/Entity.EntityPrefab":						{ "Rules": ["View","Create"] },
+			"/Script/Entity.EntityPrefab":						{ "Rules": ["View","Create","Import"] },
 			"/Script/Engine.Font":								{ "Rules": ["View"] },
 			"/Script/Engine.HLODLayer":							{ "Rules": ["View","Create"] },
 			"/Script/EnhancedInput.InputAction":                { "Rules": ["View"] },
@@ -656,6 +692,7 @@
 			"/Script/Engine.SkeletalMesh":						{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.SkeletalMeshLODSettings":			{ "Rules": ["View","Create"] },
 			"/Script/Engine.Skeleton":							{ "Rules": ["View","Create","Import","Export"] },
+			"/Script/Engine.SplineComponent":					{ "Rules": ["View","Create"] },
 			"/Script/Engine.StaticMesh":						{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
 			"/Script/Engine.SubsurfaceProfile":					{ "Rules": ["View","Create","Import","Export"] },
 			"/Script/Engine.Texture2D":							{ "Rules": ["View","Create","Import","Export","ModuleAPI"] },
@@ -707,6 +744,11 @@
 			"/Script/Niagara.NiagaraScript":					{ "Rules": ["View","Create"] },
 			"/Script/Niagara.NiagaraSystem":					{ "Rules": ["View","Create","ModuleAPI"] },
 			"/Script/Niagara.NiagaraAssetTagDefinitions": { "Rules": [ "View" ] },
+			"/Script/PCG.PCGComponentLite":						{ "Rules": ["View","Create"] },
+			"/Script/PCG.PCGDataAsset":							{ "Rules": ["View","Create"] },
+			"/Script/PCG.PCGGraph":								{ "Rules": ["View","Create"] },
+			"/Script/PCG.PCGGraphInstance":						{ "Rules": ["View","Create"] },
+			"/Script/PCG.PCGVolumeLite":						{ "Rules": ["View","Create","Import"] },
 			"/Script/PhysicsCore.PhysicalMaterial":				{ "Rules": ["View"] },
 			"/Script/CoreUObject.VerseClass":						{ "Rules": ["View"] },
 			"/Script/TakesCore.TakePreset":				{ "Rules": ["View","Create"] },
@@ -995,6 +1037,17 @@
 			"/Script/CableComponent.CableComponent":							{  },
 			"/Script/ChaosClothAssetEngine.ChaosClothAsset":                    { "Visible": true },
 			"/Script/ChaosClothAssetEngine.ChaosClothComponent":                { "Visible": true },
+			"/Script/ChaosCloth.ChaosClothConfig":                              {  },
+			"/Script/ChaosCloth.ChaosClothSharedSimConfig":                     {  },
+			"/Script/ChaosOutfitAssetEngine.ChaosOutfitAsset":                  { "Visible": true },
+			"/Script/ChaosOutfitAssetEngine.ChaosOutfit":						{  },
+			"/Script/ChaosOutfitAssetEngine.ChaosSizedOutfitSource":			{  },
+			"/Script/ChaosOutfitAssetDataflowNodes.ChaosOutfitBodySizeBodyParts":	{  },
+			"/Script/Chaos.ManagedArrayCollection":								{  },
+			"/Script/MeshResizingCore.MeshResizingRBFInterpolationData":		{  },
+			"/Script/DataflowEngine.Dataflow":									{  },
+			"/Script/DataflowEngine.DataflowEdNode":							{  },
+			"/Script/DataflowEngine.DataflowSubGraph":							{  },
 			"/Script/CinematicCamera.CameraRig_Crane":							{ "Visible": true },
 			"/Script/CinematicCamera.CameraRig_Rail":							{ "Visible": true },
 			"/Script/CinematicCamera.CineCameraActor":							{ "Visible": true },
@@ -1239,6 +1292,8 @@
 			"/Script/CoreUObject.QualifiedFrameTime":							{  },
 			"/Script/CoreUObject.Quat4f":										{  },
 			"/Script/CoreUObject.Rotator":										{  },
+			"/Script/CoreUObject.SoftObjectPath":								{  },
+			"/Script/CoreUObject.SoftClassPath":								{  },
 			"/Script/CoreUObject.Transform":									{  },
 			"/Script/CoreUObject.Vector":										{  },
 			"/Script/CoreUObject.Vector2f":										{  },
@@ -1589,6 +1644,7 @@
 			"/Script/InterchangeImport.MaterialExpressionMaterialXSwizzle":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.MaterialExpressionMaterialXTextureSampleParameterBlur":	{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/InterchangeImport.InterchangeFbxTranslatorSettings":						{ "Visible": true,	"Subclasses": "NativeOnly" },
+			"/Script/InterchangeOpenUSDImport.InterchangeUsdTranslatorSettings":						{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeGrassOutput":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeLayerBlend":							{ "Visible": true,	"Subclasses": "NativeOnly" },
 			"/Script/Landscape.MaterialExpressionLandscapeLayerCoords":							{ "Visible": true,	"Subclasses": "NativeOnly" },
@@ -1607,6 +1663,7 @@
 			"/Script/Engine.MaterialFunctionEditorOnlyData":					{  },
 			"/Script/Engine.MaterialInstanceDynamic":							{  },
 			"/Script/Engine.MaterialInstanceEditorOnlyData":					{  },
+			"/Script/Engine.MaterialInterface":									{ "Visible": true },
 			"/Script/Engine.MeshDeformerCollection":						{ "Visible": true },
 			"/Script/Engine.Model":												{  },
 			"/Script/Engine.MorphTarget":										{  },
@@ -1643,12 +1700,13 @@
 			"/Script/Engine.SolverIterations":									{  },
 			"/Script/Engine.SpatialHashRuntimeGridInfo":						{  },
 			"/Script/Engine.SphereComponent":									{  },
-			"/Script/Engine.SplineComponent":									{  },
+			"/Script/Engine.SplineComponent":									{ "Visible": true },
 			"/Script/Engine.SplineMeshActor":									{  },
 			"/Script/Engine.SplineMeshComponent":								{  },
 			"/Script/Engine.SpotLight":											{ "Visible": true },
 			"/Script/Engine.SpotLightComponent":								{ "Visible": true },
 			"/Script/Engine.StaticMeshActor":									{  },
+			"/Script/Engine.StaticMesh":										{ "Visible": true },
 			"/Script/Engine.StaticMeshComponent":								{ "Visible": true },
 			"/Script/Engine.StaticMeshDescriptionBulkData":						{  },
 			"/Script/Engine.StaticMeshSocket":									{  },
@@ -1812,6 +1870,7 @@
 			"/Script/FortniteGame.FortMinigamePlayerStartComponent":			{  },
 			"/Script/FortniteGame.FortMinigameProgressComponent":				{  },
 			"/Script/FortniteGame.FortMutatorListComponent":					{  },
+			"/Script/FortniteGame.FortPCGSpawnItemDefinitionSettings":			{ "Visible": true },
 			"/Script/FortniteGame.FortPhysicsImpulseComponent":                 {  },
 			"/Script/FortniteGame.FortPhysicsObjectComponent":					{  },
 			"/Script/FortniteGame.FortPhysicsComponent":						{ "Visible": true },
@@ -1917,6 +1976,7 @@
 			"/Script/InterchangeFactoryNodes.InterchangeTextureFactoryNode":	{  },
 			"/Script/InterchangeFactoryNodes.InterchangeTextureLightProfileFactoryNode":{  },
 			"/Script/InterchangeFactoryNodes.InterchangeVolumeTextureFactoryNode":{  },
+			"/Script/InterchangeOpenUSDImport.InterchangeUsdPipeline":				{  },
 			"/Script/InterchangePipelines.InterchangeGenericAnimationPipeline":	{  },
 			"/Script/InterchangePipelines.InterchangeGenericAssetsPipeline":	{  },
 			"/Script/InterchangePipelines.InterchangeGenericCommonMeshesProperties":{  },
@@ -2258,6 +2318,357 @@
 			"/Script/DataHierarchyEditor.HierarchyItem":						{  },
 			"/Script/DataHierarchyEditor.DataHierarchyElementMetaData_SectionAssociation":	{  },
 			"/Script/Paper2D.PaperSprite":										{  },
+			"/Script/PCG.PCGComponent":											{  },
+			"/Script/PCG.PCGComponentLite":										{ "Visible": true },
+			"/Script/PCG.PCGData":												{  },
+			"/Script/PCG.PCGDataAsset":											{  },
+			"/Script/PCG.PCGBasePointData":										{  },
+			"/Script/PCG.PCGCollisionShapeData":								{  },
+			"/Script/PCG.PCGCollisionWrapperData":								{  },
+			"/Script/PCG.PCGDataViewData":										{  },
+			"/Script/PCG.PCGDifferenceData":									{  },
+			"/Script/PCG.PCGDynamicMeshData":									{  },
+			"/Script/PCG.PCGIntersectionData":									{  },
+			"/Script/PCG.PCGGraphCompilationData":								{  },
+			"/Script/PCG.PCGLandscapeData":										{  },
+			"/Script/PCG.PCGLandscapeSplineData":								{  },
+			"/Script/PCG.PCGParamData":											{  },
+			"/Script/PCG.PCGPointArrayData":									{  },
+			"/Script/PCG.PCGPointData":											{  },
+			"/Script/PCG.PCGPolyLineData":										{  },
+			"/Script/PCG.PCGPolygon2DData":										{  },
+			"/Script/PCG.PCGPolygon2DInteriorSurfaceData":						{  },
+			"/Script/PCG.PCGPrimitiveData":										{  },
+			"/Script/PCG.PCGProjectionData":									{  },
+			"/Script/PCG.PCGProxyForGPUData":									{  },
+			"/Script/PCG.PCGRawBufferData":										{  },
+			"/Script/PCG.PCGRenderTargetData":									{  },
+			"/Script/PCG.PCGResourceData":										{  },
+			"/Script/PCG.PCGSettingsInstance":									{  },
+			"/Script/PCG.PCGSettingsInterface":									{  },
+			"/Script/PCG.PCGSpatialData":										{  },
+			"/Script/PCG.PCGSpatialDataWithPointCache":							{  },
+			"/Script/PCG.PCGSplineData":										{  },
+			"/Script/PCG.PCGSplineInteriorSurfaceData":							{  },
+			"/Script/PCG.PCGSplineProjectionData":								{  },
+			"/Script/PCG.PCGStaticMeshResourceData":							{  },
+			"/Script/PCG.PCGSurfaceData":										{  },
+			"/Script/PCG.PCGTexture2DArrayData":								{  },
+			"/Script/PCG.PCGTexture2DBaseData":									{  },
+			"/Script/PCG.PCGTexture2DSingleBaseData":							{  },
+			"/Script/PCG.PCGTextureData":										{  },
+			"/Script/PCG.PCGUnionData":											{  },
+			"/Script/PCG.PCGUserParametersData":								{  },
+			"/Script/PCG.PCGVirtualTextureData":								{  },
+			"/Script/PCG.PCGVolumeData":										{  },
+			"/Script/PCG.PCGWorldRayHitData":									{  },
+			"/Script/PCG.PCGWorldVolumetricData":								{  },
+			"/Script/PCG.PCGSettings":											{  },
+			"/Script/PCG.PCGAddAttributeSettings":								{ "Visible": true },
+			"/Script/PCG.PCGAddComplexConstantSettings":						{ "Visible": true },
+			"/Script/PCG.PCGAddComponentSettings":								{ "Visible": true },
+			"/Script/PCG.PCGAddTagSettings":									{ "Visible": true },
+			"/Script/PCG.PCGAddVerseStaticMeshComponent":						{ "Visible": true },
+			"/Script/PCG.PCGAlignPointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGApplyHierarchySettings":							{ "Visible": true },
+			"/Script/PCG.PCGApplyOnActorSettings":								{ "Visible": true },
+			"/Script/PCG.PCGApplyScaleToBoundsSettings":						{ "Visible": true },
+			"/Script/PCG.PCGApplySplineToComponentSettings":					{ "Visible": true },
+			"/Script/PCG.PCGAttractSettings":									{ "Visible": true },
+			"/Script/PCG.PCGAttributeCastSettings":								{ "Visible": true },
+			"/Script/PCG.PCGAttributeFilteringRangeSettings":					{ "Visible": true },
+			"/Script/PCG.PCGAttributeFilteringSettings":						{ "Visible": true },
+			"/Script/PCG.PCGAttributeGetFromIndexSettings":						{ "Visible": true },
+			"/Script/PCG.PCGAttributeGetFromPointIndexSettings":				{ "Visible": true },
+			"/Script/PCG.PCGAttributeNoiseSettings":							{ "Visible": true },
+			"/Script/PCG.PCGAttributeReduceSettings":							{ "Visible": true },
+			"/Script/PCG.PCGAttributeRemapSettings":							{ "Visible": true },
+			"/Script/PCG.PCGAttributeRemoveDuplicatesSettings":					{ "Visible": true },
+			"/Script/PCG.PCGAttributeSelectSettings":							{ "Visible": true },
+			"/Script/PCG.PCGAttributeTransferSettings":							{ "Visible": true },
+			"/Script/PCG.PCGBakeStaticMeshAttributesSettings":					{ "Visible": true },
+			"/Script/PCG.PCGBaseSubgraphSettings":								{ "Visible": true },
+			"/Script/PCG.PCGBlueprintSettings":									{  },
+			"/Script/PCG.PCGBlurSettings":										{ "Visible": true },
+			"/Script/PCG.PCGBooleanSelectSettings":								{ "Visible": true },
+			"/Script/PCG.PCGBoundsFromMeshSettings":							{ "Visible": true },
+			"/Script/PCG.PCGBoundsModifierSettings":							{ "Visible": true },
+			"/Script/PCG.PCGBranchSettings":									{ "Visible": true },
+			"/Script/PCG.PCGCleanSplineSettings":								{ "Visible": true },
+			"/Script/PCG.PCGClipPathsSettings":									{ "Visible": true },
+			"/Script/PCG.PCGClusterSettings":									{ "Visible": true },
+			"/Script/PCG.PCGCollapsePointsSettings":							{ "Visible": true },
+			"/Script/PCG.PCGCollapseSettings":									{ "Visible": true },
+			"/Script/PCG.PCGCombinePointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGComputeGraphSettings":								{ "Visible": true },
+			"/Script/PCG.PCGConcaveHullSettings":								{ "Visible": true },
+			"/Script/PCG.PCGControlFlowSettings":								{ "Visible": true },
+			"/Script/PCG.PCGConvertToAttributeSetSettings":						{ "Visible": true },
+			"/Script/PCG.PCGConvertToDataViewSettings":							{ "Visible": true },
+			"/Script/PCG.PCGConvertToPointDataSettings":						{ "Visible": true },
+			"/Script/PCG.PCGConvexHull2DSettings":								{ "Visible": true },
+			"/Script/PCG.PCGCopyAttributesSettings":							{ "Visible": true },
+			"/Script/PCG.PCGCopyPointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGCopyToRenderTargetSettings":						{ "Visible": true },
+			"/Script/PCG.PCGCreateAttributeSetSettings":						{ "Visible": true },
+			"/Script/PCG.PCGCreateCollisionDataSettings":						{ "Visible": true },
+			"/Script/PCG.PCGCreateComplexConstantSettings":						{ "Visible": true },
+			"/Script/PCG.PCGCreatePointsGridSettings":							{ "Visible": true },
+			"/Script/PCG.PCGCreatePointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGCreatePointsSphereSettings":						{ "Visible": true },
+			"/Script/PCG.PCGCreatePolygon2DSettings":							{ "Visible": true },
+			"/Script/PCG.PCGCreateSplineSettings":								{ "Visible": true },
+			"/Script/PCG.PCGCreateSurfaceFromPolygon2DSettings":				{ "Visible": true },
+			"/Script/PCG.PCGCreateSurfaceFromSplineSettings":					{ "Visible": true },
+			"/Script/PCG.PCGCreateTargetActor":									{ "Visible": true },
+			"/Script/PCG.PCGCreateVerseEntity":									{ "Visible": true },
+			"/Script/PCG.PCGCullPointsOutsideActorBoundsSettings":				{ "Visible": true },
+			"/Script/PCG.PCGCustomHLSLSettings":								{ "Visible": true },
+			"/Script/PCG.PCGDataAttributesAndTagsSettingsBase":					{ "Visible": true },
+			"/Script/PCG.PCGDataAttributesToTagsSettings":						{ "Visible": true },
+			"/Script/PCG.PCGDataFromActorSettings":								{ "Visible": true },
+			"/Script/PCG.PCGDataFromEntitySettings":							{ "Visible": true },
+			"/Script/PCG.PCGDataFromTool":										{ "Visible": true },
+			"/Script/PCG.PCGDataNumSettings":									{ "Visible": true },
+			"/Script/PCG.PCGDataTableRowToParamDataSettings":					{ "Visible": true },
+			"/Script/PCG.PCGDataViewToStringSettings":							{ "Visible": true },
+			"/Script/PCG.PCGDebugSettings":										{ "Visible": true },
+			"/Script/PCG.PCGDeleteAttributesSettings":							{ "Visible": true },
+			"/Script/PCG.PCGDeleteTagsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGDensityFilterSettings":								{ "Visible": true },
+			"/Script/PCG.PCGDensityRemapSettings":								{ "Visible": true },
+			"/Script/PCG.PCGDifferenceSettings":								{ "Visible": true },
+			"/Script/PCG.PCGDistanceSettings":									{ "Visible": true },
+			"/Script/PCG.PCGDownloadFromGPUSettings":							{ "Visible": true },
+			"/Script/PCG.PCGDownsampleTextureSettings":							{ "Visible": true },
+			"/Script/PCG.PCGDuplicateCrossSectionsSettings":					{ "Visible": true },
+			"/Script/PCG.PCGDuplicatePointSettings":							{ "Visible": true },
+			"/Script/PCG.PCGEditPointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGElevationIsolinesSettings":							{ "Visible": true },
+			"/Script/PCG.PCGExportSelectedAttributesSettings":					{ "Visible": true },
+			"/Script/PCG.PCGExternalDataSettings":								{ "Visible": true },
+			"/Script/PCG.PCGExtractAttributeSettings":							{ "Visible": true },
+			"/Script/PCG.PCGExtractMemberFromStructSettings":					{ "Visible": true },
+			"/Script/PCG.PCGFilterByAttributeSettings":							{ "Visible": true },
+			"/Script/PCG.PCGFilterByIndexSettings":								{ "Visible": true },
+			"/Script/PCG.PCGFilterByTagSettings":								{ "Visible": true },
+			"/Script/PCG.PCGFilterByTypeSettings":								{ "Visible": true },
+			"/Script/PCG.PCGFilterDataBaseSettings":							{ "Visible": true },
+			"/Script/PCG.PCGFilterElementsByIndexSettings":						{ "Visible": true },
+			"/Script/PCG.PCGFindClosestPointOnSplineSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGatherSettings":									{ "Visible": true },
+			"/Script/PCG.PCGGenerateLandscapeTexturesSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGenerateSeedSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGenericUserParameterGetSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGetActorDataLayersSettings":						{ "Visible": true },
+			"/Script/PCG.PCGGetActorPropertySettings":							{ "Visible": true },
+			"/Script/PCG.PCGGetAssetListSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGetAttributesSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGetBoundsSettings":									{ "Visible": true },
+			"/Script/PCG.PCGGetClassFromAttributeSettings":						{ "Visible": true },
+			"/Script/PCG.PCGGetConsoleVariableSettings":						{ "Visible": true },
+			"/Script/PCG.PCGGetEditorCamerasSettings":							{ "Visible": true },
+			"/Script/PCG.PCGGetEditorSelectionSettings":						{ "Visible": true },
+			"/Script/PCG.PCGGetExecutionContextSettings":						{ "Visible": true },
+			"/Script/PCG.PCGGetLandscapeGrassTypesSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGetLandscapeSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGetLoopIndexSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGetPCGComponentSettings":							{ "Visible": true },
+			"/Script/PCG.PCGGetPrimitiveSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGetPropertyFromObjectPathSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGetResourcePath":									{ "Visible": true },
+			"/Script/PCG.PCGGetSegmentSettings":								{ "Visible": true },
+			"/Script/PCG.PCGGetSplineControlPointsSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGetSplineSettings":									{ "Visible": true },
+			"/Script/PCG.PCGGetStaticMeshResourceDataSettings":					{ "Visible": true },
+			"/Script/PCG.PCGGetSubgraphDepthSettings":							{ "Visible": true },
+			"/Script/PCG.PCGGetTagsSettings":									{ "Visible": true },
+			"/Script/PCG.PCGGetTexture2DArrayDataSettings":						{ "Visible": true },
+			"/Script/PCG.PCGGetTextureInfoSettings":							{ "Visible": true },
+			"/Script/PCG.PCGGetVirtualTextureSettings":							{ "Visible": true },
+			"/Script/PCG.PCGGetVolumeSettings":									{ "Visible": true },
+			"/Script/PCG.PCGGraphInputOutputSettings":							{ "Visible": true },
+			"/Script/PCG.PCGGridLinkageSettings":								{ "Visible": true },
+			"/Script/PCG.PCGHashAttributeSettings":								{ "Visible": true },
+			"/Script/PCG.PCGHiGenGridSizeSettings":								{ "Visible": true },
+			"/Script/PCG.PCGIndirectionSettings":								{  },
+			"/Script/PCG.PCGInnerIntersectionSettings":							{ "Visible": true },
+			"/Script/PCG.PCGLoadDataAssetSettings":								{ "Visible": true },
+			"/Script/PCG.PCGLoadDataTableSettings":								{ "Visible": true },
+			"/Script/PCG.PCGLoopSettings":										{ "Visible": true },
+			"/Script/PCG.PCGMakeConcreteSettings":								{ "Visible": true },
+			"/Script/PCG.PCGMatchAndSetAttributesSettings":						{ "Visible": true },
+			"/Script/PCG.PCGMergeAttributesSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMergeSettings":										{ "Visible": true },
+			"/Script/PCG.PCGMeshSpawnerSettingsBase":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataArrayOperationSettings":					{ "Visible": true },
+			"/Script/PCG.PCGMetadataBitwiseSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataBooleanSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataBreakTransformSettings":					{ "Visible": true },
+			"/Script/PCG.PCGMetadataBreakVectorSettings":						{ "Visible": true },
+			"/Script/PCG.PCGMetadataCompareSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataMakeRotatorSettings":						{ "Visible": true },
+			"/Script/PCG.PCGMetadataMakeTransformSettings":						{ "Visible": true },
+			"/Script/PCG.PCGMetadataMakeVectorSettings":						{ "Visible": true },
+			"/Script/PCG.PCGMetadataMathsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGMetadataPartitionSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataRenameSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataRotatorSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataSettingsBase":								{ "Visible": true },
+			"/Script/PCG.PCGMetadataStringOpSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataTransformSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMetadataTrigSettings":								{ "Visible": true },
+			"/Script/PCG.PCGMetadataVectorSettings":							{ "Visible": true },
+			"/Script/PCG.PCGMultiSelectSettings":								{ "Visible": true },
+			"/Script/PCG.PCGMutateSeedSettings":								{ "Visible": true },
+			"/Script/PCG.PCGNamedRerouteBaseSettings":							{ "Visible": true },
+			"/Script/PCG.PCGNamedRerouteDeclarationSettings":					{ "Visible": true },
+			"/Script/PCG.PCGNamedRerouteUsageSettings":							{ "Visible": true },
+			"/Script/PCG.PCGNormalToDensitySettings":							{ "Visible": true },
+			"/Script/PCG.PCGNumberOfElementsSettings":							{ "Visible": true },
+			"/Script/PCG.PCGOffsetPolygon2DSettings":							{ "Visible": true },
+			"/Script/PCG.PCGOffsetSplineSettings":								{ "Visible": true },
+			"/Script/PCG.PCGOuterIntersectionSettings":							{ "Visible": true },
+			"/Script/PCG.PCGParseStringSettings":								{ "Visible": true },
+			"/Script/PCG.PCGPartitionByActorDataLayersSettings":				{ "Visible": true },
+			"/Script/PCG.PCGPathfindingSettings":								{ "Visible": true },
+			"/Script/PCG.PCGPlatformSwitchSettings":							{ "Visible": true },
+			"/Script/PCG.PCGPlatformSwitchSettingsBase":						{ "Visible": true },
+			"/Script/PCG.PCGPointExtentsModifierSettings":						{ "Visible": true },
+			"/Script/PCG.PCGPointFromMeshSettings":								{ "Visible": true },
+			"/Script/PCG.PCGPointMatchAndSetSettings":							{ "Visible": true },
+			"/Script/PCG.PCGPointNeighborhoodSettings":							{ "Visible": true },
+			"/Script/PCG.PCGPolygon2DOperationSettings":						{ "Visible": true },
+			"/Script/PCG.PCGPrintElementSettings":								{ "Visible": true },
+			"/Script/PCG.PCGPrintGrammarSettings":								{ "Visible": true },
+			"/Script/PCG.PCGProjectionSettings":								{ "Visible": true },
+			"/Script/PCG.PCGQualityBranchSettings":								{ "Visible": true },
+			"/Script/PCG.PCGQualitySelectSettings":								{ "Visible": true },
+			"/Script/PCG.PCGRandomChoiceSettings":								{ "Visible": true },
+			"/Script/PCG.PCGRemoveActorsFromWorldSettings":						{ "Visible": true },
+			"/Script/PCG.PCGRemoveEmptyDataSettings":							{ "Visible": true },
+			"/Script/PCG.PCGReplaceDataByTagSettings":							{ "Visible": true },
+			"/Script/PCG.PCGReplaceTagsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGRerouteSettings":									{ "Visible": true },
+			"/Script/PCG.PCGResetPointCenterSettings":							{ "Visible": true },
+			"/Script/PCG.PCGReverseSplineSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSampleTextureSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSanityCheckPointDataSettings":						{ "Visible": true },
+			"/Script/PCG.PCGSaveDataAssetSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSaveDataViewSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSaveTextureToAssetSettings":						{ "Visible": true },
+			"/Script/PCG.PCGSceneCaptureSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSelectGrammarSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSelectPointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSelfPruningSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSettingsWithDynamicInputs":							{ "Visible": true },
+			"/Script/PCG.PCGShaderFeatureLevelSwitchSettings":					{ "Visible": true },
+			"/Script/PCG.PCGSortAttributesSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSortTagsSettings":									{ "Visible": true },
+			"/Script/PCG.PCGSpatialNoiseSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSpawnActorSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSpawnSplineMeshSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSpawnSplineSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSplineIntersectionSettings":						{ "Visible": true },
+			"/Script/PCG.PCGSplineSamplerSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSplineToSegmentSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSplitPointsSettings":								{ "Visible": true },
+			"/Script/PCG.PCGSplitSplinesSettings":								{ "Visible": true },
+			"/Script/PCG.PCGStaticMeshSpawnerSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSubdivideSegmentSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSubdivideSplineSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSubdivisionBaseSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSubgraphSettings":									{ "Visible": true },
+			"/Script/PCG.PCGSurfaceSamplerSettings":							{ "Visible": true },
+			"/Script/PCG.PCGSwitchSettings":									{ "Visible": true },
+			"/Script/PCG.PCGTagsToAttributeSetSettings":						{ "Visible": true },
+			"/Script/PCG.PCGTagsToDataAttributesSettings":						{ "Visible": true },
+			"/Script/PCG.PCGTeleportSettings":									{  },
+			"/Script/PCG.PCGTextureSamplerSettings":							{ "Visible": true },
+			"/Script/PCG.PCGTransformPointsSettings":							{ "Visible": true },
+			"/Script/PCG.PCGTrapezoidalDecompositionSettings":					{ "Visible": true },
+			"/Script/PCG.PCGTrivialSettings":									{ "Visible": true },
+			"/Script/PCG.PCGUnionSettings":										{ "Visible": true },
+			"/Script/PCG.PCGUserParameterGetSettings":							{ "Visible": true },
+			"/Script/PCG.PCGVisualizeAttributeSettings":						{ "Visible": true },
+			"/Script/PCG.PCGVolumeSamplerSettings":								{ "Visible": true },
+			"/Script/PCG.PCGWaitLandscapeReadySettings":						{ "Visible": true },
+			"/Script/PCG.PCGWaitSettings":										{ "Visible": true },
+			"/Script/PCG.PCGWorldQuerySettings":								{ "Visible": true },
+			"/Script/PCG.PCGWorldRayHitSettings":								{ "Visible": true },
+			"/Script/PCG.PCGWorldRaycastElementSettings":						{ "Visible": true },
+			"/Script/PCG.PCGWriteDataIndexSettings":							{ "Visible": true },
+			"/Script/PCG.PCGEdge":												{  },
+			"/Script/PCG.PCGNode":												{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGPin":												{  },
+			"/Script/PCG.PCGGraphInterface":									{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGMetadata":											{  },
+			"/Script/PCG.PCGPartitionActor":									{  },
+			"/Script/PCG.PCGWorldActor":										{  },
+			"/Script/PCG.PCGLandscapeCache":									{  },
+			"/Script/PCG.PCGSchedulingPolicyDistanceAndDirection":				{  },
+			"/Script/PCG.PCGDataTypeInfo":										{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGAssetExporter":										{  },
+			"/Script/PCG.PCGDataCollectionExporter":							{  },
+			"/Script/PCGEditor.PCGLevelToAsset":								{  },
+			"/Script/PCGExternalDataInteropEditor.PCGAlembicToPCGAssetExporter":	{  },
+			"/Script/PCG.PCGInstanceDataPackerBase":							{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGMatchAndSetBase":									{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGMeshSelectorBase":									{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGMeshSelectorWeightedStruct":						{  },
+			"/Script/PCG.PCGMeshSelectorSimpleStruct":							{  },
+			"/Script/PCG.PCGMeshSelectorByAttributeStruct":						{  },
+			"/Script/PCG.PCGMeshSelectorPrimitiveDataStruct":					{  },
+			"/Script/PCG.PCGMeshSelectorWeightedByCategoryStruct":				{  },
+			"/Script/PCG.PCGStaticMeshDescriptorWrapper":						{  },
+			"/Script/PCG.PCGSkinnedMeshDescriptorWrapper":						{  },
+			"/Script/PCG.PCGVolume":											{  },
+			"/Script/PCG.PCGVolumeLite":										{ "Visible": true },
+			"/Script/PCG.PCGManagedResource":									{  },
+			"/Script/PCG.PCGManagedActors":										{  },
+			"/Script/PCG.PCGManagedComponent":									{  },
+			"/Script/PCG.PCGManagedComponentBase":								{  },
+			"/Script/PCG.PCGManagedComponentDefaultList":						{  },
+			"/Script/PCG.PCGManagedComponentList":								{  },
+			"/Script/PCG.PCGManagedDebugDrawComponent":							{  },
+			"/Script/PCG.PCGManagedDebugStringMessageKey":						{  },
+			"/Script/PCG.PCGManagedEntities":									{  },
+			"/Script/PCG.PCGManagedISKMComponent":								{  },
+			"/Script/PCG.PCGManagedISMComponent":								{  },
+			"/Script/PCG.PCGManagedInstancedMeshComponent":						{  },
+			"/Script/PCG.PCGManagedProceduralISKMComponent":					{  },
+			"/Script/PCG.PCGManagedProceduralISMComponent":						{  },
+			"/Script/PCG.PCGManagedSplineMeshComponent":						{  },
+			"/Script/PCG.PCGMetadataTypesConstantStruct":						{  },
+			"/Script/PCG.PCGInteractiveToolWorkingBaseData":					{ "Subclasses": "NativeOnly" },
+			"/Script/PCG.PCGSelfPruningParameters":								{  },
+			"/Script/PCG.PCGSubdivisionSubmodule":								{  },
+			"/Script/PCG.PCGDataViewCSVParameters":								{  },
+			"/Script/PCG.PCGDataViewJsonParameters":							{  },
+			"/Script/PCGEditor.PCGBuilderSettings":								{  },
+			"/Script/PCGEditor.PCGInteractiveToolBaseSettings":					{ "Subclasses": "NativeOnly" },
+			"/Script/PCGEditor.PCGPropertyBagHierarchyCategory":				{  },
+			"/Script/PCGExternalDataInterop.PCGLoadAlembicSettings":			{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGAppendMeshesFromPointsSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGBooleanOperationSettings":		{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGCreateEmptyDynamicMeshSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGDynamicMeshBaseSettings":		{  },
+			"/Script/PCGGeometryScriptInterop.PCGDynamicMeshManagedComponent":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGDynamicMeshTransformSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGGetDynamicMeshDataSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGGetMaterialsDynamicMeshSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGMergeDynamicMeshesSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGMeshSamplerSettings":			{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGMeshToDynamicMeshSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGPrimitiveCrossSectionSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGSaveDynamicMeshToAssetSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGSetMaterialsDynamicMeshSettings":	{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGSpawnDynamicMeshSettings":		{ "Visible": true },
+			"/Script/PCGGeometryScriptInterop.PCGSplineToMeshSettings":			{ "Visible": true },
+			"/Script/PCGPythonInteropEditor.PCGPythonDataProcessorSettings":	{ "Visible": true },
+			"/Script/PCGPythonInteropEditor.PCGExecutePythonScriptSettings":	{ "Visible": true },
+			"/Script/PCGWaterInterop.PCGGetWaterSplineSettings":				{ "Visible": true },
+			"/Script/PCGWaterInterop.PCGWaterSplineData":						{  },
 			"/Script/PerformanceCaptureCore.PerformerComponent":				{ "Visible": true },
 			"/Script/PerformanceCaptureCore.RetargetComponent":					{ "Visible": true },
 			"/Script/PerformanceCaptureCore.CaptureCharacter":					{ "Visible": true },
@@ -2305,6 +2716,9 @@
 			"/Script/SlateCore.Geometry":										{  },
 			"/Script/SlateCore.SlateBrush":										{  },
 			"/Script/SmartObjectsModule.SmartObjectPersistentCollection":		{  },
+			"/Script/StructUtilsEditor.PropertyBagPropertyMetadata_Base":		{ "Subclasses": "NativeOnly" },
+			"/Script/StructUtilsEditor.PropertyBagHierarchyProperty":			{  },
+			"/Script/StructUtilsEditor.PropertyBagHierarchyRoot":				{  },
 			"/Script/TakeMovieScene.FrameHitchSceneDecoration" :				{  },
 			"/Script/TakeMovieScene.MovieSceneTakeSection":						{  },
 			"/Script/TakeMovieScene.MovieSceneTakeTrack":						{ "Visible": true },
@@ -2540,13 +2954,13 @@
 				"AllowList": [ "", "ImportAsset" ]
 			},
 			"ContentBrowser.AssetContextMenu": {
-				"DenyList": [ "ViewAssetAudit", "ViewShaderCookStatistics", "ViewSizeMap", "OpenInTakeRecorder_Label", "RecordIntoTakeRecorder_Label", "Plugin" ]
+				"DenyList": [ "ViewAssetAudit", "ViewShaderCookStatistics", "ViewSizeMap", "OpenInTakeRecorder_Label", "RecordIntoTakeRecorder_Label", "Plugin", "ManageTags" ]
 			},
 			"ContentBrowser.AssetContextMenu.AnimSequence": {
 				"DenyList": [ "IKRetargetAnimSubmenu", "RetargetAnimSubmenu" ]
 			},
 			"ContentBrowser.AssetContextMenu.AssetActionsSubMenu": {
-				"DenyList": [ "FortCreateHotfix", "FortHostUI", "AssetExtraction_ExtractAssets", "AssetExtraction_ExtractAssetsWizard" ]
+				"DenyList": [ "FortCreateHotfix", "FortHostUI", "AssetExtraction_ExtractAssets", "AssetExtraction_ExtractAssetsWizard", "CreatePCGAssetFromMenu", "UpdatePCGAssetFromMenu" ]
 			},
 			"ContentBrowser.AssetContextMenu.AthenaCosmeticItemDefinition": {
 				"DenyList": [ "CosmeticCheatsSubMenu" ]
@@ -2592,6 +3006,8 @@
 					"SnapObjectToCamera",
 					"SnapAlignSubMenu",
 					"SelectSubMenu",
+					"SelectImmediateChildren",
+					"SelectAllDescendants",
 					"EditSubMenu",
 					"VisibilitySubMenu",
 					"AddActor",
@@ -2637,6 +3053,10 @@
 					"GroupEntities",
 					"AttachToEntityMenu",
 					"DetachEntities",
+
+					"FindInContentBrowser",
+					"EditAsset",
+					"EditAssetNoConfirmMultiple",
 
 					"EditPrefab",
 					"EditPrefabInplace_Start",
@@ -2713,10 +3133,10 @@
 				"AllowList": [ "PostProcessVolume", "SkyAtmosphere", "ExponentialHeightFog", "DecalActor" ]
 			},
 			"LevelEditor.LevelEditorToolBar.AddQuickMenu.Volumes": {
-				"AllowList": [ "BlockingVolume", "FortUndergroundVolume", "FortWaterBodyExclusionVolume", "PostProcessVolume" ]
+				"AllowList": [ "BlockingVolume", "FortUndergroundVolume", "FortWaterBodyExclusionVolume", "PostProcessVolume", "PCGVolumeLite" ]
 			},
 			"LevelEditor.LevelEditorToolBar.AssetsToolBar": {
-				"AllowList": [ "SaveAllLevels", "Create", "Content", "AddContent", "OpenInVerseButton", "BuildScriptsButton", "ValkyrieProjectMenu", "TogglePreviewPlatform", "ValkyriePlay", "LaunchCombo", "ValkyrieStartGame", "PlayCombo", "ValkyrieStopGame", "StopCombo", "UploadSpinner", "ValkyrieRefresh", "ValkyrieRefreshVerse", "ValkyrieOpenGameView" ]
+				"AllowList": [ "SaveAllLevels", "Create", "Content", "AddContent", "OpenInVerseButton", "BuildScriptsButton", "ValkyrieProjectMenu", "TogglePreviewPlatform", "ValkyriePlay", "LaunchCombo", "ValkyrieStartGame", "PlayCombo", "ValkyrieStopGame", "StopCombo", "UploadSpinner", "ValkyrieUploadToForkEntry", "ValkyrieUploadToFork", "ValkyrieActiveFork", "ValkyrieRefresh", "ValkyrieRefreshVerse", "ValkyrieOpenGameView" ]
 			},
 			"LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": {
 				"AllowList": [ "AllowTranslucentSelection", "AllowGroupSelection", "StrictBoxSelect", "TransparentBoxSelect", "ShowTransformWidget", "Scalability", "ToggleHideViewportUI", "FeatureLevelPreview" ]
@@ -2764,7 +3184,7 @@
 				"AllowList": [ "SelectAll", "SelectNone", "InvertSelection", "Hierarchy", "Advanced", "SelectAllActorsOfSameClass", "ByTypeSection", "Lights", "Material", "SkeletalMeshes", "StaticMeshes" ]
 			},
 			"LevelEditor.MainMenu.Tools": {
-				"AllowList": [ "ViewChangelists", "ViewBranchHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "BranchHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectAuroraEntitlementCatalog", "ValkyrieProjectOfferLog", "ValkyriePublishingReport", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler", "OpenPython", "RecentPythonsSubMenu", "EnablePythonLocally", "ValkyrieSessionInspector" ]
+				"AllowList": [ "ViewChangelists", "ViewBranchHistory", "ViewBranchExplorer", "CheckOutModifiedFiles", "ChangelistsTab", "BranchHistoryTab", "BranchExplorerTab", "CheckOutModifiedFilesTab", "ConnectToSourceControl", "ChangeSourceControlSettings", "ValkyrieProjectSize", "ValkyrieProjectAuroraEntitlementCatalog", "ValkyrieProjectOfferLog", "ValkyriePublishingReport", "ValkyrieMemoryCalculation", "LiveLinkHub", "SpatialMetricsViewer", "MemoryProfiler", "TimingProfiler", "OpenPython", "RecentPythonsSubMenu", "EnablePythonLocally", "ValkyrieSessionInspector", "PCGToolsSubMenu" ]
 			},
 			"LevelEditor.MainMenu.Verse": {
 				"AllowList": [ "VisualVerseTab", "VerseLog", "OpenVSCode", "BuildVerse" ]
@@ -2808,9 +3228,6 @@
 			"Persona.AnimNotifyTrackContextMenu": {
 				"AllowList": [ "AnimNotifyContextMenuFrameWidget", "AnimNotifyContextMenuTimeWidget", "AddSyncMarker", "CopyNotifies", "PasteNotifies", "DeleteNotify", "PasteAtOriginalTime", "PasteMultipleRelative" ],
 				"AllowExtenders": false
-			},
-			"ObjectProfiler.MainToolBar": {
-				"DenyList": [ "File" ]
 			},
 			"Sequencer.MainToolBar": {
 				"AllowList": [ "Save", "FindInContentBrowser", "CreateCamera", "Actions", "ViewOptions", "PlaybackOptions", "KeyGroup", "AutoChange", "ToggleAutoKeyEnabled", "AllowEditsMode", "ToggleIsSnapEnabled", "SnapOptions", "PlayRate", "ToggleLimitViewportSelection", "ToggleShowCurveEditor", "ToggleForceWholeFrames" ]
@@ -2951,6 +3368,7 @@
 					"InputBindingSettings",
 					"LevelEditor",
 					"LiveEditHistory",
+					"LoreSourceControlBranchExplorer",
 					"MessageLog",
 					"OutputLog",
 					"PromptEditorTool",
@@ -2964,16 +3382,18 @@
 					"TakeRecorder",
 					"TakeRecorderPanel",
 					"TakesBrowser",
-					"ValkyrieFortniteSwitchUniverse",
+					"ValkyrieFortniteSwitchBrand",
 					"ValkyrieProjectSettingsEditor",
 					"ValkyrieProjectSize",
 					"ValkyrieProjectAuroraEntitlementCatalog",
 					"ValkyrieProjectOfferLog",
 					"ValkyrieSessionInspector",
 					"ValkyriePublishingReport",
+					"ValkyrieMemoryCalculation",
+					"VkContentResolution",
 					"MemoryProfiler",
 					"TimingProfiler",
-					"InsightsQuickFind",
+					"InsightsQuickFind_TimingProfiler",
 					"InsightsFilterConfigurator",
 					"ObjectProfiler",
 					"VerseExplorerTab",
@@ -2983,7 +3403,8 @@
 					"ControlRigPhysicsDebug",
 					"RewindDebugger",
 					"RewindDebugger2",
-					"RewindDebuggerDetails2"
+					"RewindDebuggerDetails2",
+					"PlaceholderFixupTool"
 				]
 			},
 			"LevelEditor": {
@@ -3026,15 +3447,17 @@
 					"BottomLeftModeTab",
 					"TopRightModeTab",
 					"BottomRightModeTab",
-					"ValkyrieFortniteSwitchUniverse",
+					"ValkyrieFortniteSwitchBrand",
 					"ValkyrieProjectSize",
 					"ValkyrieProjectAuroraEntitlementCatalog",
 					"ValkyrieProjectOfferLog",
 					"ValkyrieSessionInspector",
 					"ValkyriePublishingReport",
+					"ValkyrieMemoryCalculation",
+					"VkContentResolution",
 					"MemoryProfiler",
 					"TimingProfiler",
-					"InsightsQuickFind",
+					"InsightsQuickFind_TimingProfiler",
 					"InsightsFilterConfigurator",
 					"ObjectProfiler",
 					"VerseExplorerTab",
@@ -3062,7 +3485,7 @@
 					"RewindDebugger",
 					"RewindDebugger2",
 					"RewindDebuggerDetails2",
-					"DataRecoveryToolDialog"
+					"PlaceholderFixupTool"
 				]
 			},
 			"MaterialInstanceEditor": {
@@ -3362,10 +3785,21 @@
 				"entity",
 				"Plane",
 				"Sphere",
-				"WindDirectionalSource"
+				"WindDirectionalSource",
+				"PCGVolumeLite"
 			]
 		},
 		"VerseScopesToShowAssetsFor": ["PublicAPI"],
+		"AllowedCookModuleExportTypes": [
+			"/Script/Engine.Texture2D",
+			"/Script/Engine.TextureLightProfile",
+			"/Script/Engine.TextureCube",
+			"/Script/Engine.Texture2DArray",
+			"/Script/Engine.VolumeTexture",
+			"/Script/Engine.CurveLinearColorAtlas",
+			"/Script/Engine.Font",
+			"/Script/Landscape.LandscapeGrassType"
+		],
 		"DefaultLogCategories": [
 			"LogValkyrie",
 			"LogValkyrieAutoLocalization",
@@ -3446,12 +3880,6 @@
 	},
 	"PropertyEditorClassPermissionList": {
 		"=": [
-			{
-				"Type": "/Script/ModelContextProtocolEngine.ModelContextProtocolSettings",
-				"AllowList": [],
-				"DenyList": [ "bAutoStartServer" ],
-				"bAllowListAllProperties": true
-			},
 			{
 				"Type": "/Script/Engine.Blueprint",
 				"DenyList": [ "Default Namespaces", "Imported Namespaces", "BlueprintNamespace" ],
@@ -3744,7 +4172,7 @@
 			{
 				"Type": "/Script/ChaosClothAssetEngine.ChaosClothComponent",
 				"AllowList": [
-					"ClothAsset",
+					"Asset",
 					"bSimulateInEditor",
 					"bEnableSimulation",
 					"bSuspendSimulation",
@@ -4201,7 +4629,35 @@
 			},
 			{
 				"Type": "/Script/PCGEditor.PCGEditorSettings",
-				"AllowList": [ "bDisableCPUThrottlingDuringGraphExecution" ]
+				"DenyList": [ "NodeDoubleClickAction", "bShowPauseButton", "bUseAlternatePauseButton", "OverridePausedButtonLabel", "OverrideNotPausedButtonLabel", "OverridePausedButtonTooltip", "bShowNodeDeterminismActionsRightClickContext", "TreatViewportAsGenerationSource" ]
+			},
+			{
+				"Type": "/Script/PCGEditor.PCGEditorModeSettings",
+				"AllowList": [ "GraphRefreshRate", "bHideToolButtonsDuringActiveTool", "bShowEditorToastOnToolErrors", "bDisableTemporalAntiAliasingWhenEnteringTool", "InteractiveToolSettings", "DefaultNewActorName", "DefaultNewPCGComponentName", "DefaultNewSplineComponentName"]
+			},
+			{
+				"Type": "/Script/PCG.PCGComponentBase",
+				"AllowList": [ "GraphInstance", "Seed", "SourceDataContainer" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGComponent",
+				"AllowList": [ "bIsComponentPartitioned" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGVolume",
+				"AllowList": [ "PCGComponent", "PCGComponentBase" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGGraphInterface",
+				"AllowList": [ "LastEditedDocuments", "bOverrideTitle", "Title", "bOverrideColor", "Color", "bExposeToLibrary", "bIsTemplate" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGGraphInstance",
+				"AllowList": [ "Graph", "ParametersOverrides" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGGraph",
+				"AllowList": [ "Category", "Description", "ToolData", "GraphUsageContext", "GraphCustomization", "bUseHierarchicalGeneration", "HiGenGridSize", "HiGenGridSizeMultiplier", "UserParameters" ]
 			},
 			{
 				"Type": "/Script/WorldPartitionEditor.WorldPartitionEditorSettings",
@@ -4459,6 +4915,42 @@
 				"Type": "/Script/MovieSceneTracks.MovieSceneAudioSection",
 				"DenyList": [ "bSuppressSubtitles" ],
 				"bAllowListAllSubclassProperties": true
+			},
+			{
+				"Type": "/Script/PCG.PCGApplyOnActorSettings",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGCreateSplineSettings",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGCreateTargetActor",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGMeshSpawnerSettingsBase",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGSpawnActorSettings",
+				"DenyList": [ "PostSpawnFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGSpawnSplineSettings",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGSpawnSplineMeshSettings",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCGGeometryScriptInterop.PCGSpawnDynamicMeshSettings",
+				"DenyList": [ "PostProcessFunctionNames" ]
+			},
+			{
+				"Type": "/Script/PCG.PCGComponent",
+				"DenyList": [ "PostGenerateFunctionNames" ]
 			},
 			{
 				"Type": "/CorruptionItems/Gameplay/Items/ReinforcedTrap/Actors/B_Wall_Reinforced_Athena.B_Wall_Reinforced_Athena_C",
@@ -4758,6 +5250,10 @@
 			{
 				"Type": "/Script/StaticLandscapeSystem.LandscapeStaticMeshComponent",
 				"AllowList": [ "NumTotalVerticesGenerated", "NumTotalIndicesGenerated", "TotalVerticesBytesGenerated", "TotalIndicesBytesGenerated", "LODParams", "RandomSeed", "RebuildStaticMesh", "LandscapeSM_Vertices", "LandscapeSM_Indices", "LandscapeSM_Total" ]
+			},
+			{
+				"Type": "/Script/EntityPrefabEditor.EntityPrefabEditorSettings",
+				"AllowList": [ "bEnableLumenGIByDefault", "bEnableLumenReflectionsByDefault" ]
 			}
 		]
 	},
@@ -5002,7 +5498,7 @@
 			},
 			{
 				"Type": "/Script/AIModule.AIPerceptionComponent",
-				"AllowList": [ "OnPerceptionUpdated", "OnTargetPerceptionUpdated", "OnTargetPerceptionInfoUpdated", "SensesConfig" ],
+				"AllowList": [ "OnPerceptionUpdated", "OnTargetPerceptionUpdated", "OnTargetPerceptionInfoUpdated", "OnPerceivedTargetInfoUpdated", "OnPerceivedTargetForgotten", "SensesConfig" ],
 				"DenyList": [],
 				"bAllowListAllSubclassProperties": true
 			},
@@ -5426,19 +5922,31 @@
 			},
 			{
 				"Type": "/Script/PCG.PCGPartitionActor",
-				"AllowList": [ "LocalToOriginal", "PCGGridSize", "PCGGuid", "bUse2DGrid" ],
+				"AllowList": [ "LocalToOriginalBase", "PCGGridSize", "PCGGuid", "bUse2DGrid" ],
 				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/PCG.PCGWorldActor",
-				"AllowList": [ "LandscapeCacheObject", "bEnableWorldPartitionGenerationSources", "PartitionGridSize" ],
+				"AllowList": [ "LandscapeCacheObject", "bEnableWorldPartitionGenerationSources", "PartitionGridSize", "bTreatEditorViewportAsGenerationSource" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/PCG.PCGComponentBase",
+				"AllowList": [ "GraphInstance", "LastGeneratedBounds", "ManagedResourceContainer", "bGenerated", "GeneratedGraphOutput", "Seed" ],
 				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 2
 			},
 			{
 				"Type": "/Script/PCG.PCGComponent",
-				"AllowList": [ "GraphInstance", "LastGeneratedBounds", "ManagedResourceContainer", "bForceGenerateOnBPAddedToWorld", "bGenerated", "GenerationTrigger", "SchedulingPolicy", "SerializedEditingMode", "GeneratedGraphOutput", "bGenerateOnDropWhenTriggerOnDemand", "Seed", "bActivated" ],
+				"AllowList": [ "bForceGenerateOnBPAddedToWorld", "GenerationTrigger", "SchedulingPolicy", "SerializedEditingMode", "bGenerateOnDropWhenTriggerOnDemand", "bActivated" ],
+				"DenyList": [],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/PCG.PCGGraph",
+				"AllowList": [ "Nodes", "InputNode", "OutputNode", "UserParameterHierarchyRoot", "UserParameters", "CachedPins", "CommentNodes", "CookedCompilationData" ],
 				"DenyList": [],
 				"WarnForDisallowedPropertiesPhase": 2
 			},
@@ -6488,7 +6996,7 @@
 			},
 			{
 				"Type": "/Script/Engine.BodyInstance",
-				"AllowList": [ "ObjectType", "CollisionEnabled", "CollisionProfileName", "CollisionResponses", "PhysMaterialOverride", "MassInKgOverride", "AngularDamping", "InertiaTensorScale", "LinearDamping", "bUseCCD", "MassScale", "COMNudge", "WalkableSlopeBehavior", "WalkableSlopeAngle", "WalkableSlopeOverride", "bOverrideWalkableSlopeOnInstance" ],
+				"AllowList": [ "ObjectType", "CollisionEnabled", "CollisionProfileName", "CollisionResponses", "PhysMaterialOverride", "MassInKgOverride", "AngularDamping", "InertiaTensorScale", "LinearDamping", "bUseCCD", "MassScale", "COMNudge", "WalkableSlopeBehavior", "WalkableSlopeAngle", "WalkableSlopeOverride", "bOverrideWalkableSlopeOnInstance", "VelocitySolverIterationCount" ],
 				"DenyList": []
 			},
 			{

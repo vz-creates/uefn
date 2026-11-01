@@ -1,0 +1,65 @@
+{
+	"ValkyrieExperimentalSettings": {
+		"bAllowAccessToExperimentalGaussianSplat": true
+	},
+	"ValkyrieEditorSettings": {
+		"AllowedAssetTypes": {
+			"/Script/GaussianSplat.GaussianSplat": { "Rules": ["View","Import"] }
+		},
+		"AllowedClasses": {
+			"/Script/GaussianSplat.GaussianSplat": { "Visible": true },
+			"/Script/GaussianSplat.GaussianSplatActor": { "Visible": true },
+			"/Script/GaussianSplat.GaussianSplatComponent": { "Visible": true },
+			"/Script/GaussianSplatEditor.GaussianSplatImportOptions": {  },
+			"/Script/GaussianSplatNiagara.NiagaraDataInterfaceGaussianSplatReader": { "Visible": true },
+			"/Script/GaussianSplatNiagara.NiagaraSplatRendererProperties": { "Visible": true }
+		},
+		"AllowedImportExtensions": {
+			"+": [
+				"ply",
+				"spz"
+			]
+		}
+	},
+	"PropertyEditorClassPermissionList": {
+		"+": [
+			{
+				"Type": "/Script/GaussianSplat.GaussianSplatActor",
+				"AllowList": [ "GaussianSplatComponent" ]
+			},
+			{
+				"Type": "/Script/GaussianSplat.GaussianSplatComponent",
+				"AllowList": [ "Asset", "PointScaleFactor", "OpacityScale" ]
+			},
+			{
+				"Type": "/Script/GaussianSplat.GaussianSplat",
+				"AllowList": [ "MinLOD" ]
+			},
+			{
+				"Type": "/Script/GaussianSplatNiagara.NiagaraDataInterfaceGaussianSplatReader",
+				"AllowList": [ "GaussianSplat" ]
+			},
+			{
+				"Type": "/Script/GaussianSplatNiagara.NiagaraSplatRendererProperties",
+				"DenyList": [ "bInvertToneCurve", "InverseToneCurveStrength", "bInvertExpandGamut" ]
+			},
+			{
+				"Type": "/Script/GaussianSplatEditor.GaussianSplatImportOptions",
+				"AllowList": [ "ImportScale", "SHMaxDegree" ]
+			}
+		]
+	},
+	"HiddenPropertyClassPermissionList": {
+		"+": [
+			{
+				"Type": "/Script/GaussianSplat.GaussianSplatActor",
+				"AllowList": [ "GaussianSplatComponent" ],
+				"WarnForDisallowedPropertiesPhase": 2
+			},
+			{
+				"Type": "/Script/GaussianSplat.GaussianSplat",
+				"AllowList": [ "AssetImportData", "Bounds", "NumSplats", "SHDegree", "SHCoordinateSpace" ]
+			}
+		]
+	}
+}

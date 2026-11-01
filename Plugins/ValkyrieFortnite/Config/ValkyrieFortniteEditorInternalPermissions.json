@@ -13,6 +13,7 @@
 
 	"ValkyrieProjectSettings": {
 		"bCollectionsEnabled": true,
+		"bSharedModuleFeatureSetAvailable": true,
 		"bMultiProjectAllowed": true,
 		"bModuleIdNamedPlugins": true,
 		"bOnlinePluginFriendlyNameAllowed": true,
@@ -23,8 +24,11 @@
 		"bModularTestingAllowed": true,
 		"bPythonUploadAllowed": true,
 		"bForkAllowed": true,
+		"bOrgForkAllowed": true,
 		"bInterProjectRedirectorsAllowed": true,
 		"bProjectRenameAllowed": true,
+		"bPublicModuleApiAllowed": true,
+		"bModulePlayabilityMismatchAllowed": true,
 		"TeamMembershipInvitationPermission": "IndividualAndEmailDomains"
 	},
 	"ValkyrieBlueprintsSettings": {
@@ -791,6 +795,18 @@
 	"ValkyrieExperimentalSettings": {
 		"bAllowAccessToExperimentalScriptedTools": true
 	},
+	"ValkyrieToolsetSettings": {
+		"DeniedSkillPaths": {
+			"-": [
+				"/MetaSoundToolset/Python/metasound_toolset/skills/fundamentals_PY.MetaSoundFundamentalsSkill",
+				"/MetaSoundToolset/Python/metasound_toolset/skills/workflows_PY.MetaSoundWorkflowsSkill",
+				"/MetaSoundToolset/Python/metasound_toolset/skills/trigger_topology_PY.MetaSoundTriggerTopologySkill",
+				"/MetaSoundToolset/Python/metasound_toolset/skills/paged_graphs_PY.MetaSoundPagedGraphsSkill",
+				"/MetaSoundToolset/Python/metasound_toolset/skills/recipes_PY.MetaSoundRecipesSkill",
+				"/MetaSoundToolset/Python/metasound_toolset/skills/performance_PY.MetaSoundPerformanceSkill"
+			]
+		}
+	},
 	"ValkyriePythonSettings": {
 		"AllowedStartupScriptPaths": {
 			"+": [
@@ -1061,6 +1077,7 @@
 			"/Script/CoreUObject.Class":								{ "Visible": true },
 			"/Script/CoreUObject.Function":								{  },
 			"/Script/CoreUObject.Object":								{ "Visible": true },
+			"/Script/CoreUObject.Interface":							{ "Visible": true },
 			"/Script/CoreUObject.ScriptStruct":							{  },
 			"/Script/DaySequence.DaySequenceConditionTag":				{  },
 			"/Script/DaySequence.DaySequenceConditionSet":				{  },
@@ -1165,11 +1182,12 @@
 			"/Script/ItemizationRuntime.ItemDefinition":						{ "Visible": true },
 			"/Script/UnrealEd.EdGraphNode_Comment":						{ "Visible": true },
 			"/Script/ValkyrieCommon.ValkyrieContentWorkerDebugManager": { "Visible": true },
+			"/Script/VerseAssets.MeshPartAssetUserData":					{  },
 			"/Script/VerseAssets.PropertyInterface":					{ "Visible": true },
 			"/Script/VerseAssetsEditor.PropertyInterfaceBlueprint":		{ "Visible": true },
-			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropClassData": {  },
-			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropContainer": {  },
-			"/Script/VerseTypeAssetInterop.VerseTypeAssetInteropFieldData": {  },
+			"/Script/VerseTypeAssetInteropRuntime.VerseTypeAssetInteropClassData": {  },
+			"/Script/VerseTypeAssetInteropRuntime.VerseTypeAssetInteropContainer": {  },
+			"/Script/VerseTypeAssetInteropRuntime.VerseTypeAssetInteropFieldData": {  },
 			"/Script/VerseTypeEditorRuntime.VerseFieldTypeData": {  },
 			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingColor": {  },
 			"/Script/VerseTypeEditorRuntime.VerseInternalFieldBindingColorAlpha": {  },
@@ -1243,7 +1261,7 @@
 			},
 			"LevelEditor.MainMenu.Tools": {
 				"AllowList": {
-					"+": ["TestAutomation", "ValkyrieMemoryCalculation", "VkContentResolution"]
+					"+": ["TestAutomation", "ValkyrieMemoryCalculation", "VkContentResolution", "ValkyrieProjectHierarchyGraph"]
 				}
 			},
 			"LevelEditor.StatusBar.ToolBar": {
@@ -1323,12 +1341,12 @@
 			},
 			"Global": {
 				"AllowList": {
-					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "ValkyrieMemoryCalculation", "VkContentResolution" ]
+					"+": [ "SessionFrontend", "SpatialMetricsMeshReportTab", "ValkyrieMemoryCalculation", "VkContentResolution", "ValkyrieProjectHierarchyGraph" ]
 				}
 			},
 			"LevelEditor": {
 				"AllowList": {
-					"+": [ "VkContentResolution", "ValkyrieMemoryCalculation" ]
+					"+": [ "VkContentResolution", "ValkyrieMemoryCalculation", "ValkyrieProjectHierarchyGraph" ]
 				}
 			},
 			"ChaosVisualDebuggerTab": {
@@ -1388,14 +1406,21 @@
 		},
 		"bShowContentServiceLinks": true,
 		"bShowGameProjectCollections": true,
-		"bShowAssetAccessSpecifierFilters": true,
 		"VerseScopesToShowAssetsFor": { "+": ["InternalAPI", "InternalUser"] },
-		"AllowedCookModuleExportTypes": [
-			"/Script/Engine.MaterialFunction"
-		],
+		"AllowedCookModuleExportTypes": { "+": [ "/Script/Engine.MaterialFunction" ] },
 		"AllowedCookModuleImportTypes": {
 			"/Script/Engine.MaterialFunction": {
-				"AllowList": [ "/Script/Engine.MaterialFunction" ]
+				"AllowList": [
+					"/Script/Engine.MaterialFunction",
+					"/Script/Engine.Texture2D",
+					"/Script/Engine.TextureLightProfile",
+					"/Script/Engine.TextureCube",
+					"/Script/Engine.Texture2DArray",
+					"/Script/Engine.VolumeTexture",
+					"/Script/Engine.CurveLinearColorAtlas",
+					"/Script/Engine.Font",
+					"/Script/Landscape.LandscapeGrassType"
+				]
 			},
 			"/Script/Engine.Material": {
 				"AllowList": [ "/Script/Engine.MaterialFunction" ]
@@ -1431,18 +1456,6 @@
 			{
 				"Type": "/Script/FNE_UILibrary.ActionWidget",
 				"AllowList": [ "EnhancedInputExtension", "EnhancedInputObject", "EnhancedInputAction" ]
-			},
-			{
-				"Type": "/Script/CoreUObject.Vector",
-				"AllowList": [
-					"X", "Y", "Z"
-				]
-			},
-			{
-				"Type": "/Script/CoreUObject.Rotator",
-				"AllowList": [
-					"Pitch", "Yaw", "Roll"
-				]
 			},
 			{
 				"Type": "/Script/Engine.AnalysisProperties",
@@ -1600,7 +1613,7 @@
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieEditorConfig",
-				"AllowList": [ "bEnableForkSelection", "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins"]
+				"AllowList": [ "bRunAdditionalClients", "bNumAdditionalClients_Override", "NumAdditionalClients", "AdditionalClientLogins"]
 			},
 			{
 				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",

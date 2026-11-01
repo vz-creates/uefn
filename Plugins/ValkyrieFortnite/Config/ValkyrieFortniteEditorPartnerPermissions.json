@@ -1,6 +1,5 @@
 {
 	"ValkyrieEditorSettings": {
-		"bShowConsole": true,
 		"bShowValidateProjectMenuEntry": true,
 		"AllowedClasses": {
 			"/Script/Engine.CameraComponent": {},
@@ -34,20 +33,20 @@
 		"bLocalizationEnabled": true,
 		"bAutoLocalizationEnabled": true,
 		"bManualLocalizationEnabled": true,
-		"bAddProjectExternalContentAllowed": true,
+		"bSharedModuleFeatureSetAvailable": true,
+		"bMultiProjectAllowed": true,
 		"bMultiPluginProjectAllowed": true,
 		"bModuleApiAllowed": true,
-		"bForkAllowed": true
+		"bPublicModuleApiAllowed": true,
+		"bModulePlayabilityMismatchAllowed": true,
+		"bForkAllowed": true,
+		"bOrgForkAllowed": true
 	},
 	"PropertyEditorClassPermissionList": {
 		"+": [
 			{
 				"Type": "/Script/Engine.CameraComponent",
 				"AllowList": [ "ProjectionMode", "FieldOfView", "AspectRatio" ]
-			},
-			{
-				"Type": "/Script/ValkyrieEditor.ValkyrieProjectSettingsEditorViewModel",
-				"AllowList": [ "ApiAccess" ]
 			},
 			{
 				"Type": "/Script/FortniteGame.BuildingActor",

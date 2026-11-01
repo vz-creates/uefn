@@ -7,22 +7,22 @@
 			"/Script/AmbientAudio.AmbientAudioComponent": 		{ "Rules": ["View", "ModuleAPI"] },
 			"/Script/AmbientAudio.AmbientAudioDataAsset": 		{ "Rules": ["View", "Create", "ModuleAPI"] },
 			"/Script/AudioGameplayVolume.SubmixOverrideVolumeComponent": 		{ "Rules": ["View","Create"] },
-			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Rules": [ "View", "Create" ] },
-			"/Script/AudioMixer.SubmixEffectSubmixEQPreset":		{ "Rules": [ "View", "Create" ] },
-			"/Script/Synthesis.SubmixEffectFilterPreset":		{ "Rules": [ "View", "Create" ] },
-			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create" ] },
+			"/Script/AudioMixer.SubmixEffectReverbPreset":		{ "Rules": [ "View", "Create", "ModuleAPI" ] },
+			"/Script/AudioMixer.SubmixEffectSubmixEQPreset":		{ "Rules": [ "View", "Create", "ModuleAPI" ] },
+			"/Script/Synthesis.SubmixEffectFilterPreset":		{ "Rules": [ "View", "Create", "ModuleAPI" ] },
+			"/Script/AudioModulation.SoundModulationPatch":		{ "Rules": [ "View", "Create", "ModuleAPI" ] },
 			"/Script/Engine.SoundBase":							{ "Rules": ["View","Create","Import"] },
 			"/Script/Engine.SoundConcurrency":					{ "Rules": ["View","Create","ModuleAPI"] },
-			"/Script/Engine.SoundEffectSubmixPreset":		{ "Rules": [ "View", "Create" ] },
+			"/Script/Engine.SoundEffectSubmixPreset":		{ "Rules": [ "View", "Create", "ModuleAPI" ] },
 			"/Script/Engine.SoundSubmix":						{ "Rules": ["View"] },
 			"/Script/MetasoundEngine.MetaSoundPatch":			{ "Rules": ["View", "ModuleAPI"] },
 			"/Script/Engine.SubtitleAssetData":					{ "Rules": ["View", "Create", "Import", "ModuleAPI"], "Subclasses": "All" },
 			"/Script/Engine.SubtitleAssetUserData":				{ "Rules": ["View","Create","Import", "ModuleAPI"], "Subclasses": "All" },
 			"/Script/FortniteGame.FortAmbientAudioVolume":		{ "Rules": ["View","Create"] },
 			"/Script/HarmonixMetasound.HarmonixWaveMusicAsset": { "Rules": ["View","Create"] },
-			"/Script/Engine.AudioBus": { "Rules": ["View","Create"] },
-			"/Script/AudioModulation.SoundModulationGenerator": { "Rules": ["View","Create"] },
-			"/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower": { "Rules": ["View","Create"] },
+			"/Script/Engine.AudioBus": { "Rules": ["View","Create", "ModuleAPI"] },
+			"/Script/AudioModulation.SoundModulationGenerator": { "Rules": ["View","Create", "ModuleAPI"] },
+			"/Script/AudioModulation.SoundModulationGeneratorEnvelopeFollower": { "Rules": ["View","Create", "ModuleAPI"] },
 			"/Script/HarmonixMetasound.HarmonixMetasoundMusicAsset": { "Rules": ["View","Create"] }
 		},
 		"AllowedClasses": {
@@ -107,7 +107,9 @@
 					"bEnableSubmixSends",
 					"Priority",
 					"SoundSubmixSends",
-					"SoundSubmixObject"
+					"SoundSubmixObject",
+					"bEnableBusSends",
+					"PostAttenuationBusSends"
 				]
 			},
 			{
@@ -128,7 +130,9 @@
 					"NonSpatializedRadiusStart",
 					"NonSpatializedRadiusEnd",
 					"CustomAttenuationCurve",
-					"NonSpatializedRadiusMode"
+					"NonSpatializedRadiusMode",
+					"StereoSpread",
+					"bApplyNormalizationToStereoSounds"
 				]
 			},
 			{

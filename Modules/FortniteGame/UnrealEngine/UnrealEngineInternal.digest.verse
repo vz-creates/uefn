@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-43.00-CL-59596594
+Generated from build: ++Fortnite+Release-43.10-CL-60458657
 #################################################
 #>
 
@@ -463,6 +463,7 @@ Character<public> := module {
   using { /Verse.org/Simulation }
   using { /Verse.org/SpatialMath }
   using { /Verse.org/StateMachine }
+  using { /Verse.org/Temporary/EpicGamesRestricted/Network }
   # Verse path: /UnrealEngine.com/Character
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
@@ -1203,6 +1204,31 @@ Character<public> := module {
     WorldIntent<public>: (/Verse.org/SpatialMath:)vector3
   }
 
+  @hide_in_editor
+  network_physics_component<epic_internal><native> := class<epic_internal><final_super>(component) {
+    OnBeginSimulationInternal<native><override>(): void
+
+    OnEndSimulationInternal<native><override>(): void
+
+    @replicated("RepNotify")
+    var OwnerInputHistory<epic_internal><native>: network_physics_input_history = external {}
+
+    @replicated("RepNotify")
+    var RemoteInputHistory<epic_internal><native>: network_physics_remote_input_history = external {}
+
+    @replicated("RepNotify")
+    var StateHistory<epic_internal><native>: network_physics_state_history = external {}
+  }
+
+  @replicatable
+  network_physics_input_history<epic_internal><native> := struct {}
+
+  @replicatable
+  network_physics_remote_input_history<epic_internal><native> := struct {}
+
+  @replicatable
+  network_physics_state_history<epic_internal><native> := struct {}
+
   @available { MinUploadedAtFNVersion := 4200 }
   @experimental
   no_anim<epic_internal> := class<final><castable><concrete>(modifier(skeleton)) {
@@ -1495,6 +1521,49 @@ Character<public> := module {
   }
 }
 
+Characters<public> := module {
+  Cosmetics<public> := module {
+    @experimental
+    cosmetic<public><native> := class<epic_internal><abstract><unique>(asset) {
+      # Full description, read from the backing uasset.
+      GetDescription<public><native>()<reads>: message
+
+      # Icon, if the backing uasset has one.
+      GetIcon<public><native>()<reads>: ?texture
+
+      # Display name, read from the backing uasset.
+      GetName<public><native>()<reads>: message
+
+      # Short description, read from the backing uasset.
+      GetShortDescription<public><native>()<reads>: message
+    }
+
+    using { /Verse.org/Assets }
+    using { /Verse.org/Native }
+    using { /Verse.org/SceneGraph }
+    # Verse path: /UnrealEngine.com/Characters/Cosmetics
+    @available { MinUploadedAtFNVersion := 4300 }
+    @experimental
+    # A slot in a cosmetic loadout. Categories are unique, named, module-level
+    # instances compared by identity.
+    cosmetic_category<public><native> := class<epic_internal><final><unique><allocates> {}
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    @experimental
+    # Lives on the base character entity
+    cosmetic_loadout_component<public> := class<epic_internal><final_super>(component) {
+      # Applies the authored loadout through the same path a runtime
+      # change takes.
+      OnAddedToScene<override>(): void = external {}
+
+      # Put NewCosmetic in Category, replacing whatever occupied it.
+      SetCosmetic<public><final>(Category: cosmetic_category, NewCosmetic: cosmetic): void = external {}
+
+      var<private> CosmeticLoadout<public>: [cosmetic_category]cosmetic = external {}
+    }
+  }
+}
+
 # Verse path: /UnrealEngine.com
 # Module import path: /UnrealEngine.com/ControlInput
 ControlInput<public> := module {
@@ -1657,6 +1726,8 @@ Conversations<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   ai_description<public><constructor>(Description: string)<computes>: ai_description_attribute = external {}
 
+  using { /Verse.org/Native }
+  # Verse path: /UnrealEngine.com/Conversations
   @available { MinUploadedAtFNVersion := 4100 }
   @attribscope_data
   @customattribhandler
@@ -1667,7 +1738,6 @@ Conversations<public> := module {
   using { /Verse.org/Chat }
   using { /Verse.org/Colors }
   using { /Verse.org/Diagnostics }
-  using { /Verse.org/Native }
   using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   # Verse path: /UnrealEngine.com/Conversations
@@ -1831,6 +1901,7 @@ Conversations<public> := module {
     VoiceName<override>: string = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4100 }
   internal_response_data<epic_internal><native> := struct {
     @ai_description("Use this to output the name of the targeted conversation participant")
     TargetAgent<native>: ?agent
@@ -2222,10 +2293,7 @@ HealthPipeline<public> := module {
   #  Itself a modifier, so stacks nest; the Pre/PostEvaluate broadcasts forward
   #  evaluation state down the chain.
   health_adjustment_modifier_stack<public> := class(modifier_stack(health_adjustment_entry)) {
-    AddModifier<override>(
-      Modifier: modifier(health_adjustment_entry),
-      Position: rational
-    )<transacts>: cancelable = external {}
+    AddModifier<override>(Modifier: modifier(health_adjustment_entry))<transacts>: cancelable = external {}
 
     PostEvaluate<public>()<transacts>: void = external {}
 
@@ -2333,6 +2401,10 @@ HealthPipeline<public> := module {
   #   back out - Remaining = (Scaled - Absorbed) / Multiplier - and continues to
   #   the next pool, where the layers are consulted again. Whatever survives
   #   every pool lands in Result.Excess at its unwound value.
+  #
+  #   A zero HealthDelta entry adjusts nothing but still records one 0.0 result
+  #   entry on the pool it would land on (first with capacity in the event's
+  #   direction, else the last eligible pool), with no Excess.
   #
   #   Example: a 70 damage entry against shields at 50 carrying a 2x pool trait,
   #   with a 3x record on the event: multiplier 2 * 3 = 6, so 420 to apply;
@@ -3064,14 +3136,14 @@ LootPools<public> := module {
   @experimental
   # A `lootable_component` that contains loot pools and a selection mechanism
   # that calls into each of them once.
-  basic_lootable_component<epic_internal> := class(lootable_component) {
+  basic_lootable_component<public> := class(lootable_component) {
     # Calls `SelectLoot` on each element of `SourceLootPools` and returns an
     # array combining all of the results.
     SelectLoot<override>(Instigator: ?entity)<transacts><decides>: []entity = external {}
 
     @editable
     # The loot pools that are queried for loot on each call to `SelectLoot`.
-    SourceLootPools<epic_internal>: []loot_pool
+    SourceLootPools<public>: []loot_pool
   }
 
   using { /Verse.org/Native }
@@ -3081,28 +3153,173 @@ LootPools<public> := module {
   @available { MinUploadedAtFNVersion := 4310 }
   @experimental
   # Data passed to a `loot_pool` when loot is requested.
-  loot_context<epic_internal> := class {
+  loot_context<public> := class {
     # The entity that loot is being selected for.
-    Instigator<epic_internal>: ?entity = external {}
+    Instigator<public>: ?entity = external {}
 
     # The `lootable_component` that initiated this call to `SelectLoot`.
-    Owner<epic_internal>: ?lootable_component = external {}
+    Owner<public>: ?lootable_component = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4310 }
   @experimental
   # Base class of all loot-generating classes.
-  loot_pool<epic_internal> := class<abstract> {
+  loot_pool<public><native> := class<abstract> {
     # Returns the entities to be granted as loot, as determined by `Context`.
-    SelectLoot<epic_internal>(Context: loot_context)<transacts><decides>: []entity
+    # Fails if a loot selection cannot be made.
+    SelectLoot<public>(Context: loot_context)<transacts><decides>: []entity
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Calculates how many selections a `weighted_loot_pool` makes in a single call
+  # to `SelectLoot`.
+  # Override `GetRollCount` in a subclass to vary the number of selections based
+  # on the `loot_context`.
+  loot_roll_calculator<public> := class<abstract> {
+    # Returns the number of selections to make for `Context`.
+    # A value of `0` or less results in no selections.
+    GetRollCount<public>(Context: loot_context)<transacts>: int
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # A `loot_roll_calculator` that returns the same number of selections for
+  # every `loot_context`.
+  loot_roll_calculator_fixed<public> := class<final>(loot_roll_calculator) {
+    # Returns `Rolls`, ignoring `Context`.
+    GetRollCount<final><override>(Context: loot_context)<transacts>: int = external {}
+
+    @editable_number(int) { MinValue := option { 0 } }
+    # The number of selections returned by `GetRollCount`.
+    Rolls<public>: type { _X: int where 0 <= _X } = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Calculates the selection weight of a `weighted_loot_entry`.
+  # Override `GetWeight` in a subclass to vary an entry's weight based on
+  # the `loot_context`.
+  loot_weight_calculator<public> := class<abstract> {
+    # Returns the selection weight of the owning entry for `Context`, evaluated
+    # once per call to SelectLoot.
+    # Entries with a weight of `0.0` or less are never selected.
+    # An eligible entry with a weight of `Inf` is always selected. If several
+    # entries have a weight of `Inf`, the first one in `Options` is selected.
+    GetWeight<public>(Context: loot_context)<transacts>: float
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # A `loot_weight_calculator` that returns the same weight for
+  # every `loot_context`.
+  loot_weight_calculator_fixed<public> := class<final>(loot_weight_calculator) {
+    # Returns `Weight`, ignoring `Context`.
+    GetWeight<final><override>(Context: loot_context)<transacts>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 } }
+    # The weight returned by `GetWeight`.
+    Weight<public>: type { _X: float where 0.000000 <= _X, _X <= Inf } = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4310 }
   @experimental
   # A component for entities that can return loot on request.
-  lootable_component<epic_internal> := class<final_super><abstract>(component) {
+  lootable_component<public> := class<final_super><abstract>(component) {
     # Returns loot entities, as determined by `Instigator`.
-    SelectLoot<epic_internal>(Instigator: ?entity)<transacts><decides>: []entity
+    # Fails if a loot selection cannot be made.
+    SelectLoot<public>(Instigator: ?entity)<transacts><decides>: []entity
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # A single option in a `weighted_loot_pool`.
+  # Holds a selection weight and an optional limit on how many times the entry
+  # can be selected in a single call to `SelectLoot`.
+  # Concrete subclasses define the loot that is returned when the entry
+  # is selected.
+  weighted_loot_entry<public> := class<abstract> {
+    # Instantiates and returns a set of entities when this entry is selected.
+    # Override per new entry type.
+    # Fails if no loot can be produced.
+    GetEntryValue<protected>(Context: loot_context)<transacts><decides>: []entity
+
+    @editable_option(int) { DefaultValue := option { 1 } }
+    @editable_number(int) { MinValue := option { 0 } }
+    # The maximum number of times this entry can be selected in a single call to
+    # the owning pool's `SelectLoot`.
+    # A value of `false` is unlimited. A value of `0` means this entry is
+    # never selected.
+    MaxSelectionCount<public>: ?type { _X: int where 0 <= _X } = external {}
+
+    # Selects this entry and returns its loot, counting the selection
+    # against `MaxSelectionCount`.
+    # Fails if this entry has no selections remaining. `GetEntryValue` failing
+    # returns an empty array.
+    SelectAndDecrementCount<public><final>(Context: loot_context)<transacts><decides>: []entity = external {}
+
+    @editable
+    # Calculates how likely this entry is to be selected, relative to the other
+    # entries in the pool.
+    # A higher weight makes this entry more likely to be selected. Defaults to a
+    # fixed weight of `1.0`.
+    WeightCalculator<public>: loot_weight_calculator = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # A `weighted_loot_entry` that returns a new instance of `EntityType`
+  # when selected.
+  weighted_loot_entry_item<public> := class<concrete>(weighted_loot_entry) {
+    @editable
+    # The type of `entity` to instantiate when this entry is selected.
+    EntityType<public>: castable_concrete_subtype(entity) = external {}
+
+    # Returns an array containing one new instance of `EntityType`, constructed
+    # with default values.
+    GetEntryValue<override>(Context: loot_context)<transacts><decides>: []entity = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # A `weighted_loot_entry` that returns the loot selected from a
+  # nested `loot_pool`.
+  weighted_loot_entry_pool<public> := class<concrete>(weighted_loot_entry) {
+    # Returns the result of `Pool.SelectLoot`.
+    # Fails if `Pool.SelectLoot` fails.
+    GetEntryValue<override>(Context: loot_context)<transacts><decides>: []entity = external {}
+
+    @editable
+    # The nested `loot_pool` to select from when this entry is selected.
+    # Defaults to an empty `weighted_loot_pool`.
+    Pool<public>: loot_pool = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # A `loot_pool` that makes weighted random selections from `Options`.
+  # Entries with higher weights are selected more often. `RollCalculator`
+  # determines how many independent selections are made in a single call
+  # to `SelectLoot`.
+  weighted_loot_pool<public> := class<concrete>(loot_pool) {
+    @editable
+    # The entries that can be selected, each with its own weight and optional
+    # selection limit.
+    Options<public>: []weighted_loot_entry = external {}
+
+    @editable
+    # Determines how many independent selections are made from `Options` in a
+    # single call to `SelectLoot`. Defaults to a fixed count of `1`.
+    RollCalculator<public>: loot_roll_calculator = external {}
+
+    # Makes weighted random samples from `Options` and returns the
+    # combined loot.
+    # Stops early if no entry has both a positive weight and selections
+    # remaining. A selected entry whose `GetEntryValue` fails adds no loot but
+    # still uses up a selection.
+    # To change how entries are weighted, use a custom `loot_weight_calculator`.
+    # Fails if `Options` is empty.
+    SelectLoot<final><override>(Context: loot_context)<transacts><decides>: []entity = external {}
   }
 }
 
@@ -3249,8 +3466,6 @@ Marketplace<public> := module {
   }
 
   using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
-  # Verse path: /UnrealEngine.com/Marketplace
   offer_interactable_component<public><native> := class(interactable_component) {
     CanInteract<native><native_callable><override>(Agent: agent)<decides><reads>: void
 
@@ -3269,6 +3484,7 @@ Marketplace<public> := module {
   using { /Verse.org/Assets }
   using { /Verse.org/Native }
   using { /Verse.org/Presentation }
+  using { /Verse.org/Simulation }
   # Verse path: /UnrealEngine.com/Marketplace
   price_dimension<public><native> := class<epic_internal><computes><abstract> {}
 
@@ -3409,7 +3625,6 @@ using { /Verse.org/Native }
 
   already_claimed_error<epic_internal><native> := class<epic_internal>(claim_reward_error) {}
 
-  using { /Verse.org/Simulation }
   # A quest that auto-completes when its `Objective` is or becomes `Complete`,
   # and grants its `Rewards` once over the quest's live memberships on a
   # succeeding completion.
@@ -3495,6 +3710,9 @@ using { /Verse.org/Native }
   claim_reward_error<epic_internal><native> := class<epic_internal><abstract><castable> {}
 
   using { /UnrealEngine.com/Marketplace }
+  using { /Verse.org }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   using { /Verse.org/StateMachine }
   # An objective composed of sub-objectives, complete when at least
   # RequiredCount of them are; RequiredCount 0, the default, means all of them.
@@ -3893,7 +4111,6 @@ using { /Verse.org/Native }
     var<private> RequiredProgress<public><native>: float
   }
 
-  using { /Verse.org }
   progress_objective_snapshot<epic_internal><native> := class<epic_internal><final><persistable> {
     ObjectiveId<epic_internal><native>: string = external {}
 
@@ -4020,7 +4237,6 @@ using { /Verse.org/Native }
     Reward<public><native>: quest_reward
   }
 
-  using { /Verse.org/SceneGraph }
   register_gameplay_conditional_error<public><native> := class<epic_internal> {}
 
   register_verb_error<public><native> := class<epic_internal> {}
@@ -6448,6 +6664,238 @@ Tests<public> := module {
     # Writes a string array of lines to a file at a given path. Optionally
     # prepends path to executables 'Saved' directory
     WriteFile<epic_internal><native>(FilePath: []string, Lines: []string)<transacts>: void
+  }
+}
+
+Vehicles<public> := module {
+  @experimental
+  # gear change event data
+  gear_change_info<epic_internal><native> := struct<epic_internal> {
+    ChangedToGear<public><native>: int
+  }
+
+  @experimental
+  modular_vehicle_aerofoil_component<epic_internal><native> := class<epic_internal><final>(
+    vehicle_sim_base_component
+  ) {}
+
+  @experimental
+  modular_vehicle_clutch_component<epic_internal><native> := class<epic_internal><final>(vehicle_sim_base_component) {}
+
+  @experimental
+  # The modular vehicle simulation component simulates vehicle behaviour
+  modular_vehicle_component<epic_internal><native> := class<epic_internal><final_super>(component) {
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionEnteredEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    @available { MinUploadedAtFNVersion := 4300 }
+    CollisionExitedEvent<epic_internal><native>: listenable(generator(collision_hit)) = external {}
+
+    @experimental
+    ModuleAddedEvent<epic_internal><final><native>: listenable(module_info) = external {}
+
+    @experimental
+    ModuleRemovedEvent<epic_internal><final><native>: listenable(module_info) = external {}
+
+    # Notification the owner entity was added to a world, create
+    # vehicle implementation
+    OnAddedToSceneInternal<native><override>(): void
+
+    # Simulation starting, delayed construction possible
+    OnBeginSimulationInternal<native><override>(): void
+
+    # Simulation ending
+    OnEndSimulationInternal<native><override>(): void
+
+    # The component is being initialized, called when it is attached to
+    # an entity
+    OnInitializedInternal<native><override>(): void
+
+    # Notification the owner entity is about to be removed from world, destroy
+    # vehicle implementation
+    OnRemovingFromSceneInternal<native><override>(): void
+
+    # The component is being uninitialized, called when it is about to be
+    # detached from an entity
+    OnUninitializingInternal<native><override>(): void
+
+    # Possess the vehicle proxy actor with the given player's controller.
+    # Required for camera/view control.
+    PossessProxyActor<epic_internal><native>(InPlayer: player): void
+
+    # Apply control input of type MAxis3D
+    SetInput<public><native>(InputName: string, Value: (/Verse.org/SpatialMath:)vector3): void
+
+    # Apply control input of type MAxis1D
+    SetInput<public><native>(InputName: string, Value: float): void
+
+    # Apply control input of type MInteger
+    SetInput<public><native>(InputName: string, Value: int): void
+
+    # Apply control input of type MBoolean
+    SetInput<public><native>(InputName: string, Value: logic): void
+
+    # Apply state input of type MAxis3D
+    SetState<public><native>(InputName: string, Value: (/Verse.org/SpatialMath:)vector3): void
+
+    # Apply state input of type MAxis1D
+    SetState<public><native>(InputName: string, Value: float): void
+
+    # Apply state input of type MInteger
+    SetState<public><native>(InputName: string, Value: int): void
+
+    # Apply state input of type MBoolean
+    SetState<public><native>(InputName: string, Value: logic): void
+
+    # Replace the current control input configuration
+    SetupControlInputConfiguration<public><native_callable>(
+      ControlInputConfigurationIn: []vehicle_input_setup
+    ): void = external {}
+
+    # Replace the current state input configuration
+    SetupStateInputConfiguration<public><native_callable>(
+      StateInputConfigurationIn: []vehicle_input_setup
+    ): void = external {}
+  }
+
+  @experimental
+  modular_vehicle_engine_component<epic_internal><native> := class<epic_internal><final>(vehicle_sim_base_component) {
+    GetRPM<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetTorque<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+  }
+
+  @experimental
+  modular_vehicle_input_component<epic_internal><native> := class<epic_internal><final_super>(component) {
+    GetBrakePressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetGearDownPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetGearUpPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetHandbrakePressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetPitchPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetRollPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetSteeringPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetThrottlePressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    GetYawPressedEvent<public>()<reads>: subscribable_event_intrnl(tuple()) = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnPlayerAdded<public>(InPlayer: player): void = external {}
+
+    OnPlayerRemoved<public>(InPlayer: player): void = external {}
+
+    RegisterAllPlayerBindings<public>(): void = external {}
+
+    UnregisterAllPlayerBindings<public>(): void = external {}
+  }
+
+  @experimental
+  modular_vehicle_suspension_component<epic_internal><native> := class<epic_internal><final>(
+    vehicle_sim_base_component
+  ) {
+    GetImpactNormal<epic_internal>(Accessor: accessor)<transacts>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    GetSpringDisplacement<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetSpringDisplacementVector<epic_internal>(
+      Accessor: accessor
+    )<transacts>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    GetSpringSpeed<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+  }
+
+  @experimental
+  modular_vehicle_thruster_component<epic_internal><native> := class<epic_internal><final>(
+    vehicle_sim_base_component
+  ) {}
+
+  @experimental
+  modular_vehicle_transmission_component<epic_internal><native> := class<epic_internal><final>(
+    vehicle_sim_base_component
+  ) {
+    @experimental
+    GearChangeEvent<epic_internal><final><native>: listenable(gear_change_info) = external {}
+
+    GetCurrentGear<epic_internal>(Accessor: accessor)<transacts>: int = external {}
+  }
+
+  @experimental
+  modular_vehicle_wheel_component<epic_internal><native> := class<epic_internal><final>(vehicle_sim_base_component) {
+    GetAngularPositionDegrees<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetForceIntoSurface<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetRPM<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetSlipAngle<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetSteeringAngleDegrees<epic_internal>(Accessor: accessor)<transacts>: float = external {}
+
+    GetTouchingGround<epic_internal>(Accessor: accessor)<transacts>: logic = external {}
+
+    @experimental
+    WheelTouchChangeEvent<epic_internal><final><native>: listenable(wheel_touch_change_info) = external {}
+  }
+
+  @experimental
+  # Information about a module.
+  module_info<epic_internal><native> := struct<epic_internal> {
+    Entity<public><native>: entity
+
+    SimComponent<public><native>: vehicle_sim_base_component
+  }
+
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  # Verse path: /UnrealEngine.com/Vehicles
+  # Enumerated presets for the types of control input variable; Equates to what
+  # enhanced input can provide
+  module_input_value_type<public><native> := enum {
+    MAxis1D
+
+    MAxis2D
+
+    MAxis3D
+
+    MBoolean
+
+    MInteger
+  }
+
+  @experimental
+  # Defines each of the vehicle control inputs that the individual module
+  # simulations are looking for
+  vehicle_input_setup<epic_internal><native> := struct<epic_internal> {
+    InputDecay<public><native>: logic = external {}
+
+    InputName<public><native>: string = external {}
+
+    InputType<public><native>: module_input_value_type = external {}
+  }
+
+  @hide_in_editor
+  @experimental
+  vehicle_sim_base_component<epic_internal><native> := class<epic_internal><final_super>(component) {}
+
+  @experimental
+  # wheel contact event
+  wheel_touch_change_info<epic_internal><native> := struct<epic_internal> {
+    IsInContact<public><native>: logic
   }
 }
 

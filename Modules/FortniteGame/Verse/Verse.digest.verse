@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-43.00-CL-59596594
+Generated from build: ++Fortnite+Release-43.10-CL-60458657
 #################################################
 #>
 
@@ -906,6 +906,10 @@ Input<public> := module {
     @available { MinUploadedAtFNVersion := 4000 }
     PlaceMarker<public>: input_action(logic) = external {}
 
+    @available { MinUploadedAtFNVersion := 4310 }
+    @experimental
+    PointerRotate<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
+
     @available { MinUploadedAtFNVersion := 4100 }
     PointerSelect<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
@@ -1083,6 +1087,396 @@ Native<public> := module {
   import_as_attribute<epic_internal> := class<internal><computes>(attribute) {}
 }
 
+Perception<public> := module {
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Hearing perception data.
+  hearing_data<public> := class<castable> {
+    # Loudness at the source, in decibels.
+    Loudness<public>: float
+
+    # Global position the sound came from, at observation time.
+    Position<public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # Tags classifying this sound.
+    SoundTags<public>: []tag = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Perception event for Hearing.
+  hearing_detection_event<public> := class(sense_detection_event) {
+    # Active or Inactive for passive audible sources.
+    # Instant for one-shot pulses fired via Emit.
+    DetectionState<override>: sense_detection_state
+
+    # The `hearing_detector_component` that observed this detection.
+    Detector<public>: hearing_detector_component
+
+    # The `hearing_emitter_component` that produced this detection.
+    Emitter<public>: hearing_emitter_component
+
+    # Snapshot of the hearing_data at event time.
+    HearingData<public>: hearing_data
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Marks an entity as something that can hear.
+  hearing_detector_component<public><native> := class<final_super>(component, spatial_sense_detector) {
+    # The emitter type this detector pairs with.
+    EmitterType<override>: castable_subtype(spatial_sense_emitter) = external {}
+
+    # Returns the current hearing_data for the given emitter as heard by
+    # this detector.
+    # Fails if the detector is not currently detecting the given emitter.
+    GetCurrentHearingData<public>(Emitter: hearing_emitter_component)<transacts><decides>: hearing_data = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnSimulate<override>()<suspends>: void = external {}
+
+    OnSpatialChange<override>(
+      Emitter: spatial_sense_emitter,
+      State: sense_detection_state
+    )<transacts>: void = external {}
+
+    # Subscribes Receiver to hearing events.
+    # When a `hearing_detection_event` from this detector passes Filter, it is
+    # sent down to Receiver.
+    # Cancel the returned cancelable to unsubscribe.
+    Subscribe<public>(Receiver: entity, Filter: hearing_filter)<transacts>: cancelable = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Marks an entity as something that can be heard.
+  hearing_emitter_component<public><native> := class<final_super>(component, spatial_sense_emitter) {
+    # Fires a one-shot hearing_detection_event with DetectionState = Instant to
+    # overlapping detectors, carrying the given SenseData.
+    # Fires regardless of PassiveEmissionEnabled.
+    Emit<public>(SenseData: hearing_data): void = external {}
+
+    # Returns this emitter's passive hearing_data.
+    GetPassiveHearingData<public>()<transacts>: hearing_data = external {}
+
+    # Returns the entity this emitter attributes perceptions to.
+    # Override for dynamic attribution.
+    # Defaults to the emitter's own entity.
+    GetRepresentedEntity<public>()<transacts>: entity = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    ParticipatesInBroadphase<protected>()<transacts>: logic = external {}
+
+    # Whether passive emission is active.
+    # When true, this emitter is discoverable by hearing detectors via its
+    # passive channel.
+    # Emit pulses are unaffected.
+    var PassiveEmissionEnabled<public>: logic = external {}
+
+    @editable
+    # Passive Loudness at the source, in decibels.
+    var PassiveEmissionLoudness<public>: float
+
+    @editable
+    # Passive emission Tags applied to this emitter's sound.
+    var PassiveEmissionSoundTags<public>: []tag = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Predicate invoked per `hearing_detection_event`.
+  # The event is delivered to the subscriber only when the filter succeeds.
+  hearing_filter<public> := type { _(: hearing_detection_event)<decides><reads>: void }
+
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/Simulation/Tags }
+  using { /Verse.org/SpatialMath }
+  # Verse path: /Verse.org/Perception
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Common fields on every sense detection event.
+  sense_detection_event<public> := class(scene_event) {
+    # The entity this perception attributes to.
+    DetectedEntity<public>: entity
+
+    # Whether this event begins, ends, or is a single instant detection.
+    DetectionState<public>: sense_detection_state
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Detection lifecycle stage carried on every perception event.
+  sense_detection_state<public><native> := enum<open> {
+    # Continuous detection begins.
+    Active
+
+    # Continuous detection ends.
+    Inactive
+
+    # A single fire-and-done detection with no begin/end pairing.
+    Instant
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Sight perception data.
+  sight_data<public> := class<castable> {
+    # Perceived clarity of the entity from `0.0` (invisible) to `1.0`
+    # (fully clear).
+    Clarity<public>: float = external {}
+
+    # Global position of the detector when the event was delivered.
+    DetectorPosition<public>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    # Global position of the represented entity when the event was delivered.
+    Position<public>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Perception event for Sight.
+  sight_detection_event<public> := class(sense_detection_event) {
+    # The entity this perception attributes to.
+    DetectedEntity<override>: entity
+
+    # The detection state at event time.
+    DetectionState<override>: sense_detection_state
+
+    # The `sight_detector_component` that observed this detection.
+    Detector<public>: sight_detector_component
+
+    # The `sight_emitter_component` that produced this detection.
+    Emitter<public>: sight_emitter_component
+
+    # Snapshot of the sight_data at event time.
+    SightData<public>: sight_data
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Marks an entity as something that can see.
+  # HalfAngle, Range, and NearClipRadius together define the sight cone, aligned
+  # along the entity's Forward axis.
+  sight_detector_component<public><native> := class<final_super>(component) {
+    # Returns the current sight_data for the given emitter as seen by
+    # this detector.
+    # Fails if the detector is not currently detecting the given emitter.
+    GetCurrentSightData<public>(Emitter: sight_emitter_component)<transacts><decides>: sight_data = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnSimulate<override>()<suspends>: void = external {}
+
+    # Subscribes Receiver to sight events.
+    # When a `sight_detection_event` from this detector passes Filter, it is
+    # sent down to Receiver.
+    # Cancel the returned cancelable to unsubscribe.
+    Subscribe<public>(Receiver: entity, Filter: sight_filter)<transacts>: cancelable = external {}
+
+    @editable
+    # Cone half-angle in radians. Clamped between `0.0` and `pi/2`.
+    var HalfAngle<public><native>: float
+
+    @editable
+    # Additional radians beyond HalfAngle before an Active detection transitions
+    # to Inactive.
+    var HysteresisAngle<public><native>: float = external {}
+
+    @editable
+    # Additional centimeters beyond Range before an Active detection transitions
+    # to Inactive.
+    var HysteresisRange<public><native>: float = external {}
+
+    @editable
+    # Radius in centimeters around the sensor within which emitters are
+    # not perceived.
+    var NearClipRadius<public><native>: float = external {}
+
+    @editable
+    # Cone length in centimeters.
+    var Range<public><native>: float
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Marks an entity as something that can be seen.
+  sight_emitter_component<public><native> := class<final_super>(component) {
+    # Returns the entity this emitter attributes perceptions to.
+    # Override for dynamic attribution, e.g. a held weapon attributing to
+    # its wielder.
+    # Defaults to the entity this emitter is attached to.
+    GetRepresentedEntity<public>()<transacts>: entity = external {}
+
+    # Returns this emitter's current sight_data, evaluated from the given
+    # detector position.
+    GetSightData<public>(DetectorPosition: (/Verse.org/SpatialMath:)vector3)<transacts>: sight_data = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    # Whether this emitter is currently perceivable by sight detectors. Set to
+    # false to suppress passive detection.
+    var PassiveEmissionEnabled<public>: logic = external {}
+
+    # Points on the entity whose visibility determines the entity's visibility.
+    # The entity is perceived while any of these points are visible and its
+    # transform is inside the detector's cone.
+    # An empty array defaults to a single point at the attached
+    # entity's transform.
+    var VisibilityPoints<public>: []origin = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Predicate invoked per sight_detection_event. The event is delivered to the
+  # subscriber only when the filter succeeds.
+  sight_filter<public> := type { _(: sight_detection_event)<decides><reads>: void }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Paired with a `spatial_sense_emitter`, implement this interface on a
+  # `component` to mark it as a sense detector. Detects from a point at the
+  # entity's transform.
+  # A `mesh_component` can be added to the entity to define a detection volume.
+  # A detector detects a sense when either an emitter is inside a detector's
+  # volume or a detector is inside an emitter's volume.
+  # On detection, `OnSpatialChange` is invoked.
+  spatial_sense_detector<public><native> := interface {
+    # The emitter type this detector pairs with.
+    EmitterType<public>: castable_subtype(spatial_sense_emitter)
+
+    # Fires on overlap changes between this detector and a paired emitter.
+    OnSpatialChange<protected><native_callable>(
+      Emitter: spatial_sense_emitter,
+      State: sense_detection_state
+    )<transacts>: void = external {}
+
+    # Enrolls this detector in the perception system so it can perceive
+    # emitters. Fails if the implementer is not a `component`, or is already
+    # enrolled. Cancel the returned cancelable to unenroll.
+    RegisterDetector<public><final>()<transacts><decides>: cancelable = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Paired with a `spatial_sense_detector`, implement this interface on a
+  # `component` to mark it as a sense emitter.
+  # Emits as a point at the entity's transform. A `mesh_component` can be added
+  # to the entity to define an emission volume.
+  # An emitter is detected when either an emitter is inside a detector's volume
+  # or a detector is inside an emitter's volume.
+  spatial_sense_emitter<public><native> := interface {
+    # Enrolls this emitter in the spatial perception system so detectors can
+    # find it. Fails if the implementer is not a `component`, or is already
+    # enrolled. Cancel the returned cancelable to unenroll.
+    RegisterEmitter<public><final>()<transacts><decides>: cancelable = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Touch perception data. Carries the underlying collision_hit verbatim so
+  # consumers get impulse, contact location, normal, other-entity reference, and
+  # any other collision fields the platform exposes.
+  touch_data<public> := class<castable> {
+    # The collision hit that produced this detection.
+    Hit<public>: collision_hit
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Touch perception event. DetectionState is Active on the first mesh_part
+  # contact with an emitter, Inactive when the last separates. TouchData is a
+  # snapshot fixed at the transition; for values tracking the ongoing contact
+  # call Detector.GetCurrentTouchData during Active. Cast an incoming
+  # scene_event via touch_detection_event[E] for typed access.
+  touch_detection_event<public> := class(sense_detection_event) {
+    # Active or Inactive; touch is continuous and never emits Instant.
+    DetectionState<override>: sense_detection_state
+
+    # The detector that felt the touch.
+    Detector<public>: touch_detector_component
+
+    # The emitter that was touched.
+    Emitter<public>: touch_emitter_component
+
+    # Snapshot of the contact for this transition.
+    TouchData<public>: touch_data
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Marks an entity as something that perceives touch. Sources collision events
+  # from its Meshes. The detector defers subscribing to those mesh events until
+  # it has at least one subscriber, and tears the subscriptions down when the
+  # last subscriber cancels.
+  touch_detector_component<public> := class<final_super>(component) {
+    # Add mesh components to the detector's collision-event sources. If the
+    # detector currently has active subscribers, the collision listeners are
+    # re-wired immediately to include the new meshes.
+    AddMeshComponents<public>(NewMeshes: []mesh_component)<transacts>: void = external {}
+
+    # Return the latest touch_data cached for Emitter. Succeeds while this
+    # detector has an open contact with it, fails otherwise. Refreshed on every
+    # continuing-collide signal.
+    GetCurrentTouchData<public>(Emitter: touch_emitter_component)<transacts><decides>: touch_data = external {}
+
+    OnBeginSimulation<override>(): void = external {}
+
+    OnEndSimulation<override>(): void = external {}
+
+    OnSimulate<override>()<suspends>: void = external {}
+
+    # Remove mesh components from the detector's collision-event sources. If the
+    # detector currently has active subscribers, the collision listeners are
+    # re-wired to drop the removed meshes.
+    RemoveMeshComponents<public>(TargetMeshes: []mesh_component)<transacts>: void = external {}
+
+    # Subscribe Receiver to touch events from this detector. Filter runs against
+    # each event; deciding delivers to Receiver.OnReceive (via SendDown). Cancel
+    # the returned cancelable to unsubscribe. On the first subscriber the
+    # detector wires up its mesh collision listeners.
+    Subscribe<public>(Receiver: entity, Filter: touch_filter)<transacts>: cancelable = external {}
+
+    @editable
+    # Mesh components whose collision events feed this detector. Multiple meshes
+    # suit entities like vehicles with many collision-participating meshes but
+    # one touch listener. Left empty, the detector uses a mesh_component on its
+    # own entity at simulation start.
+    var<private> Meshes<public>: []mesh_component = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Marks an entity as something that can be touched. Placement matters:
+  # collisions look upward through the scene graph from the colliding entity to
+  # find the nearest ancestor bearing a touch_emitter_component; a collision
+  # with no touch_emitter anywhere in the ancestry fires no event.
+  touch_emitter_component<public> := class<final_super>(component) {
+    # The entity this emitter attributes perceptions to. Defaults to the
+    # emitter's own entity; override for dynamic attribution.
+    GetRepresentedEntity<public>()<transacts>: entity = external {}
+
+    OnRemovingFromScene<override>(): void = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Predicate invoked per touch_detection_event; deciding delivers the event to
+  # the subscriber.
+  touch_filter<public> := type { _(: touch_detection_event)<decides><reads>: void }
+}
+
 # Verse path: /Verse.org
 # Module import path: /Verse.org/Predicts
 Predicts<public> := module {
@@ -1125,8 +1519,6 @@ Presentation<public> := module {
   }
 }
 
-using { /Verse.org/Native }
-# Verse path: /Verse.org
 @available { MinUploadedAtFNVersion := 4300 }
 # Module import path: /Verse.org/Progression
 Progression<public> := module {
@@ -1142,6 +1534,7 @@ Progression<public> := module {
   # The objective's work can no longer be accomplished.
   fail_objective_reason<public><native> := class(complete_objective_reason) {}
 
+  using { /Verse.org/Simulation }
   # Implemented by types that hold an `objective`.
   has_objective<public><native> := interface {
     # Replaces the objective.
@@ -1429,7 +1822,6 @@ Progression<public> := module {
   }
 
   using { /Verse.org/AgentGroup }
-  using { /Verse.org/Simulation }
   # Describes how a participant relates to a quest.
   quest_participant_info<public><native> := class<castable>(member_info_interface) {
     # Sets `Contribute`, enrolling or withdrawing this participant's
@@ -1897,9 +2289,6 @@ SceneGraph<public> := module {
     ) {}
   }
 
-  using { /Verse.org/Native }
-  using { /Verse.org/Simulation }
-  # Verse path: /Verse.org/SceneGraph
   # An interactable component with a composable feature set.
   basic_interactable_component<public><native> := class(interactable_component) {
     # Attempt to cancel an interaction. Fails if the supplied agent is not
@@ -1971,13 +2360,11 @@ SceneGraph<public> := module {
     split_prefab_type<public><native>: castable_concrete_subtype(entity) = external {}
   }
 
-  using { /Verse.org/SpatialMath }
-  # Verse path: /Verse.org/SceneGraph
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Camera body settings, e.g. sensor/film settings, shutter speed, etc
+  # Camera body settings, e.g. sensor/film settings, shutter speed, etc.
   camera_body<public><native> := class<computes> {
-    # The camera sensor sensitivity to light.
+    # The camera sensor sensitivity to light (ISO value, unitless).
     ISO<public><native>: float = external {}
 
     # Height of camera sensor in millimeters.
@@ -1992,7 +2379,7 @@ SceneGraph<public> := module {
     # Width of camera sensor in millimeters.
     SensorWidthMillimeters<public><native>: float = external {}
 
-    # Camera shutter speed.
+    # Camera shutter speed, in seconds.
     ShutterSpeed<public><native>: float = external {}
   }
 
@@ -2012,29 +2399,43 @@ SceneGraph<public> := module {
     CameraModifiers<public><native>: modifier_stack(camera_state) = external {}
 
     @experimental
-    # Get transition to use when entering this camera mode to transition to the
-    # specified camera mode
+    # Get transition to use when entering this camera mode from `SourceCamera`.
+    # Only used if `GetExitTransition` of `SourceCamera` fails.
+    # Fails if this camera does not provide an enter transition, in which case
+    # the camera system instantly transitions to this `camera_component` without
+    # a blend.
+    # The default implementation never fails, and returns a `camera_transition`
+    # with a quick linear blend.
     GetEnterTransition<public><native_callable>(
       SourceCamera: camera_component
     )<transacts><decides>: camera_transition = external {}
 
     @experimental
-    # Get transition to use when exiting this camera mode to transition to the
-    # destination camera mode
+    # Get transition to use when exiting this camera mode to transition to
+    # `DestinationCamera`. `GetExitTransition` of the outgoing
+    # `camera_component` will always take precedence over the
+    # `GetEnterTransition` of the incoming `camera_component`.
+    # Fails if this camera does not provide an exit transition, in which case
+    # the transition returned by `GetEnterTransition` of the incoming
+    # `camera_component` is used.
+    # The default implementation always fails, which is expected to be the most
+    # typical use case. Override this function to successfully return a
+    # `camera_transition` if you want to explicitly control how this camera
+    # transitions out to another.
     GetExitTransition<public><native_callable>(
       DestinationCamera: camera_component
     )<transacts><decides>: camera_transition = external {}
 
     @editable
     @experimental
-    # Optionally override the far clipping plane distance. If value is Inf then
-    # use the default settings
+    # Optionally override the far clipping plane distance, in centimeters. If
+    # value is `Inf` then use the default settings.
     var FarClippingPlaneDistance<public><native>: float = external {}
 
     @editable
     @experimental
-    # Optionally override the near clipping plane distance. If value is <= 0.0
-    # then use the default settings
+    # Optionally override the near clipping plane distance, in centimeters. If
+    # value is <= `0.0` then use the default settings.
     var NearClippingPlaneDistance<public><native>: float = external {}
   }
 
@@ -2073,7 +2474,14 @@ SceneGraph<public> := module {
   # the outermost director.
   camera_director_component<public><native> := class<final_super>(camera_component) {
     # Add a camera to the director. The camera with the highest priority will be
-    # chosen to be the active camera
+    # chosen to be the active camera.
+    # Fails if:
+    #  * `Camera` is not added to an entity.
+    #  * The entity `Camera` is attached to is not in the scene.
+    #  * Adding `Camera` would (directly or indirectly) result in this
+    #    `camera_director_component` being recursively added to itself.
+    # Since a `camera_director_component` is a `camera_component`, camera
+    # directors can be nested to support more complex scenarios.
     AddCamera<public><native>(Camera: camera_component, Priority: rational)<transacts><decides>: cancelable
 
     @editable
@@ -2131,44 +2539,43 @@ SceneGraph<public> := module {
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Configurable blend between two camera modes
+  # Configurable blend between two camera modes.
   camera_mode_blend<public><native> := class<concrete> {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Linear blend between camera modes
+  # Linear blend between camera modes.
   camera_mode_blend_linear<public><native> := class<concrete>(camera_mode_blend) {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Configurable blend between two camera modes
+  # Camera mode blend that attempts to orbit around the camera's pivot point.
   camera_mode_blend_orbit<public><native> := class<concrete>(camera_mode_blend) {
+    # The underlying blend used by the orbit blend. This controls how the
+    # interpolation is performed during the orbit blend.
     DrivingBlend<public><native>: camera_mode_blend = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Instantly snap to target mode
+  # Instantly snap to target mode.
   camera_mode_blend_pop<public><native> := class<concrete>(camera_mode_blend) {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera mode blend that uses the smootherstep function to blend between the
-  # two camera modes
+  # two camera modes.
   camera_mode_blend_smootherstep<public><native> := class<concrete>(camera_mode_blend) {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
   # Camera mode blend that uses the smoothstep function to blend between the two
-  # camera modes
+  # camera modes.
   camera_mode_blend_smoothstep<public><native> := class<concrete>(camera_mode_blend) {}
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Base class for objects that can modify camera state.
-  # You can also implement the modifier(camera_state) interface directly, but
-  # camera_modifier provides an convenient, overridable Tick function for
-  # modifiers that need to maintain state (since Evaluate is <reads>).
+  # Base class for objects that can modify the output state of a camera.
   camera_modifier<public><native> := class(modifier(camera_state)) {
     Evaluate<override><native_callable>(InValue: camera_state)<reads>: camera_state = external {}
   }
@@ -2178,85 +2585,107 @@ SceneGraph<public> := module {
   # Modifier stack for camera state.
   camera_modifier_stack<public><native> := class(modifier_stack(camera_state)) {
     # Returns a camera_state which is the input evaluated against each modifier
-    # in the stack, executed in position order.
+    # in the stack, executed in stack order.
     Evaluate<native><override>(InValue: camera_state)<reads>: camera_state
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
+  # Describes the projection mode of a camera: Perspective, or Orthographic.
   camera_projection_mode<public><native> := enum<open> {
+    # Orthographic projection, where objects appear the same size regardless of
+    # their distance from the camera. Visible width is controlled
+    # by `orthographic_camera_component.OrthographicProjectionWidth`.
     Orthographic
 
+    # Perspective projection, where objects further from the camera appear
+    # smaller. Field of view is controlled
+    # by `perspective_camera_component.FieldOfView`.
     Perspective
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
+  # Represents the entire state of a camera. It is used by the camera modifier
+  # API to allow modification of the output state of a camera.
   camera_state<public><native> := class<final><computes> {
     @experimental
-    # Physical camera body settings
+    # Physical camera body settings.
     Body<public><native>: camera_body = external {}
 
     @experimental
+    # Far clipping plane distance override, in centimeters. If value is `Inf`
+    # then use the default settings.
     FarClippingPlaneDistance<public><native>: float = external {}
 
     @experimental
-    # Physical camera lens settings
+    # Physical camera lens settings.
     Lens<public><native>: camera_lens = external {}
 
     @experimental
+    # Near clipping plane distance override, in centimeters. If value is
+    # <= `0.0` then use the default settings.
     NearClippingPlaneDistance<public><native>: float = external {}
 
     @experimental
     # Determines how wide the camera projects in orthographic mode, in
-    # centimeters - Used only if projection mode is orthographic
+    # centimeters - Used only if projection mode is orthographic.
     OrthographicProjectionWidth<public><native>: float = external {}
 
     @experimental
-    # How much to apply physical camera settings between 0.0 and 1.0
+    # How much to apply physical camera settings, from `0.0` (not applied) to
+    # `1.0` (fully applied). Values outside this range are clamped.
     PhysicalCameraWeight<public><native>: float = external {}
 
     @experimental
-    # Projection mode - perspective or orthographic
+    # Projection mode - perspective or orthographic.
     ProjectionMode<public><native>: camera_projection_mode = external {}
 
     @experimental
     # Render location of the camera. This render location can be modified by
     # camera directions (like camera shakes), without modifying the physical
-    # location of any camera entity
+    # location of any camera entity.
     RenderLocation<public><native>: (/Verse.org/SpatialMath:)vector3
 
     @experimental
     # Render rotation of the camera. This render rotation can be modified by
     # camera directions (like camera shakes), without modifying the physical
-    # location of any camera entity
+    # location of any camera entity.
     RenderRotation<public><native>: (/Verse.org/SpatialMath:)rotation
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Controls how a camera mode transitions to another
+  # Controls how a camera mode transitions to another.
   camera_transition<public><native> := class<concrete> {
     @editable
+    # Controls how the camera transition blends between the outgoing camera and
+    # incoming camera.
     Blend<public><native>: camera_mode_blend = external {}
 
     @editable
-    # Sets the duration of the camera transition
+    # Sets the duration of the camera transition, in seconds.
     Duration<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4110 }
   @experimental
-  # Controls how a camera mode transitions to another
-  camera_transition_initial_orientation<public><native> := enum {
+  # Controls the initial orientation of the incoming camera when a
+  # `camera_transition` starts.
+  camera_transition_initial_orientation<public><native> := enum<open> {
+    # Make the incoming camera point at the same target as the outgoing camera's
+    # target on its last frame.
     PreviousAbsoluteTarget
 
+    # Make the incoming camera point at the outgoing camera's target on its last
+    # frame, offset by how much the camera's context has moved and turned since
+    # that frame.
     PreviousRelativeTarget
 
+    # Orient the incoming camera in the same direction as the outgoing camera.
     PreviousYawPitch
   }
 
-  using { /Verse.org/Colors }
   # A `capsule_light_component` emits light in all directions into the scene
   # from a capsule shaped source with a specified radius and length. A radius
   # and length of 0 makes it a point light. You can use these to simulate any
@@ -2351,6 +2780,23 @@ SceneGraph<public> := module {
     var CollisionProfile<public>: collision_profile = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # The result of a collision in the physics engine.
+  # See has_collision::GetCollisionEvent()
+  collision_hit<public><native> := struct<epic_internal> {
+    # Array of physical contact points between the two meshes/mesh_parts.
+    ContactPoints<public><native>: []contact_point
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the source end of the hit
+    SourceMeshHandle<public>: mesh_part_handle
+
+    @available { MinUploadedAtFNVersion := 4300 }
+    # Handle to the mesh part on the target end of the hit
+    TargetMeshHandle<public>: mesh_part_handle
+  }
+
   # Specifies how a collision volume pair should interact.
   # See collision_profile.
   collision_interaction<public><native> := enum {
@@ -2422,7 +2868,10 @@ SceneGraph<public> := module {
   common_rarity<public> := class<allocates>(rarity) {}
 
   using { /Verse.org/Assets }
+  using { /Verse.org/Colors }
   using { /Verse.org/Simulation/Tags }
+  using { /Verse.org/SpatialMath }
+  # Verse path: /Verse.org/SceneGraph
   # Base class for authoring logic and data in the SceneGraph. Using components
   # you can author re-usable building blocks of logic and data which can then be
   # added to entities in the scene.
@@ -2556,6 +3005,18 @@ SceneGraph<public> := module {
     (/Verse.org/SceneGraph/component_handle:)SceneGraph_component_handle_Variance<private>(): tuple(t, t) = external {}
   }
 
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  contact_point<public><native> := struct<epic_internal> {
+    ContactDepth<public><native>: float = external {}
+
+    ContactImpulse<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    ContactNormal<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+
+    ContactPosition<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
   # A `directional_light_component` simulates light that is being emitted from a
   # source that is infinitely far away. This means that all shadows cast by this
   # light will be parallel, making this the ideal choice for
@@ -2586,6 +3047,9 @@ SceneGraph<public> := module {
     (/Verse.org/SceneGraph/easeable:)EaseOut<public>(EaseOutWindow: easing_window)<transacts>: void
   }
 
+  using { /Verse.org/Native }
+  using { /Verse.org/Simulation }
+  # Verse path: /Verse.org/SceneGraph
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   # An easing function combined with a relative time window
@@ -3148,13 +3612,14 @@ SceneGraph<public> := module {
   perspective_camera_component<public><native> := class<final_super>(camera_component) {
     @editable
     @experimental
-    # Horizontal field of view in radians, specified for an aspect ratio of 16:9
-    # /nThis is then to calculate an effective horizontal field of view for the
-    # display’s real aspect ratio /nIf for example the screen is an ultrawide
-    # (21:9, or 32:9 being common ultrawide aspect ratios) then in practice the
-    # actual field of view will be wider. This is known as the Hor+ view scaling
-    # method and is generally accepted to be the best solution for
-    # ultrawide displays.
+    # Horizontal field of view in radians, specified for an aspect ratio of
+    # 16:9. This is then used to calculate an effective horizontal field of view
+    # for the display’s real aspect ratio.
+    # If for example the screen is an ultrawide (21:9, or 32:9 being common
+    # ultrawide aspect ratios), then in practice the actual horizontal field of
+    # view will be wider.
+    # This is known as the Hor+ view scaling method and is generally accepted to
+    # be the best solution for ultrawide displays.
     var FieldOfView<public><native>: float = external {}
   }
 
@@ -4120,6 +4585,8 @@ SpatialMath<public> := module {
   }
 }
 
+using { /Verse.org/Native }
+# Verse path: /Verse.org
 @available { MinUploadedAtFNVersion := 4200 }
 # Module import path: /Verse.org/Timeline
 Timeline<public> := module {
@@ -4179,6 +4646,8 @@ Timeline<public> := module {
   }
 }
 
+# Verse path: /Verse.org
+# Module import path: /Verse.org/Verse
 Verse<public> := module {
   @available { MinUploadedAtFNVersion := 3800 }
   @experimental
@@ -4361,6 +4830,7 @@ Verse<public> := module {
   Clamp<public>(Val: float, A: float, B: float)<computes>: float = external {}
 
   using { /Verse.org/Concurrency }
+  using { /Verse.org/Native }
   # Makes a flattened `array` by concatenating the elements of `Arrays`.
   Concatenate<public>(Arrays: [][]t where t: type)<computes>: []t = external {}
 
@@ -4758,7 +5228,7 @@ Verse<public> := module {
   @available { MinUploadedAtFNVersion := 4100 }
   @experimental
   # Implemented by classes to provide a method for modification evaluation.
-  modifier<public><native>(t: type) := interface {
+  modifier<public><native>(t: type) := interface<computes> {
     Evaluate<public><native_callable>(InValue: t)<reads>: t
 
     (/Verse.org/Verse/modifier:)Verse_modifier_Variance<private>(: t): tuple(t) = external {}
@@ -4768,29 +5238,25 @@ Verse<public> := module {
   @experimental
   # Modifier stacks provide an ordered application of modifiers.
   modifier_stack<public><native>(t: type) := class(modifier(t)) {
-    # Insert a Modifier at Position in the stack.
-    # If multiple modifiers are added at the same position, they are applied
-    # such that the most recently added is the last evaluated.
+    # Add a Modifier to the end of the stack, so it is evaluated after all
+    # existing modifiers.
     # Returns a cancelable which can be used to remove Modifier from the stack.
-    AddModifier<public>(Modifier: modifier(t), Position: rational)<transacts>: cancelable = external {}
+    AddModifier<public>(Modifier: modifier(t))<transacts>: cancelable = external {}
 
     # Returns a t which is the input evaluated against each modifier in the
-    # stack, executed in position order.
+    # stack, executed in stack order.
     Evaluate<override>(InValue: t)<reads>: t = external {}
 
     (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance<private>(
       : t,
       : t,
       : t,
+      : t,
       : t
-    ): tuple(t, t, t, t) = external {}
+    ): tuple(t, t, t, t, t) = external {}
 
     @available { MinUploadedAtFNVersion := 4210 }
     (/Verse.org/Verse/modifier_stack:)Verse_modifier_stack_Variance_Inherited<private>(: t): tuple(t) = external {}
-
-    var<private> FirstPosition<public><native>: rational = external {}
-
-    var<private> LastPosition<public><native>: rational = external {}
   }
 
   @experimental
@@ -4949,9 +5415,7 @@ Verse<public> := module {
   # A parameterless interface implemented by events that can be subscribed to.
   subscribable<public>() := subscribable(tuple())
 
-  using { /Verse.org/Native }
   using { /Verse.org/Simulation }
-  # Verse path: /Verse.org/Verse
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
   timer<public> := class(clock, playable) {

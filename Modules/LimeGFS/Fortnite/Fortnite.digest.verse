@@ -3,7 +3,7 @@ Copyright Epic Games, Inc. All Rights Reserved.
 #################################################
 Generated Digest of Verse API
 DO NOT modify this manually!
-Generated from build: ++Fortnite+Release-43.00-CL-59596594
+Generated from build: ++Fortnite+Release-43.10-CL-60458657
 #################################################
 #>
 
@@ -39,6 +39,9 @@ AI<public> := module {
   using { /Fortnite.com/Characters }
   using { /Fortnite.com/Teams }
   using { /UnrealEngine.com/Temporary/SpatialMath }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
   using { /Verse.org/SpatialMath }
   @available { MinUploadedAtFNVersion := 3900 }
   # Result of a failed AI action
@@ -53,9 +56,6 @@ AI<public> := module {
     Failure
   }
 
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/Simulation }
   @available { MinUploadedAtFNVersion := 3800 }
   # Component to manage functionality specifically for an agent's
   # equipped Sidekick.
@@ -933,6 +933,10 @@ Abilities<public> := module {
     # Can be changed in derived entities.
     ProjectileComponent<public><native>: ?fort_projectile_component = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4200 }
+  @deprecated { Message := "Use `fort_self_ability_target_query` instead."; DiscontinuedAtFNVersion := 4400 }
+  self_ability_target_query<public> := fort_self_ability_target_query
 }
 
 # Module import path: /Fortnite.com/Animation
@@ -1359,11 +1363,7 @@ Characters<public> := module {
 
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  boar_cosmetic<public> := class<concrete>(wildlife_cosmetic_template) {
-    MeshComponent<override>: mesh_component = external {}
-
-    TransformComponent<override>: transform_component = external {}
-  }
+  boar_cosmetic<public> := class<concrete>(entity) {}
 
   using { /Verse.org/Assets }
   using { /Verse.org/Diagnostics }
@@ -1378,25 +1378,11 @@ Characters<public> := module {
   @available { MinUploadedAtFNVersion := 4300 }
   @export_metadata { Category := "NavigationRequirements"; Key := "Phoebe"; Value := "" }
   @experimental
-  boar_template<public> := class<concrete>(wildlife_template) {
-    Cosmetic<override>: entity = external {}
-
-    DescriptionComponent<override>: description_component = external {}
-
-    HealthComponent<override>: health_component = external {}
-
-    IconComponent<override>: icon_component = external {}
-
-    LocomotionComponent<override>: fort_locomotion_component = external {}
-  }
+  boar_template<public> := class<concrete>(entity) {}
 
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  chicken_cosmetic<public> := class<concrete>(wildlife_cosmetic_template) {
-    MeshComponent<override>: mesh_component = external {}
-
-    TransformComponent<override>: transform_component = external {}
-  }
+  chicken_cosmetic<public> := class<concrete>(entity) {}
 
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
@@ -1408,17 +1394,7 @@ Characters<public> := module {
   @available { MinUploadedAtFNVersion := 4300 }
   @export_metadata { Category := "NavigationRequirements"; Key := "Phoebe"; Value := "" }
   @experimental
-  chicken_template<public> := class<concrete>(wildlife_template) {
-    Cosmetic<override>: entity = external {}
-
-    DescriptionComponent<override>: description_component = external {}
-
-    HealthComponent<override>: health_component = external {}
-
-    IconComponent<override>: icon_component = external {}
-
-    LocomotionComponent<override>: fort_locomotion_component = external {}
-  }
+  chicken_template<public> := class<concrete>(entity) {}
 
   using { /Fortnite.com/Game }
   using { /UnrealEngine.com/Temporary/SpatialMath }
@@ -1549,7 +1525,157 @@ Characters<public> := module {
     )<transacts><decides>: void
   }
 
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
+  # Verse path: /Fortnite.com/Characters
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Component encapsulating crouch settings to drive Fortnite crouched movement
+  fort_crouch_component<public><native> := class<epic_internal><final_super>(component, enableable) {
+    Disable<native><override>(): void
+
+    Enable<native><override>(): void
+
+    EnterCrouchEvent<public><native>: listenable(entity) = external {}
+
+    ExitCrouchEvent<public><native>: listenable(entity) = external {}
+
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    SetCrouchSpeed<public><native>(NewCrouchSpeed: float)<transacts>: void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Movement speed while crouched, in cm/s.
+    var<private> CrouchSpeed<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Component encapsulating Down But Not Out settings for a Fortnite character
+  fort_down_but_not_out_component<public><native> := class<epic_internal><final_super>(component, enableable) {
+    Disable<native><override>(): void
+
+    Enable<native><override>(): void
+
+    EnterDBNOEvent<public><native>: listenable(entity) = external {}
+
+    ExitDBNOEvent<public><native>: listenable(entity) = external {}
+
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    SetMaxSpeed<public><native>(NewMaxSpeed: float)<transacts>: void
+
+    SetPercentageHealthAfterRevive<public><native>(NewPercentageHealthAfterRevive: float)<transacts>: void
+
+    SetRevivable<public><native>(NewRevivable: logic)<transacts>: void
+
+    SetTimeToRevive<public><native>(NewTimeToRevive: float)<transacts>: void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Maximum movement speed while in the downed state, in cm/s.
+    var<private> MaxSpeed<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100.000000 } }
+    # Percentage of maximum health restored by a successful revive.
+    var<private> PercentageHealthAfterRevive<public><native>: float = external {}
+
+    @editable {}
+    # Whether the character can be revived by interaction while downed.
+    var<private> Revivable<public><native>: logic = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 3600.000000 } }
+    # Seconds a reviver must hold the revive interaction to complete it.
+    var<private> TimeToRevive<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Component encapsulating a deployable glider providing steerable,
+  # speed-limited descent
+  fort_glide_component<public><native> := class<epic_internal><final_super>(component, enableable) {
+    Disable<native><override>(): void
+
+    Enable<native><override>(): void
+
+    EnterGlideEvent<public><native>: listenable(entity) = external {}
+
+    ExitGlideEvent<public><native>: listenable(entity) = external {}
+
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    SetAutoDeployHeight<public><native>(NewAutoDeployHeight: float)<transacts>: void
+
+    SetGliderRedeploy<public><native>(NewGliderRedeploy: logic)<transacts>: void
+
+    SetLateralFriction<public><native>(NewLateralFriction: float)<transacts>: void
+
+    SetMaxLateralSpeed<public><native>(NewMaxLateralSpeed: float)<transacts>: void
+
+    SetMinimumDeployHeight<public><native>(NewMinimumDeployHeight: float)<transacts>: void
+
+    SetTerminalVelocity<public><native>(NewTerminalVelocity: float)<transacts>: void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100000.000000 } }
+    # Height above the ground at which the glider deploys automatically, in cm.
+    var<private> AutoDeployHeight<public><native>: float = external {}
+
+    @editable {}
+    # If true, the glider can be redeployed mid-air when the character is at a
+    # sufficient height.
+    var<private> GliderRedeploy<public><native>: logic = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100.000000 } }
+    # Horizontal friction applied while gliding, damping lateral drift.
+    var<private> LateralFriction<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Maximum horizontal speed while gliding, in cm/s.
+    var<private> MaxLateralSpeed<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100000.000000 } }
+    # Minimum height above the ground at which the glider can be deployed,
+    # in cm.
+    var<private> MinimumDeployHeight<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Maximum downward speed while gliding, in cm/s.
+    var<private> TerminalVelocity<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Component encapsulating jumping settings to drive Fortnite movement settings
+  fort_jump_component<public><native> := class<epic_internal><final_super>(component, enableable) {
+    Disable<native><override>(): void
+
+    Enable<native><override>(): void
+
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    JumpEvent<public><native>: listenable(entity) = external {}
+
+    SetJumpChainInterval<public><native>(NewJumpChainInterval: float)<transacts>: void
+
+    SetJumpChainVelocityScalars<public><native>(NewJumpChainVelocityScalars: []float)<transacts>: void
+
+    SetJumpVelocity<public><native>(NewJumpVelocity: float)<transacts>: void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 3600.000000 } }
+    # The max time between jumps, sequencing through values in
+    # the JumpChainVelocityScalars.
+    var<private> JumpChainInterval<public><native>: float = external {}
+
+    @editable
+    # Penalty applied to the `JumpVelocity` when jumping in quick succession.
+    # Index 0 is the first jump.
+    var<private> JumpChainVelocityScalars<public><native>: []float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Initial vertical velocity applied when the pawn jumps, in cm/s.
+    var<private> JumpVelocity<public><native>: float = external {}
+  }
+
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
   # Component encapsulating base movement capability: ground speeds and airborne
@@ -1569,39 +1695,97 @@ Characters<public> := module {
 
     SetWalkSpeed<public><native>(NewWalkSpeed: float)<transacts>: void
 
-    @editable
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100000.000000 } }
     # Sets the maximum acceleration, which is the rate of change of velocity.
     var<private> Acceleration<public><native>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 1.000000 } }
     # Degree of horizontal control, from 0.0 to 1.0, the character has
     # while airborne.
     var<private> AirControl<public><native>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
     # Ground speed while moving without sprinting, in cm/s. The character is
     # always sprinting when moving forward, so this applies when it isn't, such
     # as backwards.
     var<private> RunSpeed<public><native>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
     # Ground speed while sprinting, in cm/s. By default, the character is always
     # considered to be sprinting when moving forward, so this is the
     # forward speed.
     var<private> SprintSpeed<public><native>: float = external {}
 
-    @editable {}
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
     # Minimum movement speed (cm/s) the character can move. Clamps at 0.0.
     var<private> WalkSpeed<public><native>: float = external {}
   }
 
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  raptor_cosmetic<public> := class<concrete>(wildlife_cosmetic_template) {
-    MeshComponent<override>: mesh_component = external {}
+  # Component encapsulating free-fall descent with lateral steering and a capped
+  # fall speed
+  fort_skydive_component<public><native> := class<epic_internal><final_super>(component, enableable) {
+    Disable<native><override>(): void
 
-    TransformComponent<override>: transform_component = external {}
+    Enable<native><override>(): void
+
+    EnterSkydiveEvent<public><native>: listenable(entity) = external {}
+
+    ExitSkydiveEvent<public><native>: listenable(entity) = external {}
+
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    SetLateralFriction<public><native>(NewLateralFriction: float)<transacts>: void
+
+    SetMaxAcceleration<public><native>(NewMaxAcceleration: float)<transacts>: void
+
+    SetMaxLateralSpeed<public><native>(NewMaxLateralSpeed: float)<transacts>: void
+
+    SetTerminalVelocity<public><native>(NewTerminalVelocity: float)<transacts>: void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100.000000 } }
+    # Horizontal friction applied while skydiving, damping lateral drift.
+    var<private> LateralFriction<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 100000.000000 } }
+    # Maximum acceleration achievable while skydiving, in cm/s^2.
+    var<private> MaxAcceleration<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Maximum horizontal speed while skydiving, in cm/s.
+    var<private> MaxLateralSpeed<public><native>: float = external {}
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Maximum downward speed while skydiving, in cm/s.
+    var<private> TerminalVelocity<public><native>: float = external {}
   }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Component encapsulating surface water traversal with a dedicated
+  # movement speed
+  fort_swim_component<public><native> := class<epic_internal><final_super>(component, enableable) {
+    Disable<native><override>(): void
+
+    Enable<native><override>(): void
+
+    EnterSwimEvent<public><native>: listenable(entity) = external {}
+
+    ExitSwimEvent<public><native>: listenable(entity) = external {}
+
+    IsEnabled<native><override>()<transacts><decides>: void
+
+    SetSwimSpeed<public><native>(NewSwimSpeed: float)<transacts>: void
+
+    @editable_number(float) { MinValue := option { 0.000000 }; MaxValue := option { 10000.000000 } }
+    # Maximum speed while swimming, in cm/s.
+    var<private> SwimSpeed<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  raptor_cosmetic<public> := class<concrete>(entity) {}
 
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
@@ -1616,17 +1800,7 @@ Characters<public> := module {
   @available { MinUploadedAtFNVersion := 4300 }
   @export_metadata { Category := "NavigationRequirements"; Key := "Phoebe"; Value := "" }
   @experimental
-  raptor_template<public> := class<concrete>(wildlife_template) {
-    Cosmetic<override>: entity = external {}
-
-    DescriptionComponent<override>: description_component = external {}
-
-    HealthComponent<override>: health_component = external {}
-
-    IconComponent<override>: icon_component = external {}
-
-    LocomotionComponent<override>: fort_locomotion_component = external {}
-  }
+  raptor_template<public> := class<concrete>(entity) {}
 
   # Parameters for `fort_character.PutInStasis` function.
   stasis_args<public><native> := struct {
@@ -1640,49 +1814,9 @@ Characters<public> := module {
     AllowTurning<public><native>: logic = external {}
   }
 
-  using { /Fortnite.com/AI }
-  using { /UnrealEngine.com/HealthPipeline }
-  using { /Verse.org/Native }
-  using { /Verse.org/Presentation }
-  using { /Verse.org/SceneGraph }
-  # Verse path: /Fortnite.com/Characters
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  # The entity cosmetic prefab for a creator customizable wildlife
-  wildlife_cosmetic_template<public><native> := class<concrete>(entity) {
-    MeshComponent<public><native>: mesh_component = external {}
-
-    TransformComponent<public><native>: transform_component = external {}
-  }
-
-  @available { MinUploadedAtFNVersion := 4300 }
-  @experimental
-  # The entity prefab for a creator customizable wildlife
-  wildlife_template<public><native> := class<concrete>(entity) {
-    ActionsComponent<public><native>: npc_actions_component = external {}
-
-    AwarenessComponent<public><native>: npc_awareness_component = external {}
-
-    Cosmetic<public><native>: entity = external {}
-
-    DescriptionComponent<public><native>: description_component = external {}
-
-    HealthComponent<public><native>: health_component = external {}
-
-    IconComponent<public><native>: icon_component = external {}
-
-    LocomotionComponent<public><native>: fort_locomotion_component = external {}
-
-    PossessableComponent<public><native>: possessable_component = external {}
-  }
-
-  @available { MinUploadedAtFNVersion := 4300 }
-  @experimental
-  wolf_cosmetic<public> := class<concrete>(wildlife_cosmetic_template) {
-    MeshComponent<override>: mesh_component = external {}
-
-    TransformComponent<override>: transform_component = external {}
-  }
+  wolf_cosmetic<public> := class<concrete>(entity) {}
 
   @available { MinUploadedAtFNVersion := 4300 }
   @experimental
@@ -1694,17 +1828,7 @@ Characters<public> := module {
   @available { MinUploadedAtFNVersion := 4300 }
   @export_metadata { Category := "NavigationRequirements"; Key := "Phoebe"; Value := "" }
   @experimental
-  wolf_template<public> := class<concrete>(wildlife_template) {
-    Cosmetic<override>: entity = external {}
-
-    DescriptionComponent<override>: description_component = external {}
-
-    HealthComponent<override>: health_component = external {}
-
-    IconComponent<override>: icon_component = external {}
-
-    LocomotionComponent<override>: fort_locomotion_component = external {}
-  }
+  wolf_template<public> := class<concrete>(entity) {}
 }
 
 Devices<public> := module {
@@ -2213,7 +2337,6 @@ Devices<public> := module {
     PatrolPathStoppedEvent<public>: listenable(agent) = external {}
   }
 
-  using { /Verse.org/Native }
   # Used to boost `agent`s, vehicles, and other objects upwards into the air.
   air_vent_device<public> := class<final><concrete>(creative_device_base) {
     # Activates this device.
@@ -2608,6 +2731,8 @@ Devices<public> := module {
     var WeakpointTakesExternalDamage<override>: logic = external {}
   }
 
+  using { /Verse.org/Simulation }
+  # Verse path: /Fortnite.com/Devices
   bank_vault_interface<public> := interface<epic_internal>(enableable) {
     # Triggers when a weakpoint is activated. The weakpoint will begin to glow,
     # but does not become vulnerable until a
@@ -3993,8 +4118,6 @@ Devices<public> := module {
   # Asset used to spawn `creative_prop` instances.
   creative_prop_asset<public><native> := class<epic_internal><final><computes><concrete> {}
 
-  using { /Verse.org/SpatialMath }
-  # Verse path: /Fortnite.com/Devices
   # Used to customize one creature type at a time. Place multiple
   # `creature_manager_device`s for each type of creature on your island.
   # Changing properties will respect the `Affected Creatures` property of the
@@ -4232,6 +4355,394 @@ Devices<public> := module {
 
     # Enables this device.
     Enable<public>(): void = external {}
+  }
+
+  using { /Verse.org/Colors }
+  using { /Verse.org/Native }
+  using { /Verse.org/SpatialMath }
+  # Verse path: /Fortnite.com/Devices
+  @available { MinUploadedAtFNVersion := 4310 }
+  # Used with `day_sequence_device.DayNightCycleMode` to define how the device
+  # controls the day/night cycle time.
+  day_night_cycle_mode<public> := enum<open> {
+    # Makes no changes to the day/night cycle time.
+    Default
+
+    # Forces the day/night cycle to stay fixed at `DayNightCycleTime`.
+    FixedTime
+
+    # Applies a time warp local to this device's sequence. Does not affect the
+    # global time.
+    LocalFixedTime
+
+    # Uses a random, fixed time for the day/night cycle.
+    RandomFixedTime
+
+    # Starts the day/night cycle at a random time, then lets it continue.
+    RandomStartTime
+
+    # Sets the day/night cycle to `DayNightCycleTime` when the device is
+    # enabled, then lets it continue.
+    StartAtSpecifiedTime
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  # Used with `day_sequence_device.BlendMode` to define how the device blends
+  # its settings when `IsVolumeEnabled` is `true`.
+  day_sequence_blend_mode<public> := enum<open> {
+    # Blend weight is always `1.0`.
+    Global
+
+    # Blend weight moves between `0.0` and `1.0` at a fixed rate after the blend
+    # target crosses the volume boundary.
+    Time
+
+    # Blend weight moves between `0.0` and `1.0` according to how far the blend
+    # target is from the volume boundary.
+    Volume
+  }
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  # Controls the lighting and atmosphere of your island over time. You can fade
+  # in and out the device's visual effects, and toggle individual components
+  # like fog, sun, skylight, sky atmosphere, skybox, and clouds based on the
+  # device's override settings. Values set from Verse are sent to every player
+  # and replace the Details panel settings until the round ends, then the device
+  # returns to those settings. Set the look players should see at spawn in the
+  # Details panel and apply Verse changes in `OnBegin`.
+  day_sequence_device<public> := class<final><concrete>(creative_device_base, enableable) {
+    # Disables this device.
+    Disable<override>(): void = external {}
+
+    # Enables this device.
+    Enable<override>(): void = external {}
+
+    # Fades in this device's visual effects at the speed set by `FadeSpeed`.
+    FadeIn<public>(): void = external {}
+
+    # Fades out this device's visual effects at the speed set by `FadeSpeed`.
+    FadeOut<public>(): void = external {}
+
+    # Succeeds if this device is enabled, fails if it's disabled.
+    IsEnabled<override>()<transacts><decides>: void = external {}
+
+    # Maps to the device option for *Blend Distance*.Distance in centimeters
+    # from the volume boundary over which the settings are blended, from `0.0`
+    # to `1000000.0`. Values outside the range are clamped. Setting it to `NaN`,
+    # `Inf` or `-Inf` is ignored. Only used when `BlendMode` is `Volume`.
+    var BlendDistance<public>: float = external {}
+
+    # Maps to the device option for *Blending*.How this device blends its
+    # settings at the volume boundary. Only used when `IsVolumeEnabled`
+    # is `true`.
+    var BlendMode<public>: day_sequence_blend_mode = external {}
+
+    # Maps to the device option for *Blend Time*.Time in seconds over which the
+    # settings are blended, from `0.0` to `1000000.0`. Values outside the range
+    # are clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used
+    # when `BlendMode` is `Volume` or `Time`.
+    var BlendTime<public>: float = external {}
+
+    # Maps to the device option for *Cloud Coverage*.Cloud coverage from `0.0`
+    # (no clouds) to `1.0` (full coverage). Values outside the range are
+    # clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideCloud` is `true`.
+    var CloudCoverage<public>: float = external {}
+
+    # Maps to the device option for *Cloud Direction X*.X component of the
+    # direction in which the clouds move, from `-1.0` to `1.0`. Values outside
+    # the range are clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored.
+    # Only used when `ShouldOverrideCloud` is `true`.
+    var CloudDirectionX<public>: float = external {}
+
+    # Maps to the device option for *Cloud Direction Y*.Y component of the
+    # direction in which the clouds move, from `-1.0` to `1.0`. Values outside
+    # the range are clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored.
+    # Only used when `ShouldOverrideCloud` is `true`.
+    var CloudDirectionY<public>: float = external {}
+
+    # Maps to the device option for *Cloud Light Color*.Color of the lit side of
+    # the clouds. A color with a `NaN`, `Inf` or `-Inf` channel is ignored. Only
+    # used when `ShouldOverrideCloud` is `true`.
+    var CloudLightColor<public>: color = external {}
+
+    # Maps to the device option for *Cloud Lighting Brightness*.Unitless
+    # brightness of the cloud lighting, `0.0` or more. Values below `0.0` are
+    # clamped to `0.0`. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only
+    # used when `ShouldOverrideCloud` is `true`.
+    var CloudLightingBrightness<public>: float = external {}
+
+    # Maps to the device option for *Cloud Opacity*.Opacity of the clouds from
+    # `0.0` to `1.0`. Values outside the range are clamped. Setting it to `NaN`,
+    # `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideCloud`
+    # is `true`.
+    var CloudOpacity<public>: float = external {}
+
+    # Maps to the device option for *Cloud Shadow Color*.Color of the shadowed
+    # side of the clouds. A color with a `NaN`, `Inf` or `-Inf` channel is
+    # ignored. Only used when `ShouldOverrideCloud` is `true`.
+    var CloudShadowColor<public>: color = external {}
+
+    # Maps to the device option for *Cloud Size*.Unitless scale of the cloud
+    # shapes from `0.2` to `5.0`, `1.0` is the device default. Values outside
+    # the range are clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored.
+    # Only used when `ShouldOverrideCloud` is `true`.
+    var CloudSize<public>: float = external {}
+
+    # Maps to the device option for *Cloud Speed*.Unitless speed multiplier of
+    # the cloud movement, `0.0` or more, `1.0` is the device default. Values
+    # below `0.0` are clamped to `0.0`. Setting it to `NaN`, `Inf` or `-Inf` is
+    # ignored. Only used when `ShouldOverrideCloud` is `true`.
+    var CloudSpeed<public>: float = external {}
+
+    # Maps to the device option for *Custom Sun Color Blend*.Blend between the
+    # default sun disc color and `SunColor`, `0.0` or more, `1.0` fully replaces
+    # the default color. Values below `0.0` are clamped to `0.0`. Setting it to
+    # `NaN`, `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideSky`
+    # is `true`.
+    var CustomSunColorBlend<public>: float = external {}
+
+    # Maps to the device option for *Day Night Cycle Mode*.How this device
+    # controls the day/night cycle time.
+    var DayNightCycleMode<public>: day_night_cycle_mode = external {}
+
+    # Maps to the device option for *Day Night Cycle Time*.Time of day in hours
+    # from `0.0` to `24.0`. Values outside the range are clamped. Setting it to
+    # `NaN`, `Inf` or `-Inf` is ignored. Used when `DayNightCycleMode` is
+    # `FixedTime`, `StartAtSpecifiedTime` or `LocalFixedTime`.
+    var DayNightCycleTime<public>: float = external {}
+
+    # Maps to the device option for *Fade Speed*.Unitless speed multiplier for
+    # `FadeIn` and `FadeOut`, `1.0` is the device default. `0.0` stops a fade
+    # from progressing. Setting it to `NaN`, `Inf` or `-Inf` is ignored.
+    var FadeSpeed<public>: float = external {}
+
+    # Maps to the device option for *Fog Color*.Color of the fog. A color with a
+    # `NaN`, `Inf` or `-Inf` channel is ignored. Only used when
+    # `ShouldOverrideFog` is `true`.
+    var FogColor<public>: color = external {}
+
+    # Maps to the device option for *Fog Density*.Unitless density of the fog
+    # from `0.0` to `10.0`. Values outside the range are clamped. Setting it to
+    # `NaN`, `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideFog`
+    # is `true`.
+    var FogDensity<public>: float = external {}
+
+    # Maps to the device option for *Fog Directional Inscattering Color*.Color
+    # of the fog inscattering towards the sun. A color with a `NaN`, `Inf` or
+    # `-Inf` channel is ignored. Only used when `ShouldOverrideFog` is `true`.
+    var FogDirectionalInscatteringColor<public>: color = external {}
+
+    # Maps to the device option for *Fog Height Falloff*.Unitless rate at which
+    # the fog density falls off with height, from `0.0` to `2.0`. Values outside
+    # the range are clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored.
+    # Only used when `ShouldOverrideFog` is `true`.
+    var FogHeightFalloff<public>: float = external {}
+
+    # Maps to the device option for *Fog Max Opacity*.Maximum opacity of the fog
+    # from `0.0` to `1.0`. Values outside the range are clamped. Setting it to
+    # `NaN`, `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideFog`
+    # is `true`.
+    var FogMaxOpacity<public>: float = external {}
+
+    # Maps to the device option for *Enable Fog Component*.If `true`, the fog
+    # component of this device is enabled. Only used when `ShouldOverrideFog`
+    # is `true`.
+    var IsFogEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Enable Sky Atmosphere Component*.If `true`,
+    # the sky atmosphere component of this device is enabled. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var IsSkyAtmosphereEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Enable Skybox Component*.If `true`, the
+    # skybox component of this device is enabled. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var IsSkyboxEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Enable Skylight Component*.If `true`, the
+    # skylight component of this device is enabled. Only used when
+    # `ShouldOverrideSkylight` is `true`.
+    var IsSkylightEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Enable Sun Component*.If `true`, the sun
+    # component of this device is enabled. Only used when
+    # `ShouldOverrideSunlight` is `true`.
+    var IsSunEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Enable Sun Flare*.If `true`, the sun flare
+    # is enabled. Only used when `ShouldOverrideSunlight` is `true`.
+    var IsSunFlareEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Use Volume*.If `true`, this device only
+    # applies its settings inside its volume, blended according to `BlendMode`.
+    var IsVolumeEnabled<public>: logic = external {}
+
+    # Maps to the device option for *Moon Color*.Color of the moon in the sky. A
+    # color with a `NaN`, `Inf` or `-Inf` channel is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var MoonColor<public>: color = external {}
+
+    # Maps to the device option for *Moon Halo Intensity*.Unitless intensity of
+    # the halo around the moon, `0.0` or more. Values below `0.0` are clamped to
+    # `0.0`. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var MoonHaloIntensity<public>: float = external {}
+
+    # Maps to the device option for *Moon Halo Size*.Unitless size of the halo
+    # around the moon, `0.0` or more. Values below `0.0` are clamped to `0.0`.
+    # Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var MoonHaloSize<public>: float = external {}
+
+    # Maps to the device option for *Moon Intensity*.Unitless intensity of the
+    # moon in the sky, `0.0` or more. Values below `0.0` are clamped to `0.0`.
+    # Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var MoonIntensity<public>: float = external {}
+
+    # Maps to the device option for *Moon Size*.Unitless size of the moon in the
+    # sky from `0.0` to `1.0`. Values outside the range are clamped. Setting it
+    # to `NaN`, `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideSky`
+    # is `true`.
+    var MoonSize<public>: float = external {}
+
+    # Maps to the device option for *Priority*.Priority of this device relative
+    # to other Day Sequence devices. Settings of a device with a higher priority
+    # are applied on top of those with a lower priority.
+    var Priority<public>: int = external {}
+
+    # Maps to the device option for *Secondary Fog Density*.Unitless density of
+    # the secondary fog layer from `0.0` to `10.0`. Values outside the range are
+    # clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideFog` is `true`.
+    var SecondaryFogDensity<public>: float = external {}
+
+    # Maps to the device option for *Secondary Fog Falloff*.Unitless rate at
+    # which the secondary fog density falls off with height, from `0.0` to
+    # `2.0`. Values outside the range are clamped. Setting it to `NaN`, `Inf` or
+    # `-Inf` is ignored. Only used when `ShouldOverrideFog` is `true`.
+    var SecondaryFogFalloff<public>: float = external {}
+
+    # Maps to the device option for *Secondary Fog Offset*.Height offset of the
+    # secondary fog layer in centimeters, relative to the device. Setting it to
+    # `NaN`, `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideFog`
+    # is `true`.
+    var SecondaryFogOffset<public>: float = external {}
+
+    # Maps to the device option for *Override Clouds*.If `true`, the cloud
+    # settings of this device are applied.
+    var ShouldOverrideCloud<public>: logic = external {}
+
+    # Maps to the device option for *Override Fog*.If `true`, the fog settings
+    # of this device are applied.
+    var ShouldOverrideFog<public>: logic = external {}
+
+    # Maps to the device option for *Override Sky*.If `true`, the sky settings
+    # of this device are applied.
+    var ShouldOverrideSky<public>: logic = external {}
+
+    # Maps to the device option for *Override Skylight*.If `true`, the skylight
+    # settings of this device are applied.
+    var ShouldOverrideSkylight<public>: logic = external {}
+
+    # Maps to the device option for *Override Sunlight*.If `true`, the sunlight
+    # settings of this device are applied.
+    var ShouldOverrideSunlight<public>: logic = external {}
+
+    # Maps to the device option for *Sky Gradient Blend*.How strongly the sky
+    # gradient colors blend onto the sky, from `0.0` to `5.0`. Values outside
+    # the range are clamped. Setting it to `NaN`, `Inf` or `-Inf` is ignored.
+    # Only used when `ShouldOverrideSky` is `true`.
+    var SkyGradientBlend<public>: float = external {}
+
+    # Maps to the device option for *Sky Gradient High Color*.Color of the sky
+    # gradient at the zenith. A color with a `NaN`, `Inf` or `-Inf` channel is
+    # ignored. Only used when `ShouldOverrideSky` is `true`.
+    var SkyGradientHighColor<public>: color = external {}
+
+    # Maps to the device option for *Sky Gradient Low Color*.Color of the sky
+    # gradient near the horizon. A color with a `NaN`, `Inf` or `-Inf` channel
+    # is ignored. Only used when `ShouldOverrideSky` is `true`.
+    var SkyGradientLowColor<public>: color = external {}
+
+    # Maps to the device option for *Sky Gradient Mid Color*.Color of the sky
+    # gradient between the horizon and the zenith. A color with a `NaN`, `Inf`
+    # or `-Inf` channel is ignored. Only used when `ShouldOverrideSky`
+    # is `true`.
+    var SkyGradientMidColor<public>: color = external {}
+
+    # Maps to the device option for *Skylight Color*.Color of the skylight. A
+    # color with a `NaN`, `Inf` or `-Inf` channel is ignored. Only used when
+    # `ShouldOverrideSkylight` is `true`.
+    var SkylightColor<public>: color = external {}
+
+    # Maps to the device option for *Skylight Intensity*.Unitless intensity
+    # scale of the skylight, `0.0` or more. Values below `0.0` are clamped to
+    # `0.0`. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSkylight` is `true`.
+    var SkylightIntensity<public>: float = external {}
+
+    # Maps to the device option for *Star Brightness*.Unitless brightness of the
+    # stars from `0.0` to `20.0`. Values outside the range are clamped. Setting
+    # it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var StarBrightness<public>: float = external {}
+
+    # Maps to the device option for *Sun Color*.Color of the sun disc in the
+    # sky. A color with a `NaN`, `Inf` or `-Inf` channel is ignored. Only used
+    # when `ShouldOverrideSky` is `true`.
+    var SunColor<public>: color = external {}
+
+    # Maps to the device option for *Sun Intensity*.Unitless intensity of the
+    # sun disc in the sky, `0.0` or more. Values below `0.0` are clamped to
+    # `0.0`. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var SunIntensity<public>: float = external {}
+
+    # Maps to the device option for *Sun Size*.Unitless size of the sun disc in
+    # the sky, `0.0` or more. Values below `0.0` are clamped to `0.0`. Setting
+    # it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSky` is `true`.
+    var SunSize<public>: float = external {}
+
+    # Maps to the device option for *Sunlight Color*.Color of the sunlight. A
+    # color with a `NaN`, `Inf` or `-Inf` channel is ignored. Only used when
+    # `ShouldOverrideSunlight` is `true`.
+    var SunlightColor<public>: color = external {}
+
+    # Maps to the device option for *Sunlight Intensity*.Intensity of the
+    # sunlight in lux, `0.0` or more. Values below `0.0` are clamped to `0.0`.
+    # Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used when
+    # `ShouldOverrideSunlight` is `true`.
+    var SunlightIntensity<public>: float = external {}
+
+    # Maps to the device option for *Sunlight Rotation X*.Rotation of the
+    # sunlight around the X axis in degrees. Values outside `0.0` to `360.0`
+    # wrap around. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used
+    # when `ShouldOverrideSunlight` is `true`.
+    var SunlightRotationX<public>: float = external {}
+
+    # Maps to the device option for *Sunlight Rotation Z*.Rotation of the
+    # sunlight around the Z axis in degrees. Values outside `0.0` to `360.0`
+    # wrap around. Setting it to `NaN`, `Inf` or `-Inf` is ignored. Only used
+    # when `ShouldOverrideSunlight` is `true`.
+    var SunlightRotationZ<public>: float = external {}
+
+    # Maps to the device option for *Sunlight Volumetric Scattering*.Unitless
+    # intensity of the volumetric scattering of the sunlight in the fog, `0.0`
+    # or more. Values below `0.0` are clamped to `0.0`. Setting it to `NaN`,
+    # `Inf` or `-Inf` is ignored. Only used when `ShouldOverrideFog` is `true`.
+    var SunlightVolumetricScattering<public>: float = external {}
+
+    # Maps to the device options *Volume Extent X*, *Volume Extent Y* and
+    # *Volume Extent Z*.Size of the trigger volume in centimeters along the
+    # Forward, Left and Up axes, `0.0` or more per axis. The Details panel shows
+    # these options in meters. Values below `0.0` are clamped to `0.0`. `0.0` on
+    # an axis shrinks the volume to 5 centimeters on that axis. A value with a
+    # `NaN`, `Inf` or `-Inf` component is ignored. Only used when
+    # `IsVolumeEnabled` is `true`.
+    var VolumeExtent<public>: (/Verse.org/SpatialMath:)vector3 = external {}
   }
 
   # Payload of `device_event_ai_interaction`.
@@ -8453,7 +8964,6 @@ Devices<public> := module {
     ZoneOccupiedEvent<public>: listenable(agent) = external {}
   }
 
-  # Verse path: /Fortnite.com/Devices
   @deprecated { Message := "This type is deprecated." }
   # Controls how the sky looks, as well as giving you options for changing the
   # sun, clouds, stars or other objects in the sky above your island. You can
@@ -9049,6 +9559,7 @@ Devices<public> := module {
     # Teleport `Agent` to the target group using this device.
     Activate<public>(Agent: agent): void = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     # Teleport `Prop` to the target group using this device.
     Activate<public>(Prop: creative_prop): void = external {}
 
@@ -9069,6 +9580,7 @@ Devices<public> := module {
     # Sends the `agent` that entered this device.
     EnterEvent<public>: listenable(agent) = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     # Signaled when a 'creative_prop' enters this device.
     # Sends the 'creative_prop' that entered this device.
     EnterPropEvent<public>: listenable(creative_prop) = external {}
@@ -9083,9 +9595,11 @@ Devices<public> := module {
     # Teleport `Agent` to this device.
     Teleport<public>(Agent: agent): void = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     # Teleport `Prop` to this device.
     Teleport<public>(Prop: creative_prop): void = external {}
 
+    @available { MinUploadedAtFNVersion := 4300 }
     # Signaled when a `creative_prop` emerges from this device.
     # Sends the `creative_prop` that emerged from this device.
     TeleportPropEvent<public>: listenable(creative_prop) = external {}
@@ -9576,7 +10090,6 @@ Devices<public> := module {
     var PaintColor<public>: ?color = external {}
   }
 
-  using { /Verse.org/Colors }
   # Used to spawn customizable boxes containing vehicle mods. Hit a box with a
   # vehicle to apply the mod.
   vehicle_mod_box_spawner_device<public> := class<final><concrete>(creative_device_base, enableable) {
@@ -10303,8 +10816,6 @@ Devices<public> := module {
     PropExitEvent<public>: listenable(creative_prop) = external {}
   }
 
-  using { /Verse.org/Simulation }
-  # Verse path: /Fortnite.com/Devices
   #  Represents a poll.
   # For example, in a poll “What to have for lunch?” the group represents the
   # question and contains the possible answers.
@@ -10987,18 +11498,15 @@ using { /Verse.org/Native }
     @available { MinUploadedAtFNVersion := 3720 }
     Crouch<public>: input_action(logic) = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 4210 }
     Interact<public>: input_action(logic) = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 4210 }
     InteractMapping<public>: input_mapping = external {}
 
     @available { MinUploadedAtFNVersion := 3720 }
     Jump<public>: input_action(logic) = external {}
 
-    @experimental
     @available { MinUploadedAtFNVersion := 4210 }
     Move<public>: input_action((/Verse.org/SpatialMath:)vector3) = external {}
 
@@ -11169,6 +11677,7 @@ Itemization<public> := module {
 @available { MinUploadedAtFNVersion := 4000 }
 # Module import path: /Fortnite.com/Items
 Items<public> := module {
+  using { /Verse.org/SceneGraph }
   Acorn_Creative_V1_Common<public> := class<concrete>(entity) {}
 
   ActivePowercell_Creative_V1_Epic<public> := class<concrete>(entity) {}
@@ -11958,7 +12467,6 @@ Items<public> := module {
   }
 
   using { /Fortnite.com/Devices }
-  using { /Verse.org/SceneGraph }
   using { /Verse.org/Simulation }
   # Used with `telekineticon_component.HoldPoint` to determine where on an
   # object the object is held.
@@ -11970,6 +12478,43 @@ Items<public> := module {
     # when the object is grabbed.
     GrabPoint
   }
+}
+
+LootPools<public> := module {
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Rolls the loot of a Fortnite ammo box.
+  fort_loot_pool_ammo_box<public> := class<final><concrete>(loot_pool) {}
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Rolls the loot of a rare Fortnite ammo box, the upgraded version an ammo box
+  # can spawn as.
+  fort_loot_pool_ammo_box_rare<public> := class<final><concrete>(loot_pool) {}
+
+  using { /UnrealEngine.com/LootPools }
+  using { /Verse.org/Native }
+  # Verse path: /Fortnite.com/LootPools
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Rolls the loot of a regular Fortnite chest.
+  fort_loot_pool_chest<public> := class<final><concrete>(loot_pool) {}
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Rolls the loot of a rare Fortnite chest, the upgraded version a regular
+  # chest can spawn as.
+  fort_loot_pool_chest_rare<public> := class<final><concrete>(loot_pool) {}
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Rolls the loot of a Fortnite food box.
+  fort_loot_pool_food_box<public> := class<final><concrete>(loot_pool) {}
+
+  @available { MinUploadedAtFNVersion := 4310 }
+  @experimental
+  # Rolls the loot of a Fortnite supply drop.
+  fort_loot_pool_supply_drop<public> := class<final><concrete>(loot_pool) {}
 }
 
 Marketplace<public> := module {
@@ -12183,104 +12728,136 @@ Playspaces<public> := module {
 @experimental
 # Module import path: /Fortnite.com/SceneGraphCameras
 SceneGraphCameras<public> := module {
-  using { /Verse.org/Native }
-  using { /Verse.org/SceneGraph }
-  using { /Verse.org/SpatialMath }
-  @available { MinUploadedAtFNVersion := 4200 }
+  @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  # Camera modifier that implements a fixed angle camera.
-  fort_fixed_angle_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+  # A value interpolator that first accelerates up to a maximum speed, and then
+  # decelerates before reaching the target value.
+  fort_acceleration_deceleration_camera_value_interpolation_settings<public><native> := class<concrete>(
+    fort_camera_value_interpolation_settings
+  ) {
     @experimental
-    # Entity the camera is attached to.
-    TargetEntity<public><native>: entity = external {}
+    # The acceleration rate at the start of interpolation.
+    Acceleration<public><native>: float = external {}
 
     @experimental
-    # Distance from the camera to the focus point along its forward axis.
-    var CameraDistanceCentimeters<public><native>: float = external {}
+    # The deceleration rate at the end of interpolation.
+    Deceleration<public><native>: float = external {}
 
     @experimental
-    # Translation offset applied to the collision safe position.
-    var CollisionSafePositionOffsetCentimeters<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-    @experimental
-    # Radius of the sphere used for collision queries.
-    var CollisionSphereRadiusCentimeters<public><native>: float = external {}
-
-    @experimental
-    # Whether camera-to-world collision avoidance is enabled.
-    var EnableCollision<public><native>: logic = external {}
-
-    @experimental
-    # Damping factor applied along the forward axis.
-    var ForwardDampingFactor<public><native>: float = external {}
-
-    @experimental
-    # Damping factor applied along the lateral axis.
-    var LateralDampingFactor<public><native>: float = external {}
-
-    @experimental
-    # Translation offset applied on top of the calculated offset.
-    var PositionOffsetCentimeters<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
-
-    @experimental
-    # Rotation offset applied to the camera's orientation. Defaults to
-    # Pitch=`-45` (look down 45 degrees).
-    var RotationOffset<public><native>: (/Verse.org/SpatialMath:)rotation = external {}
-
-    @experimental
-    # Damping factor applied along the vertical axis.
-    var VerticalDampingFactor<public><native>: float = external {}
+    # The maximum speed reachable during interpolation.
+    MaxSpeed<public><native>: float = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4200 }
+  using { /Verse.org/Native }
+  using { /Verse.org/SceneGraph }
+  using { /Verse.org/Simulation }
+  using { /Verse.org/SpatialMath }
+  @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  # Camera modifier that implements a fixed point camera.
-  fort_fixed_point_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+  # Camera modifier that attaches the camera to a target entity.
+  fort_attach_to_entity_camera_modifier<public><native> := class<concrete>(camera_modifier) {
     @experimental
-    # Whether the camera is allowed to pitch (rotate vertically) to reframe
-    # the target.
-    # Turn off for a pan-only camera that only corrects horizontally.
-    var CanPitch<public><native>: logic = external {}
+    @editable
+    # Modify the render rotation to attach to the target's rotation?
+    var ShouldFollowOrientation<public><native>: logic = external {}
 
     @experimental
-    # Whether the camera is allowed to yaw (rotate horizontally) to reframe
-    # the target.
-    # Turn off for a tilt-only camera that only corrects vertically.
-    var CanYaw<public><native>: logic = external {}
+    @editable
+    # Modify the render location to attach to the target's location?
+    var ShouldFollowTranslation<public><native>: logic = external {}
 
     @experimental
-    # Bottom edge margin of the dead zone
-    # The dead zone is the screen-space region where the target can move freely
-    # without triggering reframing.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
-    # `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    @editable
+    # Entity to attach to.
+    var TargetEntity<public><native>: entity = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Auto-rotation settings for a boom arm camera modifier.
+  fort_auto_rotate_camera_modifier_settings<public><native> := class<concrete> {
+    @experimental
+    @editable
+    # The direction to re-align towards
+    Direction<public><native>: fort_camera_auto_rotate_direction = external {}
+
+    @experimental
+    @editable
+    # The minimum player-induced/manual rotation in radians, to
+    # deactivate auto-rotation.
+    DisableThreshold<public><native>: float = external {}
+
+    @experimental
+    @editable
+    # Interpolation settings to use when re-aligning towards the
+    # auto-rotate direction.
+    InterpolationSettings<public><native>: fort_camera_value_interpolation_settings = external {}
+
+    @experimental
+    @editable
+    # Whether to auto-rotate pitch.
+    ShouldAutoRotatePitch<public><native>: logic = external {}
+
+    @experimental
+    @editable
+    # Whether to auto-rotate yaw.
+    ShouldAutoRotateYaw<public><native>: logic = external {}
+
+    @experimental
+    @editable
+    # The time in seconds, to wait before re-aligning.
+    WaitTime<public><native>: float = external {}
+
+    @experimental
+    @editable
+    # Whether to enable auto-rotation
+    var IsEnabled<public><native>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Base class for camera modifiers that frame a target.
+  fort_base_framing_camera_modifier<public><native> := class<abstract>(camera_modifier) {
+    @experimental
+    @editable
+    # Whether to frame the target with the ideal framing immediately on the
+    # first frame.
+    ShouldInitializeWithIdealFraming<public><native>: logic = external {}
+
+    @experimental
+    @editable
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
     var DeadZoneScreenSpaceBottom<public><native>: float = external {}
 
     @experimental
-    # Left edge margin of the dead zone.
-    # The dead zone is the screen-space region where the target can move freely
-    # without triggering reframing.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
-    # `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    @editable
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
     var DeadZoneScreenSpaceLeft<public><native>: float = external {}
 
     @experimental
-    # Right edge margin of the dead zone
-    # The dead zone is the screen-space region where the target can move freely
-    # without triggering reframing.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
-    # `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    @editable
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
     var DeadZoneScreenSpaceRight<public><native>: float = external {}
 
     @experimental
-    # Top edge margin of the dead zone
-    # The dead zone is the screen-space region where the target can move freely
-    # without triggering reframing.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
-    # `(0, 0, 0, 0)` = no dead zone (camera always reframes).
+    @editable
+    # The size of the dead zone, i.e. the zone inside which the target can
+    # freely move.
+    # Sizes are expressed screen percentages around the desired
+    # framing location.
     var DeadZoneScreenSpaceTop<public><native>: float = external {}
 
     @experimental
+    @editable
     # The time spent ramping down the reframing after entering the dead zone. If
     # set to zero or a negative value, reframing will immediately stop once the
     # target has entered the dead zone. Otherwise, the ReframeDampingFactor will
@@ -12288,81 +12865,76 @@ SceneGraphCameras<public> := module {
     var DisengageTimeSeconds<public><native>: float = external {}
 
     @experimental
-    # The ideal horizontal screen-space position of the target in screen space.
-    # Values are normalized where `0.5` is center of the screen
+    @editable
+    # The ideal horizontal screen-space position of the target.
     var IdealFramingLocationScreenSpaceLeft<public><native>: float = external {}
 
     @experimental
-    # The ideal vertical screen-space position of the target. Values are
-    # normalized where `0.5` is center of the screen
+    @editable
+    # The ideal vertical screen-space position of the target.
     var IdealFramingLocationScreenSpaceUp<public><native>: float = external {}
 
     @experimental
+    @editable
     # If valid, the recentering damping factor will interpolate between
     # LowReframeDampingFactor and ReframeDampingFactor as the target moves
-    # between the ideal target position and the boundaries of the soft-zone.
+    # between the ideal target position and the boundaries of the hard-zone.
     # If invalid, no interpolation occurs and the damping factor is always equal
     # to ReframeDampingFactor.
     var LowReframeDampingFactor<public><native>: ?float = external {}
 
     @experimental
-    # The time spent ramping up the reframing after exiting the dead zone.
-    # If set to zero or a negative value, reframing will immediately stop once
-    # the target has entered the dead zone.
-    # Otherwise the ReframeDampingFactor will interpolate from zero to its
-    # desired value over the specified amount of seconds.
+    @editable
+    # The time spent ramping up the reframing after exiting the dead zone. If
+    # set to zero or a negative value, reframing will immediately restart once
+    # the target has exited the dead zone. Otherwise the ReframeDampingFactor
+    # will interpolate from zero to its desired value over the specified amount
+    # of seconds.
     var ReengageTimeSeconds<public><native>: float = external {}
 
     @experimental
-    # How aggressively the camera corrects when the target is outside the dead
-    # zone. 0 = no damping (instant snap), higher = smoother but laggier
-    # (typically 1-10).
+    @editable
+    # The damping factor for how fast the framing recenters on the target.
     var ReframeDampingFactor<public><native>: float = external {}
 
     @experimental
-    # Rotation offset applied to the camera's orientation.
-    var RotationOffset<public><native>: (/Verse.org/SpatialMath:)rotation = external {}
-
-    @experimental
-    # On first activation of this camera, snap the framing so the target is
-    # already at the ideal location instead of easing into it. Set to false for
-    # a pop-free entry from a wider blend.
-    var SnapToIdealFramingOnEnable<public><native>: logic = external {}
-
-    @experimental
-    # Bottom edge margin of the soft zone.
-    # The soft zone is the screen-space region inside which the target is
-    # reframed normally.
-    # Outside the soft zone, the camera switches to a stronger damping factor to
-    # catch up quickly.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
+    @editable
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
     var SoftZoneScreenSpaceBottom<public><native>: float = external {}
 
     @experimental
-    # Left edge margin of the soft zone.
-    # The soft zone is the screen-space region inside which the target is
-    # reframed normally.
-    # Outside the soft zone, the camera switches to a stronger damping factor to
-    # catch up quickly.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
+    @editable
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
     var SoftZoneScreenSpaceLeft<public><native>: float = external {}
 
     @experimental
-    # Right edge margin of the soft zone.
-    # The soft zone is the screen-space region inside which the target is
-    # reframed normally.
-    # Outside the soft zone, the camera switches to a stronger damping factor to
-    # catch up quickly.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
+    @editable
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
     var SoftZoneScreenSpaceRight<public><native>: float = external {}
 
     @experimental
-    # Top edge margin of the soft zone.
-    # The soft zone is the screen-space region inside which the target is
-    # reframed normally.
-    # Outside the soft zone, the camera switches to a stronger damping factor to
-    # catch up quickly.
-    # Edges are normalized `[0, 1]` margins from each screen edge.
+    @editable
+    # The margins of the soft zone, i.e. the zone inside which the reframing
+    # will engage, in order to bring the target back towards the ideal framing
+    # position. If the target is outside of the soft zone, it will be forcibly
+    # and immedialy brought back to its edges, so this zone also defines the
+    # "hard" or "safe" zone of framing. Sizes are expressed in screen
+    # percentages from the edges.
     var SoftZoneScreenSpaceTop<public><native>: float = external {}
 
     @experimental
@@ -12371,71 +12943,297 @@ SceneGraphCameras<public> := module {
     var TargetEntities<public>: [entity]float = external {}
 
     @experimental
-    # Predictive lead-time in seconds. The camera anticipates where the target
-    # will be N seconds from now based on its current velocity, and frames that
-    # anticipated position instead of the current one.  `0` = no anticipation.
-    # Useful for fast-moving targets to avoid trailing behind them.
+    @editable
+    # How far ahead to look in time when attempting to anticipate the movement
+    # of the target.
     var TargetMovementAnticipationTimeSeconds<public><native>: float = external {}
+
+    @experimental
+    @editable
+    var WeightedTargets<protected><native>: []fort_weighted_target_entity = external {}
   }
 
-  @available { MinUploadedAtFNVersion := 4200 }
+  @available { MinUploadedAtFNVersion := 4300 }
   @experimental
-  # Camera modifier that implements an orbit camera.
-  fort_orbit_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+  # Camera modifier that can rotate the camera in yaw and pitch based on
+  # player input.
+  fort_boom_arm_camera_modifier<public><native> := class<concrete>(camera_modifier) {
     @experimental
-    # Entity the camera is attached to
-    TargetEntity<public><native>: entity = external {}
+    @editable
+    # Auto rotation settings
+    AutoRotateSettings<public><native>: fort_auto_rotate_camera_modifier_settings = external {}
 
     @experimental
-    # Maximum backward interpolation factor for the boom arm
-    var BoomArmMaxBackwardInterpolationFactor<public><native>: float = external {}
+    @editable
+    # Interpolation settings to use for changing the boom length based on its
+    # pivot's movements.
+    BoomLengthInterpolationSettings<public><native>: fort_camera_value_interpolation_settings = external {}
 
     @experimental
-    # Maximum forward interpolation factor for the boom arm
-    var BoomArmMaxForwardInterpolationFactor<public><native>: float = external {}
+    @editable
+    # If true, the boom arm's rotation will add to the existing rotation instead
+    # of being absolute.
+    IsRotationAdditive<public><native>: logic = external {}
 
     @experimental
-    # Boom arm offset relative to the attached entity
-    var BoomArmOffsetCentimeters<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+    @editable
+    # The offset of the boom. Rotation occurs at the base (i.e. before
+    # the offset).
+    var BoomOffset<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
 
     @experimental
-    # Distance from the camera to the orbit pivot along the camera's
-    # forward axis.
-    var CameraDistanceCentimeters<public><native>: float = external {}
+    @editable
+    # The maximum amount of backward movement the interpolator can introduce,
+    # expressed as a factor of the default boom length. If the value is less
+    # than 0.0 then there is no limit.
+    var MaxBackwardInterpolationFactor<public><native>: float = external {}
 
     @experimental
-    # Height of the orbit pivot above the attached entity's root,
-    # in centimeters.
-    var CameraHeightCentimeters<public><native>: float = external {}
+    @editable
+    # The maximum amount of forward movement the interpolator can introduce,
+    # expressed as a factor of the default boom length. If the value is less
+    # than 0.0 then there is no limit.
+    var MaxForwardInterpolationFactor<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  fort_camera_auto_rotate_direction<public><native> := enum<open> {
+    Facing
+
+    GlobalForward
+
+    Movement
+
+    MovementOrFacing
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  fort_camera_offset_space<public><native> := enum<open> {
+    CameraSpace
+
+    GlobalSpace
+
+    PivotSpace
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A camera value interpolator allows a camera modifier to control how a given
+  # value is interpolated to a given target.
+  fort_camera_value_interpolation_settings<public><native> := class<concrete> {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that pushes the camera out of world collision.
+  fort_collision_push_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @editable
+    # Interpolation settings to use when pulling camera in, towards the
+    # pivot point.
+    PullInterpolationSettings<public><native>: fort_camera_value_interpolation_settings = external {}
 
     @experimental
-    # Radius of the sphere used for collision queries
-    var CollisionSphereRadiusCentimeters<public><native>: float = external {}
+    @editable
+    # Interpolation settings to use when pushing camera out, away from the
+    # pivot point.
+    PushInterpolationSettings<public><native>: fort_camera_value_interpolation_settings = external {}
 
     @experimental
-    # Whether camera-to-world collision avoidance is enabled
-    var EnableCollision<public><native>: logic = external {}
+    @editable
+    # Sphere radius to use for collision shape cast.
+    var CollisionSphereRadius<public><native>: float = external {}
 
     @experimental
-    # Damping factor applied along the forward axis
+    @editable
+    # Collision will ignore the specified entities only.
+    var IgnoreEntities<public><native>: []entity = external {}
+
+    @experimental
+    @editable
+    # Collision will ignore the specified entities and all their descendants. If
+    # an entity is in both arrays, then this one takes precedence as being in
+    # IgnoreEntities doesn't specifically exclude an entity's descendants from
+    # being included, it just doesn't add them.
+    var IgnoreEntitiesAndDescendants<public><native>: []entity = external {}
+
+    @experimental
+    @editable
+    # Global-space offset from the target to the line trace's end.
+    var SafeLocationOffset<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A value interpolator that uses a spring-mass system to converge towards the
+  # target value.
+  fort_critical_damper_camera_value_interpolation_settings<public><native> := class<concrete>(
+    fort_camera_value_interpolation_settings
+  ) {
+    @experimental
+    # The damping factor of the spring-mass system.
+    DampingFactor<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that smooths the camera's rotation using a critically damped
+  # spring. Each axis is damped independently, so a camera can ease into a new
+  # yaw while pitching immediately. A damping factor of zero leaves that
+  # axis undamped.
+  fort_dampen_rotation_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @editable
+    # Damping factor for the camera pitch.
+    var PitchDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @editable
+    # Damping factor for the camera roll.
+    var RollDampingFactor<public><native>: float = external {}
+
+    @experimental
+    @editable
+    # Damping factor for the camera yaw.
+    var YawDampingFactor<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that smooths the camera's movement using a critically damped
+  # spring. Each axis is damped independently, so a camera can lag behind
+  # vertically while tracking laterally without delay. A damping factor of zero
+  # leaves that axis undamped.
+  fort_dampen_translation_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @editable
+    # The space the damping axes are measured in.
+    DampenSpace<public><native>: fort_camera_offset_space = external {}
+
+    @experimental
+    @editable
+    # Damping factor for camera movement along the Forward axis.
     var ForwardDampingFactor<public><native>: float = external {}
 
     @experimental
-    # Damping factor applied along the lateral axis
-    var LateralDampingFactor<public><native>: float = external {}
+    @editable
+    # Damping factor for camera movement along the Left axis.
+    var LeftDampingFactor<public><native>: float = external {}
 
     @experimental
-    # Position offset applied to the camera relative to the orbit pivot, after
-    # the boom arm.
-    var PositionOffsetCentimeters<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+    @editable
+    # Damping factor for camera movement along the Up axis.
+    var UpDampingFactor<public><native>: float = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that frames a target by moving along a sideways rail
+  # (left/right relative to the camera transform) and optionally also up
+  # and down.
+  fort_dolly_framing_camera_modifier<public><native> := class<concrete>(fort_base_framing_camera_modifier) {
+    @experimental
+    @editable
+    # Whether the dolly can move horizontally.
+    CanMoveHorizontally<public><native>: logic = external {}
 
     @experimental
-    # Rotation offset applied to the camera's orientation.
+    @editable
+    # Whether the dolly can move vertically.
+    CanMoveVertically<public><native>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Double infinite impulse response filter interpolator.
+  fort_double_infinite_impulse_response_camera_value_interpolation_settings<public> := class<concrete>(
+    fort_camera_value_interpolation_settings
+  ) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Infinite impulse response filter interpolator.
+  fort_infinite_impulse_response_camera_value_interpolation_settings<public> := class<concrete>(
+    fort_camera_value_interpolation_settings
+  ) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that offsets the camera in the specified space.
+  fort_offset_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @editable
+    # The space in which to apply the offset.
+    OffsetSpace<public><native>: fort_camera_offset_space = external {}
+
+    @experimental
+    @editable
+    # The rotation offset to apply to the camera.
     var RotationOffset<public><native>: (/Verse.org/SpatialMath:)rotation = external {}
 
     @experimental
-    # Damping factor applied along the vertical axis
-    var VerticalDampingFactor<public><native>: float = external {}
+    @editable
+    # The translation offset to apply to the camera.
+    var TranslationOffset<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that frames a target by rotating in place.
+  fort_panning_framing_camera_modifier<public><native> := class<concrete>(fort_base_framing_camera_modifier) {
+    @experimental
+    @editable
+    # Whether the camera can rotate vertically (pitch).
+    CanPitch<public><native>: logic = external {}
+
+    @experimental
+    @editable
+    # Whether the camera can rotate laterally (yaw).
+    CanYaw<public><native>: logic = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A simple value interpolator that immediately "pops" to the target value.
+  fort_pop_value_camera_value_interpolation_settings<public><native> := class<concrete>(
+    fort_camera_value_interpolation_settings
+  ) {}
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that sets the camera's rotation, replacing whatever the
+  # camera state arrived with rather than offsetting it. The rotation is always
+  # in global-space.
+  fort_set_rotation_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @editable
+    # The global-space rotation to set on the camera.
+    var Rotation<public><native>: (/Verse.org/SpatialMath:)rotation = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # Camera modifier that sets the camera's translation, replacing whatever the
+  # camera state arrived with rather than offsetting it. The translation is
+  # always in global-space.
+  fort_set_translation_camera_modifier<public><native> := class<concrete>(camera_modifier) {
+    @experimental
+    @editable
+    # The global-space translation to set on the camera.
+    var Translation<public><native>: (/Verse.org/SpatialMath:)vector3 = external {}
+  }
+
+  @available { MinUploadedAtFNVersion := 4300 }
+  @experimental
+  # A target entity paired with the weight it contributes to a
+  # framing calculation.
+  fort_weighted_target_entity<public><native> := struct<concrete> {
+    @editable
+    Entity<public><native>: entity = external {}
+
+    @editable
+    Weight<public><native>: float = external {}
   }
 }
 

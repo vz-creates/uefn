@@ -25,7 +25,6 @@
 		"bPythonUploadAllowed": true,
 		"bForkAllowed": true,
 		"bOrgForkAllowed": true,
-		"bInterProjectRedirectorsAllowed": true,
 		"bProjectRenameAllowed": true,
 		"bPublicModuleApiAllowed": true,
 		"bModulePlayabilityMismatchAllowed": true,

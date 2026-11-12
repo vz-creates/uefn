@@ -31,7 +31,6 @@
 		"bPythonUploadAllowed": false,
 		"bForkAllowed": true,
 		"bOrgForkAllowed": false,
-		"bInterProjectRedirectorsAllowed": true,
 		"bProjectRenameAllowed": false,
 		"bModuleApiAllowed": true,
 		"bPublicModuleApiAllowed": false,
@@ -2368,7 +2367,6 @@
 			"/Script/PCG.PCGAddComplexConstantSettings":						{ "Visible": true },
 			"/Script/PCG.PCGAddComponentSettings":								{ "Visible": true },
 			"/Script/PCG.PCGAddTagSettings":									{ "Visible": true },
-			"/Script/PCG.PCGAddVerseStaticMeshComponent":						{ "Visible": true },
 			"/Script/PCG.PCGAlignPointsSettings":								{ "Visible": true },
 			"/Script/PCG.PCGApplyHierarchySettings":							{ "Visible": true },
 			"/Script/PCG.PCGApplyOnActorSettings":								{ "Visible": true },
@@ -2421,13 +2419,11 @@
 			"/Script/PCG.PCGCreateSurfaceFromPolygon2DSettings":				{ "Visible": true },
 			"/Script/PCG.PCGCreateSurfaceFromSplineSettings":					{ "Visible": true },
 			"/Script/PCG.PCGCreateTargetActor":									{ "Visible": true },
-			"/Script/PCG.PCGCreateVerseEntity":									{ "Visible": true },
 			"/Script/PCG.PCGCullPointsOutsideActorBoundsSettings":				{ "Visible": true },
 			"/Script/PCG.PCGCustomHLSLSettings":								{ "Visible": true },
 			"/Script/PCG.PCGDataAttributesAndTagsSettingsBase":					{ "Visible": true },
 			"/Script/PCG.PCGDataAttributesToTagsSettings":						{ "Visible": true },
 			"/Script/PCG.PCGDataFromActorSettings":								{ "Visible": true },
-			"/Script/PCG.PCGDataFromEntitySettings":							{ "Visible": true },
 			"/Script/PCG.PCGDataFromTool":										{ "Visible": true },
 			"/Script/PCG.PCGDataNumSettings":									{ "Visible": true },
 			"/Script/PCG.PCGDataTableRowToParamDataSettings":					{ "Visible": true },
@@ -2632,7 +2628,6 @@
 			"/Script/PCG.PCGManagedComponentList":								{  },
 			"/Script/PCG.PCGManagedDebugDrawComponent":							{  },
 			"/Script/PCG.PCGManagedDebugStringMessageKey":						{  },
-			"/Script/PCG.PCGManagedEntities":									{  },
 			"/Script/PCG.PCGManagedISKMComponent":								{  },
 			"/Script/PCG.PCGManagedISMComponent":								{  },
 			"/Script/PCG.PCGManagedInstancedMeshComponent":						{  },
@@ -2648,6 +2643,10 @@
 			"/Script/PCGEditor.PCGBuilderSettings":								{  },
 			"/Script/PCGEditor.PCGInteractiveToolBaseSettings":					{ "Subclasses": "NativeOnly" },
 			"/Script/PCGEditor.PCGPropertyBagHierarchyCategory":				{  },
+			"/Script/PCGEntityFrameworkInterop.PCGAddVerseStaticMeshComponent":	{ "Visible": true },
+			"/Script/PCGEntityFrameworkInterop.PCGCreateVerseEntity":			{ "Visible": true },
+			"/Script/PCGEntityFrameworkInterop.PCGDataFromEntitySettings":		{ "Visible": true },
+			"/Script/PCGEntityFrameworkInterop.PCGManagedEntities":				{ "Visible": true },
 			"/Script/PCGExternalDataInterop.PCGLoadAlembicSettings":			{ "Visible": true },
 			"/Script/PCGGeometryScriptInterop.PCGAppendMeshesFromPointsSettings":	{ "Visible": true },
 			"/Script/PCGGeometryScriptInterop.PCGBooleanOperationSettings":		{ "Visible": true },
@@ -2960,7 +2959,7 @@
 				"DenyList": [ "IKRetargetAnimSubmenu", "RetargetAnimSubmenu" ]
 			},
 			"ContentBrowser.AssetContextMenu.AssetActionsSubMenu": {
-				"DenyList": [ "FortCreateHotfix", "FortHostUI", "AssetExtraction_ExtractAssets", "AssetExtraction_ExtractAssetsWizard", "CreatePCGAssetFromMenu", "UpdatePCGAssetFromMenu" ]
+				"DenyList": [ "FortCreateHotfix", "FortHostUI", "AssetExtraction_ExtractAssets", "AssetExtraction_ExtractAssetsWizard" ]
 			},
 			"ContentBrowser.AssetContextMenu.AthenaCosmeticItemDefinition": {
 				"DenyList": [ "CosmeticCheatsSubMenu" ]
@@ -3875,7 +3874,8 @@
 			"Tatooine_Starter",
 			"LEGO_NinjagoStarterTemplate",
 			"Plumpton_Starter_Island",
-			"Harrowville_Starter_Island"
+			"Harrowville_Starter_Island",
+			"Shadows_of_the_Abbey"
 		]
 	},
 	"PropertyEditorClassPermissionList": {
@@ -4208,7 +4208,7 @@
 			},
 			{
 				"Type": "/Script/CRD_HUDController.DeveloperLayoutButtonProxy",
-				"AllowList": [ "Action", "bHideFromLayout", "bOverrideIcon", "IconBrush", "bApplyCanvasTransform"]
+				"AllowList": [ "Action", "bHideFromLayout", "bOverrideIcon", "IconBrush", "bApplyCanvasTransform", "bRespectPlayerTransform"]
 			},
 			{
 				"Type": "/Script/UMG.GridPanel",

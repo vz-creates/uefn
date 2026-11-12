@@ -411,6 +411,11 @@
 			"FriendlyName": "Replay",
 			"Version": 19
 		},
+		"844072E34F8C4900904402A18BBBC915":
+		{
+			"FriendlyName": "FortCustomizableObjectParameterVariantVersion",
+			"Version": 1
+		},
 		"84F72F2E4181C25526721CB537DFB222":
 		{
 			"FriendlyName": "TG_BaseVer",
@@ -549,7 +554,7 @@
 		"A7820CFB20A743598C542C149623CF50":
 		{
 			"FriendlyName": "Dev-ControlRig",
-			"Version": 47
+			"Version": 48
 		},
 		"A7C3E2915F8B4D063E1A9C74D20F68B5":
 		{
@@ -639,7 +644,7 @@
 		"C1270312AB730B1E0B1EC74571C70F73":
 		{
 			"FriendlyName": "CustomizableObjectVer",
-			"Version": 146
+			"Version": 149
 		},
 		"C1270362AB230A1FCB1EC73671275FAB":
 		{
@@ -725,6 +730,11 @@
 		{
 			"FriendlyName": "Procedural",
 			"Version": 1
+		},
+		"E0D8205ABAD6491BADC44DE595D21CBA":
+		{
+			"FriendlyName": "MusicalModeVer",
+			"Version": 0
 		},
 		"E1C64328A22C4D53A36C8E866417BD8C":
 		{
@@ -2210,7 +2220,6 @@
 			"/Script/PCG.PCGAddComplexConstantSettings",
 			"/Script/PCG.PCGAddComponentSettings",
 			"/Script/PCG.PCGAddTagSettings",
-			"/Script/PCG.PCGAddVerseStaticMeshComponent",
 			"/Script/PCG.PCGAlignPointsSettings",
 			"/Script/PCG.PCGApplyHierarchySettings",
 			"/Script/PCG.PCGApplyOnActorSettings",
@@ -2270,7 +2279,6 @@
 			"/Script/PCG.PCGCreateSurfaceFromPolygon2DSettings",
 			"/Script/PCG.PCGCreateSurfaceFromSplineSettings",
 			"/Script/PCG.PCGCreateTargetActor",
-			"/Script/PCG.PCGCreateVerseEntity",
 			"/Script/PCG.PCGCullPointsOutsideActorBoundsSettings",
 			"/Script/PCG.PCGCustomHLSLSettings",
 			"/Script/PCG.PCGData",
@@ -2279,7 +2287,6 @@
 			"/Script/PCG.PCGDataAttributesToTagsSettings",
 			"/Script/PCG.PCGDataCollectionExporter",
 			"/Script/PCG.PCGDataFromActorSettings",
-			"/Script/PCG.PCGDataFromEntitySettings",
 			"/Script/PCG.PCGDataFromTool",
 			"/Script/PCG.PCGDataNumSettings",
 			"/Script/PCG.PCGDataTableRowToParamDataSettings",
@@ -2371,7 +2378,6 @@
 			"/Script/PCG.PCGManagedComponentList",
 			"/Script/PCG.PCGManagedDebugDrawComponent",
 			"/Script/PCG.PCGManagedDebugStringMessageKey",
-			"/Script/PCG.PCGManagedEntities",
 			"/Script/PCG.PCGManagedInstancedMeshComponent",
 			"/Script/PCG.PCGManagedISKMComponent",
 			"/Script/PCG.PCGManagedISMComponent",
@@ -2544,6 +2550,10 @@
 			"/Script/PCGEditor.PCGInteractiveToolSettings_Volume",
 			"/Script/PCGEditor.PCGLevelToAsset",
 			"/Script/PCGEditor.PCGPropertyBagHierarchyCategory",
+			"/Script/PCGEntityFrameworkInterop.PCGAddVerseStaticMeshComponent",
+			"/Script/PCGEntityFrameworkInterop.PCGCreateVerseEntity",
+			"/Script/PCGEntityFrameworkInterop.PCGDataFromEntitySettings",
+			"/Script/PCGEntityFrameworkInterop.PCGManagedEntities",
 			"/Script/PCGExternalDataInterop.PCGLoadAlembicSettings",
 			"/Script/PCGExternalDataInteropEditor.PCGAlembicToPCGAssetExporter",
 			"/Script/PCGGeometryScriptInterop.PCGAppendMeshesFromPointsSettings",
@@ -4969,6 +4979,7 @@
 			"/Script/UAF.RigVMTrait_OverrideVariables",
 			"/Script/UAF.RigVMTrait_OverrideVariablesForAsset",
 			"/Script/UAF.RigVMTrait_OverrideVariablesForStruct",
+			"/Script/UAF.RigVMTrait_UAFEventParameters",
 			"/Script/UAF.RigVMTrait_UAFNotifyParameters",
 			"/Script/UAFAnimGraph.RigDecorator_AnimNextCppDecorator",
 			"/Script/UAFAnimGraph.RigUnit_AnimNextGraphEvaluator",
@@ -7501,7 +7512,6 @@
 			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_Musician_a.PID_CP_Props_Musician_a",
 			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_PrimitiveShapes_b.PID_CP_Props_PrimitiveShapes_b",
 			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_Resources_a.PID_CP_Props_Resources_a",
-			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_Summer_a.PID_CP_Props_Summer_a",
 			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_SupplyDrop_a.PID_CP_Props_SupplyDrop_a",
 			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_Tall_Grass_a.PID_CP_Props_Tall_Grass_a",
 			"/CRG_Props/SetupAssets/Maps/PID_CP_Props_Tall_Grass_b.PID_CP_Props_Tall_Grass_b",
@@ -22821,7 +22831,6 @@
 			"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_HotelChair_B.Artemis_Commerce_HotelChair_B_C",
 			"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_RestaurantTable_C.Artemis_Commerce_RestaurantTable_C_C",
 			"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_SpillexxSignPole.Artemis_Commerce_SpillexxSignPole_C",
-			"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_TruckTopper_A.Artemis_Commerce_TruckTopper_A_C",
 			"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/BP_Commerce_RestaurantTable_C2.BP_Commerce_RestaurantTable_C2_C",
 			"/Game/Athena/Artemis/Environments/BuildingActors/Concrete_Railing/Artemis_ConcreteRailing_Str_B.Artemis_ConcreteRailing_Str_B_C",
 			"/Game/Athena/Artemis/Environments/BuildingActors/Construction/Balconies/Construction_Balcony_Scaffold_Str.Construction_Balcony_Scaffold_Str_C",
@@ -33779,6 +33788,7 @@
 			"/Suburban_Assets/SetupAssets/Blueprints/Walls/BP_YellowHouse_Window_C_B_BS_P.BP_YellowHouse_Window_C_B_BS_P_C",
 			"/Suburban_Assets/SetupAssets/Blueprints/Walls/BP_YellowHouse_Window_C_B_BS_Q.BP_YellowHouse_Window_C_B_BS_Q_C",
 			"/Suburban_Assets/SetupAssets/Blueprints/Walls/BP_YellowHouse_Window_C_B_BS_R.BP_YellowHouse_Window_C_B_BS_R_C",
+			"/Summer_Bound/BuildingActors/Artemis_Commerce_TruckTopper_A.Artemis_Commerce_TruckTopper_A_C",
 			"/Temples_Assets/SetupAssets/Blueprints/FNEC_BP_LotusFrog_SewerCap_A.FNEC_BP_LotusFrog_SewerCap_A_C",
 			"/Temples_Assets/SetupAssets/Blueprints/FNEC_BP_LotusFrog_Waterfall_Floor.FNEC_BP_LotusFrog_Waterfall_Floor_C",
 			"/Temples_Assets/SetupAssets/Blueprints/FNEC_BP_Sewer_Entrance.FNEC_BP_Sewer_Entrance_C",
@@ -34026,6 +34036,13 @@
 		"VKCreateUGCEpicDeveloper": [
 			"/Script/Engine.MaterialFunction"
 		],
+		"VKCreateUGCPartner": []
+	},
+	"MetaverseCompliantTypeAllowLists":
+	{
+		"VKCreateUGC": [],
+		"VKCreateUGCEarlyAccess": [],
+		"VKCreateUGCEpicDeveloper": [],
 		"VKCreateUGCPartner": []
 	},
 	"CookModuleImportTypeAllowLists":

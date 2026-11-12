@@ -11,6 +11,10 @@
 		"/BlastBerryMapContent/Environments/Blueprints/Blockout/Props/BP_Blockout_Prop_Medium_A.BP_Blockout_Prop_Medium_A": "/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Medium_A.BP_Blockout_Prop_Medium_A",
 		"/BlastBerryMapContent/Environments/Blueprints/Blockout/Props/BP_Blockout_Prop_Medium_A.BP_Blockout_Prop_Medium_A_C": "/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Medium_A.BP_Blockout_Prop_Medium_A_C",
 		"/BlastBerryMapContent/Environments/Blueprints/Blockout/Props/BP_Blockout_Prop_Medium_A.Default__BP_Blockout_Prop_Medium_A_C": "/Game/Environments/Blockout/Blueprints/Props/BP_Blockout_Prop_Medium_A.Default__BP_Blockout_Prop_Medium_A_C",
+		"/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_SMG_BoneRattler.T_Icon_Weapons_SMG_BoneRattler": "/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_Rifle_BoneRattler_ui.T_Icon_Weapons_Rifle_BoneRattler_ui",
+		"/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_SMG_BoneRattler_Exotic.T_Icon_Weapons_SMG_BoneRattler_Exotic": "/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_SMG_BoneRattler_Exotic_ui.T_Icon_Weapons_SMG_BoneRattler_Exotic_ui",
+		"/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_SMG_BoneRattler_Exotic_L.T_Icon_Weapons_SMG_BoneRattler_Exotic_L": "/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_SMG_BoneRattler_Exotic_ui_L.T_Icon_Weapons_SMG_BoneRattler_Exotic_ui_L",
+		"/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_SMG_BoneRattler_L.T_Icon_Weapons_SMG_BoneRattler_L": "/BoneRattlerGameplay/Assets/Icons/T_Icon_Weapons_Rifle_BoneRattler_ui_L.T_Icon_Weapons_Rifle_BoneRattler_ui_L",
 		"/BRCosmetics/Characters/Player/Male/Medium/Bodies/M_MED_BlockStack_Chunk/Materials/heart2.heart2": "/Engine/EngineResources/Black.Black",
 		"/BRCosmetics/UI/Foundation/Textures/Icons/Athena/T-T-Icon-BR-CosmosJetpack-L.T-T-Icon-BR-CosmosJetpack-L": "/CosmosGameplay/UI/Foundation/Textures/Icons/Athena/T-T-Icon-BR-CosmosJetpack-L.T-T-Icon-BR-CosmosJetpack-L",
 		"/BRCosmetics/UI/Foundation/Textures/Icons/Athena/T-T-Icon-BR-CosmosJetpack.T-T-Icon-BR-CosmosJetpack": "/CosmosGameplay/UI/Foundation/Textures/Icons/Athena/T-T-Icon-BR-CosmosJetpack.T-T-Icon-BR-CosmosJetpack",
@@ -42,6 +46,7 @@
 		"/CreativeCoreDevices/Storm/Device_StormController_Parent.Default__Device_StormController_Parent_C": "/CRD_StormController/Storm/Device_StormController_Parent.Default__Device_StormController_Parent_C",
 		"/CreativeCoreDevices/Storm/Device_StormController_Parent.Device_StormController_Parent": "/CRD_StormController/Storm/Device_StormController_Parent.Device_StormController_Parent",
 		"/CreativeCoreDevices/Storm/Device_StormController_Parent.Device_StormController_Parent_C": "/CRD_StormController/Storm/Device_StormController_Parent.Device_StormController_Parent_C",
+		"/CRG_Props/SetupAssets/Maps/PID_CP_Props_Summer_a.PID_CP_Props_Summer_a": "/Summer_Bound/SetupAssets/Maps/PID_CP_Props_Summer_a.PID_CP_Props_Summer_a",
 		"/CubeSurfing/Gameplay/WID_CherrySmoke_CubeSurfing.WID_CherrySmoke_CubeSurfing": "/CubeSurfing_Items_Bound/WID/WID_CherrySmoke_CubeSurfing.WID_CherrySmoke_CubeSurfing",
 		"/CubeSurfing/Gameplay/WID_CherrySmoke_CubeSurfing_Mythic.WID_CherrySmoke_CubeSurfing_Mythic": "/CubeSurfing_Items_Bound/WID/WID_CherrySmoke_CubeSurfing_Mythic.WID_CherrySmoke_CubeSurfing_Mythic",
 		"/CubeSurfing/UI/Icon/T_Icon_BR_DeRezSurfing_SpatialTravel.T_Icon_BR_DeRezSurfing_SpatialTravel": "/CubeSurfing_Items_Bound/Icon/T_Icon_BR_DeRezSurfing_SpatialTravel.T_Icon_BR_DeRezSurfing_SpatialTravel",
@@ -108,6 +113,9 @@
 		"/Game/Athena/Apollo/Environments/Landscape/Materials/Helios/MI_Helios_Roads_Junction_Split_2lane.MI_Helios_Roads_Junction_Split_2lane": "/Game/Athena/Apollo/Environments/Landscape/Materials/Helios/MI_Helios_Roads_2lane_JunctionSplit.MI_Helios_Roads_2lane_JunctionSplit",
 		"/Game/Athena/Apollo/Environments/Landscape/Materials/Helios/MI_Helios_Roads_Junction_Y_2lane.MI_Helios_Roads_Junction_Y_2lane": "/Game/Athena/Apollo/Environments/Landscape/Materials/Helios/MI_Helios_Roads_2lane_JunctionY.MI_Helios_Roads_2lane_JunctionY",
 		"/Game/Athena/Apollo/Environments/Landscape/Materials/Helios/MI_Helios_Roads_Straight_FadeBot.MI_Helios_Roads_Straight_FadeBot": "/Game/Athena/Apollo/Environments/Landscape/Materials/Helios/MI_Helios_Roads_2lane_Straight_Fade.MI_Helios_Roads_2lane_Straight_Fade",
+		"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_TruckTopper_A.Artemis_Commerce_TruckTopper_A": "/Summer_Bound/BuildingActors/Artemis_Commerce_TruckTopper_A.Artemis_Commerce_TruckTopper_A",
+		"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_TruckTopper_A.Artemis_Commerce_TruckTopper_A_C": "/Summer_Bound/BuildingActors/Artemis_Commerce_TruckTopper_A.Artemis_Commerce_TruckTopper_A_C",
+		"/Game/Athena/Artemis/Environments/BuildingActors/Commerce/Artemis_Commerce_TruckTopper_A.Default__Artemis_Commerce_TruckTopper_A_C": "/Summer_Bound/BuildingActors/Artemis_Commerce_TruckTopper_A.Default__Artemis_Commerce_TruckTopper_A_C",
 		"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Athena_Prop_WildWest_BeatTheDealer_01.Athena_Prop_WildWest_BeatTheDealer_01": "/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GameTable_01.FNEC_Athena_Prop_WildWest_GameTable_01",
 		"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Athena_Prop_WildWest_BeatTheDealer_01.Athena_Prop_WildWest_BeatTheDealer_01_C": "/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GameTable_01.FNEC_Athena_Prop_WildWest_GameTable_01_C",
 		"/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/Athena_Prop_WildWest_BeatTheDealer_01.Default__Athena_Prop_WildWest_BeatTheDealer_01_C": "/Game/Athena/BuildingActors/Props/Building/ActorBlueprints/Containers/FNEC_Athena_Prop_WildWest_GameTable_01.Default__FNEC_Athena_Prop_WildWest_GameTable_01_C",
@@ -362,8 +370,8 @@
 		"/Hera/Props/Kitchen/Kitchen_ProDisplay_A/Blueprints/BP_Kitchen_SeafoodDisplay_B.BP_Kitchen_SeafoodDisplay_B": "/Hera/Props/Kitchen/Kitchen_ProDisplay_A/Blueprints/BP_Kitchen_ProSeafoodDisplay_B.BP_Kitchen_ProSeafoodDisplay_B",
 		"/Hera/Props/Kitchen/Kitchen_ProDisplay_A/Blueprints/BP_Kitchen_SeafoodDisplay_B.BP_Kitchen_SeafoodDisplay_B_C": "/Hera/Props/Kitchen/Kitchen_ProDisplay_A/Blueprints/BP_Kitchen_ProSeafoodDisplay_B.BP_Kitchen_ProSeafoodDisplay_B_C",
 		"/Hera/Props/Kitchen/Kitchen_ProDisplay_A/Blueprints/BP_Kitchen_SeafoodDisplay_B.Default__BP_Kitchen_SeafoodDisplay_B_C": "/Hera/Props/Kitchen/Kitchen_ProDisplay_A/Blueprints/BP_Kitchen_ProSeafoodDisplay_B.Default__BP_Kitchen_ProSeafoodDisplay_B_C",
-		"/Hera/Props/LightSource/LightSource_AxisFloodLights_A/Materials/MI_LightSource_AxisLighRod_A.MI_LightSource_AxisLighRod_A": "/Hera/Props/Lightsource/LightSource_AxisFloodLights_A/Materials/MI_LightSource_AxisFloodLights_A.MI_LightSource_AxisFloodLights_A",
-		"/Hera/Props/LightSource/LightSource_LabRatStanding_A/TextureData/TD_Commerce_RestaurantFlag_B_A.TD_Commerce_RestaurantFlag_B_A": "/Hera/Props/Lightsource/LightSource_LabRatStanding_A/TextureData/TD_LightSource_LabRatStanding_A_A.TD_LightSource_LabRatStanding_A_A",
+		"/Hera/Props/Lightsource/LightSource_AxisFloodLights_A/Materials/MI_LightSource_AxisLighRod_A.MI_LightSource_AxisLighRod_A": "/Hera/Props/Lightsource/LightSource_AxisFloodLights_A/Materials/MI_LightSource_AxisFloodLights_A.MI_LightSource_AxisFloodLights_A",
+		"/Hera/Props/Lightsource/LightSource_LabRatStanding_A/TextureData/TD_Commerce_RestaurantFlag_B_A.TD_Commerce_RestaurantFlag_B_A": "/Hera/Props/Lightsource/LightSource_LabRatStanding_A/TextureData/TD_LightSource_LabRatStanding_A_A.TD_LightSource_LabRatStanding_A_A",
 		"/Hera/Props/SeaMist/SeaMist_ColorTints/TextureData/TD_SeaMist_Stool_A_A.TD_SeaMist_Stool_A_A": "/Hera/Props/SeaMist/SeaMist_ColorTints/TextureData/TD_SeaMist_ColorSwatch_A.TD_SeaMist_ColorSwatch_A",
 		"/Hera/Props/SeaMist/SeaMist_ColorTints/TextureData/TD_SeaMist_WallSign_A_A.TD_SeaMist_WallSign_A_A": "/Hera/Props/SeaMist/SeaMist_ColorTints/TextureData/TD_SeaMist_ColorSwatch_B.TD_SeaMist_ColorSwatch_B",
 		"/Hera/Props/SeaMist/SeaMist_ColorTints/TextureData/TD_SeaMist_WallSign_B_A.TD_SeaMist_WallSign_B_A": "/Hera/Props/SeaMist/SeaMist_ColorTints/TextureData/TD_SeaMist_ColorSwatch_D.TD_SeaMist_ColorSwatch_D",
@@ -1262,6 +1270,7 @@
 		"/RopeSmileMapContent/Textures/T_White.T_White": "/Game/Global/Textures/Default/Blanks/T_Blank_LegalWhite_sRGBColor.T_Blank_LegalWhite_sRGBColor",
 		"/SidekickRenders_Assets/SetupAssets/Renders/Large/T_Slurpuppy_L.T_Slurpuppy_L": "/SidekickRenders_Assets/SetupAssets/Renders/Large/T_SlurpPuppy_L.T_SlurpPuppy_L",
 		"/SidekickRenders_Assets/SetupAssets/Renders/Small/T_Slurpuppy_S.T_Slurpuppy_S": "/SidekickRenders_Assets/SetupAssets/Renders/Small/T_SlurpPuppy_S.T_SlurpPuppy_S",
+		"/SmartTunaPre/Levels/SmartTunaPre_Landscape_sharedassets/__LANDSCAPE_VISIBILITY___LayerInfo.__LANDSCAPE_VISIBILITY___LayerInfo": "/Engine/EngineResources/LandscapeVisibilityLayerInfo.LandscapeVisibilityLayerInfo",
 		"/SplinterShotgun/Gameplay/Pistol/WID_RicochetPistol_R.WID_RicochetPistol_R": "/OrangeRemoteWeaponGameplay/Gameplay/RicochetPistol/WID_Pistol_OrangeRemote_Ricochet_R.WID_Pistol_OrangeRemote_Ricochet_R",
 		"/SpriteLibrary_Ch7MS/Assets/Materials/Sprite_Sleepy/MI_Sprite_Sleepy.MI_Sprite_Sleepy": "/SpriteLibrary_Ch7MS/Assets/Materials/Sprite_Sleepy/MI_Sprite_SleepyMS.MI_Sprite_SleepyMS",
 		"/SpriteLibrary_Ch7S4/Assets/Materials/Sprite_Honey/MI_Sprite_Honey_Opaque2.MI_Sprite_Honey_Opaque2": "/SpriteLibrary_Ch7S4/Assets/Materials/Sprite_Honey/MI_Sprite_Honey_Opaque.MI_Sprite_Honey_Opaque",
@@ -1752,7 +1761,8 @@
 		"LACity_Assets",
 		"OrangeRemoteWeaponGameplay",
 		"PlumptonProps_Assets",
-		"PrimalGameplay"
+		"PrimalGameplay",
+		"Summer_Bound"
 	],
 	"optionalGFSList": [
 		"base",
@@ -1766,6 +1776,7 @@
 		"SolidWaveGFS",
 		"PerfectKiwiGFS",
 		"AkitaGFS",
-		"BrightCoilGFS"
+		"BrightCoilGFS",
+		"PesterStubblyGFS"
 	]
 }
